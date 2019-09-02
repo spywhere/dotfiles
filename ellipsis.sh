@@ -37,4 +37,7 @@ pkg.install() {
   # Install Rust Toolchains
   echo "Installing Rust toolchains..."
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -y
+  # Adding Rust binary to path
+  echo "Adding Rust binaries to PATH..."
+  source $HOME/.cargo/env
 }
