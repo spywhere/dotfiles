@@ -33,6 +33,8 @@ pkg.install() {
   # Install Brew Cask Packages
   echo "Checking homebrew cask packages..."
   rat "brew cask install" ".homebrew-cask"
+  
+  # Install Rust Toolchains
+  echo "Installing Rust toolchains..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -y
 }
-
-pkg.install
