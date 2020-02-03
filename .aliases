@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Shortcuts
+alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
+alias news="wget -O - hackurls.com/ascii | less"
+
+alias dr="defaults read"
+alias dw="defaults write"
+
+# HTTPie
+alias https="http --default-scheme=https"
+
+# cmus
+alias cmus='screen -q -r -D cmus || screen -S cmus /usr/local/bin/cmus'
+
+# Docker
+alias d='docker'
+
+if [[ $(arch) == "armv7l" ]]; then
+  # Raspberry Pi variant
+  alias mysql="docker run -it --rm --name mysql-cli jsurf/rpi-mariadb mysql"
+else
+  alias mysql="docker run -it --rm --name mysql-cli mysql:5.7 mysql"
+fi
+
+alias node="docker run -it --rm --name node-cli node:lts-alpine node"
+
+# TMUX
+alias tmux="tmux -2"
+
+# NVIM
+alias vim="nvim"
+alias vi="nvim"
+
+# HSTR configuration - add this to ~/.zshrc
+alias hh=hstr                    # hh to be alias for hstr
+setopt histignorespace           # skip cmds w/ leading space from history
+export HSTR_CONFIG=hicolor       # get more colors
+export SAVEHIST=100000
+bindkey -s "\C-r" "\eqhstr\n"     # bind hstr to Ctrl-r (for Vi mode check doc)
+
+# for opt + ← and opt + → to skip a word
+bindkey '\e\e[C' forward-word
+bindkey '\e\e[D' backward-word
