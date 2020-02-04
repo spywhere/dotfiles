@@ -15,6 +15,8 @@ if [[ $(uname) == "Darwin" ]]; then
   echo "Satisfying dependencies..."
   brew tap homebrew/bundle
   brew bundle
+else
+  grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install
 fi
 
 echo "Setting up configurations..."

@@ -9,25 +9,26 @@ tap "buo/cask-upgrade"
 tap "domt4/autoupdate"
 
 # Binaries
-brew "bash" # Bash 4
+brew "bash" # Bash 4 #apt
 brew "cmus"
 brew "coreutils" # Those that come with macOS are outdated
+#apt dnsmasq
 brew "fish"
 brew "git-lfs"
-brew "git"
+brew "git" #apt
 brew "hstr"
-brew "httpie"
-brew "jq"
-brew "nano"
+brew "httpie" #apt
+brew "jq" #apt
+brew "nano" #apt
 brew "neovim"
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"
 brew "reattach-to-user-namespace" # tmux-yank dependencies
-brew "ripgrep" # (a better grep) fzf.vim dependencies
-brew "rsync"
-brew "tmux"
+brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
+brew "rsync" #apt
+brew "tmux" #apt
 brew "trash"
-brew "wget"
+brew "wget" #apt
 brew "youtube-dl"
 
 # Apps
