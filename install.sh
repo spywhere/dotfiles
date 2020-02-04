@@ -16,6 +16,7 @@ if [[ $(uname) == "Darwin" ]]; then
   brew tap homebrew/bundle
   brew bundle
 else
+  echo "Installing packages..."
   grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install
 fi
 
