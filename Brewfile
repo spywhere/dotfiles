@@ -10,17 +10,17 @@ tap "domt4/autoupdate"
 
 # Binaries
 brew "bash" # Bash 4 #apt
-brew "cmus"
+brew "cmus" #make (for the latest version)
 brew "coreutils" # Those that come with macOS are outdated
 #apt dnsmasq
 brew "fish"
 brew "git-lfs"
 brew "git" #apt
-brew "hstr"
+brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
 brew "nano" #apt
-brew "neovim"
+brew "neovim" #make (required for autocompletion to properly working)
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"
 brew "reattach-to-user-namespace" # tmux-yank dependencies

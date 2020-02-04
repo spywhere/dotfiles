@@ -18,6 +18,9 @@ if [[ $(uname) == "Darwin" ]]; then
 else
   echo "Installing packages..."
   grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install
+  
+  echo "The following packages must be installed manually:"
+  grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
 fi
 
 echo "Setting up configurations..."
@@ -51,6 +54,10 @@ if [ ! -f "$HOME/.variables" ]; then
   ln -s "$HOME/dotfiles/.variables" "$HOME/.variables"
 fi
 
-cat "$HOME/dotfiles/setup.sh" >> "$HOME/.zshrc"
+if [ ! -f "$HOME/.zshrc" ]; then
+  cat "$HOME/dotfiles/setup.sh" >> "$HOME/.zshrc"
+elif [ ! -f "$HOME/.bash_profile" ]; then
+  cat "$HOME/dotfiles/setup.sh" >> "$HOME/.bash_profile"
+fi
 
 echo "Done!"
