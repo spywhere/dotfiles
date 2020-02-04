@@ -12,6 +12,7 @@ tap "domt4/autoupdate"
 brew "bash" # Bash 4 #apt
 brew "cmus" #make (for the latest version)
 brew "coreutils" # Those that come with macOS are outdated
+#apt curl
 #apt dnsmasq
 brew "fish"
 brew "git-lfs"
@@ -26,16 +27,18 @@ brew "q"
 brew "reattach-to-user-namespace" # tmux-yank dependencies
 brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
 brew "rsync" #apt
+#apt screen
 brew "tmux" #apt
 brew "trash"
 brew "wget" #apt
 brew "youtube-dl"
+#apt zsh
 
 # Apps
 cask "1password"
 cask "4k-video-downloader"
 cask "bartender"
-cask "docker"
+cask "docker" #make (no package manager)
 cask "flux"
 cask "google-chrome"
 cask "iterm2"

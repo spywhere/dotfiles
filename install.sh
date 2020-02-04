@@ -21,6 +21,9 @@ else
   
   echo "The following packages must be installed manually:"
   grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
+
+  echo "Attempting to install a manual packages..."
+  sh packages.sh
 fi
 
 echo "Setting up configurations..."
