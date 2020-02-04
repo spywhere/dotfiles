@@ -61,6 +61,7 @@ let NERDTreeHijackNetrw = 1
 let NERDTreeShowHidden = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeIgnore=['\.git$[[dir]]','\.DS_Store$[[file]]']
 
 " Rg command tweaks to search only file content
 command! -bang -nargs=* Rg
