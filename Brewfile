@@ -22,6 +22,8 @@ brew "nano"
 brew "neovim"
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"
+brew "reattach-to-user-namespace" # tmux-yank dependencies
+brew "ripgrep" # (a better grep) fzf.vim dependencies
 brew "rsync"
 brew "tmux"
 brew "trash"
