@@ -33,6 +33,9 @@ zstyle ':completion:*' accept-exact '*(N)' # Speedup path completion
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.cache/zsh
 
+ZSH_TMUX_AUTOSTART=true
+ZSH_TMUX_AUTOCONNECT=false
+
 source <(antibody init)
 antibody bundle denysdovhan/spaceship-prompt
 antibody bundle zsh-users/zsh-autosuggestions
@@ -42,6 +45,7 @@ antibody bundle zdharma/fast-syntax-highlighting
 antibody bundle robbyrussell/oh-my-zsh path:plugins/git
 antibody bundle robbyrussell/oh-my-zsh path:plugins/command-not-found
 antibody bundle robbyrussell/oh-my-zsh path:plugins/common-aliases
+antibody bundle robbyrussell/oh-my-zsh path:plugins/tmux
 
 . $HOME/.aliases
 . $HOME/.variables
@@ -96,6 +100,3 @@ fcoc() {
   commit=$(echo "$commits" | fzf --tac +s +m -e) &&
   git checkout $(echo "$commit" | sed "s/ .*//")
 }
-
-# Auto start tmux
-if [ "$TMUX" = "" ]; then tmux; fi
