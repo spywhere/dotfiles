@@ -23,9 +23,9 @@ else
   grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
 
   echo "Attempting to install a manual packages..."
-  sh packages.sh
+  bash packages.sh
 
-  sudo sh setup.sh
+  bash setup.sh
 fi
 
 echo "Setting up configurations..."

@@ -11,9 +11,9 @@ else
   sudo touch /boot/ssh
   echo "libcomposite" | sudo tee -a /etc/modules
   echo "denyinterfaces usb0" | sudo tee -a /etc/dhcpcd.conf
-  sudo cp ~/dotfiles/files/etc/dnsmasq.d/usb /etc/dnsmasq.d/usb
-  sudo cp ~/dotfiles/files/etc/network/interfaces.d/usb0 /etc/networks/interfaces.d/usb0
-  sudo cp ~/dotfiles/files/root/usb.sh /root/usb.sh
+  cat ~/dotfiles/files/etc/dnsmasq.d/usb | sudo tee /etc/dnsmasq.d/usb
+  cat ~/dotfiles/files/etc/network/interfaces.d/usb0 | sudo tee /etc/networks/interfaces.d/usb0
+  cat ~/dotfiles/files/root/usb.sh | sudo tee /root/usb.sh
   sudo chmod 755 /root/usb.sh
   sudo sed -i $'s/exit 0/\\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
 fi
