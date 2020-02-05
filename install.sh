@@ -1,5 +1,6 @@
 #!/bin/bash
 
+CURRENT_DIR=$(pwd)
 if [[ $(uname) == "Darwin" ]]; then
   # Check for Homebrew and install if we don't have it
   if test ! "$(command -v brew)"; then
@@ -24,9 +25,15 @@ else
 
   echo "Attempting to install a manual packages..."
   bash packages.sh
-
-  bash setup.sh
 fi
+
+bash setup.sh
+
+echo "Installing fonts..."
+cd $HOME
+git clone --depth 1 https://github.com/ryanoasis/nerd-fonts
+cd nerd-fonts
+./install.sh
 
 echo "Setting up configurations..."
 
@@ -68,3 +75,4 @@ elif [ -f "$HOME/.bashrc" ]; then
 fi
 
 echo "Done!"
+cd $CURRENT_DIR
