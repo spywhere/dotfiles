@@ -89,6 +89,3 @@ else
 fi
 
 cd $HOME
-echo "Installing oh-my-zsh..."
-sleep 1
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
