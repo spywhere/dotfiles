@@ -7,6 +7,9 @@ alias news="wget -O - hackurls.com/ascii | less"
 alias dr="defaults read"
 alias dw="defaults write"
 
+# news
+alias news="curl -sSL hackurls.com/ascii | less"
+
 # HTTPie
 alias https="http --default-scheme=https"
 
@@ -21,6 +24,14 @@ if [[ $(arch) == "armv7l" ]]; then
   alias mysql="docker run -it --rm --name mysql-cli jsurf/rpi-mariadb mysql"
 else
   alias mysql="docker run -it --rm --name mysql-cli mysql:5.7 mysql"
+fi
+
+if [[ $(uname) == "Darwin" ]]; then
+  vol() {
+    osascript -e "set Volume $((($1 + 5) / 10))"
+  } 
+else
+  alias vol="amixer set Master"
 fi
 
 alias node="docker run -it --rm --name node-cli node:lts-alpine node"
