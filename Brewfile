@@ -34,7 +34,7 @@ tap "domt4/autoupdate"
 #apt libvorbis-dev
 #apt libmpcdec-dev
 #apt wavpack
-#apt madplay
+#apt libmad0-dev
 #apt libavcodec-dev
 #apt libfaad2
 #apt libmp4v2-dev
