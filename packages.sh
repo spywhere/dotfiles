@@ -68,7 +68,7 @@ fi
 
 cd $HOME
 echo "Installing mosh..."
-if test ! "$(command -v cmus)"; then
+if test ! "$(command -v mosh)"; then
   echo "References:"
   echo "  - https://github.com/mobile-shell/mosh/issues/961#issuecomment-565741393"
   sleep 1
