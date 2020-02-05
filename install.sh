@@ -47,6 +47,7 @@ ln -s "$HOME/dotfiles/tig/tig.conf" "$HOME/.tigrc"
 
 # Symlink nvim config file to the home directory
 rm -rf "$HOME/.config/nvim"
+mkdir -p $HOME/.config
 ln -s "$HOME/dotfiles/nvim/" "$HOME/.config/nvim"
 
 # Install tmux plugin manager
