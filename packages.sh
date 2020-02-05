@@ -25,7 +25,7 @@ if test ! "$(command -v hstr)"; then
   cd ../..
   ./configure
   make
-  make install
+  sudo make install
   cd $HOME
   rm -rf hstr
 else
