@@ -3,10 +3,10 @@ map nt :NERDTreeToggle<cr>
 map nf :NERDTreeFind<cr>
 
 " arrow keys resize pane
-inoremap <Left> <C-o>:vertical resize -5<CR>
-inoremap <Right> <C-o>:vertical resize +5<CR>
-inoremap <Up> <C-o>:resize -5<CR>
-inoremap <Down> <C-o>:resize +5<CR>
+nnoremap <A-Left> :vertical resize -5<CR>
+nnoremap <A-Right> :vertical resize +5<CR>
+nnoremap <A-Up> :resize -5<CR>
+nnoremap <A-Down> :resize +5<CR>
 nnoremap <Left> :vertical resize -1<CR>
 nnoremap <Right> :vertical resize +1<CR>
 nnoremap <Up> :resize -1<CR>
