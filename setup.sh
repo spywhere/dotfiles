@@ -1,50 +1,19 @@
-. $HOME/.aliases
-. $HOME/.variables
+#!/bin/bash
 
-# Use fzf if found
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [[ $(uname) == "Darwin" ]]; then
+  echo "No setup for now"
+else
+  echo "Setting up system..."
 
-# Export binaries
-export PATH=$HOME/dotfiles/bin:$PATH
-
-# fbr - checkout git branch (including remote branches)
-fcor() {
-  local branches branch
-  branches=$(git branch --all | grep -v HEAD) &&
-  branch=$(echo "$branches" |
-           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
-}
-
-# fco - checkout git branch/tag
-fco() {
-  local tags branches target
-  branches=$(git --no-pager branch --all --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" | sed '/^$/d') || return
-  tags=$(git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-  target=$((echo "$branches"; echo "$tags") | fzf --no-hscroll --no-multi -n 2 --ansi) || return
-  git checkout $(awk '{print $2}' <<<"$target" )
-}
-
-# fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
-fco_preview() {
-  local tags branches target
-  branches=$(
-    git --no-pager branch --all \
-      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-    | sed '/^$/d') || return
-  tags=$(
-    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-  target=$(
-    (echo "$branches"; echo "$tags") |
-    fzf --no-hscroll --no-multi -n 2 \
-        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
-  git checkout $(awk '{print $2}' <<<"$target" )
-}
-
-# fcoc - checkout git commit
-fcoc() {
-  local commits commit
-  commits=$(git log --pretty=oneline --abbrev-commit --reverse) &&
-  commit=$(echo "$commits" | fzf --tac +s +m -e) &&
-  git checkout $(echo "$commit" | sed "s/ .*//")
-}
+  echo "Enabling access over USB-C..."
+  echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+  echo "modules-load=dwc2" | sudo tee -a /boot/cmdline.txt
+  sudo touch /boot/ssh
+  echo "libcomposite" | sudo tee -a /etc/modules
+  echo "denyinterfaces usb0" | sudo tee -a /etc/dhcpcd.conf
+  sudo cp ~/dotfiles/files/etc/dnsmasq.d/usb /etc/dnsmasq.d/usb
+  sudo cp ~/dotfiles/files/etc/network/interfaces.d/usb0 /etc/networks/interfaces.d/usb0
+  sudo cp ~/dotfiles/files/root/usb.sh /root/usb.sh
+  sudo chmod 755 /root/usb.sh
+  sudo sed -i $'s/exit 0/\\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
+fi

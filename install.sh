@@ -23,7 +23,7 @@ else
   grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
 
   echo "Attempting to install a manual packages..."
-  sh packages.sh
+  sudo sh packages.sh
 fi
 
 echo "Setting up configurations..."
@@ -58,9 +58,11 @@ if [ ! -f "$HOME/.variables" ]; then
 fi
 
 if [ ! -f "$HOME/.zshrc" ]; then
-  cat "$HOME/dotfiles/setup.sh" >> "$HOME/.zshrc"
+  cat "$HOME/dotfiles/startup.sh" >> "$HOME/.zshrc"
 elif [ ! -f "$HOME/.bash_profile" ]; then
-  cat "$HOME/dotfiles/setup.sh" >> "$HOME/.bash_profile"
+  cat "$HOME/dotfiles/startup.sh" >> "$HOME/.bash_profile"
+elif [ ! -f "$HOME/.bashrc" ]; then
+  cat "$HOME/dotfiles/startup.sh" >> "$HOME/.bashrc"
 fi
 
 echo "Done!"
