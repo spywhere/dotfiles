@@ -40,6 +40,7 @@ cd $HOME
 git clone --depth 1 https://github.com/ryanoasis/nerd-fonts
 cd nerd-fonts
 ./install.sh
+cd $CURRENT_DIR
 
 echo "Setting up configurations..."
 
