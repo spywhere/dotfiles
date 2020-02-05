@@ -8,6 +8,49 @@ tap "homebrew/services"
 tap "buo/cask-upgrade"
 tap "domt4/autoupdate"
 
+# Development tools
+# Base
+#apt autotools-dev
+#apt pkg-config
+
+# hstr
+#apt libncursesw5-dev
+#apt libreadline-dev
+
+# neovim
+#apt cmake
+#apt gettext
+#apt libtool
+#apt libtool-bin
+
+# cmus
+#apt libpulse-dev
+#apt libasound2-dev
+#apt libroar-dev
+#apt libao-dev
+#apt libcdio-dev
+#apt flac
+#apt libopus-dev
+#apt libvorbis-dev
+#apt libmpcdec-dev
+#apt wavpack
+#apt madplay
+#apt libavcodec-dev
+#apt libfaad2
+#apt libmp4v2-dev
+#apt libmodplug-dev
+
+# mosh
+#apt debhelper
+#apt protobuf-compiler
+#apt libprotobuf-dev
+#apt dh-autoreconf
+#apt libutempter-dev
+#apt zlib1g-dev
+#apt libncurses5-dev
+#apt libssl-dev
+#apt locales
+
 # Binaries
 brew "bash" # Bash 4 #apt
 brew "cmus" #make (for the latest version)

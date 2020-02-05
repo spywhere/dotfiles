@@ -13,6 +13,7 @@ else
   echo "docker already installed"
 fi
 
+cd $CURRENT_DIR
 echo "Installing hstr..."
 echo "References:"
 echo "  - https://github.com/dvorka/hstr/blob/master/INSTALLATION.md#build-on-any-linux-distro"
@@ -30,6 +31,7 @@ else
   echo "hstr already installed"
 fi
 
+cd $CURRENT_DIR
 echo "Installing neovim..."
 echo "References:"
 echo "  - https://github.com/neovim/neovim/wiki/Building-Neovim#building"
@@ -38,10 +40,13 @@ if test ! "$(command -v nvim)"; then
   cd neovim
   make CMAKE_BUILD_TYPE=Release
   sudo make install
+  cd $CURRENT_DIR
+  rm -rf neovim
 else
   echo "neovim already installed"
 fi
 
+cd $CURRENT_DIR
 echo "Installing cmus..."
 echo "References:"
 echo "  - https://cmus.github.io/#download"
@@ -54,5 +59,23 @@ else
   echo "cmus already installed"
 fi
 
+cd $CURRENT_DIR
+echo "Installing mosh..."
+echo "References:"
+echo "  - https://github.com/mobile-shell/mosh/issues/961#issuecomment-565741393"
+if test ! "$(command -v cmus)"; then
+  git clone https://github.com/mobile-shell/mosh
+  cd mosh
+  ./autogen.sh
+  ./configure
+  make
+  make install
+  cd $CURRENT_DIR
+  rm -rf mosh
+else
+  echo "mosh already installed"
+fi
+
+cd $CURRENT_DIR
 echo "Installing oh-my-zsh..."
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

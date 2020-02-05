@@ -17,13 +17,15 @@ if [[ $(uname) == "Darwin" ]]; then
   brew bundle
 else
   echo "Installing packages..."
-  grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install
+  grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install -y
   
   echo "The following packages must be installed manually:"
   grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
 
   echo "Attempting to install a manual packages..."
-  sudo sh packages.sh
+  sh packages.sh
+
+  sudo sh setup.sh
 fi
 
 echo "Setting up configurations..."
