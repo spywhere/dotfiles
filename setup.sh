@@ -17,5 +17,5 @@ else
   cat ~/dotfiles/files/etc/network/interfaces.d/usb0 | sudo tee /etc/network/interfaces.d/usb0
   cat ~/dotfiles/files/root/usb.sh | sudo tee /root/usb.sh
   sudo chmod 755 /root/usb.sh
-  sudo sed -i $'s/\\\nexit 0/\\\n\\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
+  sudo sed -i $'s/exit 0$/\\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
 fi
