@@ -51,6 +51,7 @@ echo "  - https://cmus.github.io/#download"
 if test ! "$(command -v cmus)"; then
   git clone https://github.com/cmus/cmus .cmus
   cd .cmus
+  sed -e 's/-lm/-lm -latomic/g' Makefile
   ./configure prefix=$HOME/.cmus
   sudo make install
 else
