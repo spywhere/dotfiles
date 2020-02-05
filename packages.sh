@@ -61,6 +61,9 @@ if test ! "$(command -v cmus)"; then
   sed -i 's/-lm/-lm -latomic/g' Makefile
   ./configure prefix=$HOME/.cmus
   sudo make install
+  sudo mv $HOME/.cmus/bin/cmus $HOME/.cmus/bin/cmus-remote /usr/local/bin/
+  sudo chmod 755 /usr/local/bin/cmus
+  sudo chmod 755 /usr/local/bin/cmus-remote
 else
   echo "cmus already installed"
   sleep 1
