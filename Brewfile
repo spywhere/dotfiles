@@ -57,7 +57,6 @@ brew "cmus" #make (for the latest version)
 brew "coreutils" # Those that come with macOS are outdated
 #apt curl
 #apt dnsmasq
-brew "fish"
 brew "git-lfs"
 brew "git" #apt
 brew "hstr" #make (arm arch not supported)
@@ -105,7 +104,6 @@ cask "webpquicklook"
 # Fonts
 cask "font-cascadia"
 cask "font-fira-code"
-cask "font-hack-nerd-font"
 cask "font-hasklig"
 cask "font-iosevka"
 cask "font-jetbrains-mono"
