@@ -40,10 +40,13 @@ SPACESHIP_PROMPT_ORDER=(
   user
   dir
   git
-  exec_time
   line_sep
   exit_code
   char
+)
+SPACESHIP_RPROMPT_ORDER=(
+  host
+  exec_time
 )
 SPACESHIP_USER_SHOW=needed
 SPACESHIP_PROMPT_ADD_NEWLINE=false
