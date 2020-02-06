@@ -7,7 +7,7 @@ else
 fi
 
 if [[ ! -f /usr/local/bin/antibody ]]; then
-  curl -sfL git.io/antibody | sh -s - -b /usr/local/bin
+  curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
 
 setopt hist_ignore_all_dups # remove older duplicate entries from history
@@ -35,6 +35,19 @@ zstyle ':completion:*' cache-path ~/.cache/zsh
 
 ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOCONNECT=false
+
+SPACESHIP_PROMPT_ORDER=(
+  user
+  dir
+  git
+  exec_time
+  line_sep
+  exit_code
+  char
+)
+SPACESHIP_USER_SHOW=needed
+SPACESHIP_PROMPT_ADD_NEWLINE=false
+SPACESHIP_PROMPT_SEPARATE_LINE=false
 
 source <(antibody init)
 antibody bundle denysdovhan/spaceship-prompt
