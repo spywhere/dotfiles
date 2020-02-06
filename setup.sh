@@ -6,7 +6,9 @@ else
   echo "Setting up system..."
 
   echo "Enabling access over USB-C..."
-  if [ ! -f /root/usb.sh ]; then
+  if sudo test -f /root/usb.sh; then
+    echo "Already enabled"
+  else
     echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
     echo "modules-load=dwc2" | sudo tee -a /boot/cmdline.txt
     sudo touch /boot/ssh
@@ -19,7 +21,5 @@ else
     cat ~/dotfiles/files/root/usb.sh | sudo tee /root/usb.sh
     sudo chmod 755 /root/usb.sh
     sudo sed -i $'s/exit 0$/\\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
-  else
-    echo "Already enabled"
   fi
 fi
