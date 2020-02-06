@@ -73,7 +73,7 @@ antibody bundle robbyrussell/oh-my-zsh path:plugins/tmux
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Export binaries
-export PATH=$HOME/dotfiles/bin:$PATH
+export PATH=$HOME/.dotfiles/bin:$PATH
 
 # fbr - checkout git branch (including remote branches)
 fcor() {

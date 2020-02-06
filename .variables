@@ -2,4 +2,4 @@
 export FZF_DEFAULT_COMMAND='rg --files'
 
 # export binaries to path
-export PATH=$HOME/dotfiles/bin:$PATH
+export PATH=$HOME/.dotfiles/bin:$PATH
