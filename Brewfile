@@ -62,6 +62,7 @@ brew "git" #apt
 brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
+brew "mosh" #make (for 24-bit color support)
 brew "nano" #apt
 brew "neovim" #make (required for autocompletion to properly working)
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20

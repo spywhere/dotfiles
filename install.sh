@@ -64,15 +64,10 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
 fi
 
 # Copying shell configuration
-if [ ! -f "$HOME/.aliases" ]; then
-  echo "Copying aliases file..."
-  ln -s "$HOME/dotfiles/.aliases" "$HOME/.aliases"
-fi
-
-if [ ! -f "$HOME/.variables" ]; then
-  echo "Copying variables file..."
-  ln -s "$HOME/dotfiles/.variables" "$HOME/.variables"
-fi
+rm -rf "$HOME/.aliases"
+ln -s "$HOME/dotfiles/.aliases" "$HOME/.aliases"
+rm -rf "$HOME/.variables"
+ln -s "$HOME/dotfiles/.variables" "$HOME/.variables"
 
 echo "Done!"
 cd $CURRENT_DIR
