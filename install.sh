@@ -17,6 +17,10 @@ if [ "$(uname)" = "Darwin" ]; then
   brew tap homebrew/bundle
   brew bundle
 else
+  echo "Updating package repositories..."
+  sudo apt update
+  echo "Updating packages... this might take a while..."
+  sudo apt full-upgrade -y
   echo "Installing packages..."
   grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install -y
   
