@@ -74,6 +74,7 @@ brew "rsync" #apt
 brew "tmux" #apt
 brew "trash"
 brew "wget" #apt
+#apt xsel # tmux-yank dependencies
 brew "youtube-dl"
 #apt zsh
 

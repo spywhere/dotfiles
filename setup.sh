@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ $(uname) == "Darwin" ]]; then
+if [ "$(uname)" = "Darwin" ]; then
   echo "No setup for now"
 else
   echo "Setting up system..."

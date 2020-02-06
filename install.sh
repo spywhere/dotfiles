@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 CURRENT_DIR=$(pwd)
-if [[ $(uname) == "Darwin" ]]; then
+if [ "$(uname)" = "Darwin" ]; then
   # Check for Homebrew and install if we don't have it
   if test ! "$(command -v brew)"; then
     echo "Installing Homebrew..."
@@ -28,7 +28,11 @@ else
 fi
 
 echo "Updating shell to zsh..."
-chsh -s "$(command -v zsh)"
+if [ "$(basename "$SHELL")" = "zsh" ]; then
+  echo "Already running zsh"
+else
+  chsh -s "$(command -v zsh)"
+fi
 
 rm -f "$HOME/.zshrc"
 ln -s "$HOME/dotfiles/zshrc" "$HOME/.zshrc"
@@ -36,11 +40,14 @@ ln -s "$HOME/dotfiles/zshrc" "$HOME/.zshrc"
 bash setup.sh
 
 echo "Installing fonts..."
-cd $HOME
-git clone --depth 1 https://github.com/ryanoasis/nerd-fonts
-cd nerd-fonts
-./install.sh
-cd $CURRENT_DIR
+if [ ! -d "$HOME/.nerd-fonts" ]; then
+  cd $HOME
+  git clone --depth 1 https://github.com/ryanoasis/nerd-fonts "$HOME/.nerd-fonts"
+  $HOME/.nerd-fonts/install.sh
+  cd $CURRENT_DIR
+else
+  echo "Already installed"
+fi
 
 echo "Setting up configurations..."
 
