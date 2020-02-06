@@ -19,6 +19,7 @@ if [ ! -d "$HOME/.dotfiles" ]; then
       setup_homebrew
       brew install git
     else
+      sudo apt update
       sudo apt install -y git
     fi
   fi
