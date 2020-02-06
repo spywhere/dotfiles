@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+#              bash 4.3.11(1)     Linux Ubuntu 14.04.1        Date : 2015-03-28
+#
+# _______________|  gitio : custom URL shortener using Github's git.io API.
+#
+#           Usage:  gitio [salt]  [Github URL only, defaults to clipboard]
+#                   gitio [-g]    [grepterm, to search log file]
+#                   gitio [-v, to edit log file]
+#
+#        Examples:  $ gitio  foo  https://github.com/blog/category/hire
+#                   https://git.io/foo
+#
+#                   $ gitio     #  default salt, Github URL from clipboard.
+#                   https://git.io/dt_2015-03-28_170702
+#
+#           Notes:  A local log file is kept; set your directory below.
+#                   Log file can be edited; specify editor via $VISUAL.
+#                   Your clipboard can be used to input and output URL;
+#                   thus the xclip package is needed (saves typing :-).
+#
+#    Dependencies:  git.io API  (No key is required.)
+#                   curl
+#                   xclip
+#
+#         API ref:  https://github.com/blog/985-git-io-github-url-shortener
+#                   Our GitHub page: https://git.io/git.io
+#                   Raw source code: https://git.io/git.io.sh
+
+
+#  CHANGE LOG  ORIGIN: https://github.com/rsvp/gitio
+#  2015-03-28  First version 1.0.0 uses googl as template.
+#                 Append timestamp to insure uniqueness.
+
+
+#           _____ PREAMBLE_v2: settings, variables, and error handling.
+#
+LC_ALL=POSIX
+#      locale means "ASCII, US English, no special rules, 
+#      output per ISO and RFC standards." 
+#      Esp. use ASCII encoding for glob and sorting characters. 
+shopt -s   extglob
+#     ^set extended glob for pattern matching.
+shopt -s   failglob
+#         ^failed pattern matching signals error.
+set -e
+#   ^errors checked: immediate exit if a command has non-zero status. 
+set -u
+#   ^unassigned variables shall be errors.
+#    Example of default VARIABLE ASSIGNMENT:  arg1=${1:-'foo'}
+
+
+salt=${1:-"dt_$( date '+%Y-%m-%d_%H%M%S' )"}
+#    vanity URL.
+url=${2:-"$( xclip -utf8 -o )"}
+#   get URL from clipboard unless a second argument is given.
+
+
+program=${0##*/}   #  similar to using basename
+memf=$( mktemp /dev/shm/88_${program}_tmp.XXXXXXXXXX )
+
+
+cleanup () {
+     #  Delete temporary files, then optionally exit given status.
+     local status=${1:-'0'}
+     rm -f $memf
+     [ $status = '-1' ] ||  exit $status      #  thus -1 prevents exit.
+} #--------------------------------------------------------------------
+warn () {
+     #  Message with basename to stderr.          Usage: warn "message"
+     echo -e "\n !!  ${program}: $1 "  >&2
+} #--------------------------------------------------------------------
+die () {
+     #  Exit with status of most recent command or custom status, after
+     #  cleanup and warn.      Usage: command || die "message" [status]
+     local status=${2:-"$?"}
+     cleanup -1  &&   warn "$1"  &&  exit $status
+} #--------------------------------------------------------------------
+trap "die 'SIG disruption, but cleanup finished.' 114" 1 2 3 15
+#    Cleanup after INTERRUPT: 1=SIGHUP, 2=SIGINT, 3=SIGQUIT, 15=SIGTERM
+#
+# _______________     ::  BEGIN  Script ::::::::::::::::::::::::::::::::::::::::
+
+
+logdir="/home/${USER}/var/log/net"
+#    ^RENAME log directory for your personal use.
+
+
+#  Check directory's existence, else create it.
+[ -d "$logdir" ]  ||  mkdir -p "$logdir"  ||  die "fail creating $logdir" 113
+#  Set logfile:
+logf="$logdir/$program.log"
+
+
+
+case "$salt" in 
+           #  If first arg is -g, then GREP the second arg:
+      -g)  grep -EI -i --color "$2" $logf  |  sed -e 's/ /\n/' -e 's/$/\n/'
+           #                                  sed for readability.
+           cleanup                                                           ;;
+           
+           #  If first arg is -v, then edit the log file:
+      -v)  $VISUAL $logf  &&  cleanup                                        ;;
+       *)  :                                                                 ;;
+esac
+
+
+
+#  Check if url is indeed an URL:
+[ "${url:0:4}" != 'http' ]  &&  die 'requires http URL argument.' 115
+
+
+#  For uniqueness, TIMESTAMP original url:
+url="${url}#dt_$( date '+%Y-%m-%d_%H%M%S' )"
+#  else someone else's salt takes precedence.
+
+
+#  MAIN API FUNCTION is a simple curl command:
+#  
+shortener () {
+     curl -k --silent -i https://git.io -F "url=$url" -F "code=$salt" \
+          ||  die "failure within curl. Try different salt."  117
+}
+
+
+#  #DEBUGGER 2014-12-08  Test API directly:
+#  
+#  echo '=====DEBUG-1-shortner-output'
+#  shortener
+#  echo
+#  echo '=====DEBUG-2'
+#  cleanup
+
+
+#  2015-03-28  Sample output from shortener:
+#       
+#       $ gitio                # default salt, URL from clipboard
+#       HTTP/1.1 100 Continue
+#  
+#       HTTP/1.1 201 Created
+#       Server: Cowboy
+#       Connection: keep-alive
+#       Date: Sat, 28 Mar 2015 16:27:33 GMT
+#       Status: 201 Created
+#       Content-Type: text/html;charset=utf-8
+#       Location: http://git.io/rsvp_2015-03-28_092735
+#       Content-Length: 37
+#       X-Xss-Protection: 1; mode=block
+#       X-Content-Type-Options: nosniff
+#       X-Frame-Options: SAMEORIGIN
+#       X-Runtime: 0.093136
+#       X-Node: f64349f4-8e44-4961-bfa8-17833a95c91f
+#       X-Revision: 07773b075b4450646b285dbdf0ec55f6bff3a278
+#       Via: 1.1 vegur
+#  
+#       https://github.com/blog/category/hire
+
+
+#  #  Curl error code 77 means:
+#  #  CURLE_SSL_CACERT_BADFILE (77)
+#  #  Problem with reading the SSL CA cert (path? access rights?) 
+#  #  2014-12-09  Solved by adding -k flag which causes some insecurity.
+
+
+
+shortener  >  $memf  
+
+#  In case we get message: "Status: 422 Unprocessable Entity"
+#  the Location line for the shortened URL will be missing, thus:
+if ! grep '^Location:' $memf > /dev/null ; then
+     die "salt UNAVAILABLE! Must use different salt."  119
+fi
+
+
+# Show shortened URL using https protocol:
+echo    "https://git.io/$salt"  
+
+#  Also put shortened URL on CLIPBOARD:
+echo -n "https://git.io/$salt"  |  xclip
+
+#  Finally LOG the shortened URL, along with its long form:
+echo "https://git.io/$salt $url"  >>  $logf 
+#
+#  To EDIT logf:  gitio -v
+#          which assumes your system $VISUAL is set to e.g. vim.
+
+
+
+cleanup
+# _______________ EOS ::  END of Script ::::::::::::::::::::::::::::::::::::::::
+
+#  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=sh :
