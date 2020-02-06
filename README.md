@@ -6,5 +6,5 @@
 
 ## Just run
 ```
-curl -sSL https://git.io/JvZB8 | sh
+curl -sSL git.io/JvZB8 | sh
 ```
