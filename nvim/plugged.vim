@@ -42,6 +42,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-sensible'
+Plug 'wakatime/vim-wakatime'
 
 " Color scheme
 Plug 'rakr/vim-one'
