@@ -52,16 +52,32 @@ SPACESHIP_USER_SHOW=needed
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_SEPARATE_LINE=false
 
-source <(antibody init)
-antibody bundle denysdovhan/spaceship-prompt
-antibody bundle zsh-users/zsh-autosuggestions
-antibody bundle zsh-users/zsh-completions
-antibody bundle zsh-users/zsh-history-substring-search
-antibody bundle zdharma/fast-syntax-highlighting
-antibody bundle robbyrussell/oh-my-zsh path:plugins/git
-antibody bundle robbyrussell/oh-my-zsh path:plugins/command-not-found
-antibody bundle robbyrussell/oh-my-zsh path:plugins/common-aliases
-antibody bundle robbyrussell/oh-my-zsh path:plugins/tmux
+if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
+  echo "robbyrussell/oh-my-zsh path:plugins/tmux" > ~/.zsh_plugins.list
+
+  echo "denysdovhan/spaceship-prompt" > ~/.zsh_plugins.tmux.list
+  echo "zsh-users/zsh-autosuggestions" >> ~/.zsh_plugins.tmux.list
+  echo "zsh-users/zsh-completions" >> ~/.zsh_plugins.tmux.list
+  echo "zsh-users/zsh-history-substring-search" >> ~/.zsh_plugins.tmux.list
+  echo "zdharma/fast-syntax-highlighting" >> ~/.zsh_plugins.tmux.list
+  echo "robbyrussell/oh-my-zsh path:plugins/docker" >> ~/.zsh_plugins.tmux.list
+  echo "robbyrussell/oh-my-zsh path:plugins/git" >> ~/.zsh_plugins.tmux.list
+  echo "robbyrussell/oh-my-zsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.tmux.list
+  echo "robbyrussell/oh-my-zsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
+  echo "robbyrussell/oh-my-zsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list
+  
+  antibody bundle < ~/.zsh_plugins.list > ~/.zsh_plugins
+  antibody bundle < ~/.zsh_plugins.tmux.list > ~/.zsh_plugins.tmux
+
+  rm -rf ~/.zsh_plugins.list
+  rm -rf ~/.zsh_plugins.tmux.list
+fi
+
+if [ "$TMUX" = "" ]; then
+  source ~/.zsh_plugins
+fi
+
+source ~/.zsh_plugins.tmux
 
 . $HOME/.aliases
 . $HOME/.variables
