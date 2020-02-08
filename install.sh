@@ -60,7 +60,11 @@ echo "Updating shell to zsh..."
 if [ "$(basename "$SHELL")" = "zsh" ]; then
   echo "Already running zsh"
 else
-  chsh -s "$(command -v zsh)"
+  if sudo test -f /bin/zsh; then
+    chsh -s /bin/zsh
+  else
+    chsh -s "$(command -v zsh)"
+  fi
 fi
 
 rm -f "$HOME/.zshrc"
@@ -77,6 +81,11 @@ if [ ! -d "$HOME/.nerd-fonts" ]; then
 else
   echo "Already installed"
 fi
+
+echo "Installing node version switcher (nvs)..."
+export NVS_HOME="$HOME/.nvs"
+git clone https://github.com/jasongin/nvs "$NVS_HOME"
+. "$NVS_HOME/nvs.sh" install
 
 echo "Setting up configurations..."
 
@@ -106,4 +115,7 @@ rm -rf "$HOME/.variables"
 ln -s "$HOME/.dotfiles/.variables" "$HOME/.variables"
 
 echo "Done!"
+echo "NOTE: Don't forget to..."
+echo "  - Run 'nvim' for the first time setup"
+echo "  - Press <Prefix+I> for tmux plugins installation"
 cd $CURRENT_DIR
