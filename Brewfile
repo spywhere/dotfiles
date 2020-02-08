@@ -73,6 +73,7 @@ brew "reattach-to-user-namespace" # tmux-yank dependencies
 brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
 brew "rsync" #apt
 #apt screen
+brew "tig" #apt
 brew "tmux" #apt
 brew "trash"
 brew "wget" #apt
