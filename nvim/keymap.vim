@@ -14,9 +14,13 @@ nnoremap <Down> :resize +1<CR>
 
 " use alt + arrow keys to move lines
 vnoremap <A-Up> dkP1v
+vnoremap <A-k> dkP1v
 vnoremap <A-Down> dp1v
+vnoremap <A-j> dp1v
 nnoremap <A-Up> ddkP
+nnoremap <A-k> ddkP
 nnoremap <A-Down> ddp
+nnoremap <A-j> ddp
 
 " Leading
 let mapleader = ","
