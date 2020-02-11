@@ -8,6 +8,13 @@ tap "homebrew/services"
 tap "buo/cask-upgrade"
 tap "domt4/autoupdate"
 
+tap "koekeishiya/formulae"
+
+# Services
+brew "skhd"
+brew "yabai"
+#apt i3
+
 # Development tools
 # Base
 #apt autotools-dev
