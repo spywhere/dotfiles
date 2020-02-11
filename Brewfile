@@ -99,6 +99,7 @@ cask "iterm2"
 cask "kaleidoscope"
 cask "sourcetree"
 cask "tableplus"
+cask "ubersicht"
 cask "visual-studio-code"
 cask "vlc"
 
