@@ -1,6 +1,7 @@
 {
   "Profiles": [
     {
+      "Window Type": 12,
       "Ansi 5 Color": {
         "Red Component": 1,
         "Color Space": "Calibrated",
