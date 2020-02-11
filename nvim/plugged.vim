@@ -47,7 +47,7 @@ Plug 'tpope/vim-sensible'
 Plug 'wakatime/vim-wakatime'
 
 " Color scheme
-Plug 'rakr/vim-one'
+Plug 'joshdick/onedark.vim'
 
 Plug 'ryanoasis/vim-devicons'
 
@@ -59,6 +59,15 @@ endif
 
 syntax on
 
+if (has("autocmd"))
+  augroup colorset
+    autocmd!
+    let s:black = { "gui": "#1C1C1C", "cterm": "234", "cterm16" : "0" }
+    autocmd ColorScheme * call onedark#set_highlight("Normal", { "bg": s:black }) " `bg` will not be styled since there is no `bg` setting
+  augroup END
+endif
+
+colorscheme onedark
 
 " start NERDTree on startup
 autocmd VimEnter * NERDTree
@@ -92,5 +101,5 @@ let g:coc_global_extensions = [
 
 " Lightline
 let g:lightline = {
-  \ 'colorscheme': 'one',
+  \ 'colorscheme': 'onedark',
   \ }
