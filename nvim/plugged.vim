@@ -1,6 +1,8 @@
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
   silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall
+else
+  let g:init_vim_loaded = 1
 endif
 
 call plug#begin('~/.config/nvim/plugged')
@@ -51,8 +53,12 @@ Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
-colorscheme one
-set background=dark
+if !exists("g:init_vim_loaded")
+  finish
+endif
+
+syntax on
+
 
 " start NERDTree on startup
 autocmd VimEnter * NERDTree

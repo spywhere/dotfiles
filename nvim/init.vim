@@ -52,5 +52,7 @@ set guifont=JetbrainsMonoNerdFontMono:h12
 let loaded_netrwPlugin = 1
 
 source ~/.config/nvim/plugged.vim
-source ~/.config/nvim/keymap.vim
-source ~/.config/nvim/coc.vim
+if exists("g:init_vim_loaded")
+  source ~/.config/nvim/keymap.vim
+  source ~/.config/nvim/coc.vim
+endif
