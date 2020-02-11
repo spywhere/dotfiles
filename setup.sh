@@ -1,7 +1,11 @@
 #!/bin/sh
 
 if [ "$(uname)" = "Darwin" ]; then
-  echo "No setup for now"
+  if [ -d "$HOME/Library/Application Support/iTerm2/DynamicProfiles" ]; then
+    echo "iTerm2 found, setup dynamic profiles..."
+    rm -rf "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+    ln -s "$HOME/.dotfiles/files/iTerm2/DynamicProfiles" "$HOME/Library/Application Support/iTerm2"
+  fi
 else
   echo "Setting up system..."
 
