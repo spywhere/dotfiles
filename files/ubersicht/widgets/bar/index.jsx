@@ -1,4 +1,6 @@
-import { theme } from './lib/style.js';
+export const refreshFrequency = 1000
+
+import { theme } from './lib/style.js'
 import {
   Spaces,
   Time,
@@ -47,6 +49,7 @@ const result = (data, key) => {
   try {
     return JSON.parse(data)[key]
   } catch (e) {
+    console.log(data, e);
     return ''
   }
 }
@@ -104,12 +107,13 @@ export const render = ({ output, error }) => {
   let errorContent = (
     <div style={barStyle}></div>
   )
+  const displays = result(output, "displays")
   let content = (
     <div style={barStyle}>
       <link rel="stylesheet" type="text/css" href="bar/assets/font-awesome/css/all.min.css" />
-      <Spaces config={config.spaces} spaces={result(output, "spaces")} displays={result(output, "displays")} screen={screenID} side="left" />
+      <Spaces config={config.spaces} spaces={result(output, "spaces")} displays={displays} screen={screenID} side="left" />
       
-      <Title config={config.title} windows={result(output, "windows")} displays={result(output, "displays")} screen={screenID} />
+      <Title config={config.title} windows={result(output, "windows")} displays={displays} screen={screenID} />
 
       <Time config={config.time} side="right"></Time>
     </div>
