@@ -10,10 +10,9 @@ tap "domt4/autoupdate"
 
 tap "koekeishiya/formulae"
 
-# Services
-brew "skhd"
-brew "yabai"
 #apt i3
+#apt xserver-xorg
+#apt xinit
 
 # Development tools
 # Base
@@ -69,6 +68,7 @@ brew "git" #apt
 brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
+#apt lxterminal
 brew "mosh" #make (for 24-bit color support)
 brew "nano" #apt
 brew "neovim" #make (required for autocompletion to properly working)
@@ -80,6 +80,7 @@ brew "reattach-to-user-namespace" # tmux-yank dependencies
 brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
 brew "rsync" #apt
 #apt screen
+#apt suckless-tools # dmenu for i3
 brew "tig" #apt
 brew "tmux" #apt
 brew "trash"

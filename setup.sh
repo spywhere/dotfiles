@@ -9,15 +9,6 @@ if [ "$(uname)" = "Darwin" ]; then
     rm -rf "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     ln -s "$HOME/.dotfiles/files/iterm2/DynamicProfiles" "$HOME/Library/Application Support/iTerm2"
   fi
-  if [ -d "$HOME/Library/Application Support/Übersicht/widgets" ]; then
-    echo "Übersicht found, setup widgets..."
-    rm -rf "$HOME/Library/Application Support/Übersicht/widgets/bar"
-    ln -s "$HOME/.dotfiles/files/ubersicht/widgets/bar" "$HOME/Library/Application Support/Übersicht/widgets"
-  fi
-  rm -f "$HOME/.yabairc"
-  ln -s "$HOME/.dotfiles/yabairc" "$HOME/.yabairc"
-  rm -f "$HOME/.skhdrc"
-  ln -s "$HOME/.dotfiles/skhdrc" "$HOME/.skhdrc"
 else
   echo "Setting up system..."
 
