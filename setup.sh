@@ -7,7 +7,12 @@ if [ "$(uname)" = "Darwin" ]; then
     rm -rf "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     # Remove the directory itself
     rm -rf "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-    ln -s "$HOME/.dotfiles/files/iTerm2/DynamicProfiles" "$HOME/Library/Application Support/iTerm2"
+    ln -s "$HOME/.dotfiles/files/iterm2/DynamicProfiles" "$HOME/Library/Application Support/iTerm2"
+  fi
+  if [ -d "$HOME/Library/Application Support/Übersicht/widgets" ]; then
+    echo "Übersicht found, setup widgets..."
+    rm -rf "$HOME/Library/Application Support/Übersicht/widgets/bar"
+    ln -s "$HOME/.dotfiles/files/ubersicht/widgets/bar" "$HOME/Library/Application Support/Übersicht/widgets"
   fi
 else
   echo "Setting up system..."
