@@ -15,7 +15,7 @@ if [ "$(uname)" = "Darwin" ]; then
     ln -s "$HOME/.dotfiles/files/ubersicht/widgets/bar" "$HOME/Library/Application Support/Übersicht/widgets"
   fi
   rm -f "$HOME/.yabairc"
-  ln -s "$HOME/.dotfiles/yabai" "$HOME/.yabairc"
+  ln -s "$HOME/.dotfiles/yabairc" "$HOME/.yabairc"
   rm -f "$HOME/.skhdrc"
   ln -s "$HOME/.dotfiles/skhdrc" "$HOME/.skhdrc"
 else
