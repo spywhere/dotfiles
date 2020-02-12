@@ -79,6 +79,9 @@ let NERDTreeMinimalUI = 1
 let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeIgnore=['\.git$[[dir]]','\.DS_Store$[[file]]']
 
+" NERDCommenter
+let g:NERDSpaceDelims = 1
+
 " Rg command tweaks to search only file content
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
