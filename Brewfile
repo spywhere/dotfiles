@@ -8,8 +8,6 @@ tap "homebrew/services"
 tap "buo/cask-upgrade"
 tap "domt4/autoupdate"
 
-tap "koekeishiya/formulae"
-
 #apt i3
 #apt xserver-xorg
 #apt xinit
