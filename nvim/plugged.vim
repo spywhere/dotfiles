@@ -22,6 +22,9 @@ Plug 'terryma/vim-multiple-cursors'
 
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 
+" Visualization
+Plug 'Yggdroot/indentLine'
+
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -106,3 +109,11 @@ let g:coc_global_extensions = [
 let g:lightline = {
   \ 'colorscheme': 'onedark',
   \ }
+
+" indentLine
+let g:indentLine_char = '|'
+let g:indentLine_leadingSpaceChar = '·'
+let g:indentLine_leadingSpaceEnabled = 1
+
+autocmd InsertEnter * LeadingSpaceDisable
+autocmd InsertLeave * LeadingSpaceEnable
