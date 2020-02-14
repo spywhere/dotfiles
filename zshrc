@@ -62,6 +62,7 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   echo "zdharma/fast-syntax-highlighting" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/docker" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/git" >> ~/.zsh_plugins.tmux.list
+  echo "robbyrussell/oh-my-zsh path:plugins/git-flow" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list

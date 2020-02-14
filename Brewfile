@@ -63,6 +63,7 @@ brew "coreutils" # Those that come with macOS are outdated
 #apt dnsmasq
 brew "git-lfs"
 brew "git" #apt
+brew "git-flow" #apt
 brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
