@@ -1,3 +1,4 @@
+" be IMproved!
 set nocompatible
 
 if (has("termguicolors"))
@@ -9,8 +10,10 @@ set number
 set relativenumber
 set hidden
 set nowrap
+" Use lightline, so no need for mode
 set noshowmode
 set showmatch
+" Yank into system clipboard as well
 set clipboard=unnamed
 
 set wildignore=*.o,*~,*.pyc
@@ -25,7 +28,6 @@ set cmdheight=1
 " Print margin at 79 chars
 set colorcolumn=79
 
-" set nowb
 set nobackup
 set nowritebackup
 set noswapfile
@@ -44,6 +46,9 @@ set smarttab
 set smartindent
 set shiftwidth=2
 set tabstop=2
+
+" Whitespace visual chars
+set listchars=tab:→→,trail:·,nbsp:·
 
 set autoread
 set guifont=JetbrainsMonoNerdFontMono:h12

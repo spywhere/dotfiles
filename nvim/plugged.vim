@@ -118,13 +118,19 @@ let g:indentLine_leadingSpaceChar = '·'
 "   https://github.com/Yggdroot/indentLine/issues/152
 function EnableLeadingSpace()
   if bufname() =~ 'NERD_tree_'
-    :LeadingSpaceDisable
+    call DisableSpaceVisual()
     return
   endif
 
   :LeadingSpaceEnable
+  :set list
 endfunction
 
-autocmd InsertEnter * LeadingSpaceDisable
+function DisableSpaceVisual()
+  :LeadingSpaceDisable
+  :set nolist
+endfunction
+
+autocmd InsertEnter * call DisableSpaceVisual()
 autocmd InsertLeave * call EnableLeadingSpace()
 autocmd BufEnter * call EnableLeadingSpace()
