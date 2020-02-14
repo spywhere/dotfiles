@@ -29,10 +29,12 @@ Plug 'Yggdroot/indentLine'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'yuttie/comfortable-motion.vim'
 
 " Syntax Highlight
 Plug 'lilydjwg/colorizer'
 Plug 'sheerun/vim-polyglot'
+Plug 'kien/rainbow_parentheses.vim'
 
 " Languages
 Plug 'isRuslan/vim-es6'
