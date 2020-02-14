@@ -113,7 +113,18 @@ let g:lightline = {
 " indentLine
 let g:indentLine_char = '|'
 let g:indentLine_leadingSpaceChar = '·'
-let g:indentLine_leadingSpaceEnabled = 1
+
+" Address issue with NERDTree
+"   https://github.com/Yggdroot/indentLine/issues/152
+function EnableLeadingSpace()
+  if bufname() =~ 'NERD_tree_'
+    :LeadingSpaceDisable
+    return
+  endif
+
+  :LeadingSpaceEnable
+endfunction
 
 autocmd InsertEnter * LeadingSpaceDisable
-autocmd InsertLeave * LeadingSpaceEnable
+autocmd InsertLeave * call EnableLeadingSpace()
+autocmd BufEnter * call EnableLeadingSpace()
