@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 CURRENT_DIR=$(pwd)
 
 setup_homebrew() {
@@ -28,6 +30,12 @@ if [ ! -d "$HOME/.dotfiles" ]; then
   cd $HOME/.dotfiles
   $HOME/.dotfiles/install.sh
   cd $CURRENT_DIR
+  exit 0
+fi
+
+if [ ! "$DOTFILES" = "installed" ]; then
+  export DOTFILES=installed
+  $HOME/.dotfiles/install.sh
   exit 0
 fi
 
@@ -84,8 +92,12 @@ fi
 
 echo "Installing node version switcher (nvs)..."
 export NVS_HOME="$HOME/.nvs"
-git clone https://github.com/jasongin/nvs "$NVS_HOME"
-. "$NVS_HOME/nvs.sh" install
+if [ ! -d "$NVS_HOME" ]; then
+  git clone https://github.com/jasongin/nvs "$NVS_HOME"
+  . "$NVS_HOME/nvs.sh" install
+else
+  echo "Already installed"
+fi
 
 echo "Setting up configurations..."
 
