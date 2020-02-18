@@ -21,15 +21,17 @@ Plug 'itchyny/vim-parenmatch'
 Plug 'terryma/vim-multiple-cursors'
 
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+Plug 'wellle/tmux-complete.vim'
 
 " Visualization
 Plug 'Yggdroot/indentLine'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
-" Plug 'yuttie/comfortable-motion.vim'
+" Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
 
 " Syntax Highlight
 Plug 'lilydjwg/colorizer'
@@ -42,6 +44,8 @@ Plug 'moll/vim-node'
 Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
 
+Plug 'kkoomen/vim-doge'
+
 " Git
 Plug 'airblade/vim-gitgutter'
 
@@ -50,6 +54,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-sensible'
 Plug 'wakatime/vim-wakatime'
+Plug 'mhinz/vim-startify'
 
 " Color scheme
 Plug 'joshdick/onedark.vim'
@@ -75,7 +80,7 @@ endif
 colorscheme onedark
 
 " start NERDTree on startup
-autocmd VimEnter * NERDTree
+" autocmd VimEnter * NERDTree
 let NERDTreeSortHiddenFirst = 1
 let NERDTreeChDirMode = 2
 let NERDTreeHijackNetrw = 1
@@ -115,11 +120,15 @@ let g:lightline = {
 " indentLine
 let g:indentLine_char = '|'
 let g:indentLine_leadingSpaceChar = '·'
+let g:indentLine_fileTypeExclude = ['text', 'startify', 'nerdtree']
 
 " Address issue with NERDTree
 "   https://github.com/Yggdroot/indentLine/issues/152
 function EnableLeadingSpace()
-  if bufname() =~ 'NERD_tree_'
+  if bufname() =~ 'NERD_tree'
+    call DisableSpaceVisual()
+    return
+  elseif &filetype == 'startify'
     call DisableSpaceVisual()
     return
   endif
