@@ -60,6 +60,7 @@ brew "bash" # Bash 4 #apt
 brew "cmus" #make (for the latest version)
 brew "coreutils" # Those that come with macOS are outdated
 #apt curl
+brew "diff-so-fancy"
 #apt dnsmasq
 brew "git-lfs"
 brew "git" #apt

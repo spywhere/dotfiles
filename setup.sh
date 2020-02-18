@@ -16,20 +16,20 @@ else
   if sudo test -f /root/usb.sh; then
     echo "Already enabled"
   else
-    echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
-    echo "modules-load=dwc2" | sudo tee -a /boot/cmdline.txt
+    echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt >/dev/null
+    echo "modules-load=dwc2" | sudo tee -a /boot/cmdline.txt >/dev/null
     sudo touch /boot/ssh
-    echo "libcomposite" | sudo tee -a /etc/modules
-    echo "denyinterfaces usb0" | sudo tee -a /etc/dhcpcd.conf
+    echo "libcomposite" | sudo tee -a /etc/modules >/dev/null
+    echo "denyinterfaces usb0" | sudo tee -a /etc/dhcpcd.conf >/dev/null
     mkdir -p /etc/dnsmasq.d
     mkdir -p /etc/network/interfaces.d
-    cat $HOME/.dotfiles/files/etc/dnsmasq.d/usb | sudo tee /etc/dnsmasq.d/usb
-    cat $HOME/.dotfiles/files/etc/network/interfaces.d/usb0 | sudo tee /etc/network/interfaces.d/usb0
-    cat $HOME/.dotfiles/files/root/usb.sh | sudo tee /root/usb.sh
+    cat $HOME/.dotfiles/files/etc/dnsmasq.d/usb | sudo tee /etc/dnsmasq.d/usb >/dev/null
+    cat $HOME/.dotfiles/files/etc/network/interfaces.d/usb0 | sudo tee /etc/network/interfaces.d/usb0 >/dev/null
+    cat $HOME/.dotfiles/files/root/usb.sh | sudo tee /root/usb.sh >/dev/null
     sudo chmod 755 /root/usb.sh
     sudo sed -i $'s/exit 0$/\\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
   fi
 
   echo "Setup i3 for xserver..."
-  echo $'#!/bin/sh\n\nexec i3' | tee "$HOME/.xinitrc"
+  echo $'#!/bin/sh\n\nexec i3' | tee "$HOME/.xinitrc" >/dev/null
 fi

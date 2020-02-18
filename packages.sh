@@ -89,3 +89,11 @@ else
 fi
 
 cd $HOME
+if test ! "$(command -v diff-so-fancy)"; then
+  echo "Installing diff-so-fancy..."
+  sleep 1
+  curl -ssL https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy | sudo tee /usr/local/bin/diff-so-fancy >/dev/null
+  sudo chmod 755 /usr/local/bin/diff-so-fancy
+fi
+
+cd $HOME

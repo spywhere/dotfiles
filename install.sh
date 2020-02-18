@@ -28,14 +28,14 @@ if [ ! -d "$HOME/.dotfiles" ]; then
 
   git clone https://github.com/spywhere/dotfiles "$HOME/.dotfiles"
   cd $HOME/.dotfiles
-  $HOME/.dotfiles/install.sh
+  sh $HOME/.dotfiles/install.sh
   cd $CURRENT_DIR
   exit 0
 fi
 
 if [ ! "$DOTFILES" = "installed" ]; then
   export DOTFILES=installed
-  $HOME/.dotfiles/install.sh
+  sh $HOME/.dotfiles/install.sh
   exit 0
 fi
 
@@ -104,6 +104,12 @@ echo "Setting up configurations..."
 # Symlink tmux config file to the home directory
 rm -rf "$HOME/.tmux.conf"
 ln -s "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"
+
+# Symlink git config file to the home directory
+rm -rf "$HOME/.gitignore_global"
+ln -s "$HOME/.dotfiles/git/gitignore" "$HOME/.gitignore_global"
+rm -rf "$HOME/.gitconfig"
+ln -s "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
 
 # Symlink tig config file to the home directory
 rm -rf "$HOME/.tigrc"

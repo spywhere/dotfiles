@@ -1,0 +1,12 @@
+[core]
+  editor = nvim
+  excludesfile = ~/.gitignore_global
+  pager = diff-so-fancy | less --tabs=4 -RFX
+[user]
+  email = spywhere@me.com
+  name = Sirisak Lueangsaksri
+[color]
+  ui = true
+[diff-so-fancy]
+  stripLeadingSymbols = false
+  markEmptyLines = false
