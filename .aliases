@@ -19,14 +19,14 @@ alias cmus='screen -q -r -D cmus || screen -S cmus /usr/local/bin/cmus'
 # Docker
 alias d='docker'
 
-if [[ $(arch) == "armv7l" ]]; then
+if [ "$(arch)" = "armv7l" ]; then
   # Raspberry Pi variant
   alias mysql="docker run -it --rm --name mysql-cli jsurf/rpi-mariadb mysql"
 else
   alias mysql="docker run -it --rm --name mysql-cli mysql:5.7 mysql"
 fi
 
-if [[ $(uname) == "Darwin" ]]; then
+if [ "$(uname)" = "Darwin" ]; then
   vol() {
     osascript -e "set Volume $((($1 + 5) / 10))"
   } 
@@ -34,7 +34,7 @@ else
   alias vol="amixer set Master"
 fi
 
-alias node="docker run -it --rm --name node-cli node:lts-alpine node"
+alias node="docker run -it --rm --name node-cli -v \$(pwd):/app -w /app node:lts-alpine node"
 
 # TMUX
 alias tmux="tmux -2"
