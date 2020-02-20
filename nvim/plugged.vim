@@ -40,7 +40,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'kien/rainbow_parentheses.vim'
 
 " Linting
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 
 " Languages
 Plug 'isRuslan/vim-es6'
