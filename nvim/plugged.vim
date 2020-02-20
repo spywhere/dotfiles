@@ -9,11 +9,12 @@ call plug#begin('~/.config/nvim/plugged')
 
 " File explorer
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'preservim/nerdcommenter'
+Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Editing
 Plug 'remko/detectindent'
+Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'Townk/vim-autoclose'
@@ -59,8 +60,6 @@ Plug 'mhinz/vim-startify'
 " Color scheme
 Plug 'joshdick/onedark.vim'
 
-Plug 'ryanoasis/vim-devicons'
-
 call plug#end()
 
 if !exists("g:init_vim_loaded")
@@ -88,6 +87,13 @@ let NERDTreeShowHidden = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeIgnore=['\.git$[[dir]]','\.DS_Store$[[file]]']
+
+" NERDTree syntax
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+let g:NERDTreeHighlightFolders = 1
+let g:NERDTreeHighlightFoldersFullName = 1
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
