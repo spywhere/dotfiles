@@ -39,6 +39,9 @@ Plug 'lilydjwg/colorizer'
 Plug 'sheerun/vim-polyglot'
 Plug 'kien/rainbow_parentheses.vim'
 
+" Linting
+Plug 'w0rp/ale'
+
 " Languages
 Plug 'isRuslan/vim-es6'
 Plug 'moll/vim-node'
@@ -52,6 +55,7 @@ Plug 'airblade/vim-gitgutter'
 
 " Other
 Plug 'itchyny/lightline.vim'
+Plug 'maximbaz/lightline-ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-sensible'
 Plug 'wakatime/vim-wakatime'
@@ -108,20 +112,55 @@ command! -bang -nargs=* Rg
 
 " Coc
 let g:coc_global_extensions = [
-  \ 'coc-json',
-  \ 'coc-tsserver',
-  \ 'coc-html',
-  \ 'coc-css',
-  \ 'coc-rls',
-  \ 'coc-yaml',
-  \ 'coc-python',
-  \ 'coc-emmet',
-  \ ]
+\   'coc-json',
+\   'coc-tsserver',
+\   'coc-html',
+\   'coc-css',
+\   'coc-rls',
+\   'coc-yaml',
+\   'coc-python',
+\   'coc-emmet',
+\ ]
 
 " Lightline
 let g:lightline = {
-  \ 'colorscheme': 'onedark',
-  \ }
+\   'colorscheme': 'onedark',
+\ }
+
+let g:lightline.component_expand = {
+\   'linter_checking': 'lightline#ale#checking',
+\   'linter_infos': 'lightline#ale#infos',
+\   'linter_warnings': 'lightline#ale#warnings',
+\   'linter_errors': 'lightline#ale#errors',
+\   'linter_ok': 'lightline#ale#ok',
+\ }
+
+let g:lightline.component_type = {
+\   'linter_checking': 'right',
+\   'linter_infos': 'right',
+\   'linter_warnings': 'warning',
+\   'linter_errors': 'error',
+\   'linter_ok': 'right',
+\ }
+
+let g:lightline.active = {
+\   'right': [
+\     [
+\       'linter_checking',
+\       'linter_errors',
+\       'linter_warnings',
+\       'linter_infos',
+\       'linter_ok'
+\     ],
+\     ['lineinfo'],
+\     ['percent'],
+\     [
+\       'fileformat',
+\       'fileencoding',
+\       'filetype'
+\     ],
+\   ]
+\ }
 
 " indentLine
 let g:indentLine_char = '|'
