@@ -26,6 +26,7 @@ else
   alias mysql="docker run -it --rm --name mysql-cli mysql:5.7 mysql"
 fi
 
+unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then
   vol() {
     osascript -e "set Volume $((($1 + 5) / 10))"
@@ -35,6 +36,8 @@ else
 fi
 
 alias node="docker run -it --rm --name node-cli -v \$(pwd):/app -w /app node:lts-alpine node"
+alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
+alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/.dotfiles/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
 
 # TMUX
 alias tmux="tmux -2"

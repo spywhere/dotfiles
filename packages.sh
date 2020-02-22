@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Installing docker..."
 if test ! "$(command -v docker)"; then
   echo "References:"
@@ -7,7 +9,11 @@ if test ! "$(command -v docker)"; then
   echo "  - https://howchoo.com/g/nmrlzmq1ymn/how-to-install-docker-on-your-raspberry-pi"
   sleep 1
   curl -sSL get.docker.com | sh
-  sudo usermod -aG docker $USER
+  if [ "$(whoami)" = "root" ]; then
+    echo "run as root: no permission set"
+  else
+    sudo usermod -aG docker $USER
+  fi
 else
   echo "docker already installed"
   sleep 1

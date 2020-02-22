@@ -22,12 +22,14 @@ if [ ! -d "$HOME/.dotfiles" ]; then
       brew install git
     else
       sudo apt update
-      sudo apt install -y git
+      sudo apt install --no-install-recommends -y git
     fi
   fi
 
+  echo "Cloning dotfiles into ~/.dotfiles..."
   git clone https://github.com/spywhere/dotfiles "$HOME/.dotfiles"
   cd $HOME/.dotfiles
+  echo "Executing script..."
   sh $HOME/.dotfiles/install.sh
   cd $CURRENT_DIR
   exit 0
@@ -51,20 +53,25 @@ if [ "$(uname)" = "Darwin" ]; then
   brew bundle
 else
   echo "Updating package repositories..."
+  sleep 1
   sudo apt update
   echo "Updating packages... this might take a while..."
+  sleep 1
   sudo apt full-upgrade -y
   echo "Installing packages..."
-  grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install -y
+  sleep 1
+  grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install --no-install-recommends -y
   
   echo "The following packages must be installed manually:"
   grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
+  sleep 1
 
   echo "Attempting to install a manual packages..."
   bash packages.sh
 fi
 
 echo "Updating shell to zsh..."
+sleep 1
 if [ "$(basename "$SHELL")" = "zsh" ]; then
   echo "Already running zsh"
 else
@@ -81,6 +88,7 @@ ln -s "$HOME/.dotfiles/zshrc" "$HOME/.zshrc"
 bash setup.sh
 
 echo "Installing fonts..."
+sleep 1
 if [ ! -d "$HOME/.nerd-fonts" ]; then
   cd $HOME
   git clone --depth 1 https://github.com/ryanoasis/nerd-fonts "$HOME/.nerd-fonts"
@@ -91,10 +99,11 @@ else
 fi
 
 echo "Installing node version switcher (nvs)..."
+sleep 1
 export NVS_HOME="$HOME/.nvs"
 if [ ! -d "$NVS_HOME" ]; then
   git clone https://github.com/jasongin/nvs "$NVS_HOME"
-  . "$NVS_HOME/nvs.sh" install
+  sh -c 'sh "$NVS_HOME/nvs.sh" install; :'
 else
   echo "Already installed"
 fi
