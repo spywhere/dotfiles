@@ -167,6 +167,11 @@ let g:indentLine_char = '|'
 let g:indentLine_leadingSpaceChar = '·'
 let g:indentLine_fileTypeExclude = ['text', 'startify', 'nerdtree']
 
+" startify
+let g:startify_fortune_use_unicode = 1
+let g:startify_enable_special = 0
+let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
+
 " Address issue with NERDTree
 "   https://github.com/Yggdroot/indentLine/issues/152
 function EnableLeadingSpace()
