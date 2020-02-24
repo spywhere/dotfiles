@@ -66,6 +66,7 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   echo "robbyrussell/oh-my-zsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
   echo "robbyrussell/oh-my-zsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:lib/git.zsh" >> ~/.zsh_plugins.tmux.list
   
   antibody bundle < ~/.zsh_plugins.list > ~/.zsh_plugins
   antibody bundle < ~/.zsh_plugins.tmux.list > ~/.zsh_plugins.tmux
