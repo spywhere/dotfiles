@@ -53,20 +53,20 @@ SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_SEPARATE_LINE=false
 
 if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
-  echo "robbyrussell/oh-my-zsh path:plugins/tmux" > ~/.zsh_plugins.list
+  echo "ohmyzsh/ohmyzsh path:plugins/tmux" > ~/.zsh_plugins.list
 
   echo "denysdovhan/spaceship-prompt" > ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-autosuggestions" >> ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-completions" >> ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-history-substring-search" >> ~/.zsh_plugins.tmux.list
   echo "zdharma/fast-syntax-highlighting" >> ~/.zsh_plugins.tmux.list
-  echo "robbyrussell/oh-my-zsh path:plugins/docker" >> ~/.zsh_plugins.tmux.list
-  echo "robbyrussell/oh-my-zsh path:plugins/git" >> ~/.zsh_plugins.tmux.list
-  echo "robbyrussell/oh-my-zsh path:plugins/git-flow" >> ~/.zsh_plugins.tmux.list
-  echo "robbyrussell/oh-my-zsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.tmux.list
-  echo "robbyrussell/oh-my-zsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
-  echo "robbyrussell/oh-my-zsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/docker" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:lib/git.zsh" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/git" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/git-flow" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list
   
   antibody bundle < ~/.zsh_plugins.list > ~/.zsh_plugins
   antibody bundle < ~/.zsh_plugins.tmux.list > ~/.zsh_plugins.tmux
