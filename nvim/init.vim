@@ -48,7 +48,7 @@ set shiftwidth=2
 set tabstop=2
 
 " Whitespace visual chars
-set listchars=tab:→→,trail:·,nbsp:·
+set listchars=tab:→\ ,trail:·,nbsp:·
 
 set autoread
 set guifont=JetbrainsMonoNerdFontMono:h12

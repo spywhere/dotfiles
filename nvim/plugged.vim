@@ -127,6 +127,10 @@ let g:lightline = {
 \   'colorscheme': 'onedark',
 \ }
 
+let g:lightline.component = {
+\   'filename': '%F',
+\ }
+
 let g:lightline.component_expand = {
 \   'linter_checking': 'lightline#ale#checking',
 \   'linter_infos': 'lightline#ale#infos',
