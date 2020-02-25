@@ -17,7 +17,7 @@ Plug 'remko/detectindent'
 Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
-Plug 'Townk/vim-autoclose'
+Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/vim-parenmatch'
 Plug 'terryma/vim-multiple-cursors'
 
@@ -52,6 +52,7 @@ Plug 'kkoomen/vim-doge'
 
 " Git
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 
 " Other
 Plug 'itchyny/lightline.vim'
