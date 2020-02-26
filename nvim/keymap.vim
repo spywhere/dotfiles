@@ -28,7 +28,18 @@ let mapleader = ","
 noremap <leader>h 20zh
 noremap <leader>l 20zl
 
+" remove search highlight
 nnoremap <leader>hs :noh<CR>
+
+" split panes
+nnoremap <leader><Left> :topleft vnew<CR>
+nnoremap <leader><Right> :botright vnew<CR>
+nnoremap <leader><Up> :topleft new<CR>
+nnoremap <leader><Down> :botright new<CR>
+nnoremap <leader><Up><Left> :leftabove vnew<CR>
+nnoremap <leader><Up><Right> :rightbelow vnew<CR>
+nnoremap <leader><Down><Left> :rightbelow new<CR>
+nnoremap <leader><Down><Right> :leftabove new<CR>
 
 " cmus controls
 nnoremap <leader>pp :silent !cmus-remote -u<CR>
