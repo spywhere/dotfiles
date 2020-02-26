@@ -130,8 +130,8 @@
         "Alpha Component": 1,
         "Green Component": 1
       },
-      "Unlimited Scrollback": true,
-      "Scrollback Lines": 10000,
+      "Unlimited Scrollback": false,
+      "Scrollback Lines": 10,
       "Close Sessions On End": true,
       "Terminal Type": "xterm-256color",
       "Ansi 14 Color": {
