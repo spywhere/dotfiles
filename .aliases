@@ -2,7 +2,6 @@
 
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
-alias news="wget -O - hackurls.com/ascii | less"
 
 alias dr="defaults read"
 alias dw="defaults write"
@@ -54,5 +53,5 @@ export SAVEHIST=100000
 bindkey -s "\C-r" "\eqhstr\n"     # bind hstr to Ctrl-r (for Vi mode check doc)
 
 # for opt + ← and opt + → to skip a word
-bindkey '\e\e[C' forward-word
-bindkey '\e\e[D' backward-word
+bindkey '^[[1;3C' forward-word
+bindkey '^[[1;3D' backward-word
