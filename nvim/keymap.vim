@@ -5,8 +5,6 @@ map nf :NERDTreeFind<cr>
 " arrow keys resize pane
 nnoremap <A-Left> :vertical resize -5<CR>
 nnoremap <A-Right> :vertical resize +5<CR>
-nnoremap <A-Up> :resize -5<CR>
-nnoremap <A-Down> :resize +5<CR>
 nnoremap <Left> :vertical resize -1<CR>
 nnoremap <Right> :vertical resize +1<CR>
 nnoremap <Up> :resize -1<CR>
