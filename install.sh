@@ -141,6 +141,11 @@ ln -s "$HOME/.dotfiles/.aliases" "$HOME/.aliases"
 rm -rf "$HOME/.variables"
 ln -s "$HOME/.dotfiles/.variables" "$HOME/.variables"
 
+# Symlink mycli config file to the home directory (if not already)
+if [ ! -f "$HOME/.myclirc" ]; then
+  ln -s "$HOME/.dotfiles/myclirc" "$HOME/.myclirc"
+fi
+
 echo "Done!"
 echo "NOTE: Don't forget to..."
 echo "  - Run 'nvim' for the first time setup"
