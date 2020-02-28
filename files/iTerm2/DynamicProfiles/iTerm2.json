@@ -18,18 +18,6 @@
       "Unlimited Scrollback": false,
       "Scrollback Lines": 10,
       "Close Sessions On End": true,
-      "Option Key Sends" : 2,
-      "Right Option Key Sends" : 0,
-      "Keyboard Map" : {
-        "0xf702-0x280000" : {
-          "Action" : 10,
-          "Text" : "b"
-        },
-        "0xf703-0x280000" : {
-          "Action" : 10,
-          "Text" : "f"
-        }
-      },
       "Ansi 0 Color": {
         "Red Component": 0,
         "Color Space": "Calibrated",
