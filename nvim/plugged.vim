@@ -33,6 +33,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'christoomey/vim-tmux-navigator'
 " Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
+Plug 'easymotion/vim-easymotion'
 
 " Syntax Highlight
 Plug 'lilydjwg/colorizer'
