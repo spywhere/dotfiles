@@ -62,6 +62,8 @@ Plug 'tpope/vim-sensible'
 Plug 'wakatime/vim-wakatime'
 Plug 'mhinz/vim-startify'
 
+Plug 'tpope/vim-obsession'
+
 " Color scheme
 Plug 'joshdick/onedark.vim'
 
