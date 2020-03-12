@@ -55,15 +55,21 @@ Plug 'kkoomen/vim-doge'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
-" Other
+" Appearances
 Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'tpope/vim-sensible'
-Plug 'wakatime/vim-wakatime'
 Plug 'mhinz/vim-startify'
 
+" Standard
+Plug 'editorconfig/editorconfig-vim'
+Plug 'tpope/vim-sensible'
+
+" Tracking
+Plug 'wakatime/vim-wakatime'
+
+" Session management
 Plug 'tpope/vim-obsession'
+Plug 'djoshea/vim-autoread'
 
 " Color scheme
 Plug 'joshdick/onedark.vim'
@@ -151,7 +157,16 @@ let g:lightline.component_type = {
 \   'linter_ok': 'right',
 \ }
 
+let g:lightline.component_function = {
+\   'obsession': 'ObsessionStatus',
+\   'gitbranch': 'FugitiveHead'
+\ }
+
 let g:lightline.active = {
+\   'left': [
+\     ['mode', 'paste'],
+\     ['gitbranch', 'readonly', 'filename', 'modified']
+\   ],
 \   'right': [
 \     [
 \       'linter_checking',
@@ -167,6 +182,7 @@ let g:lightline.active = {
 \       'fileencoding',
 \       'filetype'
 \     ],
+\     ['obsession'],
 \   ]
 \ }
 
