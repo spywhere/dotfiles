@@ -1,5 +1,8 @@
 # use ripgrep by default for fzf
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
+# zsh-you-should-use
+export YSU_MESSAGE_POSITION="after"
+
 # export binaries to path
 export PATH=$HOME/.dotfiles/bin:$PATH

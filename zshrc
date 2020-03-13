@@ -56,6 +56,8 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   echo "ohmyzsh/ohmyzsh path:plugins/tmux" > ~/.zsh_plugins.list
 
   echo "denysdovhan/spaceship-prompt" > ~/.zsh_plugins.tmux.list
+  echo "michaelaquilina/zsh-you-should-use" >> ~/.zsh_plugins.tmux.list
+  echo "aloxaf/fzf-tab" >> ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-autosuggestions" >> ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-completions" >> ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-history-substring-search" >> ~/.zsh_plugins.tmux.list
