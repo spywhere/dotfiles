@@ -2,3 +2,4 @@ nvim/autoload
 nvim/plugged
 **.zip
 **.tar.gz
+Brewfile.lock.json
