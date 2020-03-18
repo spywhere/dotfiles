@@ -57,25 +57,6 @@ else
 fi
 
 cd $HOME
-echo "Installing cmus..."
-if test ! "$(command -v cmus)"; then
-  echo "References:"
-  echo "  - https://cmus.github.io/#download"
-  sleep 1
-  git clone https://github.com/cmus/cmus .cmus
-  cd .cmus
-  sed -i 's/-lm/-lm -latomic/g' Makefile
-  ./configure prefix=$HOME/.cmus
-  sudo make install
-  sudo mv $HOME/.cmus/bin/cmus $HOME/.cmus/bin/cmus-remote /usr/local/bin/
-  sudo chmod 755 /usr/local/bin/cmus
-  sudo chmod 755 /usr/local/bin/cmus-remote
-else
-  echo "cmus already installed"
-  sleep 1
-fi
-
-cd $HOME
 echo "Installing mosh..."
 if test ! "$(command -v mosh)"; then
   echo "References:"

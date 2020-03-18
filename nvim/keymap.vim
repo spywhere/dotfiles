@@ -40,9 +40,9 @@ nnoremap <leader><Down><Left> :rightbelow new<CR>
 nnoremap <leader><Down><Right> :leftabove new<CR>
 
 " cmus controls
-nnoremap <leader>pp :silent !cmus-remote -u<CR>
-nnoremap <leader>pn :silent !cmus-remote -n<CR>
-nnoremap <leader>pr :silent !cmus-remote -r<CR>
+nnoremap <leader>pp :silent !(echo pause; sleep 0.05) \| nc 127.0.0.1 6600<CR>
+nnoremap <leader>pn :silent !(echo next; sleep 0.05) \| nc 127.0.0.1 6600<CR>
+nnoremap <leader>pr :silent !(echo previous; sleep 0.05) \| nc 127.0.0.1 6600<CR>
 
 " ctrl+p
 nnoremap <C-p> :Files<CR>

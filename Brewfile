@@ -27,23 +27,6 @@ tap "domt4/autoupdate"
 #apt libtool
 #apt libtool-bin
 
-# cmus
-#apt libpulse-dev
-#apt libasound2-dev
-#apt libroar-dev
-#apt libao-dev
-#apt libcdio-dev
-#apt flac
-#apt libopus-dev
-#apt libvorbis-dev
-#apt libmpcdec-dev
-#apt wavpack
-#apt libmad0-dev
-#apt libavcodec-dev
-#apt libfaad2
-#apt libmp4v2-dev
-#apt libmodplug-dev
-
 # mosh
 #apt debhelper
 #apt protobuf-compiler
@@ -57,7 +40,6 @@ tap "domt4/autoupdate"
 
 # Binaries
 brew "bash" # Bash 4 #apt
-brew "cmus" #make (for the latest version)
 brew "coreutils" # Those that come with macOS are outdated
 #apt curl
 brew "diff-so-fancy"
@@ -70,7 +52,9 @@ brew "httpie" #apt
 brew "jq" #apt
 #apt lxterminal
 brew "mosh" #make (for 24-bit color support)
+brew "mpd"
 brew "nano" #apt
+brew "ncmpcpp"
 brew "neovim" #make (required for autocompletion to properly working)
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"

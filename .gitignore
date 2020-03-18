@@ -1,5 +1,11 @@
 nvim/autoload
 nvim/plugged
+mpd/**
+!mpd/mpd.conf
+!mpd/playlists
+!mpd/playlists/.gitkeep
+ncmpcpp/**
+!ncmpcpp/config
 **.zip
 **.tar.gz
 Brewfile.lock.json

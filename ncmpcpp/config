@@ -1,0 +1,18 @@
+# mpd
+mpd_music_dir = "~/Music"
+mpd_connection_timeout = "5"
+
+# visualizer
+visualizer_fifo_path = "/tmp/mpd.fifo"
+visualizer_output_name = "my_fifo"
+visualizer_sync_interval = "30"
+visualizer_in_stereo = "yes"
+visualizer_type = "spectrum"
+visualizer_look = "+|"
+
+# appearance
+progressbar_look = "━━╸"
+
+# colors
+colors_enabled = "yes"
+progressbar_color = "blue"
