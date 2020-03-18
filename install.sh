@@ -161,6 +161,7 @@ ln -s "$HOME/.dotfiles/asdf" "$HOME/.tool-versions"
 rm -rf "$HOME/.default-npm-packages"
 ln -s "$HOME/.dotfiles/npm-packages" "$HOME/.default-npm-packages"
 echo "Adding version manager plugins..."
+[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
 set +e
 asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git
 asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git
