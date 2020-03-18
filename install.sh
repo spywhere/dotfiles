@@ -41,6 +41,8 @@ if [ ! "$DOTFILES" = "installed" ]; then
   exit 0
 fi
 
+export DOTFILES=
+
 if [ "$(uname)" = "Darwin" ]; then
   setup_homebrew
   # Update Homebrew recipes
