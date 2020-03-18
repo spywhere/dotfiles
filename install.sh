@@ -161,17 +161,16 @@ ln -s "$HOME/.dotfiles/asdf" "$HOME/.tool-versions"
 rm -rf "$HOME/.default-npm-packages"
 ln -s "$HOME/.dotfiles/npm-packages" "$HOME/.default-npm-packages"
 echo "Adding version manager plugins..."
-[ -f ~/.asdf/asdf.sh ] && source ~/.asdf/asdf.sh
 set +e
-asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git
-asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git
-asdf plugin-add docker-slim https://github.com/everpeace/asdf-docker-slim.git
-asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
-asdf plugin add firebase https://github.com/jthegedus/asdf-firebase.git
-asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf plugin-add python https://github.com/danhper/asdf-python.git
-asdf plugin-add rust https://github.com/code-lever/asdf-rust.git
-asdf plugin-add terraform https://github.com/Banno/asdf-hashicorp.git
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add docker-slim https://github.com/everpeace/asdf-docker-slim.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add golang https://github.com/kennyp/asdf-golang.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin add firebase https://github.com/jthegedus/asdf-firebase.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add python https://github.com/danhper/asdf-python.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add rust https://github.com/code-lever/asdf-rust.git'
+bash -c '. ~/.asdf/asdf.sh && asdf plugin-add terraform https://github.com/Banno/asdf-hashicorp.git'
 set -e
 bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 echo "Install default tool versions..."
