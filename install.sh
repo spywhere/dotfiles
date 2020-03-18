@@ -58,6 +58,9 @@ else
   echo "Updating packages... this might take a while..."
   sleep 1
   sudo apt full-upgrade -y
+  echo "Adding package repositories..."
+  sleep 1
+  grep "#repo" Brewfile | cut -d' ' -f2 | xargs sudo add-apt-repository
   echo "Installing packages..."
   sleep 1
   grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install --no-install-recommends -y

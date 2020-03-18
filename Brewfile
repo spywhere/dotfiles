@@ -51,7 +51,6 @@ brew "gnupg2"
 brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
-#apt lxterminal
 brew "mosh" #make (for 24-bit color support)
 brew "mpd"
 brew "nano" #apt
@@ -63,8 +62,8 @@ brew "reattach-to-user-namespace" # tmux-yank dependencies
 brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
 brew "rsync" #apt
 #apt screen
-#apt suckless-tools # dmenu for i3
 brew "tig" #apt
+#repo ppa:lazygit-team/release
 #apt lazygit (required sudo add-apt-repository ppa:lazygit-team/release)
 brew "jesseduffield/lazygit/lazygit"
 brew "tmux" #apt
