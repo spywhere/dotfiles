@@ -58,6 +58,7 @@ else
   echo "Updating packages... this might take a while..."
   sleep 1
   sudo apt full-upgrade -y
+  sudo apt install --no-install-recommends -y software-properties-common
   echo "Adding package repositories..."
   sleep 1
   grep "#repo" Brewfile | cut -d' ' -f2 | xargs sudo add-apt-repository
