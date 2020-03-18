@@ -130,12 +130,12 @@ mkdir -p $HOME/.config
 ln -s "$HOME/.dotfiles/nvim/" "$HOME/.config/nvim"
 
 # Symlink mpd config file to the home directory
-# rm -rf "$HOME/.mpd"
-ln -s "$HOME/.dotfiles/mpd" "$HOME/.mpd"
+rm -rf "$HOME/.mpd"
+ln -s "$HOME/.dotfiles/mpd/" "$HOME/.mpd"
 
 # Symlink ncmpcpp config file to the home directory
-# rm -rf "$HOME/.ncmpcpp"
-ln -s "$HOME/.dotfiles/ncmpcpp" "$HOME/.ncmpcpp"
+rm -rf "$HOME/.ncmpcpp"
+ln -s "$HOME/.dotfiles/ncmpcpp/" "$HOME/.ncmpcpp"
 
 # Install tmux plugin manager
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
