@@ -1,18 +1,33 @@
 # mpd
 mpd_music_dir = "~/Music"
-mpd_connection_timeout = "5"
+mpd_connection_timeout = 5
 
 # visualizer
 visualizer_fifo_path = "/tmp/mpd.fifo"
-visualizer_output_name = "my_fifo"
-visualizer_sync_interval = "30"
-visualizer_in_stereo = "yes"
-visualizer_type = "spectrum"
-visualizer_look = "+|"
+visualizer_in_stereo = yes
+visualizer_sync_interval = 30
+visualizer_output_name = my_fifo
+visualizer_type = spectrum
 
 # appearance
-progressbar_look = "━━╸"
+user_interface = alternative
+autocenter_mode = yes
+playlist_display_mode = columns
+browser_display_mode = columns
+playlist_editor_display_mode = columns
+
+song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
+song_library_format = {%n - }{%t}|{%f}
+alternative_header_first_line_format = $1$aqqu$/a$9 {$3%t$9}|{%f} $1$atqq$/a$9
+alternative_header_second_line_format = {{$1%a$9}{ $3-$9 $1%b$9}{ $3-$9 $1%y$9}}
+
+now_playing_prefix = "$b$8ﱘ"
+now_playing_suffix = "ﱘ$9$/b"
+song_columns_list_format =  (30)[green]{ar} (30)[blue]{t|f:Title} (20)[red]{br} (7f)[green]{l}
+
+progressbar_look = "●●●"
+
+screen_switcher_mode = playlist, playlist_editor, browser
 
 # colors
 colors_enabled = "yes"
-progressbar_color = "blue"
