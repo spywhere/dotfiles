@@ -80,6 +80,8 @@ brew "rsync" #apt
 #apt screen
 #apt suckless-tools # dmenu for i3
 brew "tig" #apt
+#apt lazygit (required sudo add-apt-repository ppa:lazygit-team/release)
+brew "jesseduffield/lazygit/lazygit"
 brew "tmux" #apt
 brew "trash"
 brew "wget" #apt

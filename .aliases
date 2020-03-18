@@ -2,6 +2,7 @@
 
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
+alias reloadzshplugins="rm -f ~/.zsh_plugins ~/.zsh_plugins.tmux && source ~/.zshrc"
 
 alias dr="defaults read"
 alias dw="defaults write"
@@ -45,6 +46,9 @@ alias tmux="tmux -2"
 # NVIM
 alias vim="nvim"
 alias vi="nvim"
+
+# lazygit
+alias lg="lazygit"
 
 # HSTR configuration - add this to ~/.zshrc
 alias hh=hstr                    # hh to be alias for hstr
