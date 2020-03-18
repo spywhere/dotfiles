@@ -10,6 +10,7 @@ visualizer_output_name = my_fifo
 visualizer_type = spectrum
 
 # appearance
+clock_display_seconds = yes
 user_interface = alternative
 autocenter_mode = yes
 playlist_display_mode = columns
@@ -18,16 +19,29 @@ playlist_editor_display_mode = columns
 
 song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
 song_library_format = {%n - }{%t}|{%f}
-alternative_header_first_line_format = $1$aqqu$/a$9 {$3%t$9}|{%f} $1$atqq$/a$9
-alternative_header_second_line_format = {{$1%a$9}{ $3-$9 $1%b$9}{ $3-$9 $1%y$9}}
+alternative_header_first_line_format = $b$(red)$aqqu$/a$9$/b {$5%t$9}|{%f} $b$(red)$atqq$/a$9$/b
+alternative_header_second_line_format = {{$b$(red)%a$9$/b}{ $5-$9 $b$(red)%b$9$/b}{ $5-$9 $b$(red)%y$9$/b}}
+current_item_prefix = $(blue)$r
+current_item_suffix = $/r$(end)
 
 now_playing_prefix = "$b$8ﱘ"
 now_playing_suffix = "ﱘ$9$/b"
 song_columns_list_format =  (30)[green]{ar} (30)[blue]{t|f:Title} (20)[red]{br} (7f)[green]{l}
 
-progressbar_look = "●●●"
+progressbar_look = "●●○"
 
 screen_switcher_mode = playlist, playlist_editor, browser
 
 # colors
-colors_enabled = "yes"
+colors_enabled = yes
+header_window_color = blue
+volume_color = red:b
+state_line_color = red
+state_flags_color = 199
+main_window_color = blue
+progressbar_color = blue:b
+progressbar_elapsed_color = blue:b
+statusbar_color = green
+statusbar_time_color = blue
+player_state_color = blue:b
+alternative_ui_separator_color = 199
