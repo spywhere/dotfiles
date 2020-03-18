@@ -28,13 +28,13 @@ if [ ! -d "$HOME/.dotfiles" ]; then
 
   echo "Cloning dotfiles into ~/.dotfiles..."
   git clone https://github.com/spywhere/dotfiles "$HOME/.dotfiles"
-  export DOTFILES_FIRSTTIME=1
+  export DOTFILES_FIRSTTIME="yes"
 fi
 
 if [ ! "$DOTFILES" = "installed" ]; then
   export DOTFILES=installed
   cd $HOME/.dotfiles
-  if [ $DOTFILES_FIRSTTIME -ne 1 ]; then
+  if [ "$DOTFILES_FIRSTTIME" != "yes" ]; then
     echo "Updating dotfiles..."
     git reset --hard
     git fetch
