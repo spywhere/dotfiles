@@ -86,6 +86,9 @@ source ~/.zsh_plugins.tmux
 . $HOME/.aliases
 . $HOME/.variables
 
+# Use asdf if found
+[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
+
 # Use personalize settings if found as well
 [ -f ~/.personal ] && source ~/.personal
 
@@ -136,5 +139,3 @@ fcoc() {
   commit=$(echo "$commits" | fzf --tac +s +m -e) &&
   git checkout $(echo "$commit" | sed "s/ .*//")
 }
-export NVS_HOME="$HOME/.nvs"
-[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh"

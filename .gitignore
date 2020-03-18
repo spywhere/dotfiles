@@ -8,4 +8,5 @@ ncmpcpp/**
 !ncmpcpp/config
 **.zip
 **.tar.gz
+**.log
 Brewfile.lock.json

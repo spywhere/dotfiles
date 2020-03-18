@@ -98,12 +98,13 @@ else
   echo "Already installed"
 fi
 
-echo "Installing node version switcher (nvs)..."
+echo "Installing version manager (asdf)..."
 sleep 1
-export NVS_HOME="$HOME/.nvs"
-if [ ! -d "$NVS_HOME" ]; then
-  git clone https://github.com/jasongin/nvs "$NVS_HOME"
-  sh -c 'sh "$NVS_HOME/nvs.sh" install; :'
+if [ ! -d "$HOME/.asdf" ]; then
+  git clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
+  cd $HOME/.asdf
+  git checkout "$(git describe --abbrev=0 --tags)"
+  cd $CURRENT_DIR
 else
   echo "Already installed"
 fi
@@ -130,12 +131,16 @@ mkdir -p $HOME/.config
 ln -s "$HOME/.dotfiles/nvim/" "$HOME/.config/nvim"
 
 # Symlink mpd config file to the home directory
-rm -rf "$HOME/.mpd"
-ln -s "$HOME/.dotfiles/mpd/" "$HOME/.mpd"
+if [ ! -d "$HOME/.mpd" ]; then
+  rm -rf "$HOME/.mpd"
+  ln -s "$HOME/.dotfiles/mpd/" "$HOME/.mpd"
+fi
 
 # Symlink ncmpcpp config file to the home directory
-rm -rf "$HOME/.ncmpcpp"
-ln -s "$HOME/.dotfiles/ncmpcpp/" "$HOME/.ncmpcpp"
+if [ ! -d "$HOME/.ncmpcpp" ]; then
+  rm -rf "$HOME/.ncmpcpp"
+  ln -s "$HOME/.dotfiles/ncmpcpp/" "$HOME/.ncmpcpp"
+fi
 
 # Install tmux plugin manager
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
@@ -143,11 +148,32 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
   git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
 
+# asdf tool versions
+rm -rf "$HOME/.tool-versions"
+ln -s "$HOME/.dotfiles/asdf" "$HOME/.tool-versions"
+rm -rf "$HOME/.default-npm-packages"
+ln -s "$HOME/.dotfiles/npm-packages" "$HOME/.default-npm-packages"
+echo "Adding version manager plugins..."
+sh -c 'asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git; :'
+sh -c 'asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git; :'
+sh -c 'asdf plugin-add docker-slim https://github.com/everpeace/asdf-docker-slim.git; :'
+sh -c 'asdf plugin-add golang https://github.com/kennyp/asdf-golang.git; :'
+sh -c 'asdf plugin add firebase https://github.com/jthegedus/asdf-firebase.git; :'
+sh -c 'asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git; :'
+sh -c 'asdf plugin-add python https://github.com/danhper/asdf-python.git; :'
+sh -c 'asdf plugin-add rust https://github.com/code-lever/asdf-rust.git; :'
+sh -c 'asdf plugin-add terraform https://github.com/Banno/asdf-hashicorp.git; :'
+bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+echo "Install default tool versions..."
+cd $HOME
+asdf install
+cd $CURRENT_DIR
+
 # Copying shell configuration
 rm -rf "$HOME/.aliases"
-ln -s "$HOME/.dotfiles/.aliases" "$HOME/.aliases"
+ln -s "$HOME/.dotfiles/aliases" "$HOME/.aliases"
 rm -rf "$HOME/.variables"
-ln -s "$HOME/.dotfiles/.variables" "$HOME/.variables"
+ln -s "$HOME/.dotfiles/variables" "$HOME/.variables"
 
 # Symlink mycli config file to the home directory (if not already)
 if [ ! -f "$HOME/.myclirc" ]; then

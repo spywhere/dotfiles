@@ -47,6 +47,7 @@ brew "diff-so-fancy"
 brew "git-lfs"
 brew "git" #apt
 brew "git-flow" #apt
+brew "gnupg2"
 brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
@@ -84,8 +85,6 @@ cask "iterm2"
 cask "kaleidoscope"
 cask "sourcetree"
 cask "tableplus"
-cask "ubersicht"
-cask "visual-studio-code"
 cask "vlc"
 
 # Quicklook
