@@ -63,9 +63,6 @@ brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
 brew "rsync" #apt
 #apt screen
 brew "tig" #apt
-#repo ppa:lazygit-team/release
-#apt lazygit (required sudo add-apt-repository ppa:lazygit-team/release)
-brew "jesseduffield/lazygit/lazygit"
 brew "tmux" #apt
 brew "trash"
 brew "wget" #apt
