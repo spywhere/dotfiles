@@ -175,7 +175,7 @@ set -e
 bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 echo "Install default tool versions..."
 cd $HOME
-asdf install
+bash -c '. ~/.asdf/asdf.sh && asdf install'
 cd $CURRENT_DIR
 
 # Copying shell configuration
