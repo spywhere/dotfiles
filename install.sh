@@ -28,16 +28,14 @@ if [ ! -d "$HOME/.dotfiles" ]; then
 
   echo "Cloning dotfiles into ~/.dotfiles..."
   git clone https://github.com/spywhere/dotfiles "$HOME/.dotfiles"
-  cd $HOME/.dotfiles
-  echo "Executing script..."
-  sh $HOME/.dotfiles/install.sh
-  cd $CURRENT_DIR
-  exit 0
 fi
 
 if [ ! "$DOTFILES" = "installed" ]; then
   export DOTFILES=installed
+  cd $HOME/.dotfiles
+  echo "Executing script..."
   sh $HOME/.dotfiles/install.sh
+  cd $CURRENT_DIR
   exit 0
 fi
 
