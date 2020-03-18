@@ -13,11 +13,6 @@ alias news="curl -sSL hackurls.com/ascii | less"
 # HTTPie
 alias https="http --default-scheme=https"
 
-# music control (mpd on port 6600)
-alias music-previous="(echo previous; sleep 0.05) | nc 127.0.0.1 6600 >/dev/null"
-alias music-pause="(echo pause; sleep 0.05) | nc 127.0.0.1 6600 >/dev/null"
-alias music-next="(echo next; sleep 0.05) | nc 127.0.0.1 6600 >/dev/null"
-
 # Docker
 alias d='docker'
 
