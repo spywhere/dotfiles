@@ -73,11 +73,11 @@ brew "youtube-dl"
 # Apps
 cask "1password"
 cask "4k-video-downloader"
+cask "alacritty"
 cask "bartender"
 cask "docker" #make (no package manager)
 cask "flux"
 cask "google-chrome"
-cask "iterm2"
 cask "kaleidoscope"
 cask "sourcetree"
 cask "tableplus"

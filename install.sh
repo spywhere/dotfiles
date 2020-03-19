@@ -118,6 +118,10 @@ fi
 
 echo "Setting up configurations..."
 
+# Symlink Alacritty config file to the home directory
+rm -rf "$HOME/.alacritty.yml"
+ln -s "$HOME/.dotfiles/alacritty.yml" "$HOME/.alacritty.yml"
+
 # Symlink tmux config file to the home directory
 rm -rf "$HOME/.tmux.conf"
 ln -s "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"

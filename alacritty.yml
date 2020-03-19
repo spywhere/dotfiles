@@ -1,0 +1,14 @@
+font:
+  normal:
+    family: JetbrainsMono Nerd Font
+    style: Regular
+  bold:
+    family: JetbrainsMono Nerd Font
+    style: Bold
+  italic:
+    family: JetbrainsMono Nerd Font
+    style: Italic
+  size: 12
+env:
+  # https://github.com/jwilm/alacritty/issues/2566
+  LC_CTYPE: en_US.UTF-8
