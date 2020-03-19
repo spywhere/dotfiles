@@ -29,6 +29,10 @@ now_playing_suffix = "ﱘ$9$/b"
 song_columns_list_format =  (30)[green]{ar} (30)[blue]{t|f:Title} (20)[red]{br} (7f)[green]{l}
 
 progressbar_look = "●●○"
+# progressbar_look = "█▓░"
+# progressbar_look = "⣿⣶⣀"
+# progressbar_look = "■▣□"
+# progressbar_look = "▩■□"
 
 screen_switcher_mode = playlist, playlist_editor, browser
 
