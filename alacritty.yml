@@ -1,14 +1,60 @@
+dynamic_title: true
+
+working_directory: '~'
+alt_send_esc: true
+
+window:
+  dimensions:
+    columns: 240
+    lines: 60
+
+scrolling:
+  history: 0
+
 font:
   normal:
     family: JetbrainsMono Nerd Font
-    style: Regular
-  bold:
-    family: JetbrainsMono Nerd Font
-    style: Bold
-  italic:
-    family: JetbrainsMono Nerd Font
-    style: Italic
   size: 12
+
 env:
   # https://github.com/jwilm/alacritty/issues/2566
   LC_CTYPE: en_US.UTF-8
+
+# Colors (Pastel - Dark Background)
+colors:
+  # Default colors
+  primary:
+    background: '#000000'
+    foreground: '#fefefe'
+
+  # Cursor colors
+  cursor:
+    text: '#feffff'
+    cursor: '#abd2fe'
+
+  # Selection colors
+  selection:
+    text: '#c7c7c7'
+    background: '#456d95'
+
+  # Normal colors
+  normal:
+    black:   '#000000'
+    red:     '#ff8272'
+    green:   '#b4fa72'
+    yellow:  '#fefdc2'
+    blue:    '#a5d5fe'
+    magenta: '#ff8ffd'
+    cyan:    '#d0d1fe'
+    white:   '#f1f1f1'
+
+  # Bright colors
+  bright:
+    black:   '#8c8c8c'
+    red:     '#ffc4bd'
+    green:   '#d6fcb9'
+    yellow:  '#fefdd5'
+    blue:    '#c1e3fe'
+    magenta: '#ffb1fe'
+    cyan:    '#a3a8fe'
+    white:   '#feffff'
