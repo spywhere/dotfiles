@@ -95,10 +95,11 @@ cask "quicklookase"
 cask "webpquicklook"
 
 # Fonts
-cask "font-cascadia"
-cask "font-fira-code"
-cask "font-hasklig"
-cask "font-iosevka"
-cask "font-jetbrains-mono"
-cask "font-menlo-for-powerline"
-cask "font-meslo-for-powerline"
+# Use nerd-fonts instead
+# cask "font-cascadia"
+# cask "font-fira-code"
+# cask "font-hasklig"
+# cask "font-iosevka"
+# cask "font-jetbrains-mono"
+# cask "font-menlo-for-powerline"
+# cask "font-meslo-for-powerline"

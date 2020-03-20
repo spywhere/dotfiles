@@ -129,8 +129,9 @@ ln -s "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"
 # Symlink git config file to the home directory
 rm -rf "$HOME/.gitignore_global"
 ln -s "$HOME/.dotfiles/git/gitignore" "$HOME/.gitignore_global"
-rm -rf "$HOME/.gitconfig"
-ln -s "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
+if [ ! -f "$HOME/.gitconfig" ]; then
+  ln -s "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
+fi
 
 # Symlink tig config file to the home directory
 rm -rf "$HOME/.tigrc"
@@ -143,13 +144,11 @@ ln -s "$HOME/.dotfiles/nvim/" "$HOME/.config/nvim"
 
 # Symlink mpd config file to the home directory
 if [ ! -d "$HOME/.mpd" ]; then
-  rm -rf "$HOME/.mpd"
   ln -s "$HOME/.dotfiles/mpd/" "$HOME/.mpd"
 fi
 
 # Symlink ncmpcpp config file to the home directory
 if [ ! -d "$HOME/.ncmpcpp" ]; then
-  rm -rf "$HOME/.ncmpcpp"
   ln -s "$HOME/.dotfiles/ncmpcpp/" "$HOME/.ncmpcpp"
 fi
 
