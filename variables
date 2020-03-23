@@ -6,3 +6,9 @@ export YSU_MESSAGE_POSITION="after"
 
 # export binaries to path
 export PATH=$HOME/.dotfiles/bin:$PATH
+
+# setup locales, to fix...
+# - https://github.com/jwilm/alacritty/issues/2566
+# - https://github.com/neovim/neovim/issues/5683
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
