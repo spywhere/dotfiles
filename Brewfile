@@ -56,6 +56,7 @@ brew "mpd"
 brew "mycli" #apt
 brew "nano" #apt
 brew "ncmpcpp"
+brew "neofetch" #apt
 brew "neovim" #make (required for autocompletion to properly working)
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"
@@ -68,6 +69,8 @@ brew "trash"
 brew "wget" #apt
 #apt xsel # tmux-yank dependencies
 brew "youtube-dl"
+brew "cjbassi/ytop/ytop"
+#apt ytop
 #apt zsh
 
 # Apps
