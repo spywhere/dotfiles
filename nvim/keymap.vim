@@ -20,6 +20,10 @@ nnoremap <A-k> ddkP
 nnoremap <A-Down> ddp
 nnoremap <A-j> ddp
 
+" Jump to start / end of line in insert mode
+inoremap <C-a> <C-o>^
+inoremap <C-e> <C-o>$
+
 " Leading
 let mapleader = ","
 
