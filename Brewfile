@@ -53,6 +53,7 @@ brew "httpie" #apt
 brew "jq" #apt
 brew "mosh" #make (for 24-bit color support)
 brew "mpd"
+brew "mycli" #apt
 brew "nano" #apt
 brew "ncmpcpp"
 brew "neovim" #make (required for autocompletion to properly working)
@@ -61,7 +62,6 @@ brew "q"
 brew "reattach-to-user-namespace" # tmux-yank dependencies
 brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
 brew "rsync" #apt
-#apt screen
 brew "tig" #apt
 brew "tmux" #apt
 brew "trash"
