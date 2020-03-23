@@ -23,10 +23,15 @@ else
   alias mysql="docker run -it --rm --name mysql-cli mysql:5.7 mysql"
 fi
 
-alias node="docker run -it --rm --name node-cli -v \$(pwd):/opt/app -w /opt/app node:lts-alpine node"
-alias terraform="docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app -w /opt/app hashicorp/terraform"
-alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
-alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/.dotfiles/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
+# Test if docker is running or not
+docker info >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+  # Docker is running, setting aliases to use Docker instead
+  alias node="docker run -it --rm --name node-cli -v \$(pwd):/opt/app -w /opt/app node:lts-alpine node"
+  alias terraform="docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app -w /opt/app hashicorp/terraform"
+  alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
+  alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/.dotfiles/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
+fi
 
 unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then

@@ -1,4 +1,5 @@
 autoload -Uz compinit
+autoload -Uz bashcompinit && bashcompinit
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
 if [ $(date +'%j') != $updated_at ]; then
   compinit -i
@@ -7,6 +8,7 @@ else
 fi
 
 if [[ ! -f /usr/local/bin/antibody ]]; then
+  echo "installing antibody..."
   curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
 
@@ -62,6 +64,7 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   echo "zsh-users/zsh-completions" >> ~/.zsh_plugins.tmux.list
   echo "zsh-users/zsh-history-substring-search" >> ~/.zsh_plugins.tmux.list
   echo "zdharma/fast-syntax-highlighting" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/asdf" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/docker" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:lib/git.zsh" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/git" >> ~/.zsh_plugins.tmux.list
@@ -85,9 +88,6 @@ source ~/.zsh_plugins.tmux
 
 . $HOME/.aliases
 . $HOME/.variables
-
-# Use asdf if found
-[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
 
 # Use personalize settings if found as well
 [ -f ~/.personal ] && source ~/.personal
