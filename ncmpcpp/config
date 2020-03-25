@@ -11,6 +11,7 @@ visualizer_type = spectrum
 
 # appearance
 clock_display_seconds = yes
+display_bitrate = yes
 user_interface = alternative
 autocenter_mode = yes
 playlist_display_mode = columns
