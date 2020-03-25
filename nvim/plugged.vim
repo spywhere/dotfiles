@@ -132,6 +132,11 @@ let g:coc_global_extensions = [
 \   'coc-emmet',
 \ ]
 
+" ALE
+" Only run on open or save file
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+
 " Lightline
 let g:lightline = {
 \   'colorscheme': 'onedark',
