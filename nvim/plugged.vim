@@ -36,7 +36,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'easymotion/vim-easymotion'
 
 " Syntax Highlight
-Plug 'lilydjwg/colorizer'
+" Plug 'lilydjwg/colorizer' " Disabled due to slowness on large files
 Plug 'sheerun/vim-polyglot'
 Plug 'kien/rainbow_parentheses.vim'
 
