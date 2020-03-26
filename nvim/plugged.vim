@@ -31,6 +31,7 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-rsi'
 Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
 " Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
 Plug 'easymotion/vim-easymotion', { 'on': [] }
