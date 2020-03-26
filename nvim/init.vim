@@ -6,6 +6,7 @@ if (has("termguicolors"))
 endif
 
 set scrolloff=10
+set sidescrolloff=10
 set number
 set relativenumber
 set hidden
@@ -34,8 +35,9 @@ set noswapfile
 
 set noerrorbells
 set visualbell
-set tm=500
+set timeoutlen=500
 set updatetime=300
+set lazyredraw
 
 set ignorecase
 set smartcase

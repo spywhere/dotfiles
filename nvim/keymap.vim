@@ -10,6 +10,9 @@ nnoremap <Right> :vertical resize +1<CR>
 nnoremap <Up> :resize -1<CR>
 nnoremap <Down> :resize +1<CR>
 
+" shortcut for enter command mode
+nnoremap ; :
+
 " use alt + arrow keys to move lines
 vnoremap <A-Up> dkP1v
 vnoremap <A-k> dkP1v
