@@ -1,6 +1,6 @@
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
   silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 else
   let g:init_vim_loaded = 1
 endif
@@ -13,7 +13,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Editing
-Plug 'remko/detectindent'
+Plug 'remko/detectindent', { 'on': 'DetectIndent' }
 Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
@@ -31,9 +31,9 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'christoomey/vim-tmux-navigator'
+Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
 " Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
-Plug 'easymotion/vim-easymotion'
+Plug 'easymotion/vim-easymotion', { 'on': [] }
 
 " Syntax Highlight
 " Plug 'lilydjwg/colorizer' " Disabled due to slowness on large files
@@ -49,7 +49,7 @@ Plug 'moll/vim-node'
 Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
 
-Plug 'kkoomen/vim-doge'
+Plug 'kkoomen/vim-doge', { 'on': 'DogeGenerate' }
 
 " Git
 Plug 'airblade/vim-gitgutter'
@@ -83,6 +83,11 @@ endif
 syntax on
 
 if (has("autocmd"))
+  augroup lazyload_plugins
+    autocmd!
+    autocmd CursorHold * call plug#load('vim-easymotion', 'vim-tmux-navigator') | autocmd! lazyload_plugins
+  augroup END
+
   augroup colorset
     autocmd!
     let s:black = { "gui": "#1C1C1C", "cterm": "234", "cterm16" : "0" }
