@@ -52,12 +52,13 @@ brew "hstr" #make (arm arch not supported)
 brew "httpie" #apt
 brew "jq" #apt
 brew "mosh" #make (for 24-bit color support)
-brew "mpd"
+brew "mpd" #apt
 brew "mycli" #apt
 brew "nano" #apt
-brew "ncmpcpp"
+brew "ncmpcpp" #apt
 brew "neofetch" #apt
 brew "neovim" #make (required for autocompletion to properly working)
+brew "netcat" #apt
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"
 brew "reattach-to-user-namespace" # tmux-yank dependencies
@@ -82,7 +83,6 @@ cask "docker" #make (no package manager)
 cask "flux"
 cask "google-chrome"
 cask "kaleidoscope"
-cask "sourcetree"
 cask "tableplus"
 cask "vlc"
 
