@@ -3,10 +3,17 @@
   excludesfile = ~/.gitignore_global
   pager = diff-so-fancy | less --tabs=4 -RFX
 [user]
-  email = spywhere@me.com
+  useConfigOnly = true
+[user "personal"]
   name = Sirisak Lueangsaksri
+  email = spywhere@me.com
+[user "pomelo"]
+  name = Sirisak Lueangsaksri
+  email = sirisak.l@pomelofashion.com
 [color]
   ui = true
 [diff-so-fancy]
   stripLeadingSymbols = false
   markEmptyLines = false
+[alias]
+  identity = "! git config user.name \"$(git config user.$1.name)\"; git config user.email \"$(git config user.$1.email)\"; :"
