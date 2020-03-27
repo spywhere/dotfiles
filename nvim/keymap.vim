@@ -43,9 +43,9 @@ nnoremap <leader><Down><Left> :rightbelow new<CR>
 nnoremap <leader><Down><Right> :leftabove new<CR>
 
 " cmus controls
-nnoremap <leader>pp :silent !(echo pause; sleep 0.05) \| nc 127.0.0.1 6600<CR>
-nnoremap <leader>pn :silent !(echo next; sleep 0.05) \| nc 127.0.0.1 6600<CR>
-nnoremap <leader>pr :silent !(echo previous; sleep 0.05) \| nc 127.0.0.1 6600<CR>
+nnoremap <leader>pp :silent !(echo "pause\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
+nnoremap <leader>pn :silent !(echo "next\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
+nnoremap <leader>pr :silent !(echo "previous\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
 
 " ctrl+p
 nnoremap <C-p> :Files<CR>
