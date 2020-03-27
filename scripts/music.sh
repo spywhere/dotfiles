@@ -11,7 +11,7 @@ if test "$(command -v cmus-remote)"; then
   cmus="yes"
 fi
 
-if $(echo | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
+if $(echo close | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
   # mpd is running
   mpd="yes"
 fi
@@ -22,9 +22,9 @@ if [ "$cmus" = "yes" ]; then
   if [ $? -ne 0 ]; then
     # cmus is not running
     cmus="no"
-  elif [ $cmus_state = "playing" ]; then
+  elif [ "$cmus_state" = "playing" ]; then
     cmus_status=1
-  elif [ $cmus_state = "paused" ]; then
+  elif [ "$cmus_state" = "paused" ]; then
     cmus_status=0
   else
     # stopped
@@ -33,7 +33,7 @@ if [ "$cmus" = "yes" ]; then
 fi
 
 if [ "$mpd" = "yes" ]; then
-  mpd_info=$((echo status; sleep 0.05) | nc $MPD_HOST $MPD_PORT)
+  mpd_info=$((echo "status\nclose"; sleep 0.05) | nc $MPD_HOST $MPD_PORT)
   if [ "$(echo "$mpd_info" | awk '$1 ~ /^state:/ { print $2 }')" = "play" ]; then
     mpd_status=1
   else
