@@ -2,6 +2,7 @@
 
 set -e
 
+DOTFILES_NAME=.dotfiles
 CURRENT_DIR=$(pwd)
 
 setup_homebrew() {
@@ -14,7 +15,7 @@ setup_homebrew() {
 
 # If ~/.dotfiles is not found, probably running through cURL / sh combination
 #   try cloning the repo and setup from there instead.
-if [ ! -d "$HOME/.dotfiles" ]; then
+if [ ! -d "$HOME/$DOTFILES_NAME" ]; then
   if test ! "$(command -v git)"; then
     echo "git not found, try installing one..."
     if [ "$(uname)" = "Darwin" ]; then
@@ -26,14 +27,14 @@ if [ ! -d "$HOME/.dotfiles" ]; then
     fi
   fi
 
-  echo "Cloning dotfiles into ~/.dotfiles..."
-  git clone https://github.com/spywhere/dotfiles "$HOME/.dotfiles"
+  echo "Cloning dotfiles into ~/$DOTFILES_NAME..."
+  git clone https://github.com/spywhere/dotfiles "$HOME/$DOTFILES_NAME"
   export DOTFILES_FIRSTTIME="yes"
 fi
 
 if [ ! "$DOTFILES" = "installed" ]; then
   export DOTFILES=installed
-  cd $HOME/.dotfiles
+  cd $HOME/$DOTFILES_NAME
   if [ "$DOTFILES_FIRSTTIME" != "yes" ]; then
     echo "Updating dotfiles..."
     git reset --hard
@@ -41,7 +42,7 @@ if [ ! "$DOTFILES" = "installed" ]; then
     git pull
   fi
   echo "Executing script..."
-  sh $HOME/.dotfiles/install.sh
+  sh $HOME/$DOTFILES_NAME/install.sh
   cd $CURRENT_DIR
   exit 0
 fi
@@ -90,7 +91,7 @@ else
 fi
 
 rm -f "$HOME/.zshrc"
-ln -s "$HOME/.dotfiles/zshrc" "$HOME/.zshrc"
+ln -s "$HOME/$DOTFILES_NAME/zshrc" "$HOME/.zshrc"
 
 bash setup.sh
 
@@ -120,36 +121,36 @@ echo "Setting up configurations..."
 
 # Symlink Alacritty config file to the home directory
 rm -rf "$HOME/.alacritty.yml"
-ln -s "$HOME/.dotfiles/alacritty.yml" "$HOME/.alacritty.yml"
+ln -s "$HOME/$DOTFILES_NAME/alacritty.yml" "$HOME/.alacritty.yml"
 
 # Symlink tmux config file to the home directory
 rm -rf "$HOME/.tmux.conf"
-ln -s "$HOME/.dotfiles/tmux/tmux.conf" "$HOME/.tmux.conf"
+ln -s "$HOME/$DOTFILES_NAME/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 # Symlink git config file to the home directory
 rm -rf "$HOME/.gitignore_global"
-ln -s "$HOME/.dotfiles/git/gitignore" "$HOME/.gitignore_global"
+ln -s "$HOME/$DOTFILES_NAME/git/gitignore" "$HOME/.gitignore_global"
 if [ ! -f "$HOME/.gitconfig" ]; then
-  ln -s "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
+  ln -s "$HOME/$DOTFILES_NAME/git/gitconfig" "$HOME/.gitconfig"
 fi
 
 # Symlink tig config file to the home directory
 rm -rf "$HOME/.tigrc"
-ln -s "$HOME/.dotfiles/tig/tig.conf" "$HOME/.tigrc"
+ln -s "$HOME/$DOTFILES_NAME/tig/tig.conf" "$HOME/.tigrc"
 
 # Symlink nvim config file to the home directory
 rm -rf "$HOME/.config/nvim"
 mkdir -p $HOME/.config
-ln -s "$HOME/.dotfiles/nvim/" "$HOME/.config/nvim"
+ln -s "$HOME/$DOTFILES_NAME/nvim/" "$HOME/.config/nvim"
 
 # Symlink mpd config file to the home directory
 if [ ! -d "$HOME/.mpd" ]; then
-  ln -s "$HOME/.dotfiles/mpd/" "$HOME/.mpd"
+  ln -s "$HOME/$DOTFILES_NAME/mpd/" "$HOME/.mpd"
 fi
 
 # Symlink ncmpcpp config file to the home directory
 if [ ! -d "$HOME/.ncmpcpp" ]; then
-  ln -s "$HOME/.dotfiles/ncmpcpp/" "$HOME/.ncmpcpp"
+  ln -s "$HOME/$DOTFILES_NAME/ncmpcpp/" "$HOME/.ncmpcpp"
 fi
 
 # Install tmux plugin manager
@@ -160,9 +161,9 @@ fi
 
 # asdf tool versions
 rm -rf "$HOME/.tool-versions"
-ln -s "$HOME/.dotfiles/asdf" "$HOME/.tool-versions"
+ln -s "$HOME/$DOTFILES_NAME/asdf" "$HOME/.tool-versions"
 rm -rf "$HOME/.default-npm-packages"
-ln -s "$HOME/.dotfiles/npm-packages" "$HOME/.default-npm-packages"
+ln -s "$HOME/$DOTFILES_NAME/npm-packages" "$HOME/.default-npm-packages"
 echo "Adding version manager plugins..."
 set +e
 bash -c '. ~/.asdf/asdf.sh && asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git'
@@ -183,13 +184,13 @@ cd $CURRENT_DIR
 
 # Copying shell configuration
 rm -rf "$HOME/.aliases"
-ln -s "$HOME/.dotfiles/aliases" "$HOME/.aliases"
+ln -s "$HOME/$DOTFILES_NAME/aliases" "$HOME/.aliases"
 rm -rf "$HOME/.variables"
-ln -s "$HOME/.dotfiles/variables" "$HOME/.variables"
+ln -s "$HOME/$DOTFILES_NAME/variables" "$HOME/.variables"
 
 # Symlink mycli config file to the home directory (if not already)
 if [ ! -f "$HOME/.myclirc" ]; then
-  ln -s "$HOME/.dotfiles/myclirc" "$HOME/.myclirc"
+  ln -s "$HOME/$DOTFILES_NAME/myclirc" "$HOME/.myclirc"
 fi
 
 echo "Done!"

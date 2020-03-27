@@ -1,3 +1,5 @@
+DOTFILES_NAME=.dotfiles
+
 autoload -Uz compinit
 autoload -Uz bashcompinit && bashcompinit
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
@@ -96,7 +98,7 @@ source ~/.zsh_plugins.tmux
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Export binaries
-export PATH=$HOME/.dotfiles/bin:$PATH
+export PATH=$HOME/$DOTFILES_NAME/bin:$PATH
 
 # fbr - checkout git branch (including remote branches)
 fcor() {

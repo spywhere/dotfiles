@@ -1,4 +1,5 @@
 #!/bin/bash
+DOTFILES_NAME=.dotfiles
 
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
@@ -30,7 +31,7 @@ if [ $? -eq 0 ]; then
   alias node="docker run -it --rm --name node-cli -v \$(pwd):/opt/app -w /opt/app node:lts-alpine node"
   alias terraform="docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app -w /opt/app hashicorp/terraform"
   alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
-  alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/.dotfiles/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
+  alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/$DOTFILES_NAME/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
 fi
 
 unalias vol >/dev/null 2>/dev/null
