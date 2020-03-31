@@ -2,6 +2,9 @@
 map nt :NERDTreeToggle<cr>
 map nf :NERDTreeFind<cr>
 
+" kill the annoyance
+nnoremap Q <Nop>
+
 " arrow keys resize pane
 nnoremap <A-Left> :vertical resize -5<CR>
 nnoremap <A-Right> :vertical resize +5<CR>
@@ -13,6 +16,10 @@ nnoremap <Down> :resize +1<CR>
 " shortcut for enter command mode
 nnoremap ;; :
 
+" quick add line
+nnoremap go o<ESC>
+nnoremap gO O<ESC>
+
 " use alt + arrow keys to move lines
 vnoremap <A-Up> dkP1v
 vnoremap <A-k> dkP1v
@@ -23,7 +30,7 @@ nnoremap <A-k> ddkP
 nnoremap <A-Down> ddp
 nnoremap <A-j> ddp
 
-" Leading
+" leading
 let mapleader = ","
 
 noremap <leader>h 20zh
