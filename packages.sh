@@ -84,3 +84,21 @@ if test ! "$(command -v diff-so-fancy)"; then
 fi
 
 cd $HOME
+if test ! "$(command -v sc-im)"; then
+  echo "Installing sc-im..."
+  sleep 1
+  git clone https://github.com/jmcnamara/libxlsxwriter.git
+  cd libxlsxwriter/
+  make
+  sudo make install
+  sudo ldconfig
+  cd $HOME
+  git clone https://github.com/andmarti1424/sc-im.git
+  cd sc-im/src
+  make
+  sudo make install
+  cd $HOME
+  rm -rf libxlsxwriter sc-im
+fi
+
+cd $HOME
