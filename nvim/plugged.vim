@@ -148,10 +148,6 @@ let g:lightline = {
 \   'colorscheme': 'onedark',
 \ }
 
-let g:lightline.component = {
-\   'filename': '%F',
-\ }
-
 let g:lightline.component_expand = {
 \   'linter_checking': 'lightline#ale#checking',
 \   'linter_infos': 'lightline#ale#infos',
@@ -168,15 +164,74 @@ let g:lightline.component_type = {
 \   'linter_ok': 'right',
 \ }
 
+function! LightlineMode()
+  return &ft !=? 'nerdtree' ? lightline#mode() : ''
+endfunction
+
+function! LightlineBranch()
+  return &ft !=? 'nerdtree' ? FugitiveHead() : ''
+endfunction
+
+function! LightlineReadonly()
+  return &ft !=? 'nerdtree' && &readonly ? 'RO' : ''
+endfunction
+
+function! LightlineModified()
+  return &ft !=? 'nerdtree' && &modified ? '+' : ''
+endfunction
+
+function! LightlineRelativePath()
+  return &ft !=? 'nerdtree' ? expand('%:f') != '' ? expand('%:f') : '[no name]' : 'NERD'
+endfunction
+
+function! LightlineLineInfo()
+  return &ft !=? 'nerdtree' ? line('.') . ':' . col('.') : ''
+endfunction
+
+function! LightlinePercent()
+  return &ft !=? 'nerdtree' ? line('.') * 100 / line('$') . '%' : ''
+endfunction
+
+function! LightlineFileFormat()
+  return &ft !=? 'nerdtree' ? &ff : ''
+endfunction
+
+function! LightlineFileEncoding()
+  return &ft !=? 'nerdtree' ? &enc : ''
+endfunction
+
+function! LightlineFileType()
+  return &ft !=? 'nerdtree' ? &filetype : ''
+endfunction
+
 let g:lightline.component_function = {
 \   'obsession': 'ObsessionStatus',
-\   'gitbranch': 'FugitiveHead'
+\   'gitbranch': 'LightlineBranch',
+\   'mode': 'LightlineMode',
+\   'readonly': 'LightlineReadonly',
+\   'modified': 'LightlineModified',
+\   'relativepath': 'LightlineRelativePath',
+\   'lineinfo': 'LightlineLineInfo',
+\   'percent': 'LightlinePercent',
+\   'fileformat': 'LightlineFileFormat',
+\   'fileencoding': 'LightlineFileEncoding',
+\   'filetype': 'LightlineFileType'
+\ }
+
+let g:lightline.inactive = {
+\   'left': [
+\     ['relativepath']
+\   ],
+\   'right': [
+\     ['lineinfo'],
+\     ['percent']
+\   ]
 \ }
 
 let g:lightline.active = {
 \   'left': [
 \     ['mode', 'paste'],
-\     ['gitbranch', 'readonly', 'filename', 'modified']
+\     ['gitbranch', 'readonly', 'relativepath', 'modified']
 \   ],
 \   'right': [
 \     [
