@@ -27,6 +27,7 @@ Plug 'wellle/tmux-complete.vim'
 " Visualization
 Plug 'Yggdroot/indentLine'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'AndrewRadev/linediff.vim'
 
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
