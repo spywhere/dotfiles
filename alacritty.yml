@@ -19,6 +19,11 @@ env:
   # https://github.com/jwilm/alacritty/issues/2566
   LC_CTYPE: en_US.UTF-8
 
+key_bindings:
+  - key: N
+    mods: Command
+    action: SpawnNewInstance
+
 # Colors (Pastel - Dark Background)
 colors:
   # Default colors
