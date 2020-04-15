@@ -130,6 +130,8 @@ ln -s "$HOME/$DOTFILES_NAME/tmux/tmux.conf" "$HOME/.tmux.conf"
 # Symlink git config file to the home directory
 rm -rf "$HOME/.gitignore_global"
 ln -s "$HOME/$DOTFILES_NAME/git/gitignore" "$HOME/.gitignore_global"
+rm -rf "$HOME/.gitalias"
+ln -s "$HOME/$DOTFILES_NAME/git/gitalias" "$HOME/.gitalias"
 if [ ! -f "$HOME/.gitconfig" ]; then
   ln -s "$HOME/$DOTFILES_NAME/git/gitconfig" "$HOME/.gitconfig"
 fi

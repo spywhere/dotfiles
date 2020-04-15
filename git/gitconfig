@@ -17,5 +17,5 @@
 [diff-so-fancy]
   stripLeadingSymbols = false
   markEmptyLines = false
-[alias]
-  identity = "! ([ -z $1 ] && echo \"usage: git identity <identity>\n\navailable identities:\" && (git config --name-only --get-regexp \"user\\.[^\\.]+\\.name\" | cut -d. -f 2 | sed \"s/^/  - /\")) || (git config user.name \"$(git config user.$1.name)\" && git config user.email \"$(git config user.$1.email)\"); :"
+[include]
+  path = .gitalias
