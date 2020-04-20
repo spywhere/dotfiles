@@ -8,6 +8,12 @@ alias reloadzshplugins="rm -f ~/.zsh_plugins ~/.zsh_plugins.tmux && source ~/.zs
 alias dr="defaults read"
 alias dw="defaults write"
 
+# exa (ls replacement)
+alias ls="exa"
+alias l="exa -lFh --git"
+alias la="exa -laFh --git"
+alias ll="exa -l --git"
+
 # news
 alias news="curl -sSL hackurls.com/ascii | less"
 

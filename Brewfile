@@ -52,6 +52,7 @@ brew "coreutils" # Those that come with macOS are outdated
 #apt curl
 brew "diff-so-fancy"
 #apt dnsmasq
+brew "exa" #apt
 brew "git-lfs"
 brew "git" #apt
 brew "git-flow" #apt
