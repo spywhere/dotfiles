@@ -29,9 +29,17 @@ docker info >/dev/null 2>&1
 if [ $? -eq 0 ]; then
   # Docker is running, setting aliases to use Docker instead
   alias node="docker run -it --rm --name node-cli -v \$(pwd):/opt/app -w /opt/app node:lts-alpine node"
+  alias npm="docker run -it --rm --name npm-cli -v \$(pwd):/opt/app -w /opt/app node:lts-alpine npm"
+  alias python2="docker run -it --rm --name python2-cli -v \$(pwd):/opt/app -w /opt/app python:2-alpine python"
+  alias python3="docker run -it --rm --name python3-cli -v \$(pwd):/opt/app -w /opt/app python:3-alpine python"
   alias terraform="docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app -w /opt/app hashicorp/terraform"
   alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
   alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/$DOTFILES_NAME/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
+
+  # Docker version of tools
+  alias docker-redis="docker run -d -p 6379:6379 --rm --name redis redis:alpine"
+  alias docker-mongo="docker run -d -p 27017:27017 --rm --name mongo mongo"
+  alias docker-mysql="docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/mysql/config:/etc/mysql/conf.d --name mysql mysql:5.7"
 fi
 
 unalias vol >/dev/null 2>/dev/null
