@@ -42,6 +42,7 @@ if [ $? -eq 0 ]; then
   alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
   alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/$DOTFILES_NAME/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
   alias browsh="docker run --rm -it browsh/browsh"
+  alias sqlite3="docker run -it --rm --name sqlite3-cli -v \$(pwd):/opt/app -w /opt/app nouchka/sqlite3"
 
   # Docker version of tools
   alias docker-redis="docker run -d -p 6379:6379 --rm --name redis redis:alpine"
