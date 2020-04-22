@@ -29,6 +29,9 @@ set cmdheight=1
 " Print margin at 79 chars
 set colorcolumn=79
 
+" Split the window to the right / below first
+set splitbelow splitright
+
 set nobackup
 set nowritebackup
 set noswapfile
