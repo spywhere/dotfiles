@@ -94,7 +94,7 @@ else
 fi
 
 rm -f "$HOME/.zshrc"
-ln -s "$HOME/$DOTFILES_NAME/zshrc" "$HOME/.zshrc"
+ln -fs "$HOME/$DOTFILES_NAME/configs/zsh/zshrc" "$HOME/.zshrc"
 
 bash setup.sh
 
@@ -124,38 +124,38 @@ echo "Setting up configurations..."
 
 # Symlink Alacritty config file to the home directory
 rm -rf "$HOME/.alacritty.yml"
-ln -s "$HOME/$DOTFILES_NAME/alacritty.yml" "$HOME/.alacritty.yml"
+ln -fs "$HOME/$DOTFILES_NAME/configs/alacritty/alacritty.yml" "$HOME/.alacritty.yml"
 
 # Symlink tmux config file to the home directory
 rm -rf "$HOME/.tmux.conf"
-ln -s "$HOME/$DOTFILES_NAME/tmux/tmux.conf" "$HOME/.tmux.conf"
+ln -fs "$HOME/$DOTFILES_NAME/configs/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 # Symlink git config file to the home directory
 rm -rf "$HOME/.gitignore_global"
-ln -s "$HOME/$DOTFILES_NAME/git/gitignore" "$HOME/.gitignore_global"
+ln -fs "$HOME/$DOTFILES_NAME/configs/git/gitignore" "$HOME/.gitignore_global"
 rm -rf "$HOME/.gitalias"
-ln -s "$HOME/$DOTFILES_NAME/git/gitalias" "$HOME/.gitalias"
+ln -fs "$HOME/$DOTFILES_NAME/configs/git/gitalias" "$HOME/.gitalias"
 if [ ! -f "$HOME/.gitconfig" ]; then
-  ln -s "$HOME/$DOTFILES_NAME/git/gitconfig" "$HOME/.gitconfig"
+  ln -fs "$HOME/$DOTFILES_NAME/configs/git/gitconfig" "$HOME/.gitconfig"
 fi
 
 # Symlink tig config file to the home directory
 rm -rf "$HOME/.tigrc"
-ln -s "$HOME/$DOTFILES_NAME/tig/tig.conf" "$HOME/.tigrc"
+ln -fs "$HOME/$DOTFILES_NAME/configs/tig/tig.conf" "$HOME/.tigrc"
 
 # Symlink nvim config file to the home directory
 rm -rf "$HOME/.config/nvim"
 mkdir -p $HOME/.config
-ln -s "$HOME/$DOTFILES_NAME/nvim/" "$HOME/.config/nvim"
+ln -fs "$HOME/$DOTFILES_NAME/configs/nvim/" "$HOME/.config/nvim"
 
 # Symlink mpd config file to the home directory
 if [ ! -d "$HOME/.mpd" ]; then
-  ln -s "$HOME/$DOTFILES_NAME/mpd/" "$HOME/.mpd"
+  ln -fs "$HOME/$DOTFILES_NAME/configs/mpd/" "$HOME/.mpd"
 fi
 
 # Symlink ncmpcpp config file to the home directory
 if [ ! -d "$HOME/.ncmpcpp" ]; then
-  ln -s "$HOME/$DOTFILES_NAME/ncmpcpp/" "$HOME/.ncmpcpp"
+  ln -fs "$HOME/$DOTFILES_NAME/configs/ncmpcpp/" "$HOME/.ncmpcpp"
 fi
 
 # Install tmux plugin manager
@@ -166,9 +166,9 @@ fi
 
 # asdf tool versions
 rm -rf "$HOME/.tool-versions"
-ln -s "$HOME/$DOTFILES_NAME/asdf" "$HOME/.tool-versions"
+ln -fs "$HOME/$DOTFILES_NAME/configs/asdf/asdf" "$HOME/.tool-versions"
 rm -rf "$HOME/.default-npm-packages"
-ln -s "$HOME/$DOTFILES_NAME/npm-packages" "$HOME/.default-npm-packages"
+ln -fs "$HOME/$DOTFILES_NAME/configs/asdf/npm-packages" "$HOME/.default-npm-packages"
 echo "Adding version manager plugins..."
 set +e
 bash -c '. ~/.asdf/asdf.sh && asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git'
@@ -189,13 +189,13 @@ cd $CURRENT_DIR
 
 # Copying shell configuration
 rm -rf "$HOME/.aliases"
-ln -s "$HOME/$DOTFILES_NAME/aliases" "$HOME/.aliases"
+ln -fs "$HOME/$DOTFILES_NAME/configs/zsh/aliases" "$HOME/.aliases"
 rm -rf "$HOME/.variables"
-ln -s "$HOME/$DOTFILES_NAME/variables" "$HOME/.variables"
+ln -fs "$HOME/$DOTFILES_NAME/configs/zsh/variables" "$HOME/.variables"
 
 # Symlink mycli config file to the home directory (if not already)
 if [ ! -f "$HOME/.myclirc" ]; then
-  ln -s "$HOME/$DOTFILES_NAME/myclirc" "$HOME/.myclirc"
+  ln -fs "$HOME/$DOTFILES_NAME/configs/mycli/myclirc" "$HOME/.myclirc"
 fi
 
 echo "Done!"

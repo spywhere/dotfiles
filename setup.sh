@@ -30,7 +30,4 @@ else
     sudo chmod 755 /root/usb.sh
     sudo sed -i $'s/exit 0$/sh \\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
   fi
-
-  echo "Setup i3 for xserver..."
-  echo $'#!/bin/sh\n\nexec i3' | tee "$HOME/.xinitrc" >/dev/null
 fi
