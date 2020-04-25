@@ -17,6 +17,7 @@ Plug 'remko/detectindent', { 'on': 'DetectIndent' }
 Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/vim-parenmatch'
 Plug 'terryma/vim-multiple-cursors'
