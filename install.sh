@@ -71,7 +71,7 @@ else
   grep "#apt" Brewfile | cut -d' ' -f2 | xargs sudo apt install --no-install-recommends -y
 
   echo "Installing binaries..."
-  grep "#curl" Brewfile | cut -d ' ' -f2,3 | xargs -n2 sh -c 'echo Installing $(basename "$1")... && curl -sSL "$0" | sudo tee "$1" && sudo chmod 755 "$1"'
+  grep "#curl" Brewfile | cut -d ' ' -f2,3 | xargs -n2 sh -c 'echo Installing $(basename "$1")... && curl -sSL "$0" | sudo tee "$1" >/dev/null && sudo chmod 755 "$1"'
   
   echo "The following packages must be installed manually:"
   grep "#make" Brewfile | cut -d' ' -f2 | xargs -n1 echo "  -"
