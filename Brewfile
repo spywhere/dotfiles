@@ -109,6 +109,8 @@ cask "quicklook-json"
 cask "quicklookase"
 cask "webpquicklook"
 
+#curl https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch /usr/local/bin/pfetch
+
 # Fonts
 # Use nerd-fonts instead
 # cask "font-cascadia"
