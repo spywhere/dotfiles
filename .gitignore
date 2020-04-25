@@ -10,3 +10,4 @@ ncmpcpp/**
 **.tar.gz
 **.log
 Brewfile.lock.json
+Session.vim
