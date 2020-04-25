@@ -11,10 +11,6 @@ tap "domt4/autoupdate"
 # for sc-im
 tap "nickolasburr/pfa"
 
-#apt i3
-#apt xserver-xorg
-#apt xinit
-
 # Development tools
 # Base
 #apt autotools-dev
@@ -66,7 +62,6 @@ brew "mpd" #apt
 brew "mycli" #apt
 brew "nano" #apt
 brew "ncmpcpp" #apt
-brew "neofetch" #apt
 brew "neovim" #make (required for autocompletion to properly working)
 brew "netcat" #apt
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
@@ -82,7 +77,7 @@ brew "wget" #apt
 #apt xsel # tmux-yank dependencies
 brew "youtube-dl"
 brew "cjbassi/ytop/ytop"
-#apt ytop
+# ytop  -- not available on apt
 #apt zsh
 
 # Apps
