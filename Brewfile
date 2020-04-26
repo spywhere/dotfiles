@@ -13,72 +13,85 @@ tap "nickolasburr/pfa"
 
 # Development tools
 # Base
-#apt autotools-dev
-#apt pkg-config
+#deb autotools-dev
+#alpine build-base
+#deb pkg-config
+#alpine pkgconfig
 
 # hstr
-#apt libncursesw5-dev
-#apt libreadline-dev
+#deb libncursesw5-dev
+#alpine ncurses-dev
+#deb libreadline-dev
+#alpine readline-dev
 
 # neovim
-#apt cmake
-#apt gettext
-#apt libtool
-#apt libtool-bin
+#deb cmake #alpine
+#deb gettext #alpine
+#deb libtool #alpine
+#deb libtool-bin
 
 # mosh
-#apt debhelper
-#apt protobuf-compiler
-#apt libprotobuf-dev
-#apt dh-autoreconf
-#apt libutempter-dev
-#apt zlib1g-dev
-#apt libncurses5-dev
-#apt libssl-dev
-#apt locales
+#deb debhelper
+#deb protobuf-compiler
+#alpine protoc
+#deb libprotobuf-dev
+#alpine protobuf-dev
+#deb dh-autoreconf
+#alpine autoconf
+#deb libutempter-dev
+#alpine libutempter
+#deb zlib1g-dev
+#alpine zlib-dev
+#deb libncurses5-dev
+#alpine ncurses-libs
+#deb libssl-dev
+#alpine libressl-dev
+#deb locales
 
 # sc-im
-#apt bison
-#apt libxml2-dev
-#apt libzip-dev
+#deb bison #alpine
+#deb libxml2-dev #alpine
+#deb libzip-dev #alpine
 
 # Binaries
-brew "bash" # Bash 4 #apt
+brew "bash" # Bash 4 #deb #alpine
 brew "coreutils" # Those that come with macOS are outdated
-#apt curl
+#deb curl #alpine
 brew "diff-so-fancy"
-#apt dnsmasq
-brew "exa" #apt
+#deb dnsmasq #alpine
+brew "exa" #deb #alpine
 brew "git-lfs"
-brew "git" #apt
-brew "git-flow" #apt
+brew "git" #deb #alpine
+brew "git-flow" #deb #testing-alpine
 brew "gnupg2"
 brew "hstr" #make (arm arch not supported)
-brew "httpie" #apt
-brew "jq" #apt
+brew "httpie" #deb #alpine
+brew "jq" #deb #alpine
 brew "lua@5.1" # sc-im dependencies
 brew "mosh" #make (for 24-bit color support)
-brew "mpd" #apt
-brew "mycli" #apt
-brew "nano" #apt
-brew "ncmpcpp" #apt
+brew "mpd" #deb #community-alpine
+brew "mycli" #deb #testing-alpine
+brew "nano" #deb #alpine
+#edge-alpine boost-dev # ncmpcpp dependencies
+brew "ncmpcpp" #deb #testing-alpine
 brew "neovim" #make (required for autocompletion to properly working)
-brew "netcat" #apt
+brew "netcat" #deb
+#alpine netcat-openbsd
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
 brew "q"
 brew "reattach-to-user-namespace" # tmux-yank dependencies
-brew "ripgrep" # (a better grep) fzf.vim dependencies #apt
-brew "rsync" #apt
+brew "ripgrep" # (a better grep) fzf.vim dependencies #deb #community-alpine
+brew "rsync" #deb #alpine
 brew "sc-im" #make
-brew "tig" #apt
-brew "tmux" #apt
+brew "tig" #deb #alpine
+brew "tmux" #deb #alpine
 brew "trash"
-brew "wget" #apt
-#apt xsel # tmux-yank dependencies
+brew "wget" #deb #alpine
+#deb xsel # tmux-yank dependencies
 brew "youtube-dl"
 brew "cjbassi/ytop/ytop"
 # ytop  -- not available on apt
-#apt zsh
+#deb zsh
 
 # Apps
 cask "1password"
