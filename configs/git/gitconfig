@@ -19,3 +19,4 @@
   markEmptyLines = false
 [include]
   path = .gitalias
+  path = .gitconfig.platform
