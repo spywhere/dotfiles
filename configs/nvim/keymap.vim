@@ -39,6 +39,9 @@ noremap <leader>l 20zl
 " remove search highlight
 nnoremap <leader>hs :noh<CR>
 
+" quick save
+nnoremap <leader>w :w<CR>
+
 " split panes
 nnoremap <leader><Left> :topleft vnew<CR>
 nnoremap <leader><Right> :botright vnew<CR>
