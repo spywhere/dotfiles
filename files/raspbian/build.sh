@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Recommended setup
 # docker run --privileged -it --rm -w /raspbian -v $(pwd):/app debian:buster-slim bash /app/build.sh
 
@@ -30,7 +32,7 @@ build_rootfs () {
   echo "Done"
 }
 
-if [ "$@" = "rootfs" ]; then
+if test "$1" = "rootfs"; then
   build_rootfs
   exit 0
 fi
