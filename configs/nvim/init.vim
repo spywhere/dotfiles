@@ -22,7 +22,7 @@ set wildignore=*.o,*~,*.pyc
 " File format detection
 set ffs=unix,dos,mac
 
-" Always show status line
+" Always show status line and tab line
 set laststatus=2
 set cmdheight=1
 

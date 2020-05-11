@@ -60,6 +60,7 @@ Plug 'tpope/vim-fugitive'
 
 " Appearances
 Plug 'itchyny/lightline.vim'
+Plug 'mengelbrecht/lightline-bufferline'
 Plug 'maximbaz/lightline-ale'
 Plug 'mhinz/vim-startify'
 
@@ -145,9 +146,22 @@ let g:coc_global_extensions = [
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 
+" Lightline-bufferline
+let g:lightline#bufferline#enable_devicons = 1
+let g:lightline#bufferline#min_buffer_count = 2
+
 " Lightline
 let g:lightline = {
 \   'colorscheme': 'onedark',
+\ }
+
+let g:lightline.tabline = {
+\   'left': [
+\     ['buffers']
+\   ],
+\   'right': [
+\     ['close']
+\   ],
 \ }
 
 let g:lightline.component_expand = {
@@ -156,6 +170,7 @@ let g:lightline.component_expand = {
 \   'linter_warnings': 'lightline#ale#warnings',
 \   'linter_errors': 'lightline#ale#errors',
 \   'linter_ok': 'lightline#ale#ok',
+\   'buffers': 'lightline#bufferline#buffers',
 \ }
 
 let g:lightline.component_type = {
@@ -164,6 +179,7 @@ let g:lightline.component_type = {
 \   'linter_warnings': 'warning',
 \   'linter_errors': 'error',
 \   'linter_ok': 'right',
+\   'buffers': 'tabsel',
 \ }
 
 function! LightlineMode()
