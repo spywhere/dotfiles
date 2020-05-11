@@ -14,24 +14,30 @@ tap "nickolasburr/pfa"
 # Development tools
 # Base
 #deb autotools-dev
+#deb ca-certificates
 #alpine build-base
 #deb pkg-config
 #alpine pkgconfig
+#deb debhelper
+#alpine automake
 
 # hstr
 #deb libncursesw5-dev
-#alpine ncurses-dev
 #deb libreadline-dev
-#alpine readline-dev
 
 # neovim
 #deb cmake #alpine
 #deb gettext #alpine
 #deb libtool #alpine
 #deb libtool-bin
+#alpine openssl
+#deb unzip
+#alpine unzip
+#alpine musl-libintl
 
 # mosh
-#deb debhelper
+#deb g++
+#alpine perl-doc
 #deb protobuf-compiler
 #alpine protoc
 #deb libprotobuf-dev
@@ -43,6 +49,7 @@ tap "nickolasburr/pfa"
 #deb zlib1g-dev
 #alpine zlib-dev
 #deb libncurses5-dev
+#alpine ncurses-dev
 #alpine ncurses-libs
 #deb libssl-dev
 #alpine libressl-dev
@@ -64,7 +71,7 @@ brew "git-lfs"
 brew "git" #deb #alpine
 brew "git-flow" #deb #testing-alpine
 brew "gnupg2"
-brew "hstr" #make (arm arch not supported)
+brew "hstr" #make (arm arch not supported) #alpine
 brew "httpie" #deb #alpine
 brew "jq" #deb #alpine
 brew "lua@5.1" # sc-im dependencies
@@ -117,7 +124,8 @@ cask "quicklook-json"
 cask "quicklookase"
 cask "webpquicklook"
 
-#curl https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch /usr/local/bin/pfetch
+#binary https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch pfetch
+#binary https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy diff-so-fancy
 
 # Fonts
 # Use nerd-fonts instead
