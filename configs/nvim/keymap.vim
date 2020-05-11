@@ -38,6 +38,8 @@ nnoremap <A-j> ddp
 " leading
 let mapleader = ","
 
+noremap <leader>m :call quickui#menu#open()<CR>
+
 noremap <leader>h 20zh
 noremap <leader>l 20zl
 
