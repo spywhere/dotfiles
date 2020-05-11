@@ -20,7 +20,12 @@ nnoremap ;; :
 nnoremap go o<ESC>
 nnoremap gO O<ESC>
 
-" use alt + arrow keys to move lines
+" use alt + left/right keys to switch buffers
+noremap <A-Left> :bprev<CR>
+noremap <A-Right> :bnext<CR>
+noremap <A-w> :bdelete<CR>
+
+" use alt + up/down keys to move lines
 vnoremap <A-Up> dkP1v
 vnoremap <A-k> dkP1v
 vnoremap <A-Down> dp1v
@@ -57,6 +62,8 @@ nnoremap <leader>pp :silent !(echo "pause\nclose"; sleep 0.05) \| nc 127.0.0.1 6
 nnoremap <leader>pn :silent !(echo "next\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
 nnoremap <leader>pr :silent !(echo "previous\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
 
-" ctrl+p
+" navigation / search
 nnoremap <C-p> :Files<CR>
+nnoremap <leader>/ :BLines<CR>
 nnoremap <leader>f :Rg<CR>
+nnoremap <leader>F :RG<CR>
