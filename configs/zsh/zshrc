@@ -14,8 +14,11 @@ if [[ ! -f /usr/local/bin/antibody ]]; then
   curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
 
+setopt hist_ignore_dups # don't record a command that just run
+setopt hist_save_no_dups # don't save duplicate entries to history file
 setopt hist_ignore_all_dups # remove older duplicate entries from history
 setopt hist_reduce_blanks # remove superfluous blanks from history items
+setopt histignorespace # skip command with leading space
 setopt inc_append_history # save history entries as soon as they are entered
 setopt share_history # share history between different instances of the shell
 
@@ -96,6 +99,11 @@ source ~/.zsh_plugins.tmux
 
 # Use fzf if found
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Setup hstr
+if [ `command -v hstr` ]; then
+  . <(hstr --show-zsh-configuration)
+fi
 
 # Export binaries
 export PATH=$HOME/$DOTFILES_NAME/bin:$PATH

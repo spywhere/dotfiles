@@ -1,5 +1,9 @@
 DOTFILES_NAME=.dotfiles
 
+# increase history size
+export HISTSIZE=100000
+export SAVEHIST=1000000
+
 # use ripgrep by default for fzf
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
