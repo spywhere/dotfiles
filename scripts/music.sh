@@ -33,7 +33,7 @@ if [ "$cmus" = "yes" ]; then
 fi
 
 if [ "$mpd" = "yes" ]; then
-  mpd_info=$((echo "status\nclose"; sleep 0.05) | nc $MPD_HOST $MPD_PORT)
+  mpd_info=$( (echo "status\nclose"; sleep 0.05) | nc $MPD_HOST $MPD_PORT)
   if [ "$(echo "$mpd_info" | awk '$1 ~ /^state:/ { print $2 }')" = "play" ]; then
     mpd_status=1
   else
@@ -43,7 +43,7 @@ fi
 
 # if both playing is not running
 if [ $mpd = "no" ] && [ $cmus = "no" ]; then
-  printf ""
+  echo ""
   tmux set-option -g status-interval 5
   exit
 fi
@@ -60,7 +60,7 @@ elif [ $mpd = "yes" ]; then
   status=$mpd_status
   position=$(echo "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f1)
   duration=$(echo "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f2)
-  mpd_info=$((echo "currentsong\nclose"; sleep 0.05) | nc $MPD_HOST $MPD_PORT)
+  mpd_info=$( (echo "currentsong\nclose"; sleep 0.05) | nc $MPD_HOST $MPD_PORT)
   title=$(echo "$mpd_info" | awk 'BEGIN {FS=": "} $1 ~ /^Title$/ { print $2 }')
   artist=$(echo "$mpd_info" | awk 'BEGIN {FS=": "} $1 ~ /^Artist$/ { print $2 }')
 fi
@@ -73,4 +73,4 @@ else
   tmux set-option -g status-interval 5
 fi
 
-printf " %s %s - %s [%02d:%02d/%02d:%02d] " "$symbol" "$artist" "$title" "$(($position / 60))" "$(($position % 60))" "$(($duration / 60))" "$(($duration % 60))"
+printf "%s %s - %s [%02d:%02d/%02d:%02d]" "$symbol" "$artist" "$title" "$(($position / 60))" "$(($position % 60))" "$(($duration / 60))" "$(($duration % 60))"

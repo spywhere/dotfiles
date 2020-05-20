@@ -12,8 +12,4 @@ if [ "$(uname)" = "Darwin" ]; then
   fi
 fi
 
-if [ $docker_start -z ]; then
-  printf ""
-else
-  printf "  %s" $docker_start
-fi
+echo $docker_start
