@@ -29,6 +29,7 @@ Plug 'wellle/tmux-complete.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'AndrewRadev/linediff.vim'
+Plug 'machakann/vim-highlightedyank'
 
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -39,7 +40,7 @@ Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
 Plug 'easymotion/vim-easymotion', { 'on': [] }
 
 " Syntax Highlight
-" Plug 'lilydjwg/colorizer' " Disabled due to slowness on large files
+Plug 'norcalli/nvim-colorizer.lua'
 Plug 'sheerun/vim-polyglot'
 Plug 'kien/rainbow_parentheses.vim'
 
@@ -336,28 +337,10 @@ let g:startify_fortune_use_unicode = 1
 let g:startify_enable_special = 0
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
-" Address issue with NERDTree
-"   https://github.com/Yggdroot/indentLine/issues/152
-" function EnableLeadingSpace()
-  " if bufname() =~ 'NERD_tree'
-    " call DisableSpaceVisual()
-    " return
-  " elseif &filetype == 'startify'
-    " call DisableSpaceVisual()
-    " return
-  " endif
+" colorizer
+lua require'colorizer'.setup()
+" lua require'colorizer'.setup {
+" \   'css';
+" \   'html';
+" \ }
 
-  " :LeadingSpaceEnable
-  " :set list
-" endfunction
-
-" function DisableSpaceVisual()
-  " :LeadingSpaceDisable
-  " :set nolist
-" endfunction
-
-" autocmd InsertEnter * call DisableSpaceVisual()
-" autocmd InsertLeave * call EnableLeadingSpace()
-" autocmd BufEnter * call EnableLeadingSpace()
-" autocmd InsertLeave * call EnableLeadingSpace()
-" autocmd BufEnter * call EnableLeadingSpace()
