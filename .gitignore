@@ -6,6 +6,7 @@ configs/mpd/**
 !configs/mpd/playlists/.gitkeep
 configs/ncmpcpp/**
 !configs/ncmpcpp/config
+deps
 **.zip
 **.tar.gz
 **.log
