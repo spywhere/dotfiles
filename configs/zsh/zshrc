@@ -14,6 +14,9 @@ if [[ ! -f /usr/local/bin/antibody ]]; then
   curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
 
+# Will use this instead of spaceship prompt when available for arm arch
+# curl -fsSL https://starship.rs/install.sh | bash
+
 setopt hist_ignore_dups # don't record a command that just run
 setopt hist_save_no_dups # don't save duplicate entries to history file
 setopt hist_ignore_all_dups # remove older duplicate entries from history
@@ -52,10 +55,12 @@ SPACESHIP_PROMPT_ORDER=(
   char
 )
 SPACESHIP_RPROMPT_ORDER=(
+  time
   host
   exec_time
 )
 SPACESHIP_USER_SHOW=needed
+SPACESHIP_HOST_PREFIX="on "
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_SEPARATE_LINE=false
 
