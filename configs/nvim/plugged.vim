@@ -194,7 +194,7 @@ call quickui#menu#install('&View', [
 \   [" Command &Palette\t:Commands", 'Commands', 'Open a command list'],
 \   ['--'],
 \   ["%{exists('w:indentLine_indentLineId') && ! empty(w:indentLine_indentLineId)?'✓':' '}Render &Indent Guides\t:IndentLinesToggle", 'IndentLinesToggle', 'Toggle indentation guide lines'],
-\   ["%{&list?'✓':' '}&Render Whitespace\t:set invlist", 'set invlist', 'Toggle render of whitespace characters'],
+\   ["%{&list?'✓':' '}&Render Whitespace\t:set invlist", 'set invlist | LeadingSpaceToggle', 'Toggle render of whitespace characters'],
 \   ["%{&wrap?'✓':' '}&Word Wrap\t:set invwrap", 'set invwrap', 'Toggle a word wrap'],
 \   ['--'],
 \   ["%{&spell?'✓':' '}&Spell Check\t:set invspell", 'set invspell', 'Toggle a spell check'],
