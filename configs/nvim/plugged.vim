@@ -175,6 +175,7 @@ call quickui#menu#install('&File', [
 \   ["&Reload %{&modified?'Unsaved ':''}Buffer\t:edit!", 'edit!', 'Reload current buffer'],
 \   ["Close &Window\t<C-w>q", 'close', 'Close current window'],
 \   ["&Close %{&modified?'Unsaved ':''}Buffer\t<A-w>", 'bdelete!', 'Close current buffer'],
+\   ["Close &Others\t<A-w>", '%bd | e# | bd#', 'Close all buffers including no name except current one'],
 \ ])
 call quickui#menu#install('&Edit', [
 \   ["&Undo\tu", 'undo', 'Undo the latest change'],
