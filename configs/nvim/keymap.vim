@@ -6,8 +6,10 @@ map nf :NERDTreeFind<cr>
 nnoremap Q <Nop>
 
 " arrow keys resize pane
-nnoremap <A-Left> :vertical resize -5<CR>
-nnoremap <A-Right> :vertical resize +5<CR>
+nnoremap <A-S-Left> :vertical resize -5<CR>
+nnoremap <A-S-Right> :vertical resize +5<CR>
+nnoremap <A-S-Up> :resize -5<CR>
+nnoremap <A-S-Down> :resize +5<CR>
 nnoremap <Left> :vertical resize -1<CR>
 nnoremap <Right> :vertical resize +1<CR>
 nnoremap <Up> :resize -1<CR>
@@ -23,7 +25,10 @@ nnoremap gO O<ESC>
 " use alt + left/right keys to switch buffers
 noremap <A-Left> :bprev<CR>
 noremap <A-Right> :bnext<CR>
+" use alt + w to close current buffer
 noremap <A-w> :bdelete<CR>
+" use alt + W to close all buffers but current one
+noremap <A-W> :%bd <BAR> e# <BAR> bd#<CR>
 
 " use alt + up/down keys to move lines
 vnoremap <A-Up> dkP1v
