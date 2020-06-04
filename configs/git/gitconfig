@@ -20,3 +20,5 @@
 [include]
   path = .gitalias
   path = .gitconfig.platform
+[pull]
+	ff = only
