@@ -23,6 +23,19 @@ key_bindings:
   - key: N
     mods: Command
     action: SpawnNewInstance
+  # https://github.com/alacritty/alacritty/issues/623
+  - key: W
+    mods: Alt
+    chars: "\x1bw"
+  - key: W
+    mods: Alt|Shift
+    chars: "\x1bW"
+  - key: J
+    mods: Alt
+    chars: "\x1bj"
+  - key: K
+    mods: Alt
+    chars: "\x1bk"
 
 # Colors (Pastel - Dark Background)
 colors:
