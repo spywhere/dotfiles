@@ -23,6 +23,21 @@ alias https="http --default-scheme=https"
 # Docker
 alias d='docker'
 
+map() {
+  if test `command -v npx`; then
+    npx mapscii
+    return
+  fi
+  docker info >/dev/null 2>&1
+  if test $? -eq 0; then
+    docker run -it --rm --name map-cli node:lts-alpine npx mapscii
+    return
+  fi
+  if test `command -v telnet`; then
+    telnet mapscii.me
+  fi
+}
+
 # Test if docker is running or not
 docker info >/dev/null 2>&1
 if [ $? -eq 0 ]; then
