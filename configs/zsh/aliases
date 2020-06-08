@@ -14,14 +14,39 @@ alias l="exa -lFh --git"
 alias la="exa -laFh --git"
 alias ll="exa -l --git"
 
-# news
 alias news="curl -sSL hackurls.com/ascii | less"
+alias reddit="ssh redditbox.us"
 
+# termbin (pipe text to this alias)
+alias tb="nc termbin.com 9999"
+
+# show public ip
+if test `command -v curl`; then
+  alias myip="curl eth0.me"
+else
+  alias myip="echo GET / | nc eth0.me 80"
+fi
 # HTTPie
 alias https="http --default-scheme=https"
 
 # Docker
 alias d='docker'
+
+transfer() {
+  if test $# -eq 0; then
+    echo -e "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"
+    return 1
+  fi 
+  tmpfile=$(mktemp -t transferXXX);
+  if tty -s; then
+    basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
+    curl --progress-bar --upload-file "$1" "https://transfer.sh/$basefile" >> $tmpfile
+  else
+    curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile
+  fi
+  cat $tmpfile
+  rm -f $tmpfile
+} 
 
 map() {
   if test `command -v npx`; then
