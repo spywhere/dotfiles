@@ -20,8 +20,8 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/vim-parenmatch'
-Plug 'terryma/vim-multiple-cursors'
 
+" Autocompletion
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'wellle/tmux-complete.vim'
 
@@ -53,6 +53,7 @@ Plug 'moll/vim-node'
 Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
 
+" Documentation
 Plug 'kkoomen/vim-doge', { 'on': 'DogeGenerate' }
 
 " Git
@@ -78,6 +79,7 @@ Plug 'tpope/vim-obsession'
 Plug 'djoshea/vim-autoread'
 
 " Color scheme
+" Plug 'gruvbox-community/gruvbox'
 Plug 'joshdick/onedark.vim'
 
 call plug#end()
@@ -102,6 +104,11 @@ if (has("autocmd"))
 endif
 
 colorscheme onedark
+"
+" colorscheme gruvbox
+" set background=dark
+
+let g:gruvbox_contrast_dark = 'hard'
 
 " start NERDTree on startup
 " autocmd VimEnter * NERDTree
