@@ -90,6 +90,7 @@ brew "reattach-to-user-namespace" # tmux-yank dependencies
 brew "ripgrep" # (a better grep) fzf.vim dependencies #deb #community-alpine
 brew "rsync" #deb #alpine
 brew "sc-im" #make
+#deb sysstat
 brew "tig" #deb #alpine
 brew "tmux" #deb #alpine
 brew "trash"
