@@ -14,6 +14,9 @@ alias l="exa -lFh --git"
 alias la="exa -laFh --git"
 alias ll="exa -l --git"
 
+# bat (cat replacement)
+alias cat="bat"
+
 alias news="curl -sSL hackurls.com/ascii | less"
 alias reddit="ssh redditbox.us"
 

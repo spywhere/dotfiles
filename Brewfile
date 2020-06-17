@@ -62,9 +62,10 @@ tap "nickolasburr/pfa"
 
 # Binaries
 brew "bash" # Bash 4 #deb #alpine
+brew "bat" # cat replacement
 brew "coreutils" # Those that come with macOS are outdated
 #deb curl #alpine
-brew "diff-so-fancy"
+brew "git-delta"
 #deb dnsmasq #alpine
 brew "exa" #deb #alpine
 brew "git-lfs"
@@ -125,8 +126,10 @@ cask "quicklook-json"
 cask "quicklookase"
 cask "webpquicklook"
 
+#dpkg https://github.com/sharkdp/bat/releases/download/v0.15.4/bat_0.15.4_armhf.deb
+#dpkg https://github.com/dandavison/delta/releases/download/0.1.1/git-delta_0.1.1_armhf.deb
+
 #binary https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch pfetch
-#binary https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy diff-so-fancy
 
 # Fonts
 # Use nerd-fonts instead
