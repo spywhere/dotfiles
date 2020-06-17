@@ -1,6 +1,8 @@
 #########
 # Shell #
 #########
+
+unalias fd
 # fd - cd to selected directory
 fd() {
   local dir
