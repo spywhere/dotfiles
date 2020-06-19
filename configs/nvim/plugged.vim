@@ -20,6 +20,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/vim-parenmatch'
+Plug 'christoomey/vim-sort-motion'
 
 " Autocompletion
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
@@ -35,6 +36,7 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-rsi'
+Plug 'wellle/targets.vim'
 Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
 " Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
 Plug 'easymotion/vim-easymotion', { 'on': [] }
