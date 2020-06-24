@@ -1,6 +1,9 @@
 #!/bin/bash
 DOTFILES_NAME=.dotfiles
 
+# Ctrl+Z will send the process to background, use "resume" to bring it back
+alias resume="fg"
+
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 alias reloadzshplugins="rm -f ~/.zsh_plugins ~/.zsh_plugins.tmux && source ~/.zshrc"
