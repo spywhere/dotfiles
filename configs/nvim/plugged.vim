@@ -11,6 +11,7 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'airblade/vim-rooter'
 
 " Editing
 Plug 'remko/detectindent', { 'on': 'DetectIndent' }
@@ -90,6 +91,12 @@ if !exists("g:init_vim_loaded")
   finish
 endif
 
+" Automatically install missing plugins on startup
+autocmd VimEnter *
+\  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+\  |   PlugInstall --sync | q
+\  | endif
+
 syntax on
 
 if (has("autocmd"))
@@ -131,6 +138,9 @@ let g:NERDTreeHighlightFoldersFullName = 1
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
+
+" fzf
+let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 
 " Rg command tweaks to search only file content
 command! -bang -nargs=* Rg
