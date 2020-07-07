@@ -87,6 +87,7 @@ if [ $? -eq 0 ]; then
   alias terraform="docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app:delegated -w /opt/app hashicorp/terraform"
   alias sqlite3="docker run -it --rm --name sqlite3-cli -v \$(pwd):/opt/app:delegated -w /opt/app nouchka/sqlite3"
   alias redis-cli="docker run -it --rm --name redis-cli redis:alpine redis-cli"
+  alias codeclimate="docker run -it --rm -e CODECLIMATE_CODE=\"\$PWD\" -v \"\$PWD\":/code -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/cc:/tmp/cc codeclimate/codeclimate"
   alias build-wtfutil="curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
   alias wtfutil="docker run -it --rm --name wtfutil -v ${HOME}/$DOTFILES_NAME/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
   alias browsh="docker run --rm -it browsh/browsh"
