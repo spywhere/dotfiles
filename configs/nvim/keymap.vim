@@ -71,6 +71,10 @@ nnoremap <leader>pr :silent !(echo "previous\nclose"; sleep 0.05) \| nc 127.0.0.
 
 " navigation / search
 nnoremap <C-p> :Files<CR>
+nnoremap <C-A-p> :Files!<CR>
 nnoremap <leader>/ :BLines<CR>
+nnoremap <leader><A-/> :BLines!<CR>
 nnoremap <leader>f :Rg<CR>
+nnoremap <leader><A-f> :Rg!<CR>
 nnoremap <leader>F :RG<CR>
+nnoremap <leader><A-F> :RG!<CR>
