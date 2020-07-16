@@ -119,8 +119,6 @@ docker-aliases() {
   _toggle_alias docker-update "(docker images --format \"{{.Repository}}:{{.Tag}}\" | xargs -n1 docker pull) && (docker rmi \$(docker images 0f \"dangling=true\" -q))"
 }
 
-docker-aliases
-
 unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then
   vol() {
