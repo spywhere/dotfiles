@@ -363,6 +363,9 @@ let g:lightline.active = {
 \   ]
 \ }
 
+" vim-rooter
+let g:rooter_silent_chdir = 1
+
 " indentLine
 let g:indentLine_char = '|'
 let g:indentLine_leadingSpaceChar = '·'
