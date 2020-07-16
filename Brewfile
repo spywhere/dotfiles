@@ -93,7 +93,7 @@ brew "rsync" #deb #alpine
 brew "sc-im" #make
 #deb sysstat
 brew "tig" #deb #alpine
-brew "tmux" #deb #alpine
+brew "tmux" #make # tmux on arm is still outdated
 brew "trash"
 brew "wget" #deb #alpine
 #deb xsel # tmux-yank dependencies
