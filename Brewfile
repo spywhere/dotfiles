@@ -60,6 +60,9 @@ tap "nickolasburr/pfa"
 #deb libxml2-dev #alpine
 #deb libzip-dev #alpine
 
+# tmux
+#deb libevent-dev
+
 # Binaries
 brew "bash" # Bash 4 #deb #alpine
 brew "bat" # cat replacement
