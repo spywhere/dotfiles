@@ -156,6 +156,7 @@ CONFIG_SYMLINK=511
 RUN_LOCAL=0
 DUMB=0
 KEEP_FILES=0
+FORCE_INSTALL=0
 SILENT=0
 VERBOSE=0
 PRINT_CONFIG=0
@@ -188,6 +189,9 @@ main() {
       -k | --keep)
         KEEP_FILES=1
         ;;
+      -f | --force)
+        FORCE_INSTALL=1
+        ;;
       -s | --silent)
         SILENT=1
         ;;
@@ -213,7 +217,6 @@ main() {
         ;;
       -*)
         echo "ERROR: unknown flag \"$1\""
-        usage
         quit 1
         ;;
       *)
@@ -295,12 +298,10 @@ main() {
         ;;
       -*)
         echo "ERROR: expect option but got a flag \"$1\" instead"
-        usage
         quit 1
         ;;
       *)
         echo "ERROR: unknown option \"$1\""
-        usage
         quit 1
         ;;
     esac
@@ -327,6 +328,7 @@ usage() {
   print 20 "  -l, --local" "Run install script locally without update"
   print 20 "  -d, --dumb" "Do not attempt to install dependencies automatically"
   print 20 "  -k, --keep" "Keep downloaded dependencies"
+  print 20 "  -f, --force" "Force reinstall any installed packages when possible"
   print 20 "  -s, --silent" "Suppress output messages when possible"
   print 20 "  -v, --verbose" "Produce command output messages when possible"
   print 20 "  --save" "Produce an option set"
@@ -396,16 +398,16 @@ setup_sudo() {
   fi
 
   print "Installing sudo..."
-  do_command apt update
-  do_command apt install -y sudo
+  if test $OS = "Debian"; then
+    do_command apt update
+    do_command apt install -y sudo
+  elif test $OS = "Alpine"; then
+    do_command apk update
+    do_command apk add sudo
+  fi
 }
 
 try_install() {
-  if test "$DUMB" -eq 1; then
-    error "Failed: Command \"$1\" is required"
-    quit 1
-  fi
-
   if test $OS = "Mac"; then
     setup_homebrew
     print "Installing $1..."
@@ -417,6 +419,7 @@ try_install() {
     do_command sudo apt update
     do_command sudo apt install --no-install-recommends -y "$1"
   elif test $OS = "Alpine"; then
+    setup_sudo
     print "Installing $1..."
     do_command apk update
     do_command apk add "$1"
@@ -430,6 +433,11 @@ try_command() {
   if test `command -v "$1"`; then
     return
   fi
+  if test "$DUMB" -eq 1; then
+    error "Failed: Command \"$1\" is required"
+    quit 1
+  fi
+
   try_install "$1"
 }
 
@@ -446,8 +454,8 @@ clone() {
   if test -n "$3"; then
     print "Cloning $3..."
   fi
-  # do_command git clone "$1" "$2"
-  cp -r /etc/app "$2"
+
+  do_command git clone "$1" "$2"
 }
 
 try_run_install() {
@@ -458,7 +466,11 @@ try_run_install() {
       quit 1
     fi
 
-    clone https://github.com/spywhere/dotfiles "$HOME/$DOTFILES" dotfiles
+    if test "$VERBOSE" -eq 0; then
+      clone https://github.com/spywhere/dotfiles "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES"
+    else
+      clone https://github.com/spywhere/dotfiles "$HOME/$DOTFILES" "dotfiles"
+    fi
     SKIP_UPDATE=1
   fi
 

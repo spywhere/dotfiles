@@ -17,20 +17,20 @@ install_packages() {
 
     # Install all our dependencies with bundle (See Brewfile)
     print "Satisfying dependencies..."
-    brew tap homebrew/bundle
-    brew bundle
+    do_command brew tap homebrew/bundle
+    do_command brew bundle
   elif test $OS = "Debian"; then
     print "Installing packages..."
-    grep "#deb" Brewfile | cut -d' ' -f2 | xargs sudo apt install --no-install-recommends -y
+    do_command grep "#deb" Brewfile | cut -d' ' -f2 | xargs sudo apt install --no-install-recommends -y
   elif test $OS = "Alpine"; then
     print "Installing edge packages..."
-    grep "#edge-alpine" Brewfile | cut -d' ' -f2 | xargs apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
+    do_command grep "#edge-alpine" Brewfile | cut -d' ' -f2 | xargs apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
     print "Installing testing packages..."
-    grep "#testing-alpine" Brewfile | cut -d' ' -f2 | xargs apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    do_command grep "#testing-alpine" Brewfile | cut -d' ' -f2 | xargs apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
     print "Installing community packages..."
-    grep "#community-alpine" Brewfile | cut -d' ' -f2 | xargs apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+    do_command grep "#community-alpine" Brewfile | cut -d' ' -f2 | xargs apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
     print "Installing packages..."
-    grep "#alpine" Brewfile | cut -d' ' -f2 | xargs apk add
+    do_command grep "#alpine" Brewfile | cut -d' ' -f2 | xargs apk add
   else
     error "Failed: Unsupported operating system"
     quit 1
