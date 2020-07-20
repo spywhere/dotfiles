@@ -17,12 +17,12 @@ fi
 # Will use this instead of spaceship prompt when available for arm arch
 # curl -fsSL https://starship.rs/install.sh | bash
 
+setopt append_history # append history list to history file, rather than replace it
 setopt hist_ignore_dups # don't record a command that just run
 setopt hist_save_no_dups # don't save duplicate entries to history file
 setopt hist_ignore_all_dups # remove older duplicate entries from history
 setopt hist_reduce_blanks # remove superfluous blanks from history items
-setopt histignorespace # skip command with leading space
-setopt inc_append_history # save history entries as soon as they are entered
+setopt hist_ignore_space # skip command with leading space
 setopt share_history # share history between different instances of the shell
 
 setopt auto_cd # cd by typing directory name if it's not a command
