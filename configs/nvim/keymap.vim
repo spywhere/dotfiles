@@ -15,9 +15,6 @@ nnoremap <Right> :vertical resize +1<CR>
 nnoremap <Up> :resize -1<CR>
 nnoremap <Down> :resize +1<CR>
 
-" shortcut for enter command mode
-nnoremap ;; :
-
 " quick add line
 nnoremap go o<ESC>
 nnoremap gO O<ESC>
@@ -63,11 +60,6 @@ nnoremap <leader><Up><Left> :leftabove vnew<CR>
 nnoremap <leader><Up><Right> :rightbelow vnew<CR>
 nnoremap <leader><Down><Left> :rightbelow new<CR>
 nnoremap <leader><Down><Right> :leftabove new<CR>
-
-" cmus controls
-nnoremap <leader>pp :silent !(echo "pause\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
-nnoremap <leader>pn :silent !(echo "next\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
-nnoremap <leader>pr :silent !(echo "previous\nclose"; sleep 0.05) \| nc 127.0.0.1 6600<CR>
 
 " navigation / search
 nnoremap <C-p> :Files<CR>

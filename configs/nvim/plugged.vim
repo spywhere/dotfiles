@@ -119,6 +119,11 @@ colorscheme onedark
 
 let g:gruvbox_contrast_dark = 'hard'
 
+" Kill the annoyance
+command -bang Q quit<bang>
+command -bang Qa quitall<bang>
+command -bang QA quitall<bang>
+
 " start NERDTree on startup
 " autocmd VimEnter * NERDTree
 let NERDTreeSortHiddenFirst = 1
