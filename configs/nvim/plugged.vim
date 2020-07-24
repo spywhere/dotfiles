@@ -258,7 +258,7 @@ let g:lightline.tabline = {
 \     ['buffers']
 \   ],
 \   'right': [
-\     ['close']
+\     []
 \   ],
 \ }
 
