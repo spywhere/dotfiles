@@ -13,7 +13,9 @@ scrolling:
 font:
   normal:
     family: JetbrainsMono Nerd Font
+    # family: ProggyCleanTTSZ Nerd Font Mono
   size: 12
+  # size: 15
 
 env:
   # https://github.com/jwilm/alacritty/issues/2566
