@@ -56,7 +56,6 @@ set tabstop=2
 set listchars=tab:→\ ,trail:·,nbsp:·
 
 set autoread
-set guifont=JetbrainsMonoNerdFontMono:h12
 
 " disable netrw in favor of NERDTree
 let loaded_netrwPlugin = 1
