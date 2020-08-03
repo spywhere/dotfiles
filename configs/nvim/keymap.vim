@@ -5,6 +5,9 @@ map nf :NERDTreeFind<cr>
 " kill the annoyance
 nnoremap Q <Nop>
 
+" easier command access
+nnoremap <CR> :
+
 " arrow keys resize pane
 nnoremap <A-S-Left> :vertical resize -5<CR>
 nnoremap <A-S-Right> :vertical resize +5<CR>

@@ -124,6 +124,9 @@ command -bang Q quit<bang>
 command -bang Qa quitall<bang>
 command -bang QA quitall<bang>
 
+" Write read-only file with sudo
+command! WS w !sudo tee %
+
 " start NERDTree on startup
 " autocmd VimEnter * NERDTree
 let NERDTreeSortHiddenFirst = 1
