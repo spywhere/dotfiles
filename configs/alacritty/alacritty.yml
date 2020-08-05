@@ -1,8 +1,7 @@
-dynamic_title: true
-
 alt_send_esc: true
 
 window:
+  dynamic_title: true
   dimensions:
     columns: 240
     lines: 60
