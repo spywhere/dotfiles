@@ -23,6 +23,10 @@ alias cat="bat"
 alias news="curl -sSL hackurls.com/ascii | less"
 alias reddit="ssh redditbox.us"
 
+# unicode test
+alias utf8demo="curl -sSL https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-demo.txt"
+alias quickbrown="curl -sSL https://www.cl.cam.ac.uk/~mgk25/ucs/examples/quickbrown.txt"
+
 # termbin (pipe text to this alias)
 alias tb="nc termbin.com 9999"
 
