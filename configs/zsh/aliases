@@ -7,6 +7,7 @@ alias resume="fg"
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 alias reloadzshplugins="rm -f ~/.zsh_plugins ~/.zsh_plugins.tmux && source ~/.zshrc"
+alias flashlight="printf \"$(tput setab 7)$(tput clear)\" && sleep 10"
 
 alias dr="defaults read"
 alias dw="defaults write"
