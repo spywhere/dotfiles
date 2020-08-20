@@ -109,6 +109,7 @@ docker-aliases() {
   _toggle_alias terraform "docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app:delegated -w /opt/app hashicorp/terraform"
   _toggle_alias sqlite3 "docker run -it --rm --name sqlite3-cli -v \$(pwd):/opt/app:delegated -w /opt/app nouchka/sqlite3"
   _toggle_alias redis-cli "docker run -it --rm --name redis-cli redis:alpine redis-cli"
+  _toggle_alias mongo "docker run -it --rm --name mongo-cli webhippie/mongodb mongo"
   _toggle_alias codeclimate "docker run -it --rm -e CODECLIMATE_CODE=\"\$PWD\" -v \"\$PWD\":/code -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/cc:/tmp/cc codeclimate/codeclimate"
   _toggle_alias build-wtfutil "curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
   _toggle_alias wtfutil "docker run -it --rm --name wtfutil -v ${HOME}/$DOTFILES_NAME/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
@@ -117,7 +118,7 @@ docker-aliases() {
   # Docker version of tools
   _toggle_alias docker-redis "docker run -d -p 6379:6379 --rm --name redis redis:alpine"
   _toggle_alias docker-redis-cluster "docker run -d -p 7000-7050:7000-7050 -p 5000-5010:5000-5010 --rm --name redis-cluster grokzen/redis-cluster"
-  _toggle_alias docker-mongo "docker run -d -p 27017:27017 --rm --name mongo mongo"
+  _toggle_alias docker-mongo "docker run -d -p 27017:27017 --rm --name mongo webhippie/mongodb"
   _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/mysql/config:/etc/mysql/conf.d --name mysql mysql:5.7"
 
   # Shortcut
