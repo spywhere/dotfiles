@@ -25,7 +25,7 @@ make_docker() {
   if test "`whoami`" = "root"; then
     print "run as root: no user group set"
   else
-    do_command sudo usermod -aG docker $USER
+    do_sudo_command usermod -aG docker $USER
   fi
 }
 
@@ -54,7 +54,7 @@ make_hstr() {
   do_command make
   # debug
   print "installing..."
-  do_command sudo make install
+  do_sudo_command make install
 }
 
 # References:
@@ -63,7 +63,7 @@ make_neovim() {
   clone https://github.com/neovim/neovim neovim neovim
   do_command cd neovim
   do_command make CMAKE_BUILD_TYPE=Release
-  do_command sudo make install
+  do_sudo_command make install
 }
 
 # References:
@@ -74,7 +74,7 @@ make_mosh() {
   do_command ./autogen.sh
   do_command ./configure
   do_command make
-  do_command sudo make install
+  do_sudo_command make install
 }
 
 make_sc_im() {
@@ -85,26 +85,30 @@ make_sc_im() {
   clone https://github.com/jmcnamara/libxlsxwriter.git libxlsxwriter
   do_command cd libxlsxwriter/
   do_command make
-  do_command sudo make install
-  do_command sudo ldconfig
+  do_sudo_command make install
+  do_sudo_command ldconfig
   do_command cd "$DEPS_DIR"
   clone https://github.com/andmarti1424/sc-im.git sc-im sc-im
   do_command cd sc-im/src
   do_command make
-  do_command sudo make install
+  do_sudo_command make install
 }
 
 try_make() {
-  if (
-    test -n "$2" && test `command -v "$2"`
-  ) || (
-    test `command -v "$1"`
-  ); then
-    print "$1 is already installed"
+  if test "$(( $1 >> $2 & 1 ))" -eq 0; then
     return
   fi
 
-  print "Installing $1..."
+  if (
+    test -n "$4" && test `command -v "$4"`
+  ) || (
+    test `command -v "$3"`
+  ); then
+    print "$3 is already installed"
+    return
+  fi
+
+  print "Installing $3..."
   PREVIOUS_DIR=`pwd`
   do_command mkdir -p "$DEPS_DIR"
   do_command cd "$DEPS_DIR"
@@ -135,12 +139,11 @@ make_packages() {
   if test -d "$DEPS_DIR"; then
     do_command rm -rf "$DEPS_DIR"
   fi
-  setup_sudo
-  try_make hstr
-  try_make docker
-  try_make neovim nvim
-  try_make mosh
-  try_make sc-im
+  try_make $CONFIG_MAKE 0 hstr
+  try_make $CONFIG_MAKE 1 docker
+  try_make $CONFIG_MAKE 2 neovim nvim
+  try_make $CONFIG_MAKE 3 mosh
+  try_make $CONFIG_MAKE 4 sc-im
 }
 
 make_packages

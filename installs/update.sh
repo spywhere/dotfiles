@@ -19,11 +19,10 @@ update() {
     print "Updating packages... this might take a while..."
     do_command brew upgrade
   elif test $OS = "Debian"; then
-    setup_sudo
     print "Updating package repositories..."
-    do_command sudo apt update
+    do_sudo_command apt update
     print "Updating packages... this might take a while..."
-    do_command sudo apt full-upgrade -y
+    do_sudo_command apt full-upgrade -y
   elif test $OS = "Alpine"; then
     print "Updating package repositories..."
     do_command apk update

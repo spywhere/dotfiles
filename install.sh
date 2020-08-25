@@ -153,6 +153,7 @@ detect_os() {
 
 # All options turned on
 CONFIG=1023
+CONFIG_MAKE=31
 CONFIG_VERMGR=3
 CONFIG_SYMLINK=511
 RUN_LOCAL=0
@@ -205,10 +206,14 @@ main() {
         ;;
       --load)
         LOAD_CONFIG=`echo $VALUE | cut -s -d'-' -f1`
-        LOAD_CONFIG_VERMGR=`echo $VALUE | cut -s -d'-' -f2`
-        LOAD_CONFIG_SYMLINK=`echo $VALUE | cut -s -d'-' -f3`
+        LOAD_CONFIG_MAKE=`echo $VALUE | cut -s -d'-' -f2`
+        LOAD_CONFIG_VERMGR=`echo $VALUE | cut -s -d'-' -f3`
+        LOAD_CONFIG_SYMLINK=`echo $VALUE | cut -s -d'-' -f4`
         if is_number "$LOAD_CONFIG"; then
           CONFIG="$LOAD_CONFIG"
+        fi
+        if is_number "$LOAD_CONFIG_MAKE"; then
+          CONFIG_MAKE="$LOAD_CONFIG_MAKE"
         fi
         if is_number "$LOAD_CONFIG_VERMGR"; then
           CONFIG_VERMGR="$LOAD_CONFIG_VERMGR"
@@ -247,6 +252,24 @@ main() {
       make | nomake)
         CONFIG=`set_config $CONFIG 3 $1`
         ;;
+      nomake-all)
+        CONFIG_MAKE=0
+        ;;
+      make-hstr | nomake-hstr)
+        CONFIG_MAKE=`set_config $CONFIG_MAKE 0 $1`
+        ;;
+      make-docker | nomake-docker)
+        CONFIG_MAKE=`set_config $CONFIG_MAKE 1 $1`
+        ;;
+      make-nvim | nomake-nvim)
+        CONFIG_MAKE=`set_config $CONFIG_MAKE 2 $1`
+        ;;
+      make-mosh | nomake-mosh)
+        CONFIG_MAKE=`set_config $CONFIG_MAKE 3 $1`
+        ;;
+      make-sc-im | nomake-sc-im)
+        CONFIG_MAKE=`set_config $CONFIG_MAKE 4 $1`
+        ;;
       shell | noshell)
         CONFIG=`set_config $CONFIG 4 $1`
         ;;
@@ -262,6 +285,9 @@ main() {
       vermgr | novermgr)
         CONFIG=`set_config $CONFIG 8 $1`
         ;;
+      novermgr-all)
+        CONFIG_VERMGR=0
+        ;;
       vermgr-plugin | novermgr-plugin)
         CONFIG_VERMGR=`set_config $CONFIG_VERMGR 0 $1`
         ;;
@@ -270,6 +296,9 @@ main() {
         ;;
       config | noconfig)
         CONFIG=`set_config $CONFIG 9 $1`
+        ;;
+      noconfig-all)
+        CONFIG_SYMLINK=0
         ;;
       alacritty | noalacritty)
         CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 0 $1`
@@ -312,7 +341,7 @@ main() {
   done
 
   if test "$PRINT_CONFIG" -eq 1; then
-    echo "$CONFIG-$CONFIG_VERMGR-$CONFIG_SYMLINK"
+    echo "$CONFIG-$CONFIG_MAKE-$CONFIG_VERMGR-$CONFIG_SYMLINK"
     quit
   fi
 
@@ -347,14 +376,22 @@ usage() {
   print 20 "  package" "Install packages"
   print 20 "  binary" "Install raw binary files"
   print 20 "  make" "Build and install packages from source"
+  print 20 "    nomake-all" "Turn off all installation options"
+  print 20 "    make-hstr" "Install hstr (better history)"
+  print 20 "    make-docker" "Install Docker (container engine)"
+  print 20 "    make-nvim" "Install neovim (editor)"
+  print 20 "    make-mosh" "Install mosh (mobile shell)"
+  print 20 "    make-sc-im" "Install sc-im (spreadsheet)"
   print 20 "  shell" "Update the shell"
   print 20 "  zsh" "Symlink a .zshrc"
   print 20 "  setup" "Setup the system preferences"
   print 20 "  font" "Install fonts"
   print 20 "  vermgr" "Install version manager"
+  print 20 "    novermgr-all" "Turn off all version manager options"
   print 20 "    vermgr-plugin" "Install version manager plugins"
   print 20 "    tool-version" "Tool versions"
-  print 20 "  config" "Symlink configs (no symlink at all if turned off)"
+  print 20 "  config" "Symlink configs"
+  print 20 "    noconfig-all" "Turn off all symlink options"
   print 20 "    alacritty" "alacritty configs"
   print 20 "    tmux" "tmux configs and plugin manager"
   print 20 "    git" "git configs"
@@ -395,19 +432,12 @@ setup_homebrew() {
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 
-setup_sudo() {
+check_sudo() {
   if test `command -v "sudo"`; then
     return
   fi
 
-  print "Installing sudo..."
-  if test $OS = "Debian"; then
-    do_command apt update
-    do_command apt install -y sudo
-  elif test $OS = "Alpine"; then
-    do_command apk update
-    do_command apk add sudo
-  fi
+  error "Failed: insufficient permission, no 'sudo' available"
 }
 
 try_install() {
@@ -417,12 +447,10 @@ try_install() {
     do_command brew update
     do_command brew install "$1"
   elif test $OS = "Debian"; then
-    setup_sudo
     print "Installing $1..."
-    do_command sudo apt update
-    do_command sudo apt install --no-install-recommends -y "$1"
+    do_sudo_command apt update
+    do_sudo_command apt install --no-install-recommends -y "$1"
   elif test $OS = "Alpine"; then
-    setup_sudo
     print "Installing $1..."
     do_command apk update
     do_command apk add "$1"
@@ -442,6 +470,15 @@ try_command() {
   fi
 
   try_install "$1"
+}
+
+do_sudo_command() {
+  if test "`whoami`" = "root"; then
+    do_command $@
+  else
+    check_sudo
+    do_command sudo $@
+  fi
 }
 
 do_command() {

@@ -73,7 +73,7 @@ brew "git-delta"
 brew "exa" #deb #alpine
 brew "git-lfs"
 brew "git" #deb #alpine
-brew "git-flow" #deb #testing-alpine
+brew "git-flow" #deb #community-alpine
 brew "gnupg2"
 brew "hstr" #make (arm arch not supported) #alpine
 brew "httpie" #deb #alpine
