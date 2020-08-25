@@ -37,11 +37,23 @@ make_hstr() {
     return
   fi
   clone https://github.com/dvorka/hstr hstr hstr
+  # debug
+  print "entering build directory..."
   do_command cd ./hstr/build/tarball
-  do_command ./tarball-automake.sh
+  # debug
+  print "preparing..."
+  do_command sh ./tarball-automake.sh
+  # debug
+  print "exiting build directory..."
   do_command cd ../..
+  # debug
+  print "configuring..."
   do_command ./configure
+  # debug
+  print "compiling..."
   do_command make
+  # debug
+  print "installing..."
   do_command sudo make install
 }
 
@@ -124,8 +136,8 @@ make_packages() {
     do_command rm -rf "$DEPS_DIR"
   fi
   setup_sudo
-  try_make docker
   try_make hstr
+  try_make docker
   try_make neovim nvim
   try_make mosh
   try_make sc-im

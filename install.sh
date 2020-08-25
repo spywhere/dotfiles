@@ -118,6 +118,8 @@ set_config() {
   esac
 }
 
+# Check if the given string is a number
+#   is_number <value>
 is_number() {
   DIGIT_LENGTH=`expr "x$1" : "x[0-9]*$"`
   if test "$DIGIT_LENGTH" -eq 1; then
@@ -366,6 +368,7 @@ usage() {
 
 info() {
   SILENT=0
+  print      20 "Execution" ": $0"
   print      20 "Operating System" ": $OS$PKGMGR"
   print      20 "Home Directory" ": $HOME"
   print      20 "Working Directory" ": $CURRENT_DIR"
