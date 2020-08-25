@@ -80,13 +80,16 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   echo "zsh-users/zsh-history-substring-search" >> ~/.zsh_plugins.tmux.list
   echo "zdharma/fast-syntax-highlighting" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/asdf" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/brew" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/docker" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:lib/git.zsh" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/git" >> ~/.zsh_plugins.tmux.list
-  echo "ohmyzsh/ohmyzsh path:plugins/git-flow" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/git-flow" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
-  echo "ohmyzsh/ohmyzsh path:plugins/common-aliases" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/httpie" >> ~/.zsh_plugins.tmux.list
+  echo "ohmyzsh/ohmyzsh path:plugins/npm" >> ~/.zsh_plugins.tmux.list
   
   echo -n "Installing startup plugins..."
   antibody bundle < ~/.zsh_plugins.list > ~/.zsh_plugins

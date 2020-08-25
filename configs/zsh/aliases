@@ -37,8 +37,6 @@ if test `command -v curl`; then
 else
   alias myip="echo GET / | nc eth0.me 80"
 fi
-# HTTPie
-alias https="http --default-scheme=https"
 
 # Docker
 alias d='docker'
@@ -81,8 +79,10 @@ _test_alias() {
 _toggle_alias() {
   if _test_alias $1; then
     unalias $1
+    echo alias $1 unset
   else
     alias $1=$2
+    echo alias $1 set
   fi
 }
 
