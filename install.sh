@@ -371,7 +371,7 @@ info() {
   print      20 "Working Directory" ": $CURRENT_DIR"
   print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES"
   print_bool 20 "Remote Install" "$REMOTE_INSTALL" ": "
-  print_bool 20 "Local Copy" "$LOCAL_COPY" ": "
+  print_bool 20 "Has Local Copy" "$LOCAL_COPY" ": "
 }
 
 #################
@@ -384,7 +384,7 @@ setup_homebrew() {
   fi
 
   if test -f "/usr/bin/ruby"; then
-    error "Failed: Either install \"ruby\" or \"homebrew\", and try again"
+    error "Failed: either install \"ruby\" or \"homebrew\", and try again"
     quit 1
   fi
 
@@ -424,7 +424,7 @@ try_install() {
     do_command apk update
     do_command apk add "$1"
   else
-    error "Failed: Unsupported operating system"
+    error "Failed: unsupported operating system"
     quit 1
   fi
 }
@@ -434,7 +434,7 @@ try_command() {
     return
   fi
   if test "$DUMB" -eq 1; then
-    error "Failed: Command \"$1\" is required"
+    error "Failed: command \"$1\" is required"
     quit 1
   fi
 
@@ -462,7 +462,7 @@ try_run_install() {
   SKIP_UPDATE=0
   if test "$LOCAL_COPY" -eq 0; then
     if test "$RUN_LOCAL" -eq 1; then
-      error "Failed: Local copy of dotfiles is not found at $HOME/$DOTFILES"
+      error "Failed: local copy of dotfiles is not found at $HOME/$DOTFILES"
       quit 1
     fi
 
