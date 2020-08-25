@@ -122,7 +122,7 @@ docker-aliases() {
   _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/mysql/config:/etc/mysql/conf.d --name mysql mysql:5.7"
 
   # Shortcut
-  _toggle_alias docker-update "(docker images --format \"{{.Repository}}:{{.Tag}}\" | xargs -n1 docker pull) && (docker rmi \$(docker images 0f \"dangling=true\" -q))"
+  _toggle_alias docker-update "(docker images --format \"{{.Repository}}:{{.Tag}}\" | xargs -n1 docker pull) && (docker rmi \$(docker images -f \"dangling=true\" -q))"
 }
 
 unalias vol >/dev/null 2>/dev/null
