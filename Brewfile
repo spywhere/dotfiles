@@ -68,11 +68,11 @@ brew "bash" # Bash 4 #deb #alpine
 brew "bat" # cat replacement
 brew "coreutils" # Those that come with macOS are outdated
 #deb curl #alpine
-brew "git-delta"
 #deb dnsmasq #alpine
 brew "exa" #deb #alpine
-brew "git-lfs"
 brew "git" #deb #alpine
+brew "git-lfs"
+brew "git-delta"
 brew "git-flow" #deb #community-alpine
 brew "gnupg2"
 brew "hstr" #make (arm arch not supported) #alpine
@@ -109,12 +109,15 @@ brew "cjbassi/ytop/ytop"
 cask "1password"
 cask "4k-video-downloader"
 cask "alacritty"
+cask "alfred"
 cask "bartender"
+cask "commandq"
 cask "docker-edge"
 #make "docker" # no package manager
 cask "flux"
 cask "google-chrome"
 cask "kaleidoscope"
+cask "notion"
 cask "tableplus"
 cask "vlc"
 
