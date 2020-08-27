@@ -100,6 +100,13 @@ autocmd VimEnter *
 
 syntax on
 
+" color override
+function! ColorSetup()
+  exec "hi Normal guibg=#1C1C1C ctermbg=234"
+  exec "hi SignColumn guibg=#1C1C1C ctermbg=234"
+  exec "hi VertSplit guifg=bg ctermfg=bg guibg=#1C1C1C ctermbg=234"
+endfunction
+
 if (has("autocmd"))
   augroup lazyload_plugins
     autocmd!
@@ -108,10 +115,7 @@ if (has("autocmd"))
 
   augroup colorset
     autocmd!
-    autocmd ColorScheme * exec "hi Normal guibg=#1C1C1C"
-    autocmd ColorScheme * exec "hi Normal ctermbg=234"
-    autocmd ColorScheme * exec "hi SignColumn guibg=#1C1C1C"
-    autocmd ColorScheme * exec "hi SignColumn ctermbg=234"
+    autocmd ColorScheme * call ColorSetup()
   augroup END
 endif
 
@@ -122,9 +126,9 @@ colorscheme nord
 " set background=dark
 
 " Kill the annoyance
-command -bang Q quit<bang>
-command -bang Qa quitall<bang>
-command -bang QA quitall<bang>
+command! -bang Q quit<bang>
+command! -bang Qa quitall<bang>
+command! -bang QA quitall<bang>
 
 " Write read-only file with sudo
 command! WS w !sudo tee %
@@ -341,6 +345,7 @@ let g:lightline.component_function = {
 
 let g:lightline.inactive = {
 \   'left': [
+\     [],
 \     ['relativepath']
 \   ],
 \   'right': [
