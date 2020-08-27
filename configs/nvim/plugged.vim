@@ -83,7 +83,8 @@ Plug 'djoshea/vim-autoread'
 
 " Color scheme
 " Plug 'gruvbox-community/gruvbox'
-Plug 'joshdick/onedark.vim'
+" Plug 'joshdick/onedark.vim'
+Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
@@ -107,17 +108,18 @@ if (has("autocmd"))
 
   augroup colorset
     autocmd!
-    let s:black = { "gui": "#1C1C1C", "cterm": "234", "cterm16" : "0" }
-    autocmd ColorScheme * call onedark#set_highlight("Normal", { "bg": s:black }) " `bg` will not be styled since there is no `bg` setting
+    autocmd ColorScheme * exec "hi Normal guibg=#1C1C1C"
+    autocmd ColorScheme * exec "hi Normal ctermbg=234"
+    autocmd ColorScheme * exec "hi SignColumn guibg=#1C1C1C"
+    autocmd ColorScheme * exec "hi SignColumn ctermbg=234"
   augroup END
 endif
 
-colorscheme onedark
+colorscheme nord
+" colorscheme onedark
 "
 " colorscheme gruvbox
 " set background=dark
-
-let g:gruvbox_contrast_dark = 'hard'
 
 " Kill the annoyance
 command -bang Q quit<bang>
@@ -253,7 +255,7 @@ let g:lightline#bufferline#min_buffer_count = 2
 
 " Lightline
 let g:lightline = {
-\   'colorscheme': 'onedark',
+\   'colorscheme': 'nord',
 \ }
 
 let g:lightline.tabline = {
