@@ -120,10 +120,6 @@ if (has("autocmd"))
 endif
 
 colorscheme nord
-" colorscheme onedark
-"
-" colorscheme gruvbox
-" set background=dark
 
 " Kill the annoyance
 command! -bang Q quit<bang>
@@ -152,6 +148,10 @@ let g:NERDTreeHighlightFoldersFullName = 1
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
+
+" vim-markdown
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
 
 " fzf
 let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.9, 'height': 0.9,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
