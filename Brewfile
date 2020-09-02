@@ -71,9 +71,9 @@ brew "coreutils" # Those that come with macOS are outdated
 #deb dnsmasq #alpine
 brew "exa" #deb #alpine
 brew "git" #deb #alpine
-brew "git-lfs"
 brew "git-delta"
 brew "git-flow" #deb #community-alpine
+brew "git-lfs"
 brew "gnupg2"
 brew "hstr" #make (arm arch not supported) #alpine
 brew "httpie" #deb #alpine
@@ -114,9 +114,10 @@ cask "bartender"
 cask "commandq"
 cask "docker-edge"
 #make "docker" # no package manager
-cask "flux"
+cask "flux" # blue light reducer
 cask "google-chrome"
 cask "kaleidoscope"
+cask "lunar" # screen brightness / contrast sync
 cask "notion"
 cask "tableplus"
 cask "vlc"
@@ -133,7 +134,7 @@ cask "quicklookase"
 cask "webpquicklook"
 
 #dpkg https://github.com/sharkdp/bat/releases/download/v0.15.4/bat_0.15.4_armhf.deb
-#dpkg https://github.com/dandavison/delta/releases/download/0.1.1/git-delta_0.1.1_armhf.deb
+#dpkg https://github.com/dandavison/delta/releases/download/0.4.1/git-delta_0.4.1_armhf.deb
 
 #binary https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch pfetch
 
