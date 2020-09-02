@@ -1,9 +1,11 @@
 [core]
   editor = nvim
   excludesfile = ~/.gitignore_global
-  pager = delta --theme='OneHalfDark'
+  pager = delta
   compression = 9
   preloadIndex = true
+[delta]
+  syntax-theme = Nord
 [interactive]
   diffFilter = delta --color-only
 [user]
