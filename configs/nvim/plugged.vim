@@ -1,6 +1,7 @@
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
   silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  autocmd VimEnter * PlugInstall --sync | q | source $MYVIMRC
+  let g:first_install = 1
 else
   let g:init_vim_loaded = 1
 endif
@@ -107,17 +108,15 @@ function! ColorSetup()
   exec "hi VertSplit guifg=bg ctermfg=bg guibg=#1C1C1C ctermbg=234"
 endfunction
 
-if (has("autocmd"))
-  augroup lazyload_plugins
-    autocmd!
-    autocmd CursorHold * call plug#load('vim-easymotion', 'vim-tmux-navigator') | autocmd! lazyload_plugins
-  augroup END
+augroup colorset
+  autocmd!
+  autocmd ColorScheme * call ColorSetup()
+augroup END
 
-  augroup colorset
-    autocmd!
-    autocmd ColorScheme * call ColorSetup()
-  augroup END
-endif
+augroup lazyload_plugins
+  autocmd!
+  autocmd CursorHold * call plug#load('vim-easymotion', 'vim-tmux-navigator') | autocmd! lazyload_plugins
+augroup END
 
 colorscheme nord
 
@@ -394,8 +393,10 @@ let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
 " colorizer
 lua require'colorizer'.setup()
-" lua require'colorizer'.setup {
-" \   'css';
-" \   'html';
-" \ }
+
+" Try to startup autocommand manually on first install completion
+if exists("g:first_install")
+  call ColorSetup()
+  Startify
+endif
 
