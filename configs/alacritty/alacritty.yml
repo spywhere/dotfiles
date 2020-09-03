@@ -21,9 +21,9 @@ env:
   LC_CTYPE: en_US.UTF-8
 
 key_bindings:
-  - key: N
+  - key: W
     mods: Command
-    action: SpawnNewInstance
+    action: None
   # https://github.com/alacritty/alacritty/issues/623
   - key: A
     mods: Alt
