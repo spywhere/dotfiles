@@ -2,7 +2,7 @@ alias recovery="if [ -f ~/recovery ]; then rm -f ~/recovery && echo 'Recovery mo
 if [ -f ~/recovery ]; then
   return
 fi
-DOTFILES_NAME=.dotfiles
+DOTFILES_NAME=.dots
 
 autoload -Uz compinit
 autoload -Uz bashcompinit && bashcompinit
@@ -90,7 +90,7 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   echo "ohmyzsh/ohmyzsh path:plugins/gitignore" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/httpie" >> ~/.zsh_plugins.tmux.list
   echo "ohmyzsh/ohmyzsh path:plugins/npm" >> ~/.zsh_plugins.tmux.list
-  
+
   echo -n "Installing startup plugins..."
   antibody bundle < ~/.zsh_plugins.list > ~/.zsh_plugins
   echo -en "\\rInstalling plugins...        "

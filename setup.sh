@@ -1,5 +1,5 @@
 #!/bin/sh
-DOTFILES_NAME=.dotfiles
+DOTFILES_NAME=.dots
 
 if [ "$(uname)" = "Darwin" ]; then
   if [ -d "$HOME/Library/Application Support/iTerm2/DynamicProfiles" ]; then

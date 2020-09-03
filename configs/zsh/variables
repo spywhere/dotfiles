@@ -1,4 +1,4 @@
-DOTFILES_NAME=.dotfiles
+DOTFILES_NAME=.dots
 
 # increase history size
 export HISTSIZE=1000000
