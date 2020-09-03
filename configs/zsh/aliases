@@ -4,6 +4,9 @@ DOTFILES_NAME=.dotfiles
 # Ctrl+Z will send the process to background, use "resume" to bring it back
 alias resume="fg"
 
+# Kill the annoyance
+alias ga.='ga .'
+
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 alias reloadzshplugins="rm -f ~/.zsh_plugins ~/.zsh_plugins.tmux && source ~/.zshrc"
@@ -45,7 +48,7 @@ transfer() {
   if test $# -eq 0; then
     echo -e "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"
     return 1
-  fi 
+  fi
   tmpfile=$(mktemp -t transferXXX);
   if tty -s; then
     basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
@@ -55,7 +58,7 @@ transfer() {
   fi
   cat $tmpfile
   rm -f $tmpfile
-} 
+}
 
 map() {
   if test `command -v npx`; then
@@ -129,7 +132,7 @@ unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then
   vol() {
     osascript -e "set Volume $((($1 + 5) / 10))"
-  } 
+  }
 else
   alias vol="amixer set Master"
 fi
