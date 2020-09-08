@@ -26,3 +26,5 @@
   path = .gitconfig.platform
 [pull]
 	ff = only
+[advice]
+	addEmptyPathspec = false
