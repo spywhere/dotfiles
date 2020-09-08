@@ -6,6 +6,7 @@ configs/mpd/**
 !configs/mpd/playlists/.gitkeep
 configs/ncmpcpp/**
 !configs/ncmpcpp/config
+!configs/ncmpcpp/bindings
 deps
 **.zip
 **.tar.gz
