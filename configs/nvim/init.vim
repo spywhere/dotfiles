@@ -63,5 +63,6 @@ let loaded_netrwPlugin = 1
 source ~/.config/nvim/plugged.vim
 if exists("g:init_vim_loaded")
   source ~/.config/nvim/keymap.vim
+  source ~/.config/nvim/commands.vim
   source ~/.config/nvim/coc.vim
 endif

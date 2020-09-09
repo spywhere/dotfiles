@@ -101,32 +101,10 @@ autocmd VimEnter *
 
 syntax on
 
-" color override
-function! ColorSetup()
-  exec "hi Normal guibg=#1C1C1C ctermbg=234"
-  exec "hi SignColumn guibg=#1C1C1C ctermbg=234"
-  exec "hi VertSplit guifg=bg ctermfg=bg guibg=#1C1C1C ctermbg=234"
-endfunction
-
-augroup colorset
-  autocmd!
-  autocmd ColorScheme * call ColorSetup()
-augroup END
-
 augroup lazyload_plugins
   autocmd!
   autocmd CursorHold * call plug#load('vim-easymotion', 'vim-tmux-navigator') | autocmd! lazyload_plugins
 augroup END
-
-colorscheme nord
-
-" Kill the annoyance
-command! -bang Q quit<bang>
-command! -bang Qa quitall<bang>
-command! -bang QA quitall<bang>
-
-" Write read-only file with sudo
-command! WS w !sudo tee %
 
 " start NERDTree on startup
 " autocmd VimEnter * NERDTree
@@ -155,40 +133,6 @@ let g:vim_markdown_conceal_code_blocks = 0
 " fzf
 let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.9, 'height': 0.9,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 let g:fzf_preview_window = 'right:50%'
-
-command! -bang -nargs=* Files
-  \ call fzf#vim#files(0,
-  \   <bang>0 ? fzf#vim#with_preview({ 'options': ['--layout=reverse'], 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 }})
-  \           : fzf#vim#with_preview()
-  \ )
-
-command! -bang -nargs=* BLines
-  \ call fzf#vim#buffer_lines('',
-  \   <bang>0 ? { 'options': ['--layout=reverse'], 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 }}
-  \           : {}
-  \ )
-
-" Rg command tweaks to search only file content
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --smart-case --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..', 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 }})
-  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'})
-  \   )
-
-function! RipgrepFzf(query, inline)
-  let command_fmt = 'rg --column --line-number --hidden --smart-case --no-heading --color=always -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  if a:inline
-    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command], 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1 }}
-  else
-    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  endif
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec))
-endfunction
-
-command! -bang -nargs=* RG call RipgrepFzf(<q-args>, <bang>0)
 
 " Coc
 let g:coc_global_extensions = [
@@ -260,20 +204,6 @@ let g:lightline#bufferline#min_buffer_count = 2
 let g:lightline = {
 \   'colorscheme': 'n0rd',
 \ }
-
-" Overriding right component to show some colors
-let s:palette = g:lightline#colorscheme#nord#palette
-let s:palette.normal.right = [
-\   [
-\     "#3B4252",
-\     "#88C0D0"
-\   ],
-\   [
-\     "#E5E9F0",
-\     "#3B4252"
-\   ]
-\ ]
-let g:lightline#colorscheme#n0rd#palette = lightline#colorscheme#fill(s:palette)
 
 let g:lightline.tabline = {
 \   'left': [
@@ -404,6 +334,11 @@ let g:startify_files_number = 20
 let g:startify_fortune_use_unicode = 1
 let g:startify_enable_special = 0
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
+
+" Running some patches
+source ~/.config/nvim/monkey-patch.vim
+
+colorscheme nord
 
 " colorizer
 lua require'colorizer'.setup()
