@@ -258,8 +258,22 @@ let g:lightline#bufferline#min_buffer_count = 2
 
 " Lightline
 let g:lightline = {
-\   'colorscheme': 'nord',
+\   'colorscheme': 'n0rd',
 \ }
+
+" Overriding right component to show some colors
+let s:palette = g:lightline#colorscheme#nord#palette
+let s:palette.normal.right = [
+\   [
+\     "#3B4252",
+\     "#88C0D0"
+\   ],
+\   [
+\     "#E5E9F0",
+\     "#3B4252"
+\   ]
+\ ]
+let g:lightline#colorscheme#n0rd#palette = lightline#colorscheme#fill(s:palette)
 
 let g:lightline.tabline = {
 \   'left': [
@@ -360,11 +374,11 @@ let g:lightline.active = {
 \   ],
 \   'right': [
 \     [
+\       'linter_ok',
 \       'linter_checking',
 \       'linter_errors',
 \       'linter_warnings',
-\       'linter_infos',
-\       'linter_ok'
+\       'linter_infos'
 \     ],
 \     ['lineinfo'],
 \     ['percent'],
