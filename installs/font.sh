@@ -12,3 +12,7 @@ then
 fi
 
 print "font.sh"
+# Try downloading fonts to this directory would be much faster and use
+#   smaller storage size
+# - https://github.com/ryanoasis/nerd-fonts#option-6-ad-hoc-curl-download
+# - https://github.com/ryanoasis/nerd-fonts/blob/master/install.sh#L238-L254
