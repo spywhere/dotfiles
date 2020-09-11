@@ -1,0 +1,9 @@
+- packages
+  - pkgconfig.sh
+    #!sh
+    deb "pkg-config"
+    alpine "pkgconfig"
+  - git-delta.sh
+    #!sh
+    brew "git-delta"
+    dpkg "https://github.com/dandavison/delta/releases/download/0.4.1/git-delta_0.4.1_armhf.deb"
