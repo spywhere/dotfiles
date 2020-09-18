@@ -1,5 +1,4 @@
-configs/nvim/autoload
-configs/nvim/plugged
+configs/github/hosts.yml
 configs/mpd/**
 !configs/mpd/mpd.conf
 !configs/mpd/playlists
@@ -7,6 +6,8 @@ configs/mpd/**
 configs/ncmpcpp/**
 !configs/ncmpcpp/config
 !configs/ncmpcpp/bindings
+configs/nvim/autoload
+configs/nvim/plugged
 deps
 **.zip
 **.tar.gz
