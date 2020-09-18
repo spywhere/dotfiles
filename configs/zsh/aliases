@@ -172,6 +172,14 @@ ghs() {
   gh api graphql -F q="$query" -f query='query($q: String!){search(query:$q,type:ISSUE,first:30){nodes{...on Issue{title,number,state},...on PullRequest{title,number,state}}}}' | jq -r '.data.search.nodes[] | "\(.state)|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s #%-5d %-57s\n", $1, $2, $3)}'
 }
 
+# github cli - issues
+alias iscl="gh issue close"
+alias isc="gh issue create"
+alias isl="gh issue list"
+alias isr="gh issue reopen"
+alias iss="gh issue status"
+alias isv="gh issue view"
+
 # github cli - pull requests
 alias pra="gh pr checks"
 alias prc="gh pr create"
