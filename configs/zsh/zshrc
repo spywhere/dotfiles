@@ -122,6 +122,11 @@ if [ `command -v hstr` ]; then
   . <(hstr --show-zsh-configuration)
 fi
 
+# Setup github cli
+if [ `command -v gh` ]; then
+  . <(gh completion -s zsh)
+fi
+
 # Export binaries
 export PATH=$HOME/$DOTFILES_NAME/bin:$PATH
 
