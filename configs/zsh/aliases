@@ -137,7 +137,7 @@ _ghs_usage() {
   echo
   echo "FLAGS"
   echo "  -h, --help              Show this message"
-  echo "  -l, --limit=<limit>     Maximum number of items to fetch (default 30)"
+  echo "  -L, --limit=<limit>     Maximum number of items to fetch (default 30)"
   echo "  -R, --repo=<OWNER/REPO> Select another repository using the OWNER/REPO format"
   echo
   echo "QUERY"
@@ -196,7 +196,7 @@ ghs() {
   if test -n "$repo_filter"; then
     repo=""
   fi
-  if test -n $debug; then
+  if test $debug -eq 1; then
     echo "[limit=$limit] $query$repo"
     return
   fi
