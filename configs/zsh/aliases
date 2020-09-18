@@ -200,7 +200,7 @@ ghs() {
     echo "[limit=$limit] $query$repo"
     return
   fi
-  gh api graphql -F q="$query$repo" -f query='query($q: String!){search(query:$q,type:ISSUE,first:30){nodes{...on Issue{title,number,state},...on PullRequest{title,number,state}}}}' | jq -r '.data.search.nodes[] | "\(.state)|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s #%-5d %-57s\n", $1, $2, $3)}'
+  gh api graphql -F q="$query$repo" -f query='query($q: String!){search(query:$q,type:ISSUE,first:30){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}}}}' | jq -r '.data.search.nodes[] | "\(.state)|\(.type | gsub("Issue";"") | gsub("^P[a-z]*R[a-z]*$";"PR"))|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s %2s#%-5d %s\n", $1, $2, $3, $4)}'
 }
 
 # github cli - issues
