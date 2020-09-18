@@ -131,6 +131,47 @@ docker-aliases() {
   _toggle_alias docker-update "(docker images --format \"{{.Repository}}:{{.Tag}}\" | xargs -n1 docker pull) && (docker rmi \$(docker images -f \"dangling=true\" -q))"
 }
 
+_ghs_usage() {
+  echo "USAGE"
+  echo "  ghs [flags] <query>..."
+  echo
+  echo "FLAGS"
+  echo "  -h, --help              Show this message"
+  echo "  -l, --limit=<limit>     Maximum number of items to fetch (default 30)"
+}
+
+ghs() {
+  local limit=30
+  while test "$1" != ""; do
+    PARAM=`echo $1 | sed 's/=.*//g'`
+    VALUE=`echo $1 | sed 's/^[^=]*=//g'`
+    case $PARAM in
+      -h | --help)
+        _ghs_usage
+        return
+        ;;
+      -l | --limit)
+        limit=$VALUE
+        ;;
+      -*)
+        echo "ERROR: unknown flag \"$1\""
+        return 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  local query="$@"
+  if test -z "$query"; then
+    query="is:open"
+  fi
+  gh api graphql -F q="$query" -f query='query($q: String!){search(query:$q,type:ISSUE,first:30){nodes{...on Issue{title,number,state},...on PullRequest{title,number,state}}}}' | jq -r '.data.search.nodes[] | "\(.state)|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s #%-5d %-57s\n", $1, $2, $3)}'
+}
+
 unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then
   vol() {
