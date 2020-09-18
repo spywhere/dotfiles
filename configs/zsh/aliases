@@ -172,6 +172,19 @@ ghs() {
   gh api graphql -F q="$query" -f query='query($q: String!){search(query:$q,type:ISSUE,first:30){nodes{...on Issue{title,number,state},...on PullRequest{title,number,state}}}}' | jq -r '.data.search.nodes[] | "\(.state)|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s #%-5d %-57s\n", $1, $2, $3)}'
 }
 
+# github cli - pull requests
+alias pra="gh pr checks"
+alias prc="gh pr create"
+alias prch="gh pr checks"
+alias prcl="gh pr close"
+alias prco="gh pr checkout"
+alias prd="gh pr diff"
+alias prl="gh pr list"
+alias prm="gh pr merge"
+alias prr="gh pr review"
+alias prs="gh pr status"
+alias prv="gh pr view"
+
 unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then
   vol() {
