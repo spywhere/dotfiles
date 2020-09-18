@@ -70,6 +70,7 @@ brew "coreutils" # Those that come with macOS are outdated
 #deb curl #alpine
 #deb dnsmasq #alpine
 brew "exa" #deb #alpine
+brew "gh" # for linux, see https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 brew "git" #deb #alpine
 brew "git-delta"
 brew "git-flow" #deb #community-alpine
