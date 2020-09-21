@@ -1,0 +1,104 @@
+#!/bin/bash
+
+usage() {
+  echo "USAGE"
+  echo "  ghs [flags] <query>..."
+  echo
+  echo "FLAGS"
+  echo "  -h, --help              Show this message"
+  echo "  -L, --limit=<limit>     Maximum number of items to fetch (default 30)"
+  echo "  -R, --repo=<OWNER/REPO> Select another repository using the OWNER/REPO format"
+  echo "  -n, --next=<cursor>     Search from the cursor position forward"
+  echo
+  echo "QUERY"
+  echo "  If a query is empty, it will default to \"is:open\""
+  echo
+  echo "  If a query contains a repo filter, it will take priority over the flags"
+}
+
+main() {
+  local limit=30
+  local repo=""
+  local debug=0
+  local cursor=""
+  while test "$1" != ""; do
+    local PARAM=`echo $1 | sed 's/=.*//g'`
+    local VALUE=`echo $1 | sed 's/^[^=]*=//g'`
+    local EQUAL_SIGN=`echo $1 | sed 's/[^=]//g'`
+    case $PARAM in
+      -h | --help)
+        usage
+        return
+        ;;
+      -L | --limit)
+        if test -z "$EQUAL_SIGN"; then
+          echo "ERROR: a limit is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        limit=$VALUE
+        ;;
+      -R | --repo)
+        if test -z "$EQUAL_SIGN"; then
+          echo "ERROR: a repository is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        repo=" repo:$VALUE"
+        ;;
+      -n | --next)
+        if test -z "$EQUAL_SIGN"; then
+          echo "ERROR: a cursor is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        cursor=$VALUE
+        ;;
+      --debug)
+        debug=1
+        ;;
+      -*)
+        echo "ERROR: unknown flag \"$1\""
+        return 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  local query="$@"
+  if test -z "$query"; then
+    query="is:open"
+  fi
+  local repo_filter=`echo $query | sed -n '/repo:[^ ]*/p'`
+  if test -n "$repo_filter"; then
+    repo=""
+  fi
+  if test $debug -eq 1; then
+    echo "[limit=$limit,cursor=$cursor] $query$repo"
+    return
+  fi
+  graphQuery='query($q: String!,$limit: Int!,$after: String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
+  if test "$cursor" != ""; then
+    response=$(gh api graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graphQuery")
+  else
+    response=$(gh api graphql -F limit="$limit" -F q="$query$repo" -f query="$graphQuery")
+  fi
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+  response=$(echo $response | jq -r '.data.search')
+  pageInfo=$(echo $response | jq -r '{ issueCount, pageInfo } | "\(.issueCount) \(.pageInfo.hasNextPage) \(.pageInfo.endCursor)"')
+  issueCount=$(echo $pageInfo | cut -d' ' -f1)
+  hasNextPage=$(echo $pageInfo | cut -d' ' -f2)
+  endCursor=$(echo $pageInfo | cut -d' ' -f3)
+
+  echo "Total $issueCount issues (limit $limit)"
+  if [ "$hasNextPage" = "true" ]; then
+    echo "  Add '-n=$endCursor' to view the next page"
+  fi
+  echo
+  echo $response | jq -r '.nodes[] | "\(.state)|\(.type | gsub("Issue";"") | gsub("^P[a-z]*R[a-z]*$";"PR"))|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s %2s#%-5d %s\n", $1, $2, $3, $4)}'
+}
+
+main $@

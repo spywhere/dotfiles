@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # brew and fzf
 # update multiple packages at once
 # mnemonic [B]rew [U]pdate [P]lugin
