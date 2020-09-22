@@ -8,12 +8,16 @@ usage() {
   echo "  -h, --help              Show this message"
   echo "  -L, --limit=<limit>     Maximum number of items to fetch (default 30)"
   echo "  -R, --repo=<OWNER/REPO> Select another repository using the OWNER/REPO format"
+  echo "  -M, --manual            Disable repository auto-detection"
   echo "  -n, --next=<cursor>     Search from the cursor position forward"
   echo
   echo "QUERY"
-  echo "  If a query is empty, it will default to \"is:open\""
+  echo "  If a query is empty, it will default to \"is:open\"."
   echo
-  echo "  If a query contains a repo filter, it will take priority over the flags"
+  echo "  A repo will be auto-detected by default, unless a manual flag is passed."
+  echo
+  echo "  If a repo flag is passed, it will take priority over auto-detect one."
+  echo "  If a query contains a repo filter, it will take priority over the flags."
 }
 
 main() {
@@ -21,6 +25,7 @@ main() {
   local repo=""
   local debug=0
   local cursor=""
+  local manual=0
   while test "$1" != ""; do
     local PARAM=`echo $1 | sed 's/=.*//g'`
     local VALUE=`echo $1 | sed 's/^[^=]*=//g'`
@@ -29,6 +34,9 @@ main() {
       -h | --help)
         usage
         return
+        ;;
+      -M | --manual)
+        manual=1
         ;;
       -L | --limit)
         if test -z "$EQUAL_SIGN"; then
@@ -73,12 +81,19 @@ main() {
   local repo_filter=`echo $query | sed -n '/repo:[^ ]*/p'`
   if test -n "$repo_filter"; then
     repo=""
+    manual=1
+  fi
+  if test "$repo" = "" -a $manual -eq 0; then
+    source _git_helper
+    local repoOwner=$(get_repo_owner)
+    local repoName=$(get_repo_name)
+    repo=" repo:$repoOwner/$repoName"
   fi
   if test $debug -eq 1; then
     echo "[limit=$limit,cursor=$cursor] $query$repo"
     return
   fi
-  graphQuery='query($q: String!,$limit: Int!,$after: String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
+  graphQuery='query($q:String!,$limit:Int!,$after:String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
   if test "$cursor" != ""; then
     response=$(gh api graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graphQuery")
   else

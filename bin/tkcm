@@ -1,0 +1,252 @@
+#!/bin/bash
+
+usage() {
+  echo "USAGE"
+  echo "  prcm [flags] <pr number>"
+  echo
+  echo "FLAGS"
+  echo "  -h, --help              Show this message"
+  echo "  -R, --repo=<OWNER/REPO> Select another repository using the OWNER/REPO format"
+  echo
+  echo "QUERY"
+  echo "  If a repo flag is passed, it will take priority over auto-detect one."
+}
+
+action() {
+  local login="$1"
+  local action="$2"
+  local timestamp="$3"
+  local body="$4"
+  echo "$login $action $timestamp"
+  if test "$body" != ""; then
+    bat -l md -pp --color always --style changes <<<"$body"
+  fi
+}
+
+changes_action() {
+  local login="$1"
+  local action="$2"
+  local timestamp="$3"
+  local from="$4"
+  local to="$5"
+  local body="$6"
+  action "$login" "$action from $from to $to" "$timestamp" "$body"
+}
+
+changes() {
+  local from="$1"
+  local to="$2"
+  echo "  from: $from"
+  echo "    to: $to"
+}
+
+segment() {
+  local first="$1"
+  local second="$2"
+  local third="$3"
+  if test "$first" != ""; then
+    first="$first "
+  fi
+  echo "$first• $second • $third"
+}
+
+commit() {
+  local oid="$1"
+  local title="$2"
+  local status="$3"
+
+  if test "$status" = ""; then
+    segment "" "$oid" "$title"
+  else
+    segment "" "$oid" "$status • $title"
+  fi
+}
+
+main() {
+  local repo=""
+  local debug=0
+  while test "$1" != ""; do
+    local PARAM=`echo $1 | sed 's/=.*//g'`
+    local VALUE=`echo $1 | sed 's/^[^=]*=//g'`
+    local EQUAL_SIGN=`echo $1 | sed 's/[^=]//g'`
+    case $PARAM in
+      -h | --help)
+        usage
+        return
+        ;;
+      -R | --repo)
+        if test -z "$EQUAL_SIGN"; then
+          echo "ERROR: a repository is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        repo="$VALUE"
+        ;;
+      --debug)
+        debug=1
+        ;;
+      -*)
+        echo "ERROR: unknown flag \"$1\""
+        return 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  local number="$@"
+  if test -z "$number"; then
+    echo 'PR number is required'
+    return 1
+  fi
+
+  local repoOwner=""
+  local repoName=""
+  if test "$repo" = ""; then
+    source _git_helper
+    repoOwner=$(get_repo_owner)
+    repoName=$(get_repo_name)
+  else
+    repoOwner=$(echo $repo | cut -d'/' -f1)
+    repoName=$(echo $repo | cut -d'/' -f2)
+  fi
+  if test "$repoOwner" = "" -o "$repoName" = ""; then
+    echo "ERROR: Both repository owner name repository name is required (perhaps it is not in the \"owner/repo\" format?)"
+    return 1
+  fi
+
+  if test $debug -eq 1; then
+    echo "PR#$number in $repoOwner/$repoName"
+    return
+  fi
+  local graphQuery=$(cat ~/.dots/bin/_ticket_comment.graphql)
+  local response=$(gh api graphql -F limit="50" -F owner="$repoOwner" -F name="$repoName" -F number="$number" -f query="$graphQuery")
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+
+  # parse ticket data
+  local ticketJSON=$(echo "$response" | jq -r '.data.repository.issueOrPullRequest')
+  local ticket=$(echo "$ticketJSON" | jq -r '[ .__typename, .author.login, .state, (.title | @base64), .baseRepository.owner.login // "", .baseRefName // "", .headRepository.owner.login // "", .headRefName // "", .updatedAt, ((.body // "") | @base64) ] | join("|")')
+  local ticketType=$(echo "$ticket" | cut -d'|' -f1)
+  local ticketLogin=$(echo "$ticket" | cut -d'|' -f2)
+  local ticketState=$(echo "$ticket" | cut -d'|' -f3)
+  local ticketTitle=$(echo "$ticket" | cut -d'|' -f4 | base64 -d)
+  local ticketBaseOwner=$(echo "$ticket" | cut -d'|' -f5)
+  local ticketBaseRef=$(echo "$ticket" | cut -d'|' -f6)
+  local ticketHeadOwner=$(echo "$ticket" | cut -d'|' -f7)
+  local ticketHeadRef=$(echo "$ticket" | cut -d'|' -f8)
+  local ticketTimestamp=$(echo "$ticket" | cut -d'|' -f9)
+  local ticketBody=$(echo "$ticket" | cut -d'|' -f10 | base64 -d)
+
+  if test "$ticketType" = "PullRequest"; then
+    segment "$ticketState" "PR#$number" "$ticketTitle"
+  else
+    segment "$ticketState" "#$number" "$ticketTitle"
+  # segment "<state>" "#$number" "<title>"
+  fi
+  action "$ticketLogin" "commented" "$ticketTimestamp" "$ticketBody"
+
+  # parse ticket timeline items
+  local timelineItemJQ=$(cat ~/.dots/bin/_timeline_item.jq)
+  local timelineItemsJSON=$(echo $ticketJSON | jq -r "$timelineItemJQ")
+  while read -r item; do
+    local itemType=$(echo "$item" | cut -d'|' -f1)
+    local timestamp=$(echo "$item" | cut -d'|' -f2)
+    local login=$(echo "$item" | cut -d'|' -f3)
+    local body=$(echo "$item" | cut -d'|' -f4 | base64 -d)
+    local itemState=$(echo "$item" | cut -d'|' -f5)
+    local labelName=$(echo "$item" | cut -d'|' -f6)
+    local reviewerLogin=$(echo "$item" | cut -d'|' -f7)
+    local commitSHA=$(echo "$item" | cut -d'|' -f8)
+    local commitMessage=$(echo "$item" | cut -d'|' -f9 | base64 -d)
+    local commitStatus=$(echo "$item" | cut -d'|' -f10)
+    local from=$(echo "$item" | cut -d'|' -f11 | base64 -d)
+    local to=$(echo "$item" | cut -d'|' -f12 | base64 -d)
+    local comments=$(echo "$item" | cut -d'|' -f13 | base64 -d)
+
+    echo
+    case "$itemType" in
+      "ReadyForReviewEvent")
+        action "$login" "marked this pull request as ready for review" "$timestamp"
+        ;;
+      "HeadRefForcePushedEvent")
+        changes_action "$login" "force-pushed the <branch>" "$timestamp" "$from" "$to"
+        ;;
+      "PullRequestCommit")
+        commit "$commitSHA" "$commitMessage" "$commitStatus"
+        ;;
+      "PullRequestReview")
+        local reviewState=""
+        case "$itemState" in
+          "APPROVED")
+            reviewState="approved"
+            ;;
+          "CHANGES_REQUESTED")
+            reviewState="requested changes"
+            ;;
+          "COMMENTED")
+            reviewState="commented"
+            ;;
+          *)
+            reviewState="$itemState"
+            ;;
+        esac
+        action "$login" "$reviewState" "$timestamp" "$body"
+
+        if test "$comments" = ""; then
+          continue
+        fi
+
+        local numberOfChanges=$(echo "$comments" | jq -r '.totalCount')
+        if test "$numberOfChanges" -eq 0; then
+          continue
+        fi
+
+        local changeList=$(echo "$comments" | jq -r '.nodes | [ .[] | [ .author.login, .updatedAt, .path, if .outdated then "1" else "0" end, ((.body // "") | @base64), (.diffHunk | @base64)] | join("|") ] | join("$")')
+        while read -r changes; do
+          local changesLogin=$(echo "$changes" | cut -d'|' -f1)
+          local changesTimestamp=$(echo "$changes" | cut -d'|' -f2)
+          local changesPath=$(echo "$changes" | cut -d'|' -f3)
+          local changesOutdated=$(echo "$changes" | cut -d'|' -f4)
+          local changesBody=$(echo "$changes" | cut -d'|' -f5 | base64 -d)
+          local changesDiff=$(echo "$changes" | cut -d'|' -f6 | base64 -d)
+
+          if test $changesOutdated -eq 1; then
+            changesOutdated=" [Outdated]"
+          else
+            changesOutdated=""
+          fi
+
+          echo
+          bat --file-name "$changesPath" -pp --color always --style changes,header <<<$(echo "$changesDiff" | sed 's/^/  /g')
+          echo
+          echo "  $changesLogin $changesTimestamp$changesOutdated"
+          if test "$changesBody" != ""; then
+            bat -l md -pp --color always --style changes <<<$(echo "$changesBody" | sed 's/^/  /g')
+          fi
+        done <<< $(echo "$changeList" | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1, $2, $3, $4, $5, $6}')
+        ;;
+      "ReviewRequestedEvent")
+        action "$login" "requested a review from $reviewerLogin" "$timestamp"
+        ;;
+      "LabeledEvent")
+        action "$login" "added $labelName label" "$timestamp"
+        ;;
+      "RenamedTitleEvent")
+        action "$login" "changed the title" "$timestamp"
+        changes "$from" "$to"
+        ;;
+      "IssueComment")
+        action "$login" "commented" "$timestamp" "$body"
+        ;;
+      *)
+        echo unable to parse $itemType
+        ;;
+    esac
+  done <<< $(echo "$timelineItemsJSON" | awk -f ~/.dots/bin/_timeline_item.awk)
+}
+
+main $@

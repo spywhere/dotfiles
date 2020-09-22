@@ -1,0 +1,183 @@
+query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    issueOrPullRequest(number: $number) {
+      __typename,
+      ...on Issue {
+        author {
+          login
+        }
+        title
+        body
+        state
+        updatedAt
+        timelineItems(first: 100, itemTypes: [LABELED_EVENT, RENAMED_TITLE_EVENT, ISSUE_COMMENT]) {
+          totalCount
+          nodes {
+            __typename,
+            ...on LabeledEvent {
+              actor {
+                login
+              }
+              label {
+                name
+              }
+              createdAt
+            }
+            ...on RenamedTitleEvent {
+              actor {
+                login
+              }
+              previousTitle
+              currentTitle
+              createdAt
+            }
+            ...on IssueComment {
+              author {
+                login
+              }
+              body
+              updatedAt
+            }
+          }
+        }
+      }
+      ...on PullRequest {
+        author {
+          login
+        }
+        headRefName
+        headRepository {
+          owner {
+            login
+          }
+        }
+        baseRefName,
+        baseRepository {
+          owner {
+            login
+          }
+        }
+        title
+        body
+        state
+        updatedAt
+        timelineItems(
+          first: 100
+          itemTypes: [
+            READY_FOR_REVIEW_EVENT
+            HEAD_REF_FORCE_PUSHED_EVENT
+            BASE_REF_FORCE_PUSHED_EVENT
+            PULL_REQUEST_COMMIT
+            PULL_REQUEST_REVIEW
+            REVIEW_REQUESTED_EVENT
+            LABELED_EVENT
+            RENAMED_TITLE_EVENT
+            ISSUE_COMMENT
+          ]
+        ) {
+          totalCount
+          nodes {
+            __typename
+            ...on ReadyForReviewEvent {
+              actor {
+                login
+              }
+            }
+            ...on HeadRefForcePushedEvent {
+              actor {
+                login
+              }
+              beforeCommit {
+                abbreviatedOid
+              }
+              afterCommit {
+                abbreviatedOid
+              }
+              createdAt
+            }
+            ...on BaseRefForcePushedEvent {
+              actor {
+                login
+              }
+              ref {
+                name
+              }
+              createdAt
+            }
+            ...on PullRequestCommit {
+              commit {
+                abbreviatedOid
+                message
+                statusCheckRollup {
+                  state
+                }
+              }
+            }
+            ...on PullRequestReview {
+              author {
+                login
+              }
+              body
+              state
+              comments(first: $limit) {
+                totalCount
+                nodes {
+                  author {
+                    login
+                  }
+                  path
+                  diffHunk
+                  body
+                  outdated
+                  updatedAt
+                }
+              }
+              updatedAt
+            }
+            ...on ReviewRequestedEvent {
+              actor {
+                login
+              }
+              requestedReviewer {
+                ...on Mannequin {
+                  login
+                }
+                ...on Team {
+                  name
+                }
+                ...on User {
+                  login
+                }
+              }
+              createdAt
+            }
+            ...on LabeledEvent {
+              actor {
+                login
+              }
+              label {
+                name
+              }
+              createdAt
+            }
+            ...on RenamedTitleEvent {
+              actor {
+                login
+              }
+              previousTitle
+              currentTitle
+              createdAt
+            }
+            ...on IssueComment {
+              author {
+                login
+              }
+              body
+              updatedAt
+            }
+          }
+        }
+      }
+    }
+  }
+}

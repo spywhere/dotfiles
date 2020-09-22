@@ -1,0 +1,41 @@
+#!/bin/bash
+normalize_url() {
+  echo $1 | sed -E 's/^.*+(@|:\/\/)(www\.)?//g' | sed 's/\.git//g'
+}
+
+_remoteURL=$(git ls-remote --get-url 2>/dev/null)
+if test $? -ne 0; then
+  _remoteURL=""
+fi
+
+_remoteURL=$(normalize_url $_remoteURL)
+_host=$(echo $_remoteURL | cut -d'/' -f1)
+_owner=$(echo $_remoteURL | cut -d'/' -f2)
+_repo=$(echo $_remoteURL | cut -d'/' -f3)
+
+get_repo_host() {
+  if test "$_remoteURL" = ""; then
+    echo
+    return
+  fi
+
+  echo $_remoteURL | cut -d'/' -f1
+}
+
+get_repo_owner() {
+  if test "$_remoteURL" = ""; then
+    echo
+    return
+  fi
+
+  echo $_remoteURL | cut -d'/' -f2
+}
+
+get_repo_name() {
+  if test "$_remoteURL" = ""; then
+    echo
+    return
+  fi
+
+  echo $_remoteURL | cut -d'/' -f3
+}

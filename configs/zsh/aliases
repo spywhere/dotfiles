@@ -152,6 +152,10 @@ alias prr="gh pr review"
 alias prs="gh pr status"
 alias prv="gh pr view"
 
+# github cli - custom commands
+alias prcm="tkcm"
+alias iscm="tkcm"
+
 unalias vol >/dev/null 2>/dev/null
 if [ "$(uname)" = "Darwin" ]; then
   vol() {
