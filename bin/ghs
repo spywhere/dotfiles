@@ -99,21 +99,11 @@ main() {
   else
     response=$(gh api graphql -F limit="$limit" -F q="$query$repo" -f query="$graphQuery")
   fi
-  if [ $? -ne 0 ]; then
+  if test $? -ne 0; then
     return 1
   fi
-  response=$(echo $response | jq -r '.data.search')
-  pageInfo=$(echo $response | jq -r '{ issueCount, pageInfo } | "\(.issueCount) \(.pageInfo.hasNextPage) \(.pageInfo.endCursor)"')
-  issueCount=$(echo $pageInfo | cut -d' ' -f1)
-  hasNextPage=$(echo $pageInfo | cut -d' ' -f2)
-  endCursor=$(echo $pageInfo | cut -d' ' -f3)
 
-  echo "Total $issueCount issues (limit $limit)"
-  if [ "$hasNextPage" = "true" ]; then
-    echo "  Add '-n=$endCursor' to view the next page"
-  fi
-  echo
-  echo $response | jq -r '.nodes[] | "\(.state)|\(.type | gsub("Issue";"") | gsub("^P[a-z]*R[a-z]*$";"PR"))|\(.number)|\(.title)"' | awk 'BEGIN{FS="|"} {printf("%-6s %2s#%-5d %s\n", $1, $2, $3, $4)}'
+  echo "$response" | LIMIT="$limit" gomplate -f ~/.dots/bin/_issue.tmpl -d 'limit=env:///LIMIT' -d 'response=stdin:///in.json'
 }
 
 main $@

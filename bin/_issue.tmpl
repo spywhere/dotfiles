@@ -1,0 +1,5 @@
+{{- with (ds "response").data.search -}}
+  Total {{ .issueCount }} issues (showing first {{ (ds "limit") }}){{ if .pageInfo.hasNextPage }}
+  Add '-n={{ .pageInfo.endCursor }}' to view the next page{{ end }}
+{{ range .nodes }}
+{{ printf "%-6s %2s#%-5d %s" .state (.type | strings.ReplaceAll "Issue" "" | regexp.ReplaceLiteral "[a-z]+" "") .number .title }}{{ end }}{{- end -}}
