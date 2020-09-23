@@ -10,10 +10,48 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
         body
         state
         updatedAt
-        timelineItems(first: 100, itemTypes: [LABELED_EVENT, RENAMED_TITLE_EVENT, ISSUE_COMMENT]) {
+        timelineItems(
+          first: 100,
+          itemTypes: [
+            CROSS_REFERENCED_EVENT
+            PINNED_EVENT
+            UNPINNED_EVENT
+            LABELED_EVENT
+            RENAMED_TITLE_EVENT
+            ISSUE_COMMENT
+          ]
+        ) {
           totalCount
           nodes {
             __typename,
+            ...on CrossReferencedEvent {
+              actor {
+                login
+              }
+              source {
+                ...on Issue {
+                  number
+                  title
+                }
+                ...on PullRequest {
+                  number
+                  title
+                }
+              }
+              createdAt
+            }
+            ...on PinnedEvent {
+              actor {
+                login
+              }
+              createdAt
+            }
+            ...on UnpinnedEvent {
+              actor {
+                login
+              }
+              createdAt
+            }
             ...on LabeledEvent {
               actor {
                 login
@@ -64,12 +102,16 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
         timelineItems(
           first: 100
           itemTypes: [
+            CONVERT_TO_DRAFT_EVENT
             READY_FOR_REVIEW_EVENT
             HEAD_REF_FORCE_PUSHED_EVENT
             BASE_REF_FORCE_PUSHED_EVENT
             PULL_REQUEST_COMMIT
             PULL_REQUEST_REVIEW
             REVIEW_REQUESTED_EVENT
+            CROSS_REFERENCED_EVENT
+            PINNED_EVENT
+            UNPINNED_EVENT
             LABELED_EVENT
             RENAMED_TITLE_EVENT
             ISSUE_COMMENT
@@ -78,10 +120,17 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
           totalCount
           nodes {
             __typename
+            ...on ConvertToDraftEvent {
+              actor {
+                login
+              }
+              createdAt
+            }
             ...on ReadyForReviewEvent {
               actor {
                 login
               }
+              createdAt
             }
             ...on HeadRefForcePushedEvent {
               actor {
@@ -148,6 +197,34 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
                 ...on User {
                   login
                 }
+              }
+              createdAt
+            }
+            ...on CrossReferencedEvent {
+              actor {
+                login
+              }
+              source {
+                ...on Issue {
+                  number
+                  title
+                }
+                ...on PullRequest {
+                  number
+                  title
+                }
+              }
+              createdAt
+            }
+            ...on PinnedEvent {
+              actor {
+                login
+              }
+              createdAt
+            }
+            ...on UnpinnedEvent {
+              actor {
+                login
               }
               createdAt
             }

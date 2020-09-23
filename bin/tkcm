@@ -153,6 +153,9 @@ main() {
   # parse ticket timeline items
   local timelineItemJQ=$(cat ~/.dots/bin/_timeline_item.jq)
   local timelineItemsJSON=$(echo $ticketJSON | jq -r "$timelineItemJQ")
+
+  local lastType=""
+  local lastLogin=""
   while read -r item; do
     local itemType=$(echo "$item" | cut -d'|' -f1)
     local timestamp=$(echo "$item" | cut -d'|' -f2)
@@ -168,15 +171,23 @@ main() {
     local to=$(echo "$item" | cut -d'|' -f12 | base64 -d)
     local comments=$(echo "$item" | cut -d'|' -f13 | base64 -d)
 
-    echo
     case "$itemType" in
+      "ConvertToDraftEvent")
+        echo
+        action "$login" "marked this pull request as draft" "$timestamp"
+        ;;
       "ReadyForReviewEvent")
+        echo
         action "$login" "marked this pull request as ready for review" "$timestamp"
         ;;
       "HeadRefForcePushedEvent")
+        echo
         changes_action "$login" "force-pushed the <branch>" "$timestamp" "$from" "$to"
         ;;
       "PullRequestCommit")
+        if test "$lastType" != "$itemType"; then
+          echo
+        fi
         commit "$commitSHA" "$commitMessage" "$commitStatus"
         ;;
       "PullRequestReview")
@@ -195,6 +206,7 @@ main() {
             reviewState="$itemState"
             ;;
         esac
+        echo
         action "$login" "$reviewState" "$timestamp" "$body"
 
         if test "$comments" = ""; then
@@ -231,22 +243,46 @@ main() {
         done <<< "$(echo "$changeList" | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1, $2, $3, $4, $5, $6}')"
         ;;
       "ReviewRequestedEvent")
+        echo
         action "$login" "requested a review from $reviewerLogin" "$timestamp"
         ;;
       "LabeledEvent")
+        if test "$lastType" != "$itemType"; then
+          echo
+        fi
         action "$login" "added $labelName label" "$timestamp"
         ;;
+      "CrossReferencedEvent")
+        if test "$lastType" != "$itemType" -o "$lastLogin" != "$login"; then
+          echo
+          action "$login" "mentioned this issue" "$timestamp"
+        fi
+        segment "" " #$labelName" "$body"
+        ;;
+      "PinnedEvent")
+        echo
+        action "$login" "pinned this issue" "$timestamp"
+        ;;
+      "UnpinnedEvent")
+        echo
+        action "$login" "unpinned this issue" "$timestamp"
+        ;;
       "RenamedTitleEvent")
+        echo
         action "$login" "changed the title" "$timestamp"
         changes "$from" "$to"
         ;;
       "IssueComment")
+        echo
         action "$login" "commented" "$timestamp" "$body"
         ;;
       *)
+        echo
         echo unable to parse $itemType
         ;;
     esac
+    lastType="$itemType"
+    lastLogin="$login"
   done <<< "$(echo "$timelineItemsJSON" | awk -f ~/.dots/bin/_timeline_item.awk)"
 }
 
