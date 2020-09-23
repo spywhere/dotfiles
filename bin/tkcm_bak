@@ -19,7 +19,7 @@ action() {
   local body="$4"
   echo "$login $action $timestamp"
   if test "$body" != ""; then
-    _cat "$body"
+    bat -l md --paging never --color always --style changes <<<"$body"
   fi
 }
 
@@ -63,11 +63,6 @@ commit() {
   fi
 }
 
-_cat() {
-  printf "%b" "$@" | sed 's/^"//g' | sed 's/"$//g' | bat -l md --paging never --color always --style changes
-  return
-}
-
 main() {
   local repo=""
   local debug=0
@@ -78,14 +73,6 @@ main() {
     case $PARAM in
       -h | --help)
         usage
-        return
-        ;;
-      --internal)
-        if test -z "$EQUAL_SIGN"; then
-          return 1
-        fi
-        shift
-        "_$VALUE" "$(echo $@)"
         return
         ;;
       -R | --repo)
@@ -141,8 +128,6 @@ main() {
     return 1
   fi
 
-  # echo "$response" | NUMBER="$number" gomplate -f ~/.dots/bin/_timeline_item.tmpl --plugin tkcm="$HOME/.dots/bin/tkcm" -d 'number=env:///NUMBER' -d 'response=stdin:///in.json'
-  # return
   # parse ticket data
   local ticketJSON=$(echo "$response" | jq -r '.data.repository.issueOrPullRequest')
   local ticket=$(echo "$ticketJSON" | jq -r '[ .__typename, .author.login, .state, (.title | @base64), .baseRepository.owner.login // "", .baseRefName // "", .headRepository.owner.login // "", .headRefName // "", .updatedAt, ((.body // "") | @base64) ] | join("|")')
@@ -199,14 +184,6 @@ main() {
         echo
         changes_action "$login" "force-pushed the <branch>" "$timestamp" "$from" "$to"
         ;;
-      "HeadRefDeletedEvent")
-        echo
-        action "$login" "deleted the <branch> branch" "$timestamp"
-        ;;
-      "MergedEvent")
-        echo
-        action "$login" "merged commit $commitSHA into $commitMessage" "$timestamp"
-        ;;
       "PullRequestCommit")
         if test "$lastType" != "$itemType"; then
           echo
@@ -261,7 +238,7 @@ main() {
           echo
           echo "  $changesLogin $changesTimestamp$changesOutdated"
           if test "$changesBody" != ""; then
-            _cat "$changesBody"
+            bat -l md --paging never --color always --style changes <<<$(echo "$changesBody" | sed 's/^/  /g')
           fi
         done <<< "$(echo "$changeList" | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1, $2, $3, $4, $5, $6}')"
         ;;
@@ -269,21 +246,11 @@ main() {
         echo
         action "$login" "requested a review from $reviewerLogin" "$timestamp"
         ;;
-      "ReviewRequestRemovedEvent")
-        echo
-        action "$login" "removed request for $reviewerLogin" "$timestamp"
-        ;;
       "LabeledEvent")
-        if test "$lastType" != "$itemType" -a "$lastType" != "UnlabeledEvent"; then
+        if test "$lastType" != "$itemType"; then
           echo
         fi
         action "$login" "added $labelName label" "$timestamp"
-        ;;
-      "UnlabeledEvent")
-        if test "$lastType" != "$itemType" -a "$lastType" != "LabeledEvent"; then
-          echo
-        fi
-        action "$login" "removed $labelName label" "$timestamp"
         ;;
       "CrossReferencedEvent")
         if test "$lastType" != "$itemType" -o "$lastLogin" != "$login"; then
@@ -304,10 +271,6 @@ main() {
         echo
         action "$login" "changed the title" "$timestamp"
         changes "$from" "$to"
-        ;;
-      "ClosedEvent")
-        echo
-        echo "----------------"
         ;;
       "IssueComment")
         echo

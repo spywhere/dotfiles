@@ -7,7 +7,7 @@
   (.label.name // .source.number // ""),
   (.requestedReviewer.login // ""),
   (.commit.abbreviatedOid // ""),
-  ((.commit.message // "") | @base64),
+  ((.commit.message // .ref.name // .mergeRef.name // .headRef.name // "") | @base64),
   (.commit.statusCheckRollup.state // ""),
   ((.beforeCommit.abbreviatedOid // .previousTitle // "") | @base64),
   ((.afterCommit.abbreviatedOid // .currentTitle // "") | @base64),

@@ -17,7 +17,9 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
             PINNED_EVENT
             UNPINNED_EVENT
             LABELED_EVENT
+            UNLABELED_EVENT
             RENAMED_TITLE_EVENT
+            CLOSED_EVENT
             ISSUE_COMMENT
           ]
         ) {
@@ -53,6 +55,15 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
               createdAt
             }
             ...on LabeledEvent {
+              actor {
+                login
+              }
+              label {
+                name
+              }
+              createdAt
+            }
+            ...on UnlabeledEvent {
               actor {
                 login
               }
@@ -105,15 +116,20 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
             CONVERT_TO_DRAFT_EVENT
             READY_FOR_REVIEW_EVENT
             HEAD_REF_FORCE_PUSHED_EVENT
+            HEAD_REF_DELETED_EVENT
             BASE_REF_FORCE_PUSHED_EVENT
+            MERGED_EVENT
             PULL_REQUEST_COMMIT
             PULL_REQUEST_REVIEW
             REVIEW_REQUESTED_EVENT
+            REVIEW_REQUEST_REMOVED_EVENT
             CROSS_REFERENCED_EVENT
             PINNED_EVENT
             UNPINNED_EVENT
             LABELED_EVENT
+            UNLABELED_EVENT
             RENAMED_TITLE_EVENT
+            CLOSED_EVENT
             ISSUE_COMMENT
           ]
         ) {
@@ -144,11 +160,32 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
               }
               createdAt
             }
+            ...on HeadRefDeletedEvent {
+              actor {
+                login
+              }
+              headRef {
+                name
+              }
+              createdAt
+            }
             ...on BaseRefForcePushedEvent {
               actor {
                 login
               }
               ref {
+                name
+              }
+              createdAt
+            }
+            ...on MergedEvent {
+              actor {
+                login
+              }
+              commit {
+                abbreviatedOid
+              }
+              mergeRef {
                 name
               }
               createdAt
@@ -200,6 +237,23 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
               }
               createdAt
             }
+            ...on ReviewRequestRemovedEvent {
+              actor {
+                login
+              }
+              requestedReviewer {
+                ...on Mannequin {
+                  login
+                }
+                ...on Team {
+                  name
+                }
+                ...on User {
+                  login
+                }
+              }
+              createdAt
+            }
             ...on CrossReferencedEvent {
               actor {
                 login
@@ -229,6 +283,15 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
               createdAt
             }
             ...on LabeledEvent {
+              actor {
+                login
+              }
+              label {
+                name
+              }
+              createdAt
+            }
+            ...on UnlabeledEvent {
               actor {
                 login
               }

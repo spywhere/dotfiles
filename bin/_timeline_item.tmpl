@@ -1,0 +1,25 @@
+{{- with (ds "response").data.repository.issueOrPullRequest -}}
+{{ .state }} • {{ if regexp.Match "PullRequest" .__typename }}PR{{ end }}#{{ ds "number" }} • {{ .title }}
+{{ .author.login }} commented {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}
+{{ tkcm "--internal=cat" (strings.Quote .body) }}
+{{- range .timelineItems.nodes -}}
+{{ if regexp.Match "ConvertToDraftEvent" .__typename }}
+{{ .actor.login }} marked this pull request as draft {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{ else if regexp.Match "ReadyForReviewEvent" .__typename }}
+{{ .actor.login }} marked this pull request as ready for review {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{ else if regexp.Match "PullRequestCommit" .__typename }}
+• {{ .commit.abbreviatedOid }}{{ if .commit.statusCheckRollup }} • {{ .commit.statusCheckRollup.state }}{{ end }} • {{ .commit.message }}
+{{ else if regexp.Match "HeadRefForcePushedEvent" .__typename }}
+{{ .actor.login }} force-pushed the <branch> from {{ .beforeCommit.abbreviatedOid }} to {{ .afterCommit.abbreviatedOid }} {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{ else if regexp.Match "LabeledEvent" .__typename }}
+{{ .actor.login }} added {{ .label.name }} label {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{ else if regexp.Match "RenamedTitleEvent" .__typename }}
+{{ .actor.login }} changed the title {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+  from: {{ .previousTitle }}
+    to: {{ .currentTitle }}
+{{ else if regexp.Match "IssueComment" .__typename }}
+{{ .author.login }} commented {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}
+{{ tkcm "--internal=cat" (strings.Quote .body) -}}
+{{ end -}}
+{{- end -}}
+{{- end -}}
