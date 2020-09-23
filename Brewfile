@@ -75,6 +75,7 @@ brew "git" #deb #alpine
 brew "git-delta"
 brew "git-flow" #deb #community-alpine
 brew "git-lfs"
+brew "gomplate"
 brew "gnupg2"
 brew "hstr" #make (arm arch not supported) #alpine
 brew "httpie" #deb #alpine
@@ -138,6 +139,7 @@ cask "webpquicklook"
 #dpkg https://github.com/dandavison/delta/releases/download/0.4.1/git-delta_0.4.1_armhf.deb
 
 #binary https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch pfetch
+#binary https://github.com/hairyhenderson/gomplate/releases/download/v3.8.0/gomplate_linux-armv7-slim gomplate
 
 # Fonts
 # Use nerd-fonts instead
