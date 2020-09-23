@@ -1,6 +1,6 @@
 #!/bin/bash
 normalize_url() {
-  echo $1 | sed -E 's/^.*+(@|:\/\/)(www\.)?//g' | sed 's/\.git//g'
+  echo $1 | sed -E 's/^.+(@|:\/\/)(www\.)?//g' | sed 's/\.git//g'
 }
 
 _remoteURL=$(git ls-remote --get-url 2>/dev/null)
