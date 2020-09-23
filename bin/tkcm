@@ -19,7 +19,7 @@ action() {
   local body="$4"
   echo "$login $action $timestamp"
   if test "$body" != ""; then
-    bat -l md -pp --color always --style changes <<<"$body"
+    bat -l md --paging never --color always --style changes <<<"$body"
   fi
 }
 
@@ -44,10 +44,11 @@ segment() {
   local first="$1"
   local second="$2"
   local third="$3"
-  if test "$first" != ""; then
-    first="$first "
+  if test "$first" = ""; then
+    echo "• $second • $third"
+  else
+    echo "$first • $second • $third"
   fi
-  echo "$first• $second • $third"
 }
 
 commit() {
@@ -118,7 +119,7 @@ main() {
   fi
 
   if test $debug -eq 1; then
-    echo "PR#$number in $repoOwner/$repoName"
+    echo "#$number in $repoOwner/$repoName"
     return
   fi
   local graphQuery=$(cat ~/.dots/bin/_ticket_comment.graphql)
@@ -221,13 +222,13 @@ main() {
           fi
 
           echo
-          bat --file-name "$changesPath" -pp --color always --style changes,header <<<$(echo "$changesDiff" | sed 's/^/  /g')
+          bat --file-name "$changesPath" --paging never --color always --style changes,header <<<$(echo "$changesDiff" | sed 's/^/  /g')
           echo
           echo "  $changesLogin $changesTimestamp$changesOutdated"
           if test "$changesBody" != ""; then
-            bat -l md -pp --color always --style changes <<<$(echo "$changesBody" | sed 's/^/  /g')
+            bat -l md --paging never --color always --style changes <<<$(echo "$changesBody" | sed 's/^/  /g')
           fi
-        done <<< $(echo "$changeList" | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1, $2, $3, $4, $5, $6}')
+        done <<< "$(echo "$changeList" | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1, $2, $3, $4, $5, $6}')"
         ;;
       "ReviewRequestedEvent")
         action "$login" "requested a review from $reviewerLogin" "$timestamp"
@@ -246,7 +247,7 @@ main() {
         echo unable to parse $itemType
         ;;
     esac
-  done <<< $(echo "$timelineItemsJSON" | awk -f ~/.dots/bin/_timeline_item.awk)
+  done <<< "$(echo "$timelineItemsJSON" | awk -f ~/.dots/bin/_timeline_item.awk)"
 }
 
 main $@
