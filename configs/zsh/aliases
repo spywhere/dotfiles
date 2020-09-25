@@ -94,6 +94,7 @@ docker-aliases() {
   docker info >/dev/null 2>&1
   if [ $? -ne 0 ]; then
     # Docker is not running, no alias set
+    echo "Docker is not running, try again"
     return
   fi
 
