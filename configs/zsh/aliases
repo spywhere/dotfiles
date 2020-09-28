@@ -89,26 +89,36 @@ _toggle_alias() {
   fi
 }
 
+_toggle_pipe_alias() {
+  if _test_alias $1; then
+    unalias $1
+    echo alias $1 unset
+  else
+    alias -g $1=$2
+    echo alias $1 set
+  fi
+}
+
 docker-aliases() {
   # Test if docker is running or not
   docker info >/dev/null 2>&1
-  if [ $? -ne 0 ]; then
+  if test $? -ne 0; then
     # Docker is not running, no alias set
     echo "Docker is not running, try again"
     return
   fi
 
   # Docker is running, setting aliases to use Docker instead
-  if [ "$(arch)" = "armv7l" ]; then
+  local mysqlImage="mysql:5.7"
+  if test "$(arch)" = "armv7l"; then
     # Raspberry Pi variant
-    _toggle_alias mysql "docker run -it --network=host --rm --name mysql-cli jsurf/rpi-mariadb mysql"
-    _toggle_alias mysqldump "docker run -it --network=host --rm --name mysql-cli jsurf/rpi-mariadb mysqldump"
-    _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/mysql/config:/etc/mysql/conf.d --name mysql jsurf/rpi-mariadb"
-  else
-    _toggle_alias mysql "docker run -it --network=host --rm --name mysql-cli mysql:5.7 mysql"
-    _toggle_alias mysql "docker run -it --network=host --rm --name mysql-cli mysql:5.7 mysqldump"
-    _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/mysql/config:/etc/mysql/conf.d --name mysql mysql:5.7"
+    mysqlImage="jsurf/rpi-mariadb"
   fi
+  _toggle_alias mysql "docker run -it --network=host --rm --name mysql-cli $mysqlImage mysql"
+  _toggle_alias mysqldump "docker run -it --network=host --rm --name mysql-cli $mysqlImage mysqldump"
+  _toggle_pipe_alias @mysql "| docker run -i --network=host --rm --name mysql-cli-pipe $mysqlImage mysql"
+  _toggle_pipe_alias @mysqldump "| docker run -i --network=host --rm --name mysql-cli-pipe $mysqlImage mysqldump"
+  _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/mysql/config:/etc/mysql/conf.d --name mysql $mysqlImage"
 
   _toggle_alias node "docker run -it --rm --name node-cli -v \$(pwd):/opt/app:delegated -w /opt/app node:lts-alpine node"
   _toggle_alias npm "docker run -it --rm --name npm-cli -p 8000:8000 -v \$(pwd):/opt/app:delegated -w /opt/app node:lts-alpine npm"
@@ -161,7 +171,7 @@ alias prcm="tkcm"
 alias iscm="tkcm"
 
 unalias vol >/dev/null 2>/dev/null
-if [ "$(uname)" = "Darwin" ]; then
+if test "$(uname)" = "Darwin"; then
   vol() {
     osascript -e "set Volume $((($1 + 5) / 10))"
   }
