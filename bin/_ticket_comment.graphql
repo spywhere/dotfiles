@@ -26,67 +26,13 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
           totalCount
           nodes {
             __typename,
-            ...on CrossReferencedEvent {
-              actor {
-                login
-              }
-              source {
-                ...on Issue {
-                  number
-                  title
-                }
-                ...on PullRequest {
-                  number
-                  title
-                }
-              }
-              createdAt
-            }
-            ...on PinnedEvent {
-              actor {
-                login
-              }
-              createdAt
-            }
-            ...on UnpinnedEvent {
-              actor {
-                login
-              }
-              createdAt
-            }
-            ...on LabeledEvent {
-              actor {
-                login
-              }
-              label {
-                name
-              }
-              createdAt
-            }
-            ...on UnlabeledEvent {
-              actor {
-                login
-              }
-              label {
-                name
-              }
-              createdAt
-            }
-            ...on RenamedTitleEvent {
-              actor {
-                login
-              }
-              previousTitle
-              currentTitle
-              createdAt
-            }
-            ...on IssueComment {
-              author {
-                login
-              }
-              body
-              updatedAt
-            }
+            ...CrossReferencedEventFields
+            ...PinnedEventFields
+            ...UnpinnedEventFields
+            ...LabeledEventFields
+            ...UnlabeledEventFields
+            ...RenamedTitleEventFields
+            ...IssueCommentFields
           }
         }
       }
@@ -136,188 +82,222 @@ query($owner: String!, $name: String!, $limit: Int!, $number: Int!) {
           totalCount
           nodes {
             __typename
-            ...on ConvertToDraftEvent {
-              actor {
-                login
-              }
-              createdAt
-            }
-            ...on ReadyForReviewEvent {
-              actor {
-                login
-              }
-              createdAt
-            }
-            ...on HeadRefForcePushedEvent {
-              actor {
-                login
-              }
-              beforeCommit {
-                abbreviatedOid
-              }
-              afterCommit {
-                abbreviatedOid
-              }
-              createdAt
-            }
-            ...on HeadRefDeletedEvent {
-              actor {
-                login
-              }
-              headRef {
-                name
-              }
-              createdAt
-            }
-            ...on BaseRefForcePushedEvent {
-              actor {
-                login
-              }
-              ref {
-                name
-              }
-              createdAt
-            }
-            ...on MergedEvent {
-              actor {
-                login
-              }
-              commit {
-                abbreviatedOid
-              }
-              mergeRef {
-                name
-              }
-              createdAt
-            }
-            ...on PullRequestCommit {
-              commit {
-                abbreviatedOid
-                message
-                statusCheckRollup {
-                  state
-                }
-              }
-            }
-            ...on PullRequestReview {
-              author {
-                login
-              }
-              body
-              state
-              comments(first: $limit) {
-                totalCount
-                nodes {
-                  author {
-                    login
-                  }
-                  path
-                  diffHunk
-                  body
-                  outdated
-                  updatedAt
-                }
-              }
-              updatedAt
-            }
-            ...on ReviewRequestedEvent {
-              actor {
-                login
-              }
-              requestedReviewer {
-                ...on Mannequin {
-                  login
-                }
-                ...on Team {
-                  name
-                }
-                ...on User {
-                  login
-                }
-              }
-              createdAt
-            }
-            ...on ReviewRequestRemovedEvent {
-              actor {
-                login
-              }
-              requestedReviewer {
-                ...on Mannequin {
-                  login
-                }
-                ...on Team {
-                  name
-                }
-                ...on User {
-                  login
-                }
-              }
-              createdAt
-            }
-            ...on CrossReferencedEvent {
-              actor {
-                login
-              }
-              source {
-                ...on Issue {
-                  number
-                  title
-                }
-                ...on PullRequest {
-                  number
-                  title
-                }
-              }
-              createdAt
-            }
-            ...on PinnedEvent {
-              actor {
-                login
-              }
-              createdAt
-            }
-            ...on UnpinnedEvent {
-              actor {
-                login
-              }
-              createdAt
-            }
-            ...on LabeledEvent {
-              actor {
-                login
-              }
-              label {
-                name
-              }
-              createdAt
-            }
-            ...on UnlabeledEvent {
-              actor {
-                login
-              }
-              label {
-                name
-              }
-              createdAt
-            }
-            ...on RenamedTitleEvent {
-              actor {
-                login
-              }
-              previousTitle
-              currentTitle
-              createdAt
-            }
-            ...on IssueComment {
-              author {
-                login
-              }
-              body
-              updatedAt
-            }
+            ...ConvertToDraftEventFields
+            ...ReadyForReviewEventFields
+            ...HeadRefForcePushedEventFields
+            ...HeadRefDeletedEventFields
+            ...BaseRefForcePushedEventFields
+            ...MergedEventFields
+            ...PullRequestCommitFields
+            ...PullRequestReviewFields
+            ...ReviewRequestedEventFields
+            ...ReviewRequestRemovedEventFields
+            ...CrossReferencedEventFields
+            ...PinnedEventFields
+            ...UnpinnedEventFields
+            ...LabeledEventFields
+            ...UnlabeledEventFields
+            ...RenamedTitleEventFields
+            ...IssueCommentFields
           }
         }
       }
     }
   }
+}
+
+fragment ConvertToDraftEventFields on ConvertToDraftEvent {
+  actor {
+    login
+  }
+  createdAt
+}
+
+fragment ReadyForReviewEventFields on ReadyForReviewEvent {
+  actor {
+    login
+  }
+  createdAt
+}
+
+fragment HeadRefForcePushedEventFields on HeadRefForcePushedEvent {
+  actor {
+    login
+  }
+  beforeCommit {
+    abbreviatedOid
+  }
+  afterCommit {
+    abbreviatedOid
+  }
+  createdAt
+}
+
+fragment HeadRefDeletedEventFields on HeadRefDeletedEvent {
+  actor {
+    login
+  }
+  headRef {
+    name
+  }
+  createdAt
+}
+
+fragment BaseRefForcePushedEventFields on BaseRefForcePushedEvent {
+  actor {
+    login
+  }
+  ref {
+    name
+  }
+  createdAt
+}
+
+fragment MergedEventFields on MergedEvent {
+  actor {
+    login
+  }
+  commit {
+    abbreviatedOid
+  }
+  mergeRef {
+    name
+  }
+  createdAt
+}
+
+fragment PullRequestCommitFields on PullRequestCommit {
+  commit {
+    abbreviatedOid
+    message
+    statusCheckRollup {
+      state
+    }
+  }
+}
+
+fragment PullRequestReviewFields on PullRequestReview {
+  author {
+    login
+  }
+  body
+  state
+  comments(first: $limit) {
+    totalCount
+    nodes {
+      author {
+        login
+      }
+      path
+      diffHunk
+      body
+      outdated
+      updatedAt
+    }
+  }
+  updatedAt
+}
+
+fragment ReviewRequestedEventFields on ReviewRequestedEvent {
+  actor {
+    login
+  }
+  requestedReviewer {
+    ...on Mannequin {
+      login
+    }
+    ...on Team {
+      name
+    }
+    ...on User {
+      login
+    }
+  }
+  createdAt
+}
+
+fragment ReviewRequestRemovedEventFields on ReviewRequestRemovedEvent {
+  actor {
+    login
+  }
+  requestedReviewer {
+    ...on Mannequin {
+      login
+    }
+    ...on Team {
+      name
+    }
+    ...on User {
+      login
+    }
+  }
+  createdAt
+}
+
+fragment CrossReferencedEventFields on CrossReferencedEvent {
+  actor {
+    login
+  }
+  source {
+    ...on Issue {
+      number
+      title
+    }
+    ...on PullRequest {
+      number
+      title
+    }
+  }
+  createdAt
+}
+
+fragment PinnedEventFields on PinnedEvent {
+  actor {
+    login
+  }
+  createdAt
+}
+
+fragment UnpinnedEventFields on UnpinnedEvent {
+  actor {
+    login
+  }
+  createdAt
+}
+
+fragment LabeledEventFields on LabeledEvent {
+  actor {
+    login
+  }
+  label {
+    name
+  }
+  createdAt
+}
+
+fragment UnlabeledEventFields on UnlabeledEvent {
+  actor {
+    login
+  }
+  label {
+    name
+  }
+  createdAt
+}
+
+fragment RenamedTitleEventFields on RenamedTitleEvent {
+  actor {
+    login
+  }
+  previousTitle
+  currentTitle
+  createdAt
+}
+
+fragment IssueCommentFields on IssueComment {
+  author {
+    login
+  }
+  body
+  updatedAt
 }
