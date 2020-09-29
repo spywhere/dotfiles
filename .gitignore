@@ -3,6 +3,7 @@ configs/mpd/**
 !configs/mpd/mpd.conf
 !configs/mpd/playlists
 !configs/mpd/playlists/.gitkeep
+configs/mysql/data/**
 configs/ncmpcpp/**
 !configs/ncmpcpp/config
 !configs/ncmpcpp/bindings
