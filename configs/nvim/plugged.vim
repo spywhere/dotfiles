@@ -52,7 +52,6 @@ Plug 'kien/rainbow_parentheses.vim'
 Plug 'dense-analysis/ale'
 
 " Languages
-Plug 'isRuslan/vim-es6'
 Plug 'moll/vim-node'
 Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
