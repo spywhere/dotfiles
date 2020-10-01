@@ -87,7 +87,7 @@ brew "mycli" #deb #testing-alpine
 brew "nano" #deb #alpine
 #edge-alpine boost-dev # ncmpcpp dependencies
 brew "ncmpcpp" #deb #testing-alpine
-brew "neovim" #make (required for autocompletion to properly working)
+brew "neovim", args: ["HEAD"] #make (required for autocompletion to properly working)
 brew "netcat" #deb
 #alpine netcat-openbsd
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
@@ -102,7 +102,6 @@ brew "tmux" #make # tmux on arm is still outdated
 brew "trash"
 brew "wget" #deb #alpine
 #deb xsel # tmux-yank dependencies
-brew "youtube-dl"
 brew "cjbassi/ytop/ytop"
 # ytop  -- not available on apt
 #deb zsh
