@@ -6,6 +6,8 @@ else
   let g:init_vim_loaded = 1
 endif
 
+let g:polyglot_disbled = ['javascript']
+
 call plug#begin('~/.config/nvim/plugged')
 
 " File explorer
@@ -46,6 +48,7 @@ Plug 'easymotion/vim-easymotion', { 'on': [] }
 " Syntax Highlight
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'sheerun/vim-polyglot'
+Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'kien/rainbow_parentheses.vim'
 
 " Linting
@@ -341,6 +344,16 @@ colorscheme nord
 
 " colorizer
 lua require'colorizer'.setup()
+
+" treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = 'all',
+  highlight = {
+    enable = true
+  }
+}
+EOF
 
 " Try to startup autocommand manually on first install completion
 if exists("g:first_install")
