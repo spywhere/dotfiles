@@ -91,7 +91,7 @@ Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
-if !exists("g:init_vim_loaded")
+if !exists('g:init_vim_loaded')
   finish
 endif
 
@@ -346,17 +346,19 @@ colorscheme nord
 lua require'colorizer'.setup()
 
 " treesitter
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = 'all',
-  highlight = {
-    enable = true
+if has('nvim-0.5')
+  lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = 'all',
+    highlight = {
+      enable = true
+    }
   }
-}
 EOF
+endif
 
 " Try to startup autocommand manually on first install completion
-if exists("g:first_install")
+if exists('g:first_install')
   call ColorSetup()
   Startify
 endif
