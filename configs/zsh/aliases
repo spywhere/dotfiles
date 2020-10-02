@@ -116,8 +116,8 @@ docker-aliases() {
   fi
   _toggle_alias mysql "docker run -it --network=host --rm --name mysql-cli $mysqlImage mysql"
   _toggle_alias mysqldump "docker run -it --network=host --rm --name mysql-cli $mysqlImage mysqldump"
-  _toggle_pipe_alias @mysql "| docker run -i --network=host --rm --name mysql-cli-pipe $mysqlImage mysql"
-  _toggle_pipe_alias @mysqldump "| docker run -i --network=host --rm --name mysql-cli-pipe $mysqlImage mysqldump"
+  _toggle_pipe_alias @mysql "| docker run -i --network=host --rm $mysqlImage mysql"
+  _toggle_pipe_alias @mysqldump "| docker run -i --network=host --rm $mysqlImage mysqldump"
   _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/$DOTFILES_NAME/configs/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/configs/mysql/config:/etc/mysql/conf.d --name mysql $mysqlImage"
 
   _toggle_alias node "docker run -it --rm --name node-cli -v \$(pwd):/opt/app:delegated -w /opt/app node:lts-alpine node"
