@@ -10,7 +10,6 @@ alias ga.='ga .'
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 alias reloadzshplugins="rm -f ~/.zsh_plugins ~/.zsh_plugins.tmux && source ~/.zshrc"
-alias flashlight="printf \"$(tput setab 7)$(tput clear)\" && sleep 10"
 
 alias dr="defaults read"
 alias dw="defaults write"
@@ -43,6 +42,14 @@ fi
 
 # Docker
 alias d='docker'
+
+flashlight() {
+  local duration=10
+  if test $# -gt 0; then
+    duration="$1"
+  fi
+  printf "$(tput setab 7)$(tput clear)" && sleep $duration
+}
 
 transfer() {
   if test $# -eq 0; then
