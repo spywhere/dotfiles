@@ -1,8 +1,30 @@
 # Dotfiles
 
+## Required Built-in Commands
+- `cd`
+- `rm`
+- `set`
+- `shift`
+- `printf`
+- `test`
+- `command`
+- `expr`
+- `exit`
+- `if`
+- `while`
+- `case`
+- `return`
+
+## Required Commands
+- coreutils
+  - `uname`
+  - `expr`
+
 ## Supported Platform
 - macOS
-- Linux (tested on Raspbian Lite)
+- Linux
+  - Raspberry OS
+  - Alpine
 
 ## Just run
 ```

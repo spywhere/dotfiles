@@ -1,3 +1,7 @@
+#####################
+# Project Structure #
+#####################
+
 - packages
   - pkgconfig.sh
     #!sh
@@ -8,9 +12,55 @@
     brew "git-delta"
     dpkg "https://github.com/dandavison/delta/releases/download/0.4.1/git-delta_0.4.1_armhf.deb"
 
+- os
+  - rpi-os.sh
+    #!sh
+    install_package() {
+      apt install -y "$@"
+    }
+    update_os() {
+      apt full-upgrade -y
+    }
+  - alpine.sh
+    #!sh
+    install_package() {
+      apk add "$@"
+    }
+    update_os() {
+      apk update
+    }
+  - macos.sh
+    #!sh
+    install_package() {
+      brew install "$@"
+    }
+    update_os() {
+      brew update
+      brew upgrade
+    }
+
 binaries/ - All executable files
 configs/ - All configurations for particular packages
 packages/ - All installable packages and dependencies
 deps/ - Temporary directory used during installation process
 docs/ - All documentation and references
+os/ - All supporting operating system
 supports/ - Supporting files that may be required during installation process
+
+###########
+# Command #
+###########
+
+usage: ./install.sh [flags] [options]
+
+flags:
+  -h, --help
+  -i, --info
+  -l, --local
+  -s, --skip-dependencies
+  -k, --keep
+  -f, --force
+  -q, --quiet
+  -v, --verbose
+  --save
+  --load=...
