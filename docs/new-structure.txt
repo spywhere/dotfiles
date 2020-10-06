@@ -7,3 +7,10 @@
     #!sh
     brew "git-delta"
     dpkg "https://github.com/dandavison/delta/releases/download/0.4.1/git-delta_0.4.1_armhf.deb"
+
+binaries/ - All executable files
+configs/ - All configurations for particular packages
+packages/ - All installable packages and dependencies
+deps/ - Temporary directory used during installation process
+docs/ - All documentation and references
+support/ - Supporting files that may be required during installation process
