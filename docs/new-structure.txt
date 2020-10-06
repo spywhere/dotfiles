@@ -13,4 +13,4 @@ configs/ - All configurations for particular packages
 packages/ - All installable packages and dependencies
 deps/ - Temporary directory used during installation process
 docs/ - All documentation and references
-support/ - Supporting files that may be required during installation process
+supports/ - Supporting files that may be required during installation process
