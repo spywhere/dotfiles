@@ -1,3 +1,4 @@
+#!/bin/bash
 DOTFILES_NAME=.dots
 
 # increase history size
@@ -12,7 +13,7 @@ export YSU_MESSAGE_POSITION="after"
 export YSU_IGNORED_ALIASES=("g" "ga." "d" "vi" "vim")
 
 # export binaries to path
-export PATH=$HOME/$DOTFILES_NAME/bin:$PATH
+export PATH=$HOME/$DOTFILES_NAME/binaries:$PATH
 
 # setup locales, to fix...
 # - https://github.com/jwilm/alacritty/issues/2566

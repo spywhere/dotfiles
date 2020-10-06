@@ -1,3 +1,4 @@
+#!/bin/bash
 alias recovery="if [ -f ~/recovery ]; then rm -f ~/recovery && echo 'Recovery mode disabled'; else touch ~/recovery && echo 'Recovery mode enabled'; fi"
 if [ -f ~/recovery ]; then
   return
