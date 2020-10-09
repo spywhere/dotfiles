@@ -1,0 +1,32 @@
+set editor='nvim'
+
+set imap_check_subscribed
+
+# set preferred view modes
+auto_view text/html text/calendar application/ics # view html
+alternative_order text/html text/plain text/enriched text/*
+
+# main options
+set envelope_from
+set edit_headers # show headers when compose
+set fast_reply # skip to compose when reply
+set askcc # ask for CC:
+set fcc_attach # save attachments with the body
+set forward_format='Fwd: %s' # format of subject when forwarding
+set forward_decode # decode when forwarding
+set attribution='On %d, %n wrote:' # fformat of quoting header
+set reply_to # reply to Reply to: field
+set reverse_name # reply as whomever it was to
+set include # include message in replies
+set forward_quote # include message in forwards
+set text_flowed
+unset mime_forward # forward attachments as part of body
+# unset help # no help bar at the top
+
+# unset confirmappend
+# set quit
+unset mark_old # read/new is good enough for me
+set pipe_decode # strip headers and eval mimes when piping
+set thorough_search # strip eaders and eval mimes before searching
+set timeout=0
+
