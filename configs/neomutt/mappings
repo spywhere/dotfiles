@@ -1,5 +1,3 @@
-# nvim: filetype=neomuttrc
-
 # general rebindings
 bind attach <return> view-mailcap
 bind index G last-entry
@@ -16,25 +14,23 @@ bind browser h goto-parent
 bind browser l select-entry
 bind pager,browser gg top-page
 bind pager,browser G bottom-page
-bind index,pager,browser d half-down
-bind index,pager,browser u half-up
+bind index,pager,browser \CD half-down
+bind index,pager,browser \CU half-up
 bind index,pager R group-reply
 bind editor <tab> complete-query
 
 # sidebar mappings
 bind index,pager K sidebar-prev
 bind index,pager J sidebar-next
-# bind index,pager <ctrl>o sidebar-open
-# bind index,pager <ctrl>p sidebar-prev-new
-# bind index,pager <ctrl>n sidebar-next-new
+bind index,pager O sidebar-open
 bind index,pager B sidebar-toggle-visible
 
 # global index and pager shortcuts
-# bind index,pager @ compose-to-sender
+bind index,pager @ compose-to-sender
 bind index,pager D purge-message
 bind index <tab> sync-mailbox
-# bind index <space> collapse-thread
+bind index <space> collapse-thread
 
 # Email completion bindings
-# bind editor <Tab> complete-query
-# bind editor ^T complete
+bind editor <tab> complete-query
+bind editor ^T complete

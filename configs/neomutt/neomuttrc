@@ -1,8 +1,8 @@
-source ~/.dots/configs/neomutt/config
+source config
 # source ~/.dots/configs/neomutt/colors
-source ~/.dots/configs/neomutt/mappings
+source mappings
 
 # Accounts
-
-source ~/.dots/configs/neomutt/accounts/gmail
-folder-hook $folder 'source ~/.dots/configs/neomutt/accounts/gmail'
+folder-hook $folder 'source accounts/pomelo'
+folder-hook $folder 'source accounts/personal'
+source accounts/personal
