@@ -13,7 +13,5 @@ FROM alpine
 WORKDIR /root
 RUN apk update
 RUN apk add openssl ncurses-libs libidn notmuch gpgme libsasl lmdb krb5 pcre2 lz4-libs python2
-RUN mkdir Mail
-RUN mkdir /var/mail/root
 COPY --from=builder /usr/bin/neomutt /usr/bin/neomutt
 CMD neomutt

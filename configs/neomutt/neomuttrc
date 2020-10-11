@@ -3,6 +3,4 @@ source ~/.dots/configs/neomutt/config
 source ~/.dots/configs/neomutt/mappings
 
 # Accounts
-folder-hook $folder 'source ~/.dots/configs/neomutt/accounts/pomelo'
-folder-hook $folder 'source ~/.dots/configs/neomutt/accounts/personal'
 source ~/.dots/configs/neomutt/accounts/personal

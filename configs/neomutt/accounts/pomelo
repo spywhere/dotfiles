@@ -15,6 +15,11 @@ set smtp_pass=`grep pomelo ~/.secret | cut -d'=' -f2`
 set spoolfile=+INBOX
 set record="+[Gmail]/Sent Mail"
 set postponed="+[Gmail]/Drafts"
+set trash="+[Gmail]/Trash"
 
-mailboxes =INBOX =[Gmail]/Sent\ Mail =[Gmail]/Drafts =[Gmail]/Spam =[Gmail]/Trash
-
+named-mailboxes "Inbox" +INBOX
+named-mailboxes "Sent" +[Gmail]/Sent\ Mail
+named-mailboxes "Drafts" +[Gmail]/Drafts
+named-mailboxes "Spam" +[Gmail]/Spam
+named-mailboxes "Trash" +[Gmail]/Trash
+named-mailboxes "========" +Unused

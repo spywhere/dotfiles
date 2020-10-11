@@ -15,5 +15,11 @@ set smtp_pass=`grep personal ~/.secret | cut -d'=' -f2`
 set spoolfile=+INBOX
 set record="+Sent Messages"
 set postponed="+Drafts"
+set trash="+Trash"
 
-mailboxes =INBOX =Sent\ Messages =Drafts =Junk =Trash
+named-mailboxes "Inbox" +INBOX
+named-mailboxes "Sent" +Sent\ Messages
+named-mailboxes "Drafts" +Drafts
+named-mailboxes "Spam" +Junk
+named-mailboxes "Trash" +Trash
+named-mailboxes "========" +Unused
