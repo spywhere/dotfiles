@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if test "$1" = ""; then
+  if ls ~/.secret >/dev/null 2>&1; then
+    echo "No secret file specified"
+    exit 1
+  fi
+
+  echo "Secret directory not found, running the following command to encrypt"
+  echo "  $(basename $0) --encrypt <file>"
+  exit
+elif test "$1" = "--encrypt"; then
+  gpg --symmetric --cipher-algo AES256 --pinentry-mode loopback "$2"
+  exit
+elif test "$1" = "--clear-cache"; then
+  gpg-connect-agent reloadagent /bye
+  exit
+elif test -f ~/.secret/"$1"; then
+  if test "$2" = ""; then
+    echo "No secret key specified"
+    exit 1
+  fi
+  if test "$3" = "--no-cache"; then
+    gpg --no-symkey-cache -d ~/.secret/"$1" >/dev/null
+  else
+    gpg -dq ~/.secret/"$1" | grep "$2" | cut -d'=' -f2
+  fi
+  exit
+fi
+
+echo "Secret file \"$1\" cannot be found"
+exit 1
