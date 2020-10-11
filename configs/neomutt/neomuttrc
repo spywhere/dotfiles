@@ -1,6 +1,6 @@
 source ~/.config/neomutt/config
-# source ~/.config/neomutt/colors
+source ~/.config/neomutt/colors
 source ~/.config/neomutt/mappings
 
 # Accounts
-source ~/.config/neomutt/accounts/personal
+source ~/.config/neomutt/accounts/default

@@ -8,7 +8,7 @@ set folder=imaps://spywhere@me.com@imap.mail.me.com:993/
 set imap_user=$from
 set imap_pass=`grep personal ~/.secret | cut -d'=' -f2`
 
-set smtp_url="smtps://spywhere@me.com@smtp.mail.me.com:587/"
+set smtp_url="smtp://spywhere@me.com@smtp.mail.me.com:587/"
 set smtp_authenticators='gssapi:login'
 set smtp_pass=`grep personal ~/.secret | cut -d'=' -f2`
 

@@ -7,6 +7,7 @@ configs/mysql/data/**
 configs/ncmpcpp/**
 !configs/ncmpcpp/config
 !configs/ncmpcpp/bindings
+configs/neomutt/accounts/default
 configs/nvim/autoload
 configs/nvim/plugged
 deps
