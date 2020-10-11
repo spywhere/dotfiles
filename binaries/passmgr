@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if test "$1" = ""; then
   if ls ~/.secret >/dev/null 2>&1; then
