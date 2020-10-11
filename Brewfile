@@ -88,6 +88,7 @@ brew "nano" #deb #alpine
 #edge-alpine boost-dev # ncmpcpp dependencies
 brew "ncmpcpp" #deb #testing-alpine
 brew "neovim", args: ["HEAD"] #make (required for autocompletion to properly working)
+brew "neomutt" #make
 brew "netcat" #deb
 #alpine netcat-openbsd
 brew "pkg-config" # https://github.com/driesvints/dotfiles/issues/20
