@@ -27,7 +27,7 @@ set quit
 unset mark_old # read/new is good enough for me
 set pipe_decode # strip headers and eval mimes when piping
 set thorough_search # strip headers and eval mimes before searching
-# unset help # no help bar at the top
+unset help # no help bar at the top
 
 # sorting
 set sort=reverse-date   # default sorting by date
