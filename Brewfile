@@ -70,6 +70,7 @@ brew "coreutils" # Those that come with macOS are outdated
 #deb curl #alpine
 #deb dnsmasq #alpine
 brew "exa" #deb #alpine
+brew "feh" #deb # image viewer (neomutt integrated)
 brew "gh" # for linux, see https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 brew "git" #deb #alpine
 brew "git-delta"
@@ -101,6 +102,7 @@ brew "sc-im" #make
 brew "tig" #deb #alpine
 brew "tmux" #make # tmux on arm is still outdated
 brew "trash"
+brew "w3m" #deb # TUI web browser (neomutt integrated)
 brew "wget" #deb #alpine
 #deb xsel # tmux-yank dependencies
 brew "cjbassi/ytop/ytop"

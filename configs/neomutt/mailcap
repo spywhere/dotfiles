@@ -1,0 +1,4 @@
+text/plain; $EDITOR %s ;
+text/html; w3m -I %{charset} -T text/html; copiousoutput;
+image/*; feh %s ;
+application/pgp-encrypted; gpg -d '%s'; copiousoutput;

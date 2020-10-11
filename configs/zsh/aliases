@@ -110,7 +110,7 @@ neomutt() {
   if test ${+commands[neomutt]} -eq 1; then
     ${commands[neomutt]} "$@"
   else
-    docker run -it --rm -v ${HOME}/$DOTFILES_NAME/configs/neomutt:/root/.dots/configs/neomutt -v ${HOME}/$DOTFILES_NAME/configs/neomutt/neomuttrc:/root/.config/neomutt/neomuttrc -v ${HOME}/.secret:/root/.secret neomutt
+    docker run -it --rm -v ${HOME}/$DOTFILES_NAME/configs/neomutt:/root/.config/neomutt -v ${HOME}/.secret:/root/.secret neomutt
   fi
 }
 

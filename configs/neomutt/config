@@ -6,6 +6,7 @@ set mail_check_stats
 # set preferred view modes
 auto_view text/html text/calendar application/ics # view html
 alternative_order text/html text/plain text/enriched text/*
+set mailcap_path = ~/.config/neomutt/mailcap
 
 # main options
 set envelope_from
@@ -13,9 +14,7 @@ set edit_headers # show headers when compose
 set fast_reply # skip to compose when reply
 set askcc # ask for CC:
 set fcc_attach # save attachments with the body
-set forward_format='Fwd: %s' # format of subject when forwarding
 set forward_decode # decode when forwarding
-set attribution='On %d, %n wrote:' # fformat of quoting header
 set reply_to # reply to Reply to: field
 set reverse_name # reply as whomever it was to
 set include # include message in replies
@@ -23,25 +22,30 @@ set forward_quote # include message in forwards
 set mime_forward=yes
 set text_flowed
 set sleep_time=0
-# unset help # no help bar at the top
-set sort=reverse-date   # default sorting by date
-set sort_aux=last-date-received
-# Index page format. Default "%4C %Z %{%b %d} %-15.15L (%?l?%4l&%4c?) %s"
-set index_format="%4C %Z %{%b %d %R} %-15.15L (%?l?%4l&%4c?) %s"
-set sidebar_visible
-set sidebar_format="%D%?F? [%F]?%* %?N?%N/?%S"
-set sidebar_short_path
-
 unset confirmappend
 set quit
 unset mark_old # read/new is good enough for me
 set pipe_decode # strip headers and eval mimes when piping
 set thorough_search # strip headers and eval mimes before searching
+# unset help # no help bar at the top
+
+# sorting
+set sort=reverse-date   # default sorting by date
+set sort_aux=last-date-received
+
+# appearances
+set sidebar_visible
+set sidebar_short_path
+
+# formatting
+set index_format="%4C %Z %[%d %b %y %R] %-15.15L (%?l?%4l&%4c?) %s"
+set sidebar_format="%D%?F? [%F]?%* %?N?%N/?%S"
+set forward_format='Fwd: %s' # format of subject when forwarding
+set attribution='On %{%d %b %Y %R}, %n wrote:' # format of quoting header
 
 # performance tuning
-set header_cache=~/.cache/neomutt/header
+set header_cache=~/.cache/neomutt/headers
 set header_cache_backend=lmdb
-# set header_cache_compress_method=lz4
-set message_cachedir=~/.cache/neomutt/messages
+set message_cachedir=~/.cache/neomutt
 
 set imap_qresync=yes
