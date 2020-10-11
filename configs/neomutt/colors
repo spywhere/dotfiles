@@ -15,7 +15,7 @@ mono underline underline
 mono indicator reverse
 mono error bold
 color normal default default
-color indicator black brightblue
+color indicator black cyan
 color sidebar_highlight blue default
 color sidebar_divider brightblack black
 color sidebar_flagged yellow black
