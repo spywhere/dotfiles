@@ -9,7 +9,6 @@ configs/ncmpcpp/**
 !configs/ncmpcpp/bindings
 configs/nvim/autoload
 configs/nvim/plugged
-configs/neomutt/accounts
 deps
 **.zip
 **.tar.gz
