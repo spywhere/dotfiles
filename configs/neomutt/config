@@ -38,7 +38,7 @@ set sidebar_visible
 set sidebar_short_path
 
 # formatting
-set index_format="%4C %Z %[%d %b %y %R] %-15.15L (%?l?%4l&%4c?) %s"
+set index_format="%4C %-15.15L %s%*  %Z %[%d %b %y %R] (%?l?%4l&%4c?)"
 set sidebar_format="%D%?F? [%F]?%* %?N?%N/?%S"
 set forward_format='Fwd: %s' # format of subject when forwarding
 set attribution='On %{%d %b %Y %R}, %n wrote:' # format of quoting header
