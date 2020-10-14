@@ -70,3 +70,18 @@ nnoremap <leader>f :Rg<CR>
 nnoremap <leader><A-f> :Rg!<CR>
 nnoremap <leader>F :RG<CR>
 nnoremap <leader><A-F> :RG!<CR>
+
+" vim-sneak
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
+
+" switch.vim and speeddating
+" Avoid issues because of us remapping <c-a> and <c-x> below
+nnoremap <Plug>SpeedDatingFallbackUp <c-a>
+nnoremap <Plug>SpeedDatingFallbackDown <c-x>
+
+" Manually invoke speeddating in case switch didn't work
+nnoremap <c-a> :if !switch#Switch() <bar>call speeddating#increment(v:count1) <bar> endif<cr>
+nnoremap <c-x> :if !switch#Switch({'reverse': 1}) <bar>call speeddating#increment(-v:count1) <bar> endif<cr>

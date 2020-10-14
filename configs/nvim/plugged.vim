@@ -25,6 +25,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/vim-parenmatch'
 Plug 'christoomey/vim-sort-motion'
+Plug 'AndrewRadev/switch.vim'
+Plug 'tpope/vim-speeddating'
 
 " Autocompletion
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
@@ -43,7 +45,7 @@ Plug 'tpope/vim-rsi'
 Plug 'wellle/targets.vim'
 Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
 " Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
-Plug 'easymotion/vim-easymotion', { 'on': [] }
+Plug 'justinmk/vim-sneak'
 
 " Syntax Highlight
 Plug 'norcalli/nvim-colorizer.lua'
@@ -105,7 +107,7 @@ syntax on
 
 augroup lazyload_plugins
   autocmd!
-  autocmd CursorHold * call plug#load('vim-easymotion', 'vim-tmux-navigator') | autocmd! lazyload_plugins
+  autocmd CursorHold * call plug#load('vim-tmux-navigator') | autocmd! lazyload_plugins
 augroup END
 
 " start NERDTree on startup
@@ -322,6 +324,10 @@ let g:lightline.active = {
 \     ['obsession'],
 \   ]
 \ }
+
+" speed-dating
+" Disabled as we will map switch.vim and speeddating ourselves
+let g:speeddating_no_mappings = 1
 
 " vim-rooter
 let g:rooter_silent_chdir = 1
