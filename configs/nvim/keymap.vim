@@ -71,6 +71,12 @@ nnoremap <leader><A-f> :Rg!<CR>
 nnoremap <leader>F :RG<CR>
 nnoremap <leader><A-F> :RG!<CR>
 
+" vim-visual-increment
+vnoremap <C-a> g<C-a>
+vnoremap <C-x> g<C-x>
+vnoremap g<C-a> <C-a>
+vnoremap g<C-x> <C-x>
+
 " vim-sneak
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
