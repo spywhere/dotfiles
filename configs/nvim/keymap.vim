@@ -18,6 +18,9 @@ nnoremap <Down> :resize +1<CR>
 " quick add line
 nnoremap go o<ESC>
 nnoremap gO O<ESC>
+" scroll left/right
+noremap gh 20zh
+noremap gl 20zl
 
 " use alt + left/right keys to switch buffers
 noremap <A-Left> :bprev<CR>
@@ -41,9 +44,6 @@ nnoremap <A-j> ddp
 let mapleader = ","
 
 noremap <leader>m :call quickui#menu#open()<CR>
-
-noremap <leader>h 20zh
-noremap <leader>l 20zl
 
 " remove search highlight
 nnoremap <leader>hs :noh<CR>
