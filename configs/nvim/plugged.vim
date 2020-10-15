@@ -50,8 +50,10 @@ Plug 'justinmk/vim-sneak'
 " Syntax Highlight
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'sheerun/vim-polyglot'
-Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'kien/rainbow_parentheses.vim'
+if has('nvim-0.5')
+  Plug 'nvim-treesitter/nvim-treesitter' " Experimental until nvim-0.5
+endif
 
 " Linting
 Plug 'dense-analysis/ale'
