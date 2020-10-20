@@ -122,7 +122,7 @@ main() {
     echo "#$number in $repoOwner/$repoName"
     return
   fi
-  local graphQuery=$(cat ~/.dots/bin/_ticket_comment.graphql)
+  local graphQuery=$(cat ~/.dots/binaries/_ticket_comment.graphql)
   local response=$(gh api graphql -F limit="50" -F owner="$repoOwner" -F name="$repoName" -F number="$number" -f query="$graphQuery")
   if [ $? -ne 0 ]; then
     return 1
@@ -151,7 +151,7 @@ main() {
   action "$ticketLogin" "commented" "$ticketTimestamp" "$ticketBody"
 
   # parse ticket timeline items
-  local timelineItemJQ=$(cat ~/.dots/bin/_timeline_item.jq)
+  local timelineItemJQ=$(cat ~/.dots/binaries/_timeline_item.jq)
   local timelineItemsJSON=$(echo $ticketJSON | jq -r "$timelineItemJQ")
 
   local lastType=""
@@ -283,7 +283,7 @@ main() {
     esac
     lastType="$itemType"
     lastLogin="$login"
-  done <<< "$(echo "$timelineItemsJSON" | awk -f ~/.dots/bin/_timeline_item.awk)"
+  done <<< "$(echo "$timelineItemsJSON" | awk -f ~/.dots/binaries/_timeline_item.awk)"
 }
 
 main $@

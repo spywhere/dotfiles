@@ -103,7 +103,7 @@ main() {
     return 1
   fi
 
-  echo "$response" | LIMIT="$limit" gomplate -f ~/.dots/bin/_issue.tmpl -d 'limit=env:///LIMIT' -d 'response=stdin:///in.json'
+  echo "$response" | LIMIT="$limit" gomplate -f ~/.dots/binaries/_issue.tmpl -d 'limit=env:///LIMIT' -d 'response=stdin:///in.json'
 }
 
 main $@
