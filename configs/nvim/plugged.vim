@@ -345,6 +345,10 @@ let g:startify_fortune_use_unicode = 1
 let g:startify_enable_special = 0
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
+function! StartifyEntryFormat()
+  return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
+endfunction
+
 " Running some patches
 source ~/.config/nvim/monkey-patch.vim
 
