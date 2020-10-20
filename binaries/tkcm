@@ -12,59 +12,15 @@ usage() {
   echo "  If a repo flag is passed, it will take priority over auto-detect one."
 }
 
-action() {
-  local login="$1"
-  local action="$2"
-  local timestamp="$3"
-  local body="$4"
-  echo "$login $action $timestamp"
-  if test "$body" != ""; then
-    _cat "$body"
-  fi
-}
-
-changes_action() {
-  local login="$1"
-  local action="$2"
-  local timestamp="$3"
-  local from="$4"
-  local to="$5"
-  local body="$6"
-  action "$login" "$action from $from to $to" "$timestamp" "$body"
-}
-
-changes() {
-  local from="$1"
-  local to="$2"
-  echo "  from: $from"
-  echo "    to: $to"
-}
-
-segment() {
-  local first="$1"
-  local second="$2"
-  local third="$3"
-  if test "$first" = ""; then
-    echo "• $second • $third"
-  else
-    echo "$first • $second • $third"
-  fi
-}
-
-commit() {
-  local oid="$1"
-  local title="$2"
-  local status="$3"
-
-  if test "$status" = ""; then
-    segment "" "$oid" "$title"
-  else
-    segment "" "$oid" "$status • $title"
-  fi
-}
-
 _cat() {
   printf "%b" "$@" | sed 's/^"//g' | sed 's/"$//g' | bat -l md --paging never --color always --style changes
+  return
+}
+
+_diff() {
+  local filename="$1"
+  shift
+  printf "%b" "$@" | sed 's/^"//g' | sed 's/"$//g' | bat --file-name $filename --paging never --color always --style changes,header
   return
 }
 
@@ -85,7 +41,13 @@ main() {
           return 1
         fi
         shift
-        "_$VALUE" "$(echo $@)"
+        if test "$VALUE" = "diff"; then
+          local ARG="$1"
+          shift
+          "_$VALUE" "$ARG" "$(echo $@)"
+        else
+          "_$VALUE" "$(echo $@)"
+        fi
         return
         ;;
       -R | --repo)
@@ -141,186 +103,8 @@ main() {
     return 1
   fi
 
-  # echo "$response" | NUMBER="$number" gomplate -f ~/.dots/binaries/_timeline_item.tmpl --plugin tkcm="$HOME/.dots/binaries/tkcm" -d 'number=env:///NUMBER' -d 'response=stdin:///in.json'
-  # return
-  # parse ticket data
-  local ticketJSON=$(echo "$response" | jq -r '.data.repository.issueOrPullRequest')
-  local ticket=$(echo "$ticketJSON" | jq -r '[ .__typename, .author.login, .state, (.title | @base64), .baseRepository.owner.login // "", .baseRefName // "", .headRepository.owner.login // "", .headRefName // "", .updatedAt, ((.body // "") | @base64) ] | join("|")')
-  local ticketType=$(echo "$ticket" | cut -d'|' -f1)
-  local ticketLogin=$(echo "$ticket" | cut -d'|' -f2)
-  local ticketState=$(echo "$ticket" | cut -d'|' -f3)
-  local ticketTitle=$(echo "$ticket" | cut -d'|' -f4 | base64 -d)
-  local ticketBaseOwner=$(echo "$ticket" | cut -d'|' -f5)
-  local ticketBaseRef=$(echo "$ticket" | cut -d'|' -f6)
-  local ticketHeadOwner=$(echo "$ticket" | cut -d'|' -f7)
-  local ticketHeadRef=$(echo "$ticket" | cut -d'|' -f8)
-  local ticketTimestamp=$(echo "$ticket" | cut -d'|' -f9)
-  local ticketBody=$(echo "$ticket" | cut -d'|' -f10 | base64 -d)
-
-  if test "$ticketType" = "PullRequest"; then
-    segment "$ticketState" "PR#$number" "$ticketTitle"
-  else
-    segment "$ticketState" "#$number" "$ticketTitle"
-  # segment "<state>" "#$number" "<title>"
-  fi
-  action "$ticketLogin" "commented" "$ticketTimestamp" "$ticketBody"
-
-  # parse ticket timeline items
-  local timelineItemJQ=$(cat ~/.dots/binaries/_timeline_item.jq)
-  local timelineItemsJSON=$(echo $ticketJSON | jq -r "$timelineItemJQ")
-
-  local lastType=""
-  local lastLogin=""
-  while read -r item; do
-    local itemType=$(echo "$item" | cut -d'|' -f1)
-    local timestamp=$(echo "$item" | cut -d'|' -f2)
-    local login=$(echo "$item" | cut -d'|' -f3)
-    local body=$(echo "$item" | cut -d'|' -f4 | base64 -d)
-    local itemState=$(echo "$item" | cut -d'|' -f5)
-    local labelName=$(echo "$item" | cut -d'|' -f6)
-    local reviewerLogin=$(echo "$item" | cut -d'|' -f7)
-    local commitSHA=$(echo "$item" | cut -d'|' -f8)
-    local commitMessage=$(echo "$item" | cut -d'|' -f9 | base64 -d)
-    local commitStatus=$(echo "$item" | cut -d'|' -f10)
-    local from=$(echo "$item" | cut -d'|' -f11 | base64 -d)
-    local to=$(echo "$item" | cut -d'|' -f12 | base64 -d)
-    local comments=$(echo "$item" | cut -d'|' -f13 | base64 -d)
-
-    case "$itemType" in
-      "ConvertToDraftEvent")
-        echo
-        action "$login" "marked this pull request as draft" "$timestamp"
-        ;;
-      "ReadyForReviewEvent")
-        echo
-        action "$login" "marked this pull request as ready for review" "$timestamp"
-        ;;
-      "HeadRefForcePushedEvent")
-        echo
-        changes_action "$login" "force-pushed the <branch>" "$timestamp" "$from" "$to"
-        ;;
-      "HeadRefDeletedEvent")
-        echo
-        action "$login" "deleted the <branch> branch" "$timestamp"
-        ;;
-      "MergedEvent")
-        echo
-        action "$login" "merged commit $commitSHA into $commitMessage" "$timestamp"
-        ;;
-      "PullRequestCommit")
-        if test "$lastType" != "$itemType"; then
-          echo
-        fi
-        commit "$commitSHA" "$commitMessage" "$commitStatus"
-        ;;
-      "PullRequestReview")
-        local reviewState=""
-        case "$itemState" in
-          "APPROVED")
-            reviewState="approved"
-            ;;
-          "CHANGES_REQUESTED")
-            reviewState="requested changes"
-            ;;
-          "COMMENTED")
-            reviewState="commented"
-            ;;
-          *)
-            reviewState="$itemState"
-            ;;
-        esac
-        echo
-        action "$login" "$reviewState" "$timestamp" "$body"
-
-        if test "$comments" = ""; then
-          continue
-        fi
-
-        local numberOfChanges=$(echo "$comments" | jq -r '.totalCount')
-        if test "$numberOfChanges" -eq 0; then
-          continue
-        fi
-
-        local changeList=$(echo "$comments" | jq -r '.nodes | [ .[] | [ .author.login, .updatedAt, .path, if .outdated then "1" else "0" end, ((.body // "") | @base64), (.diffHunk | @base64)] | join("|") ] | join("$")')
-        while read -r changes; do
-          local changesLogin=$(echo "$changes" | cut -d'|' -f1)
-          local changesTimestamp=$(echo "$changes" | cut -d'|' -f2)
-          local changesPath=$(echo "$changes" | cut -d'|' -f3)
-          local changesOutdated=$(echo "$changes" | cut -d'|' -f4)
-          local changesBody=$(echo "$changes" | cut -d'|' -f5 | base64 -d)
-          local changesDiff=$(echo "$changes" | cut -d'|' -f6 | base64 -d)
-
-          if test $changesOutdated -eq 1; then
-            changesOutdated=" [Outdated]"
-          else
-            changesOutdated=""
-          fi
-
-          echo
-          bat --file-name "$changesPath" --paging never --color always --style changes,header <<<$(echo "$changesDiff" | sed 's/^/  /g')
-          echo
-          echo "  $changesLogin $changesTimestamp$changesOutdated"
-          if test "$changesBody" != ""; then
-            _cat "$changesBody"
-          fi
-        done <<< "$(echo "$changeList" | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1, $2, $3, $4, $5, $6}')"
-        ;;
-      "ReviewRequestedEvent")
-        echo
-        action "$login" "requested a review from $reviewerLogin" "$timestamp"
-        ;;
-      "ReviewRequestRemovedEvent")
-        echo
-        action "$login" "removed request for $reviewerLogin" "$timestamp"
-        ;;
-      "LabeledEvent")
-        if test "$lastType" != "$itemType" -a "$lastType" != "UnlabeledEvent"; then
-          echo
-        fi
-        action "$login" "added $labelName label" "$timestamp"
-        ;;
-      "UnlabeledEvent")
-        if test "$lastType" != "$itemType" -a "$lastType" != "LabeledEvent"; then
-          echo
-        fi
-        action "$login" "removed $labelName label" "$timestamp"
-        ;;
-      "CrossReferencedEvent")
-        if test "$lastType" != "$itemType" -o "$lastLogin" != "$login"; then
-          echo
-          action "$login" "mentioned this issue" "$timestamp"
-        fi
-        segment "" " #$labelName" "$body"
-        ;;
-      "PinnedEvent")
-        echo
-        action "$login" "pinned this issue" "$timestamp"
-        ;;
-      "UnpinnedEvent")
-        echo
-        action "$login" "unpinned this issue" "$timestamp"
-        ;;
-      "RenamedTitleEvent")
-        echo
-        action "$login" "changed the title" "$timestamp"
-        changes "$from" "$to"
-        ;;
-      "ClosedEvent")
-        echo
-        echo "----------------"
-        ;;
-      "IssueComment")
-        echo
-        action "$login" "commented" "$timestamp" "$body"
-        ;;
-      *)
-        echo
-        echo unable to parse $itemType
-        ;;
-    esac
-    lastType="$itemType"
-    lastLogin="$login"
-  done <<< "$(echo "$timelineItemsJSON" | awk -f ~/.dots/binaries/_timeline_item.awk)"
+  echo "$response" | NUMBER="$number" gomplate -f ~/.dots/binaries/_timeline_item.tmpl --plugin tkcm="$HOME/.dots/binaries/tkcm" -d 'number=env:///NUMBER' -d 'response=stdin:///in.json'
+  return
 }
 
 main $@

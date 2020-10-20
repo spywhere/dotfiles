@@ -1,25 +1,82 @@
 {{- with (ds "response").data.repository.issueOrPullRequest -}}
 {{ .state }} • {{ if regexp.Match "PullRequest" .__typename }}PR{{ end }}#{{ ds "number" }} • {{ .title }}
 {{ .author.login }} commented {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}
-{{ tkcm "--internal=cat" (strings.Quote .body) }}
+{{ if .body }}{{ tkcm "--internal=cat" (strings.Quote .body) }}{{ end }}
+{{- $lastType := "" -}}
+{{- $lastLogin := "" -}}
 {{- range .timelineItems.nodes -}}
-{{ if regexp.Match "ConvertToDraftEvent" .__typename }}
+{{- if regexp.Match "ConvertToDraftEvent" .__typename }}
+
 {{ .actor.login }} marked this pull request as draft {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
-{{ else if regexp.Match "ReadyForReviewEvent" .__typename }}
+{{- else if regexp.Match "ReadyForReviewEvent" .__typename }}
+
 {{ .actor.login }} marked this pull request as ready for review {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
-{{ else if regexp.Match "PullRequestCommit" .__typename }}
-• {{ .commit.abbreviatedOid }}{{ if .commit.statusCheckRollup }} • {{ .commit.statusCheckRollup.state }}{{ end }} • {{ .commit.message }}
-{{ else if regexp.Match "HeadRefForcePushedEvent" .__typename }}
+{{- else if regexp.Match "HeadRefForcePushedEvent" .__typename }}
+
 {{ .actor.login }} force-pushed the <branch> from {{ .beforeCommit.abbreviatedOid }} to {{ .afterCommit.abbreviatedOid }} {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
-{{ else if regexp.Match "LabeledEvent" .__typename }}
+{{- else if regexp.Match "HeadRefDeletedEvent" .__typename }}
+
+{{ .actor.login }} deleted the {{ .headRefName }} branch {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else if regexp.Match "PullRequestCommit" .__typename }}
+{{ if (ne $lastType .__typename) }}
+{{ end -}}
+• {{ .commit.abbreviatedOid }}{{ if .commit.statusCheckRollup }} • {{ .commit.statusCheckRollup.state }}{{ end }} • {{ .commit.message }}
+{{- else if regexp.Match "PullRequestReview" .__typename }}
+
+{{ .author.login }} {{ if regexp.Match "CHANGES_REQUESTED" .state }}requested changes{{ else }}{{ strings.ToLower .state }}{{ end }} {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}
+{{ if .body }}{{ tkcm "--internal=cat" (strings.Quote .body) }}{{ end -}}
+{{- range .comments.nodes }}
+{{ tkcm "--internal=diff" .path (strings.Quote .diffHunk) }}
+  {{ .author.login }} {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}{{ if .outdated }} [Outdated]{{ end }}
+{{ if .body }}{{ tkcm "--internal=cat" (strings.Quote .body) -}}{{ end }}
+{{- end }}
+{{- else if regexp.Match "ReviewRequestedEvent" .__typename }}
+
+{{ .actor.login }} requested a review from {{ if regexp.Match "Team" .requestedReviewer.__typename }}{{ .requestedReviewer.name }}{{ else }}{{ .requestedReviewer.login }}{{ end }} {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else if regexp.Match "CrossReferencedEvent" .__typename }}
+{{- if (or (ne $lastType .__typename) (ne $lastLogin .actor.login)) -}}
+{{- if .willCloseTarget }}
+{{ .actor.login }} linked a pull request that will close this issue {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else }}
+{{ .actor.login }} mentioned this issue {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- end }}
+{{- end }}
+• {{ if regexp.Match "PullRequest" .source.__typename }}PR{{ end }}#{{ .source.number }} • {{ .source.title }}
+{{- else if regexp.Match "LabeledEvent" .__typename }}
+{{ if (and (ne $lastType "LabeledEvent") (ne $lastType "UnlabeledEvent")) }}
+{{ end -}}
 {{ .actor.login }} added {{ .label.name }} label {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
-{{ else if regexp.Match "RenamedTitleEvent" .__typename }}
+{{- else if regexp.Match "UnlabeledEvent" .__typename }}
+{{ if (and (ne $lastType "LabeledEvent") (ne $lastType "UnlabeledEvent")) }}
+{{ end -}}
+{{ .actor.login }} removed {{ .label.name }} label {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else if regexp.Match "PinnedEvent" .__typename }}
+
+{{ .actor.login }} pinned this issue {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else if regexp.Match "UnpinnedEvent" .__typename }}
+
+{{ .actor.login }} unpinned this issue {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else if regexp.Match "RenamedTitleEvent" .__typename }}
+
 {{ .actor.login }} changed the title {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
   from: {{ .previousTitle }}
     to: {{ .currentTitle }}
-{{ else if regexp.Match "IssueComment" .__typename }}
-{{ .author.login }} commented {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}
-{{ tkcm "--internal=cat" (strings.Quote .body) -}}
+{{- else if regexp.Match "MergedEvent" .__typename }}
+
+{{ .actor.login }} merged commit {{ .commit.abbreviatedOid }} into {{ .mergeRefName }} {{ (time.Parse time.RFC3339 .createdAt).Format "2 Jan 2006 15:04" }}
+{{- else if regexp.Match "ClosedEvent" .__typename }}
+
+----------------
+{{- else if regexp.Match "IssueComment" .__typename }}
+{{ if (ne $lastType .__typename) }}
 {{ end -}}
+{{ .author.login }} commented {{ (time.Parse time.RFC3339 .updatedAt).Format "2 Jan 2006 15:04" }}{{ if .includesCreatedEdit }} (edited){{ end }}{{ if .isMinimized }} [Marked as {{ .minimizedReason }}]{{ end }}
+{{ if .body -}}{{ tkcm "--internal=cat" (strings.Quote .body) -}}{{ end -}}
+{{- else }}
+
+unable to parse {{ .__typename }}
+{{- end -}}
+{{- $lastType = .__typename -}}
+{{- if regexp.Match "IssueComment|PullRequestReview" .__typename }}{{ $lastLogin = .author.login }}{{ else if regexp.Match "PullRequestCommit|ClosedEvent" .__typename }}{{ else }}{{ $lastLogin = .actor.login }}{{ end -}}
 {{- end -}}
 {{- end -}}
