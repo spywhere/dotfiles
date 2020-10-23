@@ -6,7 +6,10 @@ else
   let g:init_vim_loaded = 1
 endif
 
-let g:polyglot_disbled = ['javascript']
+if !has('nvim-0.5')
+  " Use treesitter instead
+  let g:polyglot_disbled = ['javascript']
+endif
 
 call plug#begin('~/.config/nvim/plugged')
 
@@ -374,4 +377,3 @@ if exists('g:first_install')
   call ColorSetup()
   Startify
 endif
-
