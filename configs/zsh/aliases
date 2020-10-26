@@ -51,6 +51,23 @@ flashlight() {
   printf "$(tput setab 7)$(tput clear)" && sleep $duration
 }
 
+keep() {
+  if test $# -eq 0; then
+    echo -e "No arguments specified. usage:\necho keep /tmp/test.md\ncat /tmp/test.md | keep test.md"
+    return 1
+  fi
+  tmpfile=$(mktemp -t transferXXX);
+  if tty -s; then
+    basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
+    curl --progress-bar --upload-file "$1" "https://keep.sh/$basefile" >> $tmpfile
+  else
+    curl --progress-bar --upload-file "-" "https://keep.sh/$1" >> $tmpfile
+  fi
+  cat $tmpfile
+  rm -f $tmpfile
+}
+
+# Transfer.sh will not be available after October 2020
 transfer() {
   if test $# -eq 0; then
     echo -e "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"
