@@ -67,6 +67,7 @@ tap "nickolasburr/pfa"
 brew "bash" # Bash 4 #deb #alpine
 brew "bat" # cat replacement
 brew "coreutils" # Those that come with macOS are outdated
+brew "csvkit" #deb
 #deb curl #alpine
 #deb dnsmasq #alpine
 brew "exa" #deb #alpine
