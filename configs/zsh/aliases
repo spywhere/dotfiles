@@ -131,6 +131,14 @@ neomutt() {
   fi
 }
 
+slack-term() {
+  if test ${+commands[slack-term]} -eq 1; then
+    ${commands[slack-term]} "$@"
+  else
+    docker run -it --rm --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
+  fi
+}
+
 docker-aliases() {
   # Test if docker is running or not
   docker info >/dev/null 2>&1

@@ -142,8 +142,6 @@ cask "webpquicklook"
 
 #binary https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch pfetch
 #binary https://github.com/hairyhenderson/gomplate/releases/download/v3.8.0/gomplate_linux-armv7-slim gomplate
-#mac-bin https://github.com/erroneousboat/slack-term/releases/download/v0.5.0/slack-term-darwin-amd64 slack-term
-#binary https://github.com/erroneousboat/slack-term/releases/download/v0.5.0/slack-term-linux-amd64 slack-term
 
 # Fonts
 # Use nerd-fonts instead
