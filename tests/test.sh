@@ -9,6 +9,8 @@ usage: $0 [flag] [platform] -- [arguments ...]
 flags:
   -h, --help      Show this help message
   -r, --recreate  Always recreate test image
+  -l, --local     Simulate a local installation
+  -u, --upgrade   Simulate a local upgrade
 
 supported platforms:
   alpine
@@ -22,6 +24,7 @@ if test "$1" = ""; then
 fi
 
 RECREATE=0
+LOCAL=0
 while test "$1" != ""; do
   case $1 in
     -h | --help)
@@ -30,6 +33,12 @@ while test "$1" != ""; do
       ;;
     -r | --recrate)
       RECREATE=1
+      ;;
+    -l | --local)
+      LOCAL=1
+      ;;
+    -u | --upgrade)
+      LOCAL=2
       ;;
     -*)
       printf "ERROR: unknown flag \"$1\"\n"
@@ -70,4 +79,10 @@ printf "Testing on $PLATFORM...\n"
 if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
   docker build --no-cache -t dots:$PLATFORM - <Dockerfile.$PLATFORM
 fi
-docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v ~/.dots:/root dots:$PLATFORM sh -c "cat /root/install.sh | sh -s -- $@"
+if test $LOCAL -eq 0; then
+  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v ~/.dots:/root/dots dots:$PLATFORM sh -c "cat /root/dots/install.sh | sh -s -- $@"
+elif test $LOCAL -eq 1; then
+  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v ~/.dots:/root/dots dots:$PLATFORM sh -c "sh /root/dots/install.sh $@"
+else
+  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v ~/.dots:/root/.dots dots:$PLATFORM sh -c "sh /root/.dots/install.sh $@"
+fi

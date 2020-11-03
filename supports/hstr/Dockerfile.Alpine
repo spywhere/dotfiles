@@ -1,0 +1,23 @@
+FROM alpine AS builder
+
+WORKDIR /etc/app
+RUN apk update
+RUN apk add git build-base pkgconfig automake autoconf readline-dev ncurses-dev ncurses-libs
+RUN git clone https://github.com/dvorka/hstr hstr
+RUN apk add sed
+WORKDIR /etc/app/hstr/src/include
+RUN sed 's/ncursesw\/curses/ncurses/g' -i hstr_curses.h
+RUN sed 's/ncursesw\/curses/ncurses/g' -i hstr.h
+WORKDIR /etc/app/hstr/build/tarball
+RUN sh ./tarball-automake.sh
+WORKDIR /etc/app/hstr
+RUN ./configure
+RUN make
+RUN make install
+
+FROM alpine
+WORKDIR /root
+RUN apk update
+RUN apk add ncurses-libs readline
+COPY --from=builder /usr/local/bin/hstr /usr/bin/hstr
+CMD hstr
