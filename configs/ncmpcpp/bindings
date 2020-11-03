@@ -592,3 +592,16 @@ def_key "n"
 
 def_key "N"
   previous_found_item
+
+def_key "v"
+  select_item
+  scroll_down
+
+def_key "V"
+  remove_selection
+
+def_key "m"
+  move_selected_items_down
+
+def_key "M"
+  move_selected_items_up
