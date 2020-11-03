@@ -139,6 +139,11 @@ make_packages() {
   if test -d "$DEPS_DIR"; then
     do_command rm -rf "$DEPS_DIR"
   fi
+
+  # All packages already available through Homebrew
+  if test $OS = "Mac"; then
+    return
+  fi
   try_make $CONFIG_MAKE 0 hstr
   try_make $CONFIG_MAKE 1 docker
   try_make $CONFIG_MAKE 2 neovim nvim

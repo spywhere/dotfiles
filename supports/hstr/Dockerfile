@@ -1,0 +1,19 @@
+FROM debian:buster-slim AS builder
+
+WORKDIR /etc/app
+RUN apt update
+RUN apt install -y ca-certificates git automake gcc make libncursesw5-dev libreadline-dev pkg-config
+RUN git clone https://github.com/dvorka/hstr hstr
+WORKDIR /etc/app/hstr/build/tarball
+RUN ./tarball-automake.sh
+WORKDIR /etc/app/hstr
+RUN ./configure
+RUN make
+RUN make install
+
+FROM debian:buster-slim
+WORKDIR /root
+RUN apt update
+RUN apt install -y libncursesw5 libreadline7
+COPY --from=builder /usr/local/bin/hstr /usr/bin/hstr
+CMD hstr
