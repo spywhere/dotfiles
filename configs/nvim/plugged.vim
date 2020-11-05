@@ -35,6 +35,12 @@ Plug 'tpope/vim-speeddating'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'wellle/tmux-complete.vim'
 
+" Debugging
+Plug 'puremourning/vimspector'
+
+" Window Manager
+Plug 'szw/vim-maximizer'
+
 " Visualization
 Plug 'Yggdroot/indentLine'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
