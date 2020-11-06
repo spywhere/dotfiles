@@ -1,0 +1,146 @@
+#!/bin/bash
+
+usage() {
+  echo "USAGE"
+  echo "  syncall [flags] <org>"
+  echo
+  echo "FLAGS"
+  echo "  -h, --help         Show this message"
+  echo "  -s, --save=<file>  Save a list of repositories to file"
+  echo "  -n, --new          Only clone, no update"
+  echo "  -z, --zip          Zip the repository once cloned / updated"
+  echo "  -k, --keep         Keep the repository after have been zipped"
+  echo
+  echo "QUERY"
+  echo "  If a repo flag is passed, it will take priority over auto-detect one."
+}
+
+print-inline() {
+  local COLUMNS=$(tput cols)
+  printf "%-${COLUMNS}s\r" "$1"
+}
+
+main() {
+  local repoFile=""
+  local onlyClone=0
+  local zipRepo=0
+  local keepRepo=0
+  while test "$1" != ""; do
+    local PARAM=$(printf "%s" "$1" | sed 's/=.*//g')
+    local VALUE=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    local EQUAL_SIGN=$(printf "%s" "$1" | sed 's/[^=]//g')
+    case $PARAM in
+      -h | --help)
+        usage
+        return
+        ;;
+      -s | --save)
+        if test -z "$EQUAL_SIGN"; then
+          echo "ERROR: a file path is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        repoFile="$VALUE"
+        ;;
+      -n | --new)
+        onlyClone=1
+        ;;
+      -z | --zip)
+        zipRepo=1
+        ;;
+      -k | --keep)
+        keepRepo=1
+        ;;
+      -*)
+        echo "ERROR: unknown flag \"$1\""
+        return 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  if test "$1" = ""; then
+    echo "ERROR: an organization login name is required"
+    return 1
+  fi
+
+  local graphQuery=$(cat ~/.dots/binaries/_syncall.graphql)
+
+  local workingDir=$(pwd)
+  local nextCursor=""
+  local hasNextPage="true"
+  local rawRepositories=""
+  while test "$hasNextPage" = "true"; do
+    if test "$nextCursor" = ""; then
+      print-inline "Fetching..."
+      local response=$(gh api graphql -F limit="50" -F org="$1" -f query="$graphQuery")
+    else
+      print-inline "Fetching... $(echo "$rawRepositories" | grep -c '$') found and counting..."
+      local response=$(gh api graphql -F limit="50" -F cursor="$nextCursor" -F org="$1" -f query="$graphQuery")
+    fi
+
+    local repositoriesJSON=$(echo "$response" | jq -r '.data.organization.repositories')
+    hasNextPage=$(echo "$repositoriesJSON" | jq -r '.pageInfo.hasNextPage')
+    nextCursor=$(echo "$repositoriesJSON" | jq -r '.pageInfo.endCursor')
+    local newRepositories=$(echo "$repositoriesJSON" | jq -r '.nodes | [ .[] | [ .name, .url, .sshUrl ] | join("|") ] | join("$")' | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1,$2,$3}')
+    if test "$rawRepositories" = ""; then
+      rawRepositories=$newRepositories
+    else
+      rawRepositories=$(printf "%s\n%s" "$rawRepositories" "$newRepositories")
+    fi
+  done
+
+  local totalRepos=$(echo "$rawRepositories" | grep -c '$')
+  print-inline "Found $totalRepos repositories"
+  echo
+  if test "$repoFile" != ""; then
+    echo "$rawRepositories" | awk 'BEGIN{FS="|";}{print $1,$2}' > $repoFile
+  fi
+
+  local currentIndex=0
+  while read -r item; do
+    local repoName=$(echo "$item" | cut -d'|' -f1)
+    local repoURL=$(echo "$item" | cut -d'|' -f2)
+    local repoSSHURL=$(echo "$item" | cut -d'|' -f3)
+
+    local progress=$(expr $currentIndex \* 100 / $totalRepos)
+    local COLUMNS=$(tput cols)
+    if test -d "$repoName"; then
+      if test $onlyClone -eq 1; then
+        continue
+      fi
+
+      local output=$(printf "[%2d%%] Updating '%s'..." "$progress" "$repoName")
+      print-inline "$output"
+      cd "$repoName"
+      git fetch >/dev/null 2>&1
+      git reset --hard origin >/dev/null 2>&1
+      cd "$workingDir"
+    else
+      local output=$(printf "[%2d%%] Cloning '%s'..." "$progress" "$repoName")
+      print-inline "$output"
+      git clone "$repoSSHURL" "$repoName" >/dev/null 2>&1
+    fi
+
+    if test $zipRepo -eq 1; then
+      rm -f "${repoName}.zip"
+
+      local output=$(printf "[%2d%%] Zipping '%s' into '%s'..." "$progress" "$repoName" "${repoName}.zip")
+      print-inline "$output"
+
+      zip -9qr "${repoName}.zip" "$repoName"
+      if test $keepRepo -eq 0; then
+        rm -rf "$repoName"
+      fi
+    fi
+
+    currentIndex=$(expr $currentIndex + 1)
+  done <<< "$(echo "$rawRepositories")"
+  print-inline "All done"
+  echo
+}
+
+main $@
