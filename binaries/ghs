@@ -27,9 +27,9 @@ main() {
   local cursor=""
   local manual=0
   while test "$1" != ""; do
-    local PARAM=`echo $1 | sed 's/=.*//g'`
-    local VALUE=`echo $1 | sed 's/^[^=]*=//g'`
-    local EQUAL_SIGN=`echo $1 | sed 's/[^=]//g'`
+    local PARAM=$(printf "%s" "$1" | sed 's/=.*//g')
+    local VALUE=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    local EQUAL_SIGN=$(printf "%s" "$1" | sed 's/[^=]//g')
     case $PARAM in
       -h | --help)
         usage
@@ -78,7 +78,7 @@ main() {
   if test -z "$query"; then
     query="is:open"
   fi
-  local repo_filter=`echo $query | sed -n '/repo:[^ ]*/p'`
+  local repo_filter=$(printf "%s" "$query" | sed -n '/repo:[^ ]*/p')
   if test -n "$repo_filter"; then
     repo=""
     manual=1
