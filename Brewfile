@@ -82,6 +82,7 @@ brew "hstr" #make (arm arch not supported) #alpine
 brew "httpie" #deb #alpine
 brew "jq" #deb #alpine
 brew "lua@5.1" # sc-im dependencies
+#dev mdp # presentation tool
 brew "mosh" #make (for 24-bit color support)
 brew "mpd" #deb #community-alpine
 brew "mycli" #deb #testing-alpine
