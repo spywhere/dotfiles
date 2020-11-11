@@ -128,11 +128,15 @@ augroup lazyload_plugins
   autocmd CursorHold * call plug#load('vim-tmux-navigator') | autocmd! lazyload_plugins
 augroup END
 
+" nvim-tree.lua
 let g:lua_tree_icons = {
 \   'default': ' '
 \ }
 let g:lua_tree_ignore = ['.git', '.DS_Store']
 let g:lua_tree_follow = 1
+
+autocmd BufEnter,FileType LuaTree let &cursorline=1
+autocmd BufLeave,BufWinLeave LuaTree let &cursorline=0
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
