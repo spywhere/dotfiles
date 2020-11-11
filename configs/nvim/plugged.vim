@@ -78,6 +78,7 @@ Plug 'kkoomen/vim-doge', { 'on': 'DogeGenerate' }
 " Git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'rhysd/git-messenger.vim'
 
 " Appearances
 Plug 'itchyny/lightline.vim'
