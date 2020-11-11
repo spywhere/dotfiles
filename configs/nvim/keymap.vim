@@ -1,6 +1,6 @@
 " NERDTree
-map nt :NERDTreeToggle<cr>
-map nf :NERDTreeFind<cr>
+map nt :LuaTreeToggle<cr>
+map nf :LuaTreeFindFile<cr>
 
 " kill the annoyance
 nnoremap Q <Nop>

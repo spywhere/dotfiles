@@ -14,9 +14,8 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 
 " File explorer
-Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
-Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
 Plug 'airblade/vim-rooter'
 
 " Editing
@@ -50,6 +49,13 @@ Plug 'machakann/vim-highlightedyank'
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
+" Experimental: A replacement for fzf
+" Currently does not perform well compared to fzf itself
+" Plug 'nvim-lua/popup.nvim'
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-lua/telescope.nvim'
+
 Plug 'tpope/vim-rsi'
 Plug 'wellle/targets.vim'
 Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
@@ -122,22 +128,11 @@ augroup lazyload_plugins
   autocmd CursorHold * call plug#load('vim-tmux-navigator') | autocmd! lazyload_plugins
 augroup END
 
-" start NERDTree on startup
-" autocmd VimEnter * NERDTree
-let NERDTreeSortHiddenFirst = 1
-let NERDTreeChDirMode = 2
-let NERDTreeHijackNetrw = 1
-let NERDTreeShowHidden = 1
-let NERDTreeMinimalUI = 1
-let NERDTreeAutoDeleteBuffer = 1
-let NERDTreeIgnore=['\.git$[[dir]]','\.DS_Store$[[file]]']
-
-" NERDTree syntax
-let g:NERDTreeFileExtensionHighlightFullName = 1
-let g:NERDTreeExactMatchHighlightFullName = 1
-let g:NERDTreePatternMatchHighlightFullName = 1
-let g:NERDTreeHighlightFolders = 1
-let g:NERDTreeHighlightFoldersFullName = 1
+let g:lua_tree_icons = {
+\   'default': ' '
+\ }
+let g:lua_tree_ignore = ['.git', '.DS_Store']
+let g:lua_tree_follow = 1
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
@@ -249,43 +244,43 @@ let g:lightline.component_type = {
 \ }
 
 function! LightlineMode()
-  return &ft !=? 'nerdtree' ? lightline#mode() : ''
+  return &ft !=? 'luatree' ? lightline#mode() : ''
 endfunction
 
 function! LightlineBranch()
-  return &ft !=? 'nerdtree' ? FugitiveHead() : ''
+  return &ft !=? 'luatree' ? FugitiveHead() : ''
 endfunction
 
 function! LightlineReadonly()
-  return &ft !=? 'nerdtree' && &readonly ? 'RO' : ''
+  return &ft !=? 'luatree' && &readonly ? 'RO' : ''
 endfunction
 
 function! LightlineModified()
-  return &ft !=? 'nerdtree' && &modified ? '+' : ''
+  return &ft !=? 'luatree' && &modified ? '+' : ''
 endfunction
 
 function! LightlineRelativePath()
-  return &ft !=? 'nerdtree' ? expand('%:f') != '' ? expand('%:f') : '[no name]' : 'NERD'
+  return &ft !=? 'luatree' ? expand('%:f') != '' ? expand('%:f') : '[no name]' : 'Explorer'
 endfunction
 
 function! LightlineLineInfo()
-  return &ft !=? 'nerdtree' ? line('.') . ':' . col('.') : ''
+  return &ft !=? 'luatree' ? line('.') . ':' . col('.') : ''
 endfunction
 
 function! LightlinePercent()
-  return &ft !=? 'nerdtree' ? line('.') * 100 / line('$') . '%' : ''
+  return &ft !=? 'luatree' ? line('.') * 100 / line('$') . '%' : ''
 endfunction
 
 function! LightlineFileFormat()
-  return &ft !=? 'nerdtree' ? &ff : ''
+  return &ft !=? 'luatree' ? &ff : ''
 endfunction
 
 function! LightlineFileEncoding()
-  return &ft !=? 'nerdtree' ? &enc : ''
+  return &ft !=? 'luatree' ? &enc : ''
 endfunction
 
 function! LightlineFileType()
-  return &ft !=? 'nerdtree' ? &filetype : ''
+  return &ft !=? 'luatree' ? &filetype : ''
 endfunction
 
 let g:lightline.component_function = {
@@ -347,7 +342,7 @@ let g:rooter_silent_chdir = 1
 " indentLine
 let g:indentLine_char = '|'
 let g:indentLine_leadingSpaceChar = '·'
-let g:indentLine_fileTypeExclude = ['text', 'startify', 'nerdtree']
+let g:indentLine_fileTypeExclude = ['text', 'startify']
 
 " startify
 let g:startify_files_number = 20
@@ -355,8 +350,21 @@ let g:startify_fortune_use_unicode = 1
 let g:startify_enable_special = 0
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
+lua <<EOF
+function _G.GetIcons(path)
+  local filename = vim.api.nvim_eval("fnamemodify('"..path.."', ':t')")
+  local extension = vim.api.nvim_eval("fnamemodify('"..path.."', ':e')")
+  local icon, hl_group = require'nvim-web-devicons'.get_icon(filename, extension, { default = true })
+  if icon then
+    return icon.." "
+  else
+    return ""
+  end
+end
+EOF
+
 function! StartifyEntryFormat()
-  return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
+  return 'v:lua.GetIcons(absolute_path) . " " . entry_path'
 endfunction
 
 " Running some patches
