@@ -60,6 +60,8 @@ set autoread
 " disable netrw in favor of NERDTree
 let loaded_netrwPlugin = 1
 
+let g:vimsyn_embed = 'l' " Allow Lua highlighting in vimscript
+
 source ~/.config/nvim/plugged.vim
 if exists("g:init_vim_loaded")
   source ~/.config/nvim/keymap.vim
