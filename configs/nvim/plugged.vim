@@ -135,8 +135,8 @@ let g:lua_tree_icons = {
 let g:lua_tree_ignore = ['.git', '.DS_Store']
 let g:lua_tree_follow = 1
 
+" show cursorline when browsing in the tree explorer
 autocmd BufEnter,FileType LuaTree let &cursorline=1
-autocmd BufLeave,BufWinLeave LuaTree let &cursorline=0
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
