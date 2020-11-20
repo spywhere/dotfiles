@@ -123,7 +123,7 @@ try_make() {
   PREVIOUS_DIR=`pwd`
   do_command mkdir -p "$DEPS_DIR"
   do_command cd "$DEPS_DIR"
-  case "$1" in
+  case "$3" in
     docker)
       make_docker
       ;;
