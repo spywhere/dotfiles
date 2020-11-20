@@ -155,8 +155,8 @@ make_packages() {
   if test $OS = "Mac"; then
     return
   fi
-  try_make $CONFIG_MAKE 0 hstr
-  try_make $CONFIG_MAKE 1 docker
+  try_make $CONFIG_MAKE 0 docker
+  try_make $CONFIG_MAKE 1 hstr
   try_make $CONFIG_MAKE 2 neovim nvim
   try_make $CONFIG_MAKE 3 mosh
   try_make $CONFIG_MAKE 4 sc-im

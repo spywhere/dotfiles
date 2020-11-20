@@ -255,10 +255,10 @@ main() {
       nomake-all)
         CONFIG_MAKE=0
         ;;
-      make-hstr | nomake-hstr)
+      make-docker | nomake-docker)
         CONFIG_MAKE=`set_config $CONFIG_MAKE 0 $1`
         ;;
-      make-docker | nomake-docker)
+      make-hstr | nomake-hstr)
         CONFIG_MAKE=`set_config $CONFIG_MAKE 1 $1`
         ;;
       make-nvim | nomake-nvim)
@@ -377,8 +377,8 @@ usage() {
   print 20 "  binary" "Install raw binary files"
   print 20 "  make" "Build and install packages from source"
   print 20 "    nomake-all" "Turn off all installation options"
-  print 20 "    make-hstr" "Install hstr (better history)"
   print 20 "    make-docker" "Install Docker (container engine)"
+  print 20 "    make-hstr" "Install hstr (better history)"
   print 20 "    make-nvim" "Install neovim (editor)"
   print 20 "    make-mosh" "Install mosh (mobile shell)"
   print 20 "    make-sc-im" "Install sc-im (spreadsheet)"
