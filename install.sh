@@ -6,7 +6,11 @@ set -e
 # Internal Information #
 ########################
 
-CURRENT_DIR=`pwd`
+CLONE_REPO="https://github.com/spywhere/dotfiles"
+
+CURRENT_DIR=$(pwd)
+RUN_DIRNAME=$(dirname $0)
+RUN_DIR=$(realpath $(pwd)/$RUN_DIRNAME)
 FLAGS=$@
 
 # Set a dot files directory if one is not found
@@ -16,13 +20,13 @@ fi
 
 # Try to set home variable if one is not found
 if test -z "$HOME"; then
-  HOME=`echo ~`
+  HOME="$(printf "%s" ~)"
 fi
 
 # Figure out if we run through local file or not
 # $0 will produced a shell command if we piped the file
 REMOTE_INSTALL=0
-if test "$0" = "sh"; then
+if test "$0" = "sh" -o "$0" = "bash"; then
   REMOTE_INSTALL=1
 fi
 
@@ -56,11 +60,7 @@ error() {
 # Print a padded string
 #   print [string] [string]
 #   print <pad size> <padded string> <string>
-print() {
-  if test "$SILENT" -eq 1; then
-    return
-  fi
-
+force_print() {
   if test -z "$#"; then
     echo
     return
@@ -70,6 +70,14 @@ print() {
     return
   fi
   printf "%-$1s%s\n" "$2" "$3"
+}
+
+print() {
+  if test "$SILENT" -eq 1; then
+    return
+  fi
+
+  force_print "$@"
 }
 
 # Print a boolean value as string
@@ -82,93 +90,61 @@ print_bool() {
   fi
 }
 
-# Call a function when a variable is true
-#   call_on_true <variable> <function> [argument ...]
-call_on_true() {
-  if test "$1" -eq 0;then
-    return
-  fi
-  shift
-  "$@"
+_split() {
+  printf "%s" "$1" | awk 'BEGIN{RS=";"}{print $0}'
 }
 
-# Set / Unset option
-#   set_option <option set> <option position> <option value>
-set_option() {
-  # Set that option to on, regardless of the previous state
-  VALUE="$(( $1 | ( 1 << $2 ) ))"
-  if test "$3" -eq 0; then
-    # Turn bit off, when needed
-    echo "$(( $VALUE ^ (1 << $2) ))"
-  else
-    echo "$VALUE"
-  fi
-}
-
-# Set / Unset option by config name
-#   set_config <option set> <option position> <config name>
-set_config() {
-  case "$3" in
-    no*)
-      set_option "$1" "$2" 0
-      ;;
-    *)
-      set_option "$1" "$2" 1
-      ;;
-  esac
-}
-
-# Check if the given string is a number
-#   is_number <value>
-is_number() {
-  DIGIT_LENGTH=`expr "x$1" : "x[0-9]*$"`
-  if test "$DIGIT_LENGTH" -eq 1; then
-    return 1
-  else
-    return 0
-  fi
-}
-
-detect_os() {
+_detect_os() {
   case `uname -s` in
     Linux*)
       OS="Linux"
       if test -f /etc/debian_version; then
         PKGMGR=" - Advanced Packaging Tool (apt)"
-        OS="Debian"
+        OSNAME="Debian"
+        OS="debian"
       elif test -f /etc/alpine-release; then
         PKGMGR=" - Alpine Linux Package Manager (apk)"
-        OS="Alpine"
+        OSNAME="Alpine"
+        OS="alpine"
+      else
+        OSNAME="Linux"
+        OS="linux"
       fi
       ;;
     Darwin*)
       PKGMGR=" - Homebrew (brew)"
-      OS="Mac"
+      OSNAME="Mac"
+      OS="macos"
       ;;
     *)
+      OSNAME="Unsupported"
       OS="unsupported"
       ;;
   esac
 }
 
 # All options turned on
-CONFIG=1023
-CONFIG_MAKE=31
-CONFIG_VERMGR=3
-CONFIG_SYMLINK=511
 RUN_LOCAL=0
 DUMB=0
 KEEP_FILES=0
 FORCE_INSTALL=0
 SILENT=0
 VERBOSE=0
-PRINT_CONFIG=0
+PRINT_MODE=""
 
 PKGMGR=""
 OS="unsupported"
+OSNAME="Unsupported"
 
-main() {
-  detect_os
+_HALT=0
+_ADDED=""
+_RUNNING=""
+_LOADED=""
+_PACKAGES=""
+_CUSTOM=""
+
+_main() {
+  _detect_os
 
   # Read flags
   while test "$1" != ""; do
@@ -176,11 +152,11 @@ main() {
     VALUE=`echo $1 | sed 's/^[^=]*=//g'`
     case $PARAM in
       -h | --help)
-        usage
+        _usage
         quit
         ;;
       -i | --info)
-        info
+        _info
         quit
         ;;
       -l | --local)
@@ -195,35 +171,20 @@ main() {
       -f | --force)
         FORCE_INSTALL=1
         ;;
-      -s | --silent)
+      -q | --quiet)
         SILENT=1
         ;;
       -v | --verbose)
         VERBOSE=1
         ;;
-      --save)
-        PRINT_CONFIG=1
+      -p | --packages)
+        PRINT_MODE="packages"
         ;;
-      --load)
-        LOAD_CONFIG=`echo $VALUE | cut -s -d'-' -f1`
-        LOAD_CONFIG_MAKE=`echo $VALUE | cut -s -d'-' -f2`
-        LOAD_CONFIG_VERMGR=`echo $VALUE | cut -s -d'-' -f3`
-        LOAD_CONFIG_SYMLINK=`echo $VALUE | cut -s -d'-' -f4`
-        if is_number "$LOAD_CONFIG"; then
-          CONFIG="$LOAD_CONFIG"
-        fi
-        if is_number "$LOAD_CONFIG_MAKE"; then
-          CONFIG_MAKE="$LOAD_CONFIG_MAKE"
-        fi
-        if is_number "$LOAD_CONFIG_VERMGR"; then
-          CONFIG_VERMGR="$LOAD_CONFIG_VERMGR"
-        fi
-        if is_number "$LOAD_CONFIG_SYMLINK"; then
-          CONFIG_SYMLINK="$LOAD_CONFIG_SYMLINK"
-        fi
+      -s | --setup)
+        PRINT_MODE="setup"
         ;;
       -*)
-        echo "ERROR: unknown flag \"$1\""
+        error "ERROR: unknown flag \"$1\""
         quit 1
         ;;
       *)
@@ -234,124 +195,32 @@ main() {
     shift
   done
 
-  # Read options
+  # Read skip packages
   while test "$1" != ""; do
     case $1 in
-      noall)
-        CONFIG=0
-        ;;
-      update | noupdate)
-        CONFIG=`set_config $CONFIG 0 $1`
-        ;;
-      package | nopackage)
-        CONFIG=`set_config $CONFIG 1 $1`
-        ;;
-      binary | nobinary)
-        CONFIG=`set_config $CONFIG 2 $1`
-        ;;
-      make | nomake)
-        CONFIG=`set_config $CONFIG 3 $1`
-        ;;
-      nomake-all)
-        CONFIG_MAKE=0
-        ;;
-      make-docker | nomake-docker)
-        CONFIG_MAKE=`set_config $CONFIG_MAKE 0 $1`
-        ;;
-      make-hstr | nomake-hstr)
-        CONFIG_MAKE=`set_config $CONFIG_MAKE 1 $1`
-        ;;
-      make-nvim | nomake-nvim)
-        CONFIG_MAKE=`set_config $CONFIG_MAKE 2 $1`
-        ;;
-      make-mosh | nomake-mosh)
-        CONFIG_MAKE=`set_config $CONFIG_MAKE 3 $1`
-        ;;
-      make-sc-im | nomake-sc-im)
-        CONFIG_MAKE=`set_config $CONFIG_MAKE 4 $1`
-        ;;
-      shell | noshell)
-        CONFIG=`set_config $CONFIG 4 $1`
-        ;;
-      zsh | nozsh)
-        CONFIG=`set_config $CONFIG 5 $1`
-        ;;
-      setup | nosetup)
-        CONFIG=`set_config $CONFIG 6 $1`
-        ;;
-      font | nofont)
-        CONFIG=`set_config $CONFIG 7 $1`
-        ;;
-      vermgr | novermgr)
-        CONFIG=`set_config $CONFIG 8 $1`
-        ;;
-      novermgr-all)
-        CONFIG_VERMGR=0
-        ;;
-      vermgr-plugin | novermgr-plugin)
-        CONFIG_VERMGR=`set_config $CONFIG_VERMGR 0 $1`
-        ;;
-      tool-version | notool-version)
-        CONFIG_VERMGR=`set_config $CONFIG_VERMGR 1 $1`
-        ;;
-      config | noconfig)
-        CONFIG=`set_config $CONFIG 9 $1`
-        ;;
-      noconfig-all)
-        CONFIG_SYMLINK=0
-        ;;
-      alacritty | noalacritty)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 0 $1`
-        ;;
-      tmux | notmux)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 1 $1`
-        ;;
-      git | nogit)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 2 $1`
-        ;;
-      tig | notig)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 3 $1`
-        ;;
-      nvim | nonvim)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 4 $1`
-        ;;
-      mpd | nompd)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 5 $1`
-        ;;
-      ncmpcpp | noncmpcpp)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 6 $1`
-        ;;
-      mycli | nomycli)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 7 $1`
-        ;;
-      alias | noalias)
-        CONFIG_SYMLINK=`set_config $CONFIG_SYMLINK 8 $1`
-        ;;
-      -*)
-        echo "ERROR: expect option but got a flag \"$1\" instead"
-        quit 1
+      no*)
+        # Add package to the loaded list (to skip loading)
+        if test -z "$_LOADED"; then
+          _LOADED="${1:2}"
+        else
+          _LOADED=$(printf "%s %s" "$_LOADED" "${1:2}")
+        fi
         ;;
       *)
-        echo "ERROR: unknown option \"$1\""
-        quit 1
+        break
         ;;
     esac
 
     shift
   done
 
-  if test "$PRINT_CONFIG" -eq 1; then
-    echo "$CONFIG-$CONFIG_MAKE-$CONFIG_VERMGR-$CONFIG_SYMLINK"
-    quit
-  fi
-
-  try_run_install
+  _try_run_install
   quit
 }
 
-usage() {
+_usage() {
   SILENT=0
-  print "Usage: $0 [flag ...] [option ...]"
+  print "Usage: $0 [flag ...] [package/setup ...]"
   print
   print "Flags:"
   print 20 "  -h, --help" "Show this help message"
@@ -360,53 +229,21 @@ usage() {
   print 20 "  -d, --dumb" "Do not attempt to install dependencies automatically"
   print 20 "  -k, --keep" "Keep downloaded dependencies"
   print 20 "  -f, --force" "Force reinstall any installed packages when possible"
-  print 20 "  -s, --silent" "Suppress output messages when possible"
+  print 20 "  -q, --quiet" "Suppress output messages when possible"
   print 20 "  -v, --verbose" "Produce command output messages when possible"
-  print 20 "  --save" "Produce an option set"
-  print 20 "  --load=..." "Load an option set"
+  print 20 "  -p, --packages" "Print out available packages"
+  print 20 "  -s, --setup" "Print out available setup"
   print
-  print "Every options and sub-options are turned on by default."
-  print "All sub-options will be turned off if its parent option turned off."
+  print "To skip specific package or setup, add a 'no' prefix to the package or setup name itself."
   print
-  print "To turn off specific option, add a 'no' prefix to the option."
-  print
-  print "Options:"
-  print 20 "  noall" "Turn off all options and its sub-options"
-  print 20 "  update" "Fully upgrade all packages if possible"
-  print 20 "  package" "Install packages"
-  print 20 "  binary" "Install raw binary files"
-  print 20 "  make" "Build and install packages from source"
-  print 20 "    nomake-all" "Turn off all installation options"
-  print 20 "    make-docker" "Install Docker (container engine)"
-  print 20 "    make-hstr" "Install hstr (better history)"
-  print 20 "    make-nvim" "Install neovim (editor)"
-  print 20 "    make-mosh" "Install mosh (mobile shell)"
-  print 20 "    make-sc-im" "Install sc-im (spreadsheet)"
-  print 20 "  shell" "Update the shell"
-  print 20 "  zsh" "Symlink a .zshrc"
-  print 20 "  setup" "Setup the system preferences"
-  print 20 "  font" "Install fonts"
-  print 20 "  vermgr" "Install version manager"
-  print 20 "    novermgr-all" "Turn off all version manager options"
-  print 20 "    vermgr-plugin" "Install version manager plugins"
-  print 20 "    tool-version" "Tool versions"
-  print 20 "  config" "Symlink configs"
-  print 20 "    noconfig-all" "Turn off all symlink options"
-  print 20 "    alacritty" "alacritty configs"
-  print 20 "    tmux" "tmux configs and plugin manager"
-  print 20 "    git" "git configs"
-  print 20 "    tig" "tig configs"
-  print 20 "    nvim" "nvim configs"
-  print 20 "    mpd" "mpd configs"
-  print 20 "    ncmpcpp" "ncmpcpp configs"
-  print 20 "    mycli" "mycli configs"
-  print 20 "    alias" "Aliases and variables"
+  print "  Example: $0 noasdf nodocker"
+  print "  Skip Docker and ASDF installation"
 }
 
-info() {
+_info() {
   SILENT=0
   print      20 "Execution" ": $0"
-  print      20 "Operating System" ": $OS$PKGMGR"
+  print      20 "Operating System" ": $OSNAME$PKGMGR"
   print      20 "Home Directory" ": $HOME"
   print      20 "Working Directory" ": $CURRENT_DIR"
   print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES"
@@ -418,88 +255,40 @@ info() {
 # Main Commands #
 #################
 
-setup_homebrew() {
-  if test `command -v brew`; then
-    return
-  fi
-
-  if test -f "/usr/bin/ruby"; then
-    error "Failed: either install \"ruby\" or \"homebrew\", and try again"
-    quit 1
-  fi
-
-  print "Installing Homebrew..."
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-}
-
-check_sudo() {
-  if test `command -v "sudo"`; then
+_check_sudo() {
+  if test "$(command -v "sudo")"; then
     return
   fi
 
   error "Failed: insufficient permission, no 'sudo' available"
 }
 
-try_install() {
-  if test $OS = "Mac"; then
-    setup_homebrew
-    print "Installing $1..."
-    do_command brew update
-    do_command brew install "$1"
-  elif test $OS = "Debian"; then
-    print "Installing $1..."
-    do_sudo_command apt update
-    do_sudo_command apt install --no-install-recommends -y "$1"
-  elif test $OS = "Alpine"; then
-    print "Installing $1..."
-    do_command apk update
-    do_command apk add "$1"
-  else
-    error "Failed: unsupported operating system"
-    quit 1
-  fi
-}
-
-try_command() {
-  if test `command -v "$1"`; then
+_try_git() {
+  if test "$(command -v git)"; then
     return
   fi
   if test "$DUMB" -eq 1; then
-    error "Failed: command \"$1\" is required"
+    error "Failed: command \"git\" is required"
     quit 1
   fi
 
-  try_install "$1"
-}
-
-do_sudo_command() {
-  if test "`whoami`" = "root"; then
-    do_command $@
+  if test "$OS" = "alpine"; then
+    print "Installing git..."
+    cmd apk add git
+  elif test "$OS" = "debian"; then
+    print "Installing git..."
+    sudo_cmd apt install -y git
+  elif test "$OS" = "macos" -a "$(command -v "brew")"; then
+    print "Installing git..."
+    cmd brew install git
   else
-    check_sudo
-    do_command sudo $@
+    error "Failed: command \"git\" is required"
+    quit 1
   fi
 }
 
-do_command() {
-  if test "$VERBOSE" -eq 0; then
-    "$@" >/dev/null 2>&1
-  else
-    "$@"
-  fi
-}
-
-clone() {
-  try_command git
-  if test -n "$3"; then
-    print "Cloning $3..."
-  fi
-
-  do_command git clone "$1" "$2"
-}
-
-try_run_install() {
-  SKIP_UPDATE=0
+_try_run_install() {
+  local SKIP_UPDATE=0
   if test "$LOCAL_COPY" -eq 0; then
     if test "$RUN_LOCAL" -eq 1; then
       error "Failed: local copy of dotfiles is not found at $HOME/$DOTFILES"
@@ -507,26 +296,22 @@ try_run_install() {
     fi
 
     if test "$VERBOSE" -eq 0; then
-      clone https://github.com/spywhere/dotfiles "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES"
+      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES"
     else
-      clone https://github.com/spywhere/dotfiles "$HOME/$DOTFILES" "dotfiles"
+      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles"
     fi
     SKIP_UPDATE=1
   fi
 
-  run_install "$SKIP_UPDATE"
-}
-
-run_install() {
   cd $HOME/$DOTFILES
 
   # Try to update when install remotely, but not the first clone
-  if test "$1" -eq 0 && test "$REMOTE_INSTALL" -eq 1; then
-    try_command git
+  if test "$SKIP_UPDATE" -eq 0 && test "$REMOTE_INSTALL" -eq 1; then
+    _try_git
     print "Updating dotfiles to latest version..."
-    do_command git reset --hard
-    do_command git fetch
-    do_command git pull
+    cmd git reset --hard
+    cmd git fetch
+    cmd git pull
   fi
 
   # Run local script when install remotely
@@ -536,25 +321,197 @@ run_install() {
     quit
   fi
 
+  if test -n "$PRINT_MODE"; then
+    if ! test -d "$HOME/$DOTFILES/$PRINT_MODE"; then
+      print "No $PRINT_MODE available"
+      quit
+    fi
+    print "Available $PRINT_MODE:"
+    for file_path in $HOME/$DOTFILES/$PRINT_MODE/*.sh; do
+      name=$(basename $file_path)
+      name=${name%.sh}
+      print "  - $name"
+    done
+    quit
+  fi
+
   print "Ready"
-  run_install_script $CONFIG 0 update
-  run_install_script $CONFIG 1 package
-  run_install_script $CONFIG 2 binary
-  run_install_script $CONFIG 3 make
-  run_install_script $CONFIG 4 shell
-  run_install_script $CONFIG 5 zsh
-  run_install_script $CONFIG 6 setup
-  run_install_script $CONFIG 7 font
-  run_install_script $CONFIG 8 vermgr
-  run_install_script $CONFIG 9 config
+  if ! test -f "$HOME/$DOTFILES/systems/$OS.sh"; then
+    error "Failed: \"$OS\" is not supported"
+    quit 1
+  fi
+  . $HOME/$DOTFILES/systems/$OS.sh
+  print "Preparing installation..."
+  setup
+
+  for PACKAGE_PATH in $HOME/$DOTFILES/packages/*.sh; do
+    local PACKAGE=$(basename "$PACKAGE_PATH")
+    PACKAGE=${PACKAGE%.sh}
+
+    # Package could be loaded from the dependency list
+    local skip=0
+    for loaded_package in $_LOADED; do
+      if test "$loaded_package" = "$PACKAGE"; then
+        skip=1
+      fi
+    done
+
+    if test $skip -eq 1; then
+      continue
+    fi
+
+    _RUNNING="$PACKAGE"
+    _ADDED=""
+    # Add package to the loaded list (prevent dependency cycle)
+    if test -z "$_LOADED"; then
+      _LOADED="$_RUNNING"
+    else
+      _LOADED=$(printf "%s %s" "$_LOADED" "$_RUNNING")
+    fi
+    . $PACKAGE_PATH
+  done
+
+  if test $_HALT -eq 1; then
+    quit 1
+  fi
+
+  if test -n "$_PACKAGES"; then
+    print "The following packages will be installed:"
+    for package in $(_split "$_PACKAGES"); do
+      print "  - $(printf "$package" | sed 's/|/ - /g')"
+    done
+  fi
+  if test -n "$_CUSTOM"; then
+    print "The following functions will be run:"
+    for fn in $(_split "$_CUSTOM"); do
+      print "  - $fn"
+    done
+  fi
 }
 
-run_install_script() {
-  if test "$(( $1 >> $2 & 1 ))" -eq 0; then
+#############
+# Main APIs #
+#############
+
+deps() {
+  if ! test -d "$HOME/$DOTFILES/.deps"; then
+    mkdir -p $HOME/$DOTFILES/.deps
+  fi
+
+  if test "$1"; then
+    printf "$HOME/$DOTFILES/.deps/$1"
+  else
+    printf "$HOME/$DOTFILES/.deps"
+  fi
+}
+
+sudo_cmd() {
+  if test "$(whoami)" = "root"; then
+    cmd $@
+  else
+    _check_sudo
+    cmd sudo $@
+  fi
+}
+
+cmd() {
+  if test "$VERBOSE" -eq 0; then
+    "$@" >/dev/null 2>&1
+  else
+    echo "Running $@"
+    "$@"
+  fi
+}
+
+clone() {
+  _try_git
+  if test -n "$3"; then
+    print "Cloning $3..."
+  fi
+
+  cmd git clone --shallow-submodules --depth 1 "$1" "$2"
+}
+
+depends() {
+  local package="$1"
+
+  # Depends on itself
+  if test "$_RUNNING" = "$package"; then
     return
   fi
-  print "Running $3..."
-  . $HOME/$DOTFILES/installs/$3.sh
+
+  # Depends on loaded packages
+  for loaded_package in $_LOADED; do
+    if test "$loaded_package" = "$package"; then
+      return
+    fi
+  done
+
+  # Dependency not found
+  if ! test -f "$HOME/$DOTFILES/packages/$package.sh"; then
+    error "Failed: Package \"$_RUNNING\" is depends on \"$package\""
+    _HALT=1
+    return
+  fi
+
+  local old_running="$_RUNNING"
+  local old_added="$_ADDED"
+  _RUNNING="$package"
+  _ADDED=""
+  # Add package to the loaded list (prevent dependency cycle)
+  if test -z "$_LOADED"; then
+    _LOADED="$_RUNNING"
+  else
+    _LOADED=$(printf "%s %s" "$_LOADED" "$_RUNNING")
+  fi
+
+  . $HOME/$DOTFILES/packages/$package.sh
+
+  _RUNNING="$old_running"
+  _ADDED="$old_added"
 }
 
-main "$@"
+add_package() {
+  local manager="$1"
+  shift
+  local package="$manager"
+  for component in $@; do
+    package=$(printf "%s|%s" "$package" "$component")
+  done
+
+  if test -z "$_PACKAGES"; then
+    _PACKAGES="$package"
+  else
+    _PACKAGES=$(printf "%s;%s" "$_PACKAGES" "$package")
+  fi
+  _ADDED="1"
+}
+
+add_custom() {
+  local fn="$1"
+  if test -z "$_CUSTOM"; then
+    _CUSTOM="$fn"
+  else
+    _CUSTOM=$(printf "%s;%s" "$_CUSTOM" "$fn")
+  fi
+}
+
+use_custom() {
+  if test -n "$_ADDED"; then
+    return
+  fi
+
+  add_custom "$@"
+}
+
+# use_docker <package>
+use_docker_build() {
+  if test -n "$_ADDED"; then
+    return
+  fi
+
+  local package="$1"
+  add_package docker "$package"
+}
+
+_main "$@"

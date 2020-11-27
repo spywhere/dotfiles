@@ -79,14 +79,15 @@ printf "Testing on $PLATFORM...\n"
 SCRIPT_DIRNAME=$(dirname $0)
 SCRIPT_DIR=$(realpath $(pwd)/$SCRIPT_DIRNAME)
 VOLUME=$(dirname $SCRIPT_DIR)
+ARGS="$@"
 
 if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
-  docker build --no-cache -t dots:$PLATFORM - <Dockerfile.$PLATFORM
+  docker build --no-cache -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
 fi
 if test $LOCAL -eq 0; then
-  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "cat /root/dots/install.sh | sh -s -- $@"
+  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "cat /root/dots/install.sh | sh -s -- $ARGS"
 elif test $LOCAL -eq 1; then
-  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "sh /root/dots/install.sh $@"
+  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "sh /root/dots/install.sh $ARGS"
 else
-  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/.dots dots:$PLATFORM sh -c "sh /root/.dots/install.sh $@"
+  docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/.dots dots:$PLATFORM sh -c "sh /root/.dots/install.sh $ARGS"
 fi
