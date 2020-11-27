@@ -79,7 +79,7 @@ Plug 'othree/yajs.vim'
 Plug 'othree/es.next.syntax.vim'
 
 " Documentation
-Plug 'kkoomen/vim-doge', { 'on': 'DogeGenerate' }
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() }, 'on': 'DogeGenerate' }
 
 " Git
 Plug 'airblade/vim-gitgutter'
