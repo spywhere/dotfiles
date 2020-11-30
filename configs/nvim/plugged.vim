@@ -151,14 +151,15 @@ let g:fzf_preview_window = 'right:50%'
 
 " Coc
 let g:coc_global_extensions = [
-\   'coc-json',
-\   'coc-tsserver',
-\   'coc-html',
 \   'coc-css',
-\   'coc-rls',
-\   'coc-yaml',
-\   'coc-python',
 \   'coc-emmet',
+\   'coc-html',
+\   'coc-json',
+\   'coc-python',
+\   'coc-rls',
+\   'coc-sh',
+\   'coc-tsserver',
+\   'coc-yaml',
 \ ]
 
 " ALE
