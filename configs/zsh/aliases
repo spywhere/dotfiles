@@ -99,6 +99,14 @@ map() {
   fi
 }
 
+mmdc() {
+  if tty -s; then
+    docker run -it --rm -v $(pwd):/data minlag/mermaid-cli $@
+  else
+    docker run -i --rm -v $(pwd):/data minlag/mermaid-cli $@
+  fi
+}
+
 _test_alias() {
   test ${+aliases[$1]} -eq 1
 }
