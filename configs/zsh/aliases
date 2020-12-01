@@ -43,62 +43,6 @@ fi
 # Docker
 alias d='docker'
 
-flashlight() {
-  local duration=10
-  if test $# -gt 0; then
-    duration="$1"
-  fi
-  printf "$(tput setab 7)$(tput clear)" && sleep $duration
-}
-
-keep() {
-  if test $# -eq 0; then
-    echo -e "No arguments specified. usage:\necho keep /tmp/test.md\ncat /tmp/test.md | keep test.md"
-    return 1
-  fi
-  tmpfile=$(mktemp -t transferXXX);
-  if tty -s; then
-    basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
-    curl --progress-bar --upload-file "$1" "https://free.keep.sh/$basefile" >> $tmpfile
-  else
-    curl --progress-bar --upload-file "-" "https://free.keep.sh/$1" >> $tmpfile
-  fi
-  cat $tmpfile
-  rm -f $tmpfile
-}
-
-# Transfer.sh will not be available after October 2020
-transfer() {
-  if test $# -eq 0; then
-    echo -e "No arguments specified. Usage:\necho transfer /tmp/test.md\ncat /tmp/test.md | transfer test.md"
-    return 1
-  fi
-  tmpfile=$(mktemp -t transferXXX);
-  if tty -s; then
-    basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g')
-    curl --progress-bar --upload-file "$1" "https://transfer.sh/$basefile" >> $tmpfile
-  else
-    curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile
-  fi
-  cat $tmpfile
-  rm -f $tmpfile
-}
-
-map() {
-  if test `command -v npx`; then
-    npx mapscii
-    return
-  fi
-  docker info >/dev/null 2>&1
-  if test $? -eq 0; then
-    docker run -it --rm --name map-cli node:lts-alpine npx mapscii
-    return
-  fi
-  if test `command -v telnet`; then
-    telnet mapscii.me
-  fi
-}
-
 mmdc() {
   if tty -s; then
     docker run -it --rm -v $(pwd):/data minlag/mermaid-cli $@
@@ -133,7 +77,7 @@ _toggle_pipe_alias() {
 
 neomutt() {
   if test ${+commands[neomutt]} -eq 1; then
-    ${commands[neomutt]} "$@"
+    ${commands[neomutt]} $@
   else
     if test "$(docker images neomutt:latest)" = ""; then
       docker build -t neomutt:latest ${HOME}/$DOTFILES_NAME/supports/neomutt
@@ -144,7 +88,7 @@ neomutt() {
 
 slack-term() {
   if test ${+commands[slack-term]} -eq 1; then
-    ${commands[slack-term]} "$@"
+    ${commands[slack-term]} $@
   else
     docker run -it --rm --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
   fi

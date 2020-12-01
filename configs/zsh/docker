@@ -1,0 +1,37 @@
+#!/bin/bash
+
+_docker-run() {
+  if tty -s; then
+    docker run -it --rm $@
+  else
+    docker run -i --rm $@
+  fi
+}
+
+_docker-daemon() {
+  docker run --rm -d $@
+}
+
+_mysql_image_name="mysql:5.7"
+if test "$(arch)" = "armv7l"; then
+  # Raspberry Pi variant
+  _mysql_image_name="jsurf/rpi-mariadb"
+fi
+
+_mysql-run() {
+  local cmd="$1"
+  shift
+  _docker-run --network=host --name mysql-cli $_mysql_image_name $cmd $@
+}
+
+mysql() {
+  _mysql-run mysql $@
+}
+
+mysqldump() {
+  _mysql-run mysqldump $@
+}
+
+docker-mysql() {
+  _docker-daemon -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/$DOTFILES_NAME/configs/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/configs/mysql/config:/etc/mysql/conf.d --name mysql $_mysql_image_name
+}
