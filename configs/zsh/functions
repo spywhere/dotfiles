@@ -1,4 +1,33 @@
 #!/bin/bash
+_docker-run() {
+  if tty -s; then
+    docker run -it --rm $@
+  else
+    docker run -i --rm $@
+  fi
+}
+
+_try-docker-run() {
+  local imageName="$1"
+  local buildPath="$2"
+  shift
+  shift
+  if test "$(docker images -q "$imageName")" = ""; then
+    docker build -t "$imageName" "$buildPath"
+  fi
+  _docker-run $@
+}
+
+_try-cmd() {
+  local cmd="$1"
+  shift
+  if test ${+commands[$cmd]} -eq 1; then
+    ${commands[$cmd]} $@
+    return 0
+  fi
+  return 1
+}
+
 flashlight() {
   local duration=10
   if test $# -gt 0; then
@@ -55,3 +84,43 @@ map() {
   fi
 }
 
+_run-docker-graphviz() {
+  local cmd="$1"
+  shift
+  _try-docker-run graphviz:latest ${HOME}/$DOTFILES_NAME/supports/graphviz --name graphviz -v $(pwd):/data --entrypoint $cmd graphviz $@
+}
+
+dot() {
+  if _try-cmd dot $@; then
+    return $?
+  fi
+  _run-docker-graphviz dot $@
+}
+
+neato() {
+  if _try-cmd neato $@; then
+    return $?
+  fi
+  _run-docker-graphviz neato $@
+}
+
+neomutt() {
+  if _try-cmd neomutt $@; then
+    return $?
+  fi
+  _try-docker-run neomutt:latest ${HOME}/$DOTFILES_NAME/supports/neomutt --name neomutt -v ${HOME}/$DOTFILES_NAME/binaries/passmgr:/usr/bin/passmgr -v ${HOME}/.cache/neomutt:/root/.cache/neomutt -v ${HOME}/.config/neomutt:/root/.config/neomutt -v ${HOME}/.config/neomutt/accounts/default:/root/.config/neomutt/accounts/default -v ${HOME}/.secret:/root/.secret neomutt $@
+}
+
+mmdc() {
+  if _try-cmd mmdc $@; then
+    return $?
+  fi
+  _docker-run -v $(pwd):/data minlag/mermaid-cli $@
+}
+
+slack-term() {
+  if _try-cmd slack-term $@; then
+    return $?
+  fi
+  _docker-run --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
+}

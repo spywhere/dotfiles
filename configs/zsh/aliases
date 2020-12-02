@@ -43,14 +43,6 @@ fi
 # Docker
 alias d='docker'
 
-mmdc() {
-  if tty -s; then
-    docker run -it --rm -v $(pwd):/data minlag/mermaid-cli $@
-  else
-    docker run -i --rm -v $(pwd):/data minlag/mermaid-cli $@
-  fi
-}
-
 _test_alias() {
   test ${+aliases[$1]} -eq 1
 }
@@ -72,25 +64,6 @@ _toggle_pipe_alias() {
   else
     alias -g $1=$2
     echo alias $1 set
-  fi
-}
-
-neomutt() {
-  if test ${+commands[neomutt]} -eq 1; then
-    ${commands[neomutt]} $@
-  else
-    if test "$(docker images neomutt:latest)" = ""; then
-      docker build -t neomutt:latest ${HOME}/$DOTFILES_NAME/supports/neomutt
-    fi
-    docker run -it --rm --name neomutt -v ${HOME}/$DOTFILES_NAME/binaries/passmgr:/usr/bin/passmgr -v ${HOME}/.cache/neomutt:/root/.cache/neomutt -v ${HOME}/.config/neomutt:/root/.config/neomutt -v ${HOME}/.config/neomutt/accounts/default:/root/.config/neomutt/accounts/default -v ${HOME}/.secret:/root/.secret neomutt $@
-  fi
-}
-
-slack-term() {
-  if test ${+commands[slack-term]} -eq 1; then
-    ${commands[slack-term]} $@
-  else
-    docker run -it --rm --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
   fi
 }
 
