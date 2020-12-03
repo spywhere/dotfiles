@@ -32,6 +32,79 @@ mysqldump() {
   _mysql-run mysqldump $@
 }
 
+_cli-run() {
+  local name="$1"
+  local imageName="$2"
+  shift
+  shift
+  _docker-run --name $name-cli -v $(pwd):/opt/app:delegated -w /opt/app $imageName $@
+}
+
+_node-run() {
+  local cmd="$1"
+  shift
+  _cli-run $cmd node:lts-alpine $cmd $@
+}
+
+node() {
+  _node-run node $@
+}
+
+npm() {
+  _node-run npm $@
+}
+
+python2() {
+  _cli-run python2 python:2-alpine python $@
+}
+
+python3() {
+  _cli-run python3 python:3-alpine python $@
+}
+
+terraform() {
+  _cli-run terraform hashicorp/terraform $@
+}
+
+sqlite3() {
+  _cli-run sqlite3 nouchka/sqlite3 $@
+}
+
+redis-cli() {
+  _cli-run redis redis:alpine redis-cli $@
+}
+
+mongo() {
+  _cli-run mongo webhippie/mongodb mongo $@
+}
+
+browsh() {
+  _docker-run browsh/browsh $@
+}
+
+consul() {
+  _docker-run --network=host --name consul-cli consul $@
+}
+
+consul() {
+  _docker-run --network=host --name consul-template -v $(pwd):/opt/app -w /opt/app hashicorp/consul-template:alpine consul-template $@
+}
+
+###########################
+# Docker version of tools #
+###########################
 docker-mysql() {
-  _docker-daemon -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/$DOTFILES_NAME/configs/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/configs/mysql/config:/etc/mysql/conf.d --name mysql $_mysql_image_name
+  _docker-daemon -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/$DOTFILES_NAME/configs/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/configs/mysql/config:/etc/mysql/conf.d --name mysql $_mysql_image_name $@
+}
+
+docker-mongo() {
+  _docker-daemon -p 27017:27017 --name mongo webhippie:mongodb $@
+}
+
+docker-redis() {
+  _docker-daemon -p 6379:6379 --name redis redis:alpine $@
+}
+
+docker-consul() {
+  _docker-daemon -p 8500:8500 --name consul consul $@
 }
