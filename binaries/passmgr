@@ -9,6 +9,33 @@ if test "$1" = ""; then
   echo "Secret directory not found, running the following command to encrypt"
   echo "  $(basename $0) --encrypt <file>"
   exit
+elif test "$1" = "--help"; then
+  echo "usage: passmgr <flags>"
+  echo "       passmgr <secret file> <decrypt flags>"
+  echo "       passmgr <secret file> <secret key> [optional decrypt flags]"
+  echo
+  echo "By default, secret will be stored under ~/.secret directory"
+  echo
+  echo "Flags:"
+  echo "  --help               this message"
+  echo "  --encrypt <file>     encrypt the given file"
+  echo "  --clear-cache        clear the password cache"
+  echo
+  echo "Decrypt Flags:"
+  echo "  --decrypt            decrypt the entire file"
+  echo
+  echo "Optional Decrypt Flags:"
+  echo "  --no-cache           clear the secret cache"
+  echo
+  echo "Secret File:"
+  echo "  Secret file is simply a file with key-value pair."
+  echo
+  echo "  Each secret file can be treated as a separate application with its key as an account"
+  echo
+  echo "  File Format:"
+  echo "    <key>=<value>"
+  echo "    <key>=<value>"
+  exit
 elif test "$1" = "--encrypt"; then
   gpg --symmetric --cipher-algo AES256 --pinentry-mode loopback "$2"
   exit
@@ -19,11 +46,17 @@ elif test -f ~/.secret/"$1"; then
   if test "$2" = ""; then
     echo "No secret key specified"
     exit 1
+  elif test "$2" = "--decrypt"; then
+    gpg -dq ~/.secret/"$1"
+    exit
+  elif test "${2:0:2}" = "--"; then
+    echo "unknown flags: $2"
+    exit 1
   fi
   if test "$3" = "--no-cache"; then
     gpg --no-symkey-cache -d ~/.secret/"$1" >/dev/null
   else
-    gpg -dq ~/.secret/"$1" | grep "$2" | cut -d'=' -f2
+    gpg -dq ~/.secret/"$1" | grep "$2" | cut -d'=' -f2-
   fi
   exit
 fi
