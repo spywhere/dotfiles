@@ -88,7 +88,8 @@ Plug 'rhysd/git-messenger.vim'
 
 " Appearances
 Plug 'itchyny/lightline.vim'
-Plug 'mengelbrecht/lightline-bufferline'
+" Plug 'mengelbrecht/lightline-bufferline'
+Plug 'spywhere/lightline-bufferline', { 'branch': 'lua-nvim' } " patched for lua on nvim
 Plug 'maximbaz/lightline-ale'
 Plug 'mhinz/vim-startify'
 Plug 'skywind3000/vim-quickui'
