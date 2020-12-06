@@ -49,13 +49,3 @@ use_brew() {
 use_dpkg() {
   return
 }
-
-# use_docker <package>
-use_docker_build() {
-  if test -n "$_FULFILLED"; then
-    return
-  fi
-
-  local package="$1"
-  add_package docker "$package"
-}

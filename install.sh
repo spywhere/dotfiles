@@ -50,11 +50,19 @@ quit() {
 }
 
 error() {
-  if test -z "$#"; then
-    >&2 echo
+  if test -z "$@"; then
+    >&2 printf "\n"
     return
   fi
-  printf "%s\n" "$*" >&2
+  printf "ERROR: %s\n" "$@" >&2
+}
+
+warn() {
+  if test -z "$@"; then
+    print
+    return
+  fi
+  print "WARN: $@"
 }
 
 # Print a padded string
@@ -62,7 +70,7 @@ error() {
 #   print <pad size> <padded string> <string>
 force_print() {
   if test -z "$#"; then
-    echo
+    printf "\n"
     return
   fi
   if test "$#" -le 2; then
@@ -123,6 +131,18 @@ _detect_os() {
   esac
 }
 
+_add_item() {
+  local target="$1"
+  local separator="$2"
+  local value="$3"
+
+  if test -z "$target"; then
+    printf "%s" "$value"
+  else
+    printf "%s%s%s" "$target" "$separator" "$value"
+  fi
+}
+
 # All options turned on
 RUN_LOCAL=0
 DUMB=0
@@ -137,12 +157,13 @@ OS="unsupported"
 OSNAME="Unsupported"
 
 _HALT=0 # flag to indicate if the installation should be stopped
-_FULFILLED="" # a flag indicate if the package has been fulfilled
+_FULFILLED="" # a flag indicate if the task has been fulfilled
 _RUNNING="" # keep the currently running sub-script
 _SKIPPED="" # keep a list of skipped components (scripts)
 _LOADED="" # keep a list of install components (scripts)
 _PACKAGES="" # keep a list of install packages
 _CUSTOM="" # keep a list of custom function for installing packages
+_DOCKER="" # keep a list of docker build for installing packages
 _SETUP="" # keep a list of custom function for setups
 
 _POST_INSTALL_MSGS=""
@@ -152,8 +173,8 @@ _main() {
 
   # Read flags
   while test "$1" != ""; do
-    PARAM=`echo $1 | sed 's/=.*//g'`
-    VALUE=`echo $1 | sed 's/^[^=]*=//g'`
+    PARAM="$(printf "%s" "$1" | sed 's/=.*//g')"
+    VALUE="$(printf "%s" "$1" | sed 's/^[^=]*=//g')"
     case $PARAM in
       -h | --help)
         _usage
@@ -188,7 +209,7 @@ _main() {
         PRINT_MODE="setup"
         ;;
       -*)
-        error "ERROR: unknown flag \"$1\""
+        error "unknown flag \"$1\""
         quit 1
         ;;
       *)
@@ -204,11 +225,7 @@ _main() {
     case $1 in
       no*)
         # Add package to the skipped list
-        if test -z "$_SKIPPED"; then
-          _SKIPPED="${1:2}"
-        else
-          _SKIPPED=$(printf "%s %s" "$_SKIPPED" "${1:2}")
-        fi
+        _SKIPPED=$(_add_item "$_SKIPPED" " " "${1:2}")
         ;;
       *)
         break
@@ -274,7 +291,7 @@ _check_sudo() {
     return
   fi
 
-  error "Failed: insufficient permission, no 'sudo' available"
+  error "insufficient permission, no 'sudo' available"
 }
 
 _try_git() {
@@ -282,7 +299,7 @@ _try_git() {
     return
   fi
   if test "$DUMB" -eq 1; then
-    error "Failed: command \"git\" is required"
+    error "command \"git\" is required"
     quit 1
   fi
 
@@ -296,7 +313,7 @@ _try_git() {
     print "Installing git..."
     cmd brew install git
   else
-    error "Failed: command \"git\" is required"
+    error "ommand \"git\" is required"
     quit 1
   fi
 }
@@ -305,7 +322,7 @@ _try_run_install() {
   local SKIP_UPDATE=0
   if test "$LOCAL_COPY" -eq 0; then
     if test "$RUN_LOCAL" -eq 1; then
-      error "Failed: local copy of dotfiles is not found at $HOME/$DOTFILES"
+      error "local copy of dotfiles is not found at $HOME/$DOTFILES"
       quit 1
     fi
 
@@ -353,7 +370,7 @@ _try_run_install() {
   local commands="awk basename"
   for command in $commands; do
     if ! test "$(command -v "$command")"; then
-      error "Failed: '$command' is required, but not found"
+      error "'$command' is required, but not found"
       _HALT=1
     fi
   done
@@ -364,7 +381,7 @@ _try_run_install() {
 
   print "Ready"
   if ! test -f "$HOME/$DOTFILES/systems/$OS.sh"; then
-    error "Failed: \"$OS\" is not supported"
+    error "\"$OS\" is not supported"
     quit 1
   fi
   . $HOME/$DOTFILES/systems/$OS.sh
@@ -390,11 +407,7 @@ _try_run_install() {
     _RUNNING="$PACKAGE"
     _FULFILLED=""
     # Add package to the loaded list (prevent dependency cycle)
-    if test -z "$_LOADED"; then
-      _LOADED="$_RUNNING"
-    else
-      _LOADED=$(printf "%s %s" "$_LOADED" "$_RUNNING")
-    fi
+    _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
     . $PACKAGE_PATH
   done
 
@@ -471,7 +484,6 @@ cmd() {
   if test "$VERBOSE" -eq 0; then
     "$@" >/dev/null 2>&1
   else
-    echo "Running $@"
     "$@"
   fi
 }
@@ -504,11 +516,7 @@ has_package() {
 
 add_post_install_message() {
   local message="$1"
-  if test -z "$_POST_INSTALL_MSGS"; then
-    _POST_INSTALL_MSGS="$message"
-  else
-    _POST_INSTALL_MSGS=$(printf "%s\n  - %s" "$_POST_INSTALL_MSGS" "$message")
-  fi
+  _POST_INSTALL_MSGS=$(_add_item "$_POST_INSTALL_MSGS" "\n  - " "$message")
 }
 
 # Skip installation if the package is not being installed
@@ -538,7 +546,7 @@ require() {
 
   # Dependency not found
   if ! test -f "$HOME/$DOTFILES/packages/$package.sh"; then
-    error "Failed: Package \"$_RUNNING\" is depends on \"$package\""
+    error "package \"$_RUNNING\" is depends on \"$package\""
     _HALT=1
     return
   fi
@@ -548,11 +556,7 @@ require() {
   _RUNNING="$package"
   _FULFILLED=""
   # Add package to the loaded list (prevent dependency cycle)
-  if test -z "$_LOADED"; then
-    _LOADED="$_RUNNING"
-  else
-    _LOADED=$(printf "%s %s" "$_LOADED" "$_RUNNING")
-  fi
+  _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
 
   . $HOME/$DOTFILES/packages/$package.sh
 
@@ -560,33 +564,32 @@ require() {
   _FULFILLED="$old_fulfilled"
 }
 
-# Add package into installation list
-# add_package <manager> <package>...
-add_package() {
-  local manager="$1"
+_add_package() {
+  local target="$1"
+  local manager="$2"
+  shift
   shift
   local package="$manager"
   for component in $@; do
     package=$(printf "%s|%s" "$package" "$component")
   done
 
-  if test -z "$_PACKAGES"; then
-    _PACKAGES="$package"
-  else
-    _PACKAGES=$(printf "%s;%s" "$_PACKAGES" "$package")
-  fi
+  target=$(_add_item "$target" ";" "$package")
   _FULFILLED="1"
+  printf "$target"
+}
+
+# Add package into installation list
+# add_package <manager> <package>...
+add_package() {
+  _PACKAGES=$(_add_package "$_PACKAGES" "$@")
 }
 
 # Add custom function into installation list
 # add_custom <function>
 add_custom() {
   local fn="$1"
-  if test -z "$_CUSTOM"; then
-    _CUSTOM="$fn"
-  else
-    _CUSTOM=$(printf "%s;%s" "$_CUSTOM" "$fn")
-  fi
+  _CUSTOM=$(_add_item "$_CUSTOM" ";" "$fn")
 }
 
 # Add custom function into installation list if no valid setup available
@@ -606,8 +609,8 @@ use_docker_build() {
     return
   fi
 
-  local package="$1"
-  add_package docker "$package"
+  require 'docker'
+  _DOCKER=$(_add_package "$_DOCKER" "$@")
 }
 
 # Add custom function into setup list if no valid setup available
@@ -618,11 +621,7 @@ add_setup() {
   fi
 
   local fn="$1"
-  if test -z "$_SETUP"; then
-    _SETUP="$fn"
-  else
-    _SETUP=$(printf "%s;%s" "$_SETUP" "$fn")
-  fi
+  _SETUP=$(_add_item "$_SETUP" ";" "$fn")
 }
 
 _main "$@"
