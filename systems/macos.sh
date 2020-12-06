@@ -28,7 +28,7 @@ setup() {
 }
 
 update() {
-  cmd brew update
+  cmd brew update --force # https://github.com/Homebrew/brew/issues/1151
   if test $1 = "upgrade"; then
     cmd brew upgrade
     cmd brew cleanup

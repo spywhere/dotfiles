@@ -350,11 +350,9 @@ _try_run_install() {
 
     # Package could be loaded from the dependency list
     local skip=0
-    for loaded_package in $_LOADED; do
-      if test "$loaded_package" = "$PACKAGE"; then
-        skip=1
-      fi
-    done
+    if has_package "$PACKAGE"; then
+      skip=1
+    fi
 
     if test $skip -eq 1; then
       continue
@@ -432,6 +430,23 @@ clone() {
   cmd git clone --shallow-submodules --depth 1 "$1" "$2"
 }
 
+# has_cmd <command>
+has_cmd() {
+  local cmd="$1"
+  test "$(command -v $cmd)"
+}
+
+# has_package <package>
+has_package() {
+  local package="$1"
+  for loaded_package in $_LOADED; do
+    if test "$loaded_package" = "$package"; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 depends() {
   local package="$1"
 
@@ -440,12 +455,9 @@ depends() {
     return
   fi
 
-  # Depends on loaded packages
-  for loaded_package in $_LOADED; do
-    if test "$loaded_package" = "$package"; then
-      return
-    fi
-  done
+  if has_package "$package"; then
+    return
+  fi
 
   # Dependency not found
   if ! test -f "$HOME/$DOTFILES/packages/$package.sh"; then
@@ -471,6 +483,7 @@ depends() {
   _ADDED="$old_added"
 }
 
+# add_package <manager> <package>...
 add_package() {
   local manager="$1"
   shift
@@ -487,6 +500,7 @@ add_package() {
   _ADDED="1"
 }
 
+# add_custom <function>
 add_custom() {
   local fn="$1"
   if test -z "$_CUSTOM"; then
@@ -496,6 +510,7 @@ add_custom() {
   fi
 }
 
+# use_custom <function>
 use_custom() {
   if test -n "$_ADDED"; then
     return
@@ -512,6 +527,16 @@ use_docker_build() {
 
   local package="$1"
   add_package docker "$package"
+}
+
+# add_setup <function>
+add_setup() {
+  local fn="$1"
+  if test -z "$_SETUP"; then
+    _SETUP="$fn"
+  else
+    _SETUP=$(printf "%s;%s" "$_SETUP" "$fn")
+  fi
 }
 
 _main "$@"

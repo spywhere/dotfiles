@@ -23,6 +23,13 @@ update() {
   return
 }
 
+# link <source> <target>
+link() {
+  local source="$1"
+  local target="$2"
+  ln -fs "$HOME/$DOTFILES/configs/$1" "$HOME/$2"
+}
+
 # use_apk <repo> <package>
 use_apk() {
   return
