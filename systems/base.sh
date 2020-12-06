@@ -52,7 +52,7 @@ use_dpkg() {
 
 # use_docker <package>
 use_docker_build() {
-  if test -n "$_ADDED"; then
+  if test -n "$_FULFILLED"; then
     return
   fi
 

@@ -136,12 +136,16 @@ PKGMGR=""
 OS="unsupported"
 OSNAME="Unsupported"
 
-_HALT=0
-_ADDED=""
-_RUNNING=""
-_LOADED=""
-_PACKAGES=""
-_CUSTOM=""
+_HALT=0 # flag to indicate if the installation should be stopped
+_FULFILLED="" # a flag indicate if the package has been fulfilled
+_RUNNING="" # keep the currently running sub-script
+_SKIPPED="" # keep a list of skipped components (scripts)
+_LOADED="" # keep a list of install components (scripts)
+_PACKAGES="" # keep a list of install packages
+_CUSTOM="" # keep a list of custom function for installing packages
+_SETUP="" # keep a list of custom function for setups
+
+_POST_INSTALL_MSGS=""
 
 _main() {
   _detect_os
@@ -199,11 +203,11 @@ _main() {
   while test "$1" != ""; do
     case $1 in
       no*)
-        # Add package to the loaded list (to skip loading)
-        if test -z "$_LOADED"; then
-          _LOADED="${1:2}"
+        # Add package to the skipped list
+        if test -z "$_SKIPPED"; then
+          _SKIPPED="${1:2}"
         else
-          _LOADED=$(printf "%s %s" "$_LOADED" "${1:2}")
+          _SKIPPED=$(printf "%s %s" "$_SKIPPED" "${1:2}")
         fi
         ;;
       *)
@@ -254,6 +258,16 @@ _info() {
 #################
 # Main Commands #
 #################
+
+_has_skip() {
+  local component="$1"
+  for skipped_component in $_SKIPPED; do
+    if test "$skipped_component" = "$component"; then
+      return 0
+    fi
+  done
+  return 1
+}
 
 _check_sudo() {
   if test "$(command -v "sudo")"; then
@@ -335,31 +349,46 @@ _try_run_install() {
     quit
   fi
 
+  # testing basic requirements
+  local commands="awk basename"
+  for command in $commands; do
+    if ! test "$(command -v "$command")"; then
+      error "Failed: '$command' is required, but not found"
+      _HALT=1
+    fi
+  done
+
+  if test $_HALT -eq 1; then
+    quit 1
+  fi
+
   print "Ready"
   if ! test -f "$HOME/$DOTFILES/systems/$OS.sh"; then
     error "Failed: \"$OS\" is not supported"
     quit 1
   fi
   . $HOME/$DOTFILES/systems/$OS.sh
-  print "Preparing installation..."
+  print "Setting up installation process..."
   setup
+  print "Gathering components..."
 
+  # install packages
   for PACKAGE_PATH in $HOME/$DOTFILES/packages/*.sh; do
     local PACKAGE=$(basename "$PACKAGE_PATH")
     PACKAGE=${PACKAGE%.sh}
 
-    # Package could be loaded from the dependency list
-    local skip=0
-    if has_package "$PACKAGE"; then
-      skip=1
+    # Skip requested packages
+    if _has_skip "$PACKAGE"; then
+      continue
     fi
 
-    if test $skip -eq 1; then
+    # Package could be loaded from the dependency list
+    if has_package "$PACKAGE"; then
       continue
     fi
 
     _RUNNING="$PACKAGE"
-    _ADDED=""
+    _FULFILLED=""
     # Add package to the loaded list (prevent dependency cycle)
     if test -z "$_LOADED"; then
       _LOADED="$_RUNNING"
@@ -367,6 +396,20 @@ _try_run_install() {
       _LOADED=$(printf "%s %s" "$_LOADED" "$_RUNNING")
     fi
     . $PACKAGE_PATH
+  done
+
+  # running setup preparation
+  for SETUP_PATH in $HOME/$DOTFILES/setup/*.sh; do
+    local SETUP=$(basename "$SETUP_PATH")
+    SETUP=${SETUP%.sh}
+
+    # Skip requested setups
+    if _has_skip "$SETUP"; then
+      continue
+    fi
+
+    _FULFILLED=""
+    . $SETUP_PATH
   done
 
   if test $_HALT -eq 1; then
@@ -380,10 +423,22 @@ _try_run_install() {
     done
   fi
   if test -n "$_CUSTOM"; then
-    print "The following functions will be run:"
+    print "The following installations will be run:"
     for fn in $(_split "$_CUSTOM"); do
       print "  - $fn"
     done
+  fi
+  if test -n "$_CUSTOM"; then
+    print "The following setups will be run:"
+    for fn in $(_split "$_SETUP"); do
+      print "  - $fn"
+    done
+  fi
+
+  print "Done!"
+  if test -n "$_POST_INSTALL_MSGS"; then
+    print "NOTE: Don't forge to..."
+    print "$_POST_INSTALL_MSGS"
   fi
 }
 
@@ -447,7 +502,29 @@ has_package() {
   return 1
 }
 
+add_post_install_message() {
+  local message="$1"
+  if test -z "$_POST_INSTALL_MSGS"; then
+    _POST_INSTALL_MSGS="$message"
+  else
+    _POST_INSTALL_MSGS=$(printf "%s\n  - %s" "$_POST_INSTALL_MSGS" "$message")
+  fi
+}
+
+# Skip installation if the package is not being installed
+# depends <package>
 depends() {
+  local package="$1"
+  if has_package "$package"; then
+    return
+  fi
+
+  _FULFILLED="1"
+}
+
+# Install package regardless of skipped components
+# require <package>
+require() {
   local package="$1"
 
   # Depends on itself
@@ -467,9 +544,9 @@ depends() {
   fi
 
   local old_running="$_RUNNING"
-  local old_added="$_ADDED"
+  local old_fulfilled="$_FULFILLED"
   _RUNNING="$package"
-  _ADDED=""
+  _FULFILLED=""
   # Add package to the loaded list (prevent dependency cycle)
   if test -z "$_LOADED"; then
     _LOADED="$_RUNNING"
@@ -480,9 +557,10 @@ depends() {
   . $HOME/$DOTFILES/packages/$package.sh
 
   _RUNNING="$old_running"
-  _ADDED="$old_added"
+  _FULFILLED="$old_fulfilled"
 }
 
+# Add package into installation list
 # add_package <manager> <package>...
 add_package() {
   local manager="$1"
@@ -497,9 +575,10 @@ add_package() {
   else
     _PACKAGES=$(printf "%s;%s" "$_PACKAGES" "$package")
   fi
-  _ADDED="1"
+  _FULFILLED="1"
 }
 
+# Add custom function into installation list
 # add_custom <function>
 add_custom() {
   local fn="$1"
@@ -510,18 +589,20 @@ add_custom() {
   fi
 }
 
+# Add custom function into installation list if no valid setup available
 # use_custom <function>
 use_custom() {
-  if test -n "$_ADDED"; then
+  if test -n "$_FULFILLED"; then
     return
   fi
 
   add_custom "$@"
 }
 
+# Add docker build into installation list if no valid setup available
 # use_docker <package>
 use_docker_build() {
-  if test -n "$_ADDED"; then
+  if test -n "$_FULFILLED"; then
     return
   fi
 
@@ -529,8 +610,13 @@ use_docker_build() {
   add_package docker "$package"
 }
 
+# Add custom function into setup list if no valid setup available
 # add_setup <function>
 add_setup() {
+  if test -n "$_FULFILLED"; then
+    return
+  fi
+
   local fn="$1"
   if test -z "$_SETUP"; then
     _SETUP="$fn"
