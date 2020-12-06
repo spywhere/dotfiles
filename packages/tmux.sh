@@ -11,10 +11,10 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+# tmux on arm is still outdated
+use_brew 'tmux'
+use_custom 'make_tmux'
 
-install_docker() {
-  echo 'Custom code work!'
+make_tmux() {
+  return
 }

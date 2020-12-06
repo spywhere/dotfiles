@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+if
+  (! command -v print >/dev/null 2>&1) ||
+  ! $(print 3 a b >/dev/null 2>&1) ||
+  test "$(print 3 a b)" != "a  b";
+then
+  printf "Please run this script through \"install.sh\" instead"
+  exit 1
+fi
+
+use_brew 'cask' 'qlcolorcode'
+use_brew 'cask' 'qlimagesize'
+use_brew 'cask' 'qlmarkdown'
+use_brew 'cask' 'qlprettypatch'
+use_brew 'cask' 'qlstephen'
+use_brew 'cask' 'quicklook-csv'
+use_brew 'cask' 'quicklook-json'
+use_brew 'cask' 'quicklookase'
+use_brew 'cask' 'webpquicklook'

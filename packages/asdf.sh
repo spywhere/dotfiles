@@ -11,10 +11,8 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+use_custom 'install_asdf'
 
-install_docker() {
+install_asdf() {
   echo 'Custom code work!'
 }

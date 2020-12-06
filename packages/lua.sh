@@ -11,10 +11,5 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
-
-install_docker() {
-  echo 'Custom code work!'
-}
+# sc-im dependencies
+use_brew 'lua@5.1'

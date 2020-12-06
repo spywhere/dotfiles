@@ -11,10 +11,12 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+depends 'curl'
 
-install_docker() {
-  echo 'Custom code work!'
+use_custom 'curl_pfetch'
+
+curl_pfetch() {
+  # use_curl 'pfetch' 'https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch'
+  return
 }
+

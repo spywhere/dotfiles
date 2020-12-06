@@ -11,10 +11,8 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+depends 'boost-dev'
 
-install_docker() {
-  echo 'Custom code work!'
-}
+use_apk 'testing' 'ncmpcpp'
+use_apt 'ncmpcpp'
+use_brew 'ncmpcpp'

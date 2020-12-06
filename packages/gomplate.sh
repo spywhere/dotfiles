@@ -11,10 +11,12 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+depends 'curl'
 
-install_docker() {
-  echo 'Custom code work!'
+use_brew 'gomplate'
+use_custom 'curl_gomplate'
+
+curl_gomplate() {
+  # use_custom 'curl_gomplate' 'https://github.com/hairyhenderson/gomplate/releases/download/v3.8.0/gomplate_linux-armv7-slim'
+  return
 }

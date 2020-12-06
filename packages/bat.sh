@@ -11,10 +11,7 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+depends 'curl'
 
-install_docker() {
-  echo 'Custom code work!'
-}
+use_brew 'bat'
+use_dpkg 'bat' 'https://github.com/sharkdp/bat/releases/download/v0.15.4/bat_0.15.4_armhf.deb'

@@ -11,10 +11,7 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
+depends 'curl'
 
-install_docker() {
-  echo 'Custom code work!'
-}
+use_brew 'git-delta'
+use_dpkg 'git-delta' 'https://github.com/dandavison/delta/releases/download/0.4.1/git-delta_0.4.1_armhf.deb'

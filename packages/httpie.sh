@@ -11,10 +11,6 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
-
-install_docker() {
-  echo 'Custom code work!'
-}
+use_apk 'main' 'httpie'
+use_apt 'httpie'
+use_brew 'httpie'

@@ -11,10 +11,5 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
-
-install_docker() {
-  echo 'Custom code work!'
-}
+# https://github.com/driesvints/dotfiles/issues/20
+use_brew 'pkg-config'

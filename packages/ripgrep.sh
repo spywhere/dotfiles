@@ -11,10 +11,7 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
-use_apk 'community' 'docker'
-use_custom 'install_docker'
-
-install_docker() {
-  echo 'Custom code work!'
-}
+# (a better grep) fzf.vim dependencies
+use_apk 'community' 'ripgrep'
+use_apt 'ripgrep'
+use_brew 'ripgrep'
