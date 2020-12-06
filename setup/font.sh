@@ -13,6 +13,7 @@ fi
 
 add_setup 'setup_font'
 
+# install fonts
 setup_font() {
   # Try downloading fonts to this directory would be much faster and use
   #   smaller storage size

@@ -11,11 +11,12 @@ then
   exit 1
 fi
 
-depends 'zsh'
+depends 'tmux'
 
-add_setup 'setup_shell'
+add_setup 'setup_tmux_plugins'
 
-setup_shell() {
-  # update default shell to a new one
-  return
+setup_tmux_plugins() {
+  # install tmux plugin manager and its plugins
+
+  add_post_install_message 'Press <Prefix+I> for tmux plugins installation'
 }

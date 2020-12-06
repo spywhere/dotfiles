@@ -48,6 +48,7 @@ setup_config() {
 
   # nvim
   link nvim/ .config/nvim
+  add_post_install_message "Run 'nvim' for the first time setup"
 
   # tig
   link tig/tig.conf .tigrc

@@ -11,8 +11,27 @@ then
   exit 1
 fi
 
+depends 'asdf'
+
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
-  return
+  if test -d "$HOME/.asdf"; then
+    clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
+    cd $HOME/.asdf
+    git checkout "$(git describe --abbrev=0 --tags)"
+    cd $CURRENT_DIR
+    return
+  fi
+
+  local plugins="1password deno docker-slim golang firebase nodejs python rust"
+  set +e
+  for plugin in $plugins; do
+    bash -c '. ~/.asdf/asdf.sh && asdf plugin add $plugin'
+  done
+  set -e
+  bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+  cd $HOME
+  bash -c '. ~/.asdf/asdf.sh && asdf install'
+  cd $CURRENT_DIR
 }
