@@ -1,28 +1,4 @@
 #!/bin/bash
-#########
-# Shell #
-#########
-
-unalias fd
-# fd - cd to selected directory
-fd() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
-}
-
-# fda - including hidden directories
-fda() {
-  local dir
-  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
-}
-
-# fh - repeat history
-fh() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')
-}
-
 #######
 # Git #
 #######
@@ -56,7 +32,7 @@ _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
 
 # fcoc - checkout git commit with previews
-fcoc() {
+fcm() {
   local commit
   commit=$( _glNoGraph |
     fzf --no-sort --reverse --tiebreak=index --no-multi \
@@ -65,7 +41,7 @@ fcoc() {
 }
 
 # fsh - git commit browser with previews
-fsh() {
+flg() {
     _glNoGraph |
         fzf --no-sort --reverse --tiebreak=index --no-multi \
             --ansi --preview="$_viewGitLogLine" \
@@ -82,17 +58,18 @@ fsh() {
 # if no plugin is supplied (e.g. `vmi<CR>`), fzf will list them for you
 # Mnemonic [V]ersion [M]anager [I]nstall
 vmi() {
-  local lang=${1}
+  local lang="$1"
 
-  if [[ ! $lang ]]; then
-    lang=$(asdf plugin-list | fzf)
+  if ! test "$lang"; then
+    lang="$(asdf plugin list | fzf)"
   fi
 
-  if [[ $lang ]]; then
-    local versions=$(asdf list-all $lang | tail -r | fzf -m)
-    if [[ $versions ]]; then
-      for version in $(echo $versions);
-      do; asdf install $lang $version; done;
+  if test "$lang"; then
+    local versions="$(asdf list all $lang | tail -r | fzf -m)"
+    if test "$versions"; then
+      for version in $(echo $versions); do
+        asdf install $lang $version
+      done
     fi
   fi
 }
@@ -102,17 +79,18 @@ vmi() {
 # if no plugin is supplied (e.g. `vmi<CR>`), fzf will list them for you
 # Mnemonic [V]ersion [M]anager [C]lean
 vmc() {
-  local lang=${1}
+  local lang="$1"
 
-  if [[ ! $lang ]]; then
-    lang=$(asdf plugin-list | fzf)
+  if ! test "$lang"; then
+    lang="$(asdf plugin list | fzf)"
   fi
 
-  if [[ $lang ]]; then
-    local versions=$(asdf list $lang | fzf -m)
-    if [[ $versions ]]; then
-      for version in $(echo $versions);
-      do; asdf uninstall $lang $version; done;
+  if test "$lang"; then
+    local versions="$(asdf list $lang | fzf -m)"
+    if test "$versions"; then
+      for version in $(echo $versions); do
+        asdf uninstall $lang $version
+      done
     fi
   fi
 }
