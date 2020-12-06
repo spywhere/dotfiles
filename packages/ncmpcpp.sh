@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-depends 'boost-dev'
+require 'boost-dev'
 
 use_apk 'testing' 'ncmpcpp'
 use_apt 'ncmpcpp'

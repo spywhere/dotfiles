@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+require 'xsel'
+
 # tmux-yank dependencies
 use_apt 'xsel'

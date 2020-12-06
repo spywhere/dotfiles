@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-depends 'curl'
+require 'curl'
 
 use_brew 'bat'
 use_dpkg 'bat' 'https://github.com/sharkdp/bat/releases/download/v0.15.4/bat_0.15.4_armhf.deb'

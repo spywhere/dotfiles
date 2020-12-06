@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-depends 'curl'
+require 'curl'
 
 use_custom 'curl_pfetch'
 

@@ -11,6 +11,5 @@ then
   exit 1
 fi
 
-use_apk 'main' 'bash'
-use_apt 'bash'
-use_brew 'bash'
+use_apk 'main' 'curl'
+use_apt 'curl'
