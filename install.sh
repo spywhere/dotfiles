@@ -225,7 +225,8 @@ _main() {
     case $1 in
       no*)
         # Add package to the skipped list
-        _SKIPPED=$(_add_item "$_SKIPPED" " " "${1:2}")
+        local name=$(printf "%s" "$1" | cut -c3-)
+        _SKIPPED=$(_add_item "$_SKIPPED" " " "$name")
         ;;
       *)
         break
@@ -320,7 +321,7 @@ _try_git() {
     print "Installing git..."
     cmd brew install git
   else
-    error "ommand \"git\" is required"
+    error "command \"git\" is required"
     quit 1
   fi
 }
@@ -446,6 +447,12 @@ _try_run_install() {
       print "  - $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
+  if test -n "$_DOCKER"; then
+    print "The following Docker buildings will be run:"
+    for package in $(_split "$_DOCKER"); do
+      print "  - $(printf "$package" | sed 's/|/ - /g')"
+    done
+  fi
   if test -n "$_CUSTOM"; then
     print "The following installations will be run:"
     for fn in $(_split "$_CUSTOM"); do
@@ -484,7 +491,7 @@ _try_run_install() {
   fi
 
   # run setups
-  if test -n "$_CUSTOM"; then
+  if test -n "$_SETUP"; then
     print "Running setups..."
     for fn in $(_split "$_SETUP"); do
       "$fn"
@@ -494,7 +501,7 @@ _try_run_install() {
   print "Done!"
   if test -n "$_POST_INSTALL_MSGS"; then
     print "NOTE: Don't forge to..."
-    print "$_POST_INSTALL_MSGS"
+    print "  - $_POST_INSTALL_MSGS"
   fi
 }
 
