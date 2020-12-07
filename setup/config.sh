@@ -32,7 +32,11 @@ setup_config() {
   # git
   link git/gitalias .gitalias
   link git/gitconfig .gitconfig
-  link git/gitconfig.$OS .gitconfig.platform
+  if test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OS"; then
+    link git/gitconfig.$OS .gitconfig.platform
+  else
+    warn "No platform specific git configuration for \"$OSNAME\""
+  fi
   link git/gitignore .gitignore_global
 
   # github

@@ -20,9 +20,8 @@ install_asdf() {
 
   if ! test -d "$HOME/.asdf"; then
     full_clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
-    cd $HOME/.asdf
+    cmd cd $HOME/.asdf
     cmd git checkout "$(git describe --abbrev=0 --tags)"
-    cd $CURRENT_DIR
-    return
+    cmd cd $CURRENT_DIR
   fi
 }

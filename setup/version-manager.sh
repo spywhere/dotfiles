@@ -20,7 +20,7 @@ setup_version_manager() {
   local plugins="1password deno docker-slim golang firebase nodejs python rust"
   set +e
   for plugin in $plugins; do
-    bash -c '. ~/.asdf/asdf.sh && asdf plugin add $plugin'
+    bash -c ". ~/.asdf/asdf.sh && asdf plugin add $plugin"
   done
   set -e
   bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
