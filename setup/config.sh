@@ -22,6 +22,10 @@ setup_config() {
   link asdf/npm-packages .default-npm-packages
   link asdf/python-packages .default-python-packages
 
+  if ! test -d "$HOME/.config"; then
+    cmd mkdir -p "$HOME/.config"
+  fi
+
   # bat
   link bat/ .config/bat
 
