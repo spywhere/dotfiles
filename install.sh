@@ -259,6 +259,13 @@ _usage() {
   print
   print "  Example: $0 noasdf nodocker"
   print "  Skip Docker and ASDF installation"
+  print
+  print "To skip system update/upgrade, package installation or setups, use"
+  print 20 "  noupdate" "Skip system update and system upgrade"
+  print 20 "  noupgrade" "Only perform a system update but not system upgrade"
+  print 20 "  nopackages" "Skip package installation, including a custom one"
+  print 20 "  nosetup" "Skip setups"
+  print "Note that if setup require particular packages, those packages will be automatically installed."
 }
 
 _info() {
@@ -367,7 +374,7 @@ _try_run_install() {
   fi
 
   # testing basic requirements
-  local commands="awk basename"
+  local commands="awk basename sed"
   for command in $commands; do
     if ! test "$(command -v "$command")"; then
       error "'$command' is required, but not found"
@@ -389,41 +396,45 @@ _try_run_install() {
   setup
   print "Gathering components..."
 
-  # install packages
-  for PACKAGE_PATH in $HOME/$DOTFILES/packages/*.sh; do
-    local PACKAGE=$(basename "$PACKAGE_PATH")
-    PACKAGE=${PACKAGE%.sh}
+  # run packages
+  if ! _has_skip packages; then
+    for PACKAGE_PATH in $HOME/$DOTFILES/packages/*.sh; do
+      local PACKAGE=$(basename "$PACKAGE_PATH")
+      PACKAGE=${PACKAGE%.sh}
 
-    # Skip requested packages
-    if _has_skip "$PACKAGE"; then
-      continue
-    fi
+      # Skip requested packages
+      if _has_skip "$PACKAGE"; then
+        continue
+      fi
 
-    # Package could be loaded from the dependency list
-    if has_package "$PACKAGE"; then
-      continue
-    fi
+      # Package could be loaded from the dependency list
+      if has_package "$PACKAGE"; then
+        continue
+      fi
 
-    _RUNNING="$PACKAGE"
-    _FULFILLED=""
-    # Add package to the loaded list (prevent dependency cycle)
-    _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
-    . $PACKAGE_PATH
-  done
+      _RUNNING="$PACKAGE"
+      _FULFILLED=""
+      # Add package to the loaded list (prevent dependency cycle)
+      _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
+      . $PACKAGE_PATH
+    done
+  fi
 
   # running setup preparation
-  for SETUP_PATH in $HOME/$DOTFILES/setup/*.sh; do
-    local SETUP=$(basename "$SETUP_PATH")
-    SETUP=${SETUP%.sh}
+  if ! _has_skip setup; then
+    for SETUP_PATH in $HOME/$DOTFILES/setup/*.sh; do
+      local SETUP=$(basename "$SETUP_PATH")
+      SETUP=${SETUP%.sh}
 
-    # Skip requested setups
-    if _has_skip "$SETUP"; then
-      continue
-    fi
+      # Skip requested setups
+      if _has_skip "$SETUP"; then
+        continue
+      fi
 
-    _FULFILLED=""
-    . $SETUP_PATH
-  done
+      _FULFILLED=""
+      . $SETUP_PATH
+    done
+  fi
 
   if test $_HALT -eq 1; then
     quit 1
@@ -445,6 +456,38 @@ _try_run_install() {
     print "The following setups will be run:"
     for fn in $(_split "$_SETUP"); do
       print "  - $fn"
+    done
+  fi
+
+  # update/upgrade system
+  if ! _has_skip update; then
+    if _has_skip upgrade; then
+      print "Updating system..."
+      update "update"
+    else
+      print "Updating and upgrading system..."
+      update "upgrade"
+    fi
+  fi
+
+  # install packages
+  if test -n "$_PACKAGES"; then
+    install_packages $(_split "$_PACKAGES")
+  fi
+
+  # run custom installations
+  if test -n "$_CUSTOM"; then
+    print "Performing custom installations..."
+    for fn in $(_split "$_CUSTOM"); do
+      "$fn"
+    done
+  fi
+
+  # run setups
+  if test -n "$_CUSTOM"; then
+    print "Running setups..."
+    for fn in $(_split "$_SETUP"); do
+      "$fn"
     done
   fi
 
@@ -488,6 +531,15 @@ cmd() {
   fi
 }
 
+full_clone() {
+  _try_git
+  if test -n "$3"; then
+    print "Cloning $3..."
+  fi
+
+  cmd git clone "$1" "$2"
+}
+
 clone() {
   _try_git
   if test -n "$3"; then
@@ -522,6 +574,10 @@ add_post_install_message() {
 # Skip installation if the package is not being installed
 # depends <package>
 depends() {
+  if test -n "$_FULFILLED"; then
+    return
+  fi
+
   local package="$1"
   if has_package "$package"; then
     return

@@ -23,6 +23,11 @@ update() {
   return
 }
 
+# install_packages <package>...
+install_packages() {
+  return
+}
+
 # link <source> <target>
 link() {
   local source="$1"
