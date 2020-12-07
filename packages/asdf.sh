@@ -14,5 +14,15 @@ fi
 use_custom 'install_asdf'
 
 install_asdf() {
-  echo 'Custom code work!'
+  if has_cmd asdf; then
+    return
+  fi
+
+  if ! test -d "$HOME/.asdf"; then
+    full_clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
+    cd $HOME/.asdf
+    cmd git checkout "$(git describe --abbrev=0 --tags)"
+    cd $CURRENT_DIR
+    return
+  fi
 }

@@ -12,18 +12,11 @@ then
 fi
 
 depends 'asdf'
+depends 'bash'
 
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
-  if test -d "$HOME/.asdf"; then
-    clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
-    cd $HOME/.asdf
-    git checkout "$(git describe --abbrev=0 --tags)"
-    cd $CURRENT_DIR
-    return
-  fi
-
   local plugins="1password deno docker-slim golang firebase nodejs python rust"
   set +e
   for plugin in $plugins; do
