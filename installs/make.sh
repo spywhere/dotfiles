@@ -57,7 +57,7 @@ make_hstr() {
   do_sudo_command make install
 
   # print "Building image..."
-  # docker build -t hstr . -f $HOME/$DOTFILES/supports/hstr/Dockerfile.$OS
+  # docker build -t hstr . -f $HOME/$DOTFILES/docker/hstr/Dockerfile.$OS
   # print "Running image..."
   # docker run -it --name hstr-cli hstr hstr -v
   # print "Copy binaries..."

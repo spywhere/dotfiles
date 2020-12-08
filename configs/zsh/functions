@@ -87,7 +87,7 @@ map() {
 _run-docker-graphviz() {
   local cmd="$1"
   shift
-  _try-docker-run graphviz:latest ${HOME}/$DOTFILES_NAME/supports/graphviz --name graphviz -v $(pwd):/data --entrypoint $cmd graphviz $@
+  _try-docker-run graphviz:latest ${HOME}/$DOTFILES_NAME/docker/graphviz --name graphviz -v $(pwd):/data --entrypoint $cmd graphviz $@
 }
 
 dot() {
@@ -108,7 +108,7 @@ neomutt() {
   if _try-cmd neomutt $@; then
     return $?
   fi
-  _try-docker-run neomutt:latest ${HOME}/$DOTFILES_NAME/supports/neomutt --name neomutt -v ${HOME}/$DOTFILES_NAME/binaries/passmgr:/usr/bin/passmgr -v ${HOME}/.cache/neomutt:/root/.cache/neomutt -v ${HOME}/.config/neomutt:/root/.config/neomutt -v ${HOME}/.config/neomutt/accounts/default:/root/.config/neomutt/accounts/default -v ${HOME}/.secret:/root/.secret neomutt $@
+  _try-docker-run neomutt:latest ${HOME}/$DOTFILES_NAME/docker/neomutt --name neomutt -v ${HOME}/$DOTFILES_NAME/binaries/passmgr:/usr/bin/passmgr -v ${HOME}/.cache/neomutt:/root/.cache/neomutt -v ${HOME}/.config/neomutt:/root/.config/neomutt -v ${HOME}/.config/neomutt/accounts/default:/root/.config/neomutt/accounts/default -v ${HOME}/.secret:/root/.secret neomutt $@
 }
 
 mmdc() {
