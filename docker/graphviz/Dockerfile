@@ -1,4 +1,3 @@
 FROM alpine
-RUN apk update
-RUN apk add graphviz
+RUN apk add --no-cache graphviz
 WORKDIR /data
