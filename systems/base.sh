@@ -32,7 +32,8 @@ install_packages() {
 link() {
   local source="$1"
   local target="$2"
-  ln -fs "$HOME/$DOTFILES/configs/$1" "$HOME/$2"
+  rm -rf "$HOME/$target"
+  ln -fs "$HOME/$DOTFILES/configs/$source" "$HOME/$target"
 }
 
 # use_apk <repo> <package>
