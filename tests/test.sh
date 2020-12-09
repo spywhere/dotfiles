@@ -2,6 +2,9 @@
 
 set -e
 
+SCRIPT_DIRNAME=$(dirname $0)
+SCRIPT_DIR=$(realpath $(pwd)/$SCRIPT_DIRNAME)
+
 usage() {
   cat <<EOF
 usage: $0 [flag] [platform] -- [arguments ...]
@@ -13,9 +16,11 @@ flags:
   -u, --upgrade   Simulate a local upgrade
 
 supported platforms:
-  alpine
-  raspios
 EOF
+  for file in $SCRIPT_DIR/Dockerfile.*; do
+    local name=$(basename $file | cut -c12-)
+    printf "  %s\n" $name
+  done
 }
 
 if test "$1" = ""; then
@@ -53,31 +58,30 @@ while test "$1" != ""; do
 done
 
 while test "$1" != ""; do
-  case $1 in
-    alpine | raspios)
-      if test "$PLATFORM" != ""; then
-        printf "ERROR: only one platform is needed\n"
-        exit 1
-      fi
-      PLATFORM="$1"
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      printf "ERROR: unknown platform \"$1\"\n"
+  if test -f $SCRIPT_DIR/Dockerfile.$1; then
+    if test "$PLATFORM" != ""; then
+      printf "ERROR: only one platform is needed\n"
       exit 1
-      ;;
-  esac
+    fi
+    PLATFORM="$1"
+  else
+    case $1 in
+      --)
+        shift
+        break
+        ;;
+      *)
+        printf "ERROR: unknown platform \"$1\"\n"
+        exit 1
+        ;;
+    esac
+  fi
 
   shift
 done
 
 printf "Testing on $PLATFORM...\n"
 
-SCRIPT_DIRNAME=$(dirname $0)
-SCRIPT_DIR=$(realpath $(pwd)/$SCRIPT_DIRNAME)
 VOLUME=$(dirname $SCRIPT_DIR)
 ARGS="$@"
 
