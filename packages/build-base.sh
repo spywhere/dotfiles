@@ -12,4 +12,4 @@ then
 fi
 
 optional
-use_apk 'edge' 'boost-dev'
+use_apk 'main' 'build-base'

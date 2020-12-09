@@ -13,7 +13,12 @@ fi
 
 depends 'asdf'
 depends 'bash'
+# nodejs requirements
 require 'gnupg2'
+# python requirements
+require 'build-base'
+require 'zlib'
+require 'libssl'
 
 add_setup 'setup_version_manager'
 

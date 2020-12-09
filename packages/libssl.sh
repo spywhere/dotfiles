@@ -12,4 +12,5 @@ then
 fi
 
 optional
-use_apk 'edge' 'boost-dev'
+use_apt 'libssl-dev'
+use_apk 'main' 'libressl-dev'
