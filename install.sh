@@ -158,6 +158,7 @@ OSNAME="Unsupported"
 
 _HALT=0 # flag to indicate if the installation should be stopped
 _FULFILLED="" # a flag indicate if the task has been fulfilled
+_RUNNING_TYPE="package" # a string indicate the type of running script
 _RUNNING="" # keep the currently running sub-script
 _SKIPPED="" # keep a list of skipped components (scripts)
 _LOADED="" # keep a list of install components (scripts)
@@ -398,6 +399,7 @@ _try_run_install() {
   print "Gathering components..."
 
   # run packages
+  _RUNNING_TYPE="package"
   if ! _has_skip packages; then
     for PACKAGE_PATH in $HOME/$DOTFILES/packages/*.sh; do
       local PACKAGE=$(basename "$PACKAGE_PATH")
@@ -422,6 +424,7 @@ _try_run_install() {
   fi
 
   # running setup preparation
+  _RUNNING_TYPE="setup"
   if ! _has_skip setup; then
     for SETUP_PATH in $HOME/$DOTFILES/setup/*.sh; do
       local SETUP=$(basename "$SETUP_PATH")
@@ -432,6 +435,7 @@ _try_run_install() {
         continue
       fi
 
+      _RUNNING="$SETUP"
       _FULFILLED=""
       . $SETUP_PATH
     done
@@ -609,13 +613,15 @@ require() {
 
   # Dependency not found
   if ! test -f "$HOME/$DOTFILES/packages/$package.sh"; then
-    error "package \"$_RUNNING\" is depends on \"$package\""
+    error "$_RUNNING_TYPE \"$_RUNNING\" is depends on \"$package\""
     _HALT=1
     return
   fi
 
+  local old_running_type="$_RUNNING_TYPE"
   local old_running="$_RUNNING"
   local old_fulfilled="$_FULFILLED"
+  _RUNNING_TYPE="package"
   _RUNNING="$package"
   _FULFILLED=""
   # Add package to the loaded list (prevent dependency cycle)
@@ -623,6 +629,7 @@ require() {
 
   . $HOME/$DOTFILES/packages/$package.sh
 
+  _RUNNING_TYPE="$old_running_type"
   _RUNNING="$old_running"
   _FULFILLED="$old_fulfilled"
 }
