@@ -158,6 +158,7 @@ OSNAME="Unsupported"
 
 _HALT=0 # flag to indicate if the installation should be stopped
 _FULFILLED="" # a flag indicate if the task has been fulfilled
+_SKIP_OPTIONAL="" # a flag to indicate if the current task is optional
 _RUNNING_TYPE="package" # a string indicate the type of running script
 _RUNNING="" # keep the currently running sub-script
 _SKIPPED="" # keep a list of skipped components (scripts)
@@ -420,6 +421,18 @@ _try_run_install() {
       # Add package to the loaded list (prevent dependency cycle)
       _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
       . $PACKAGE_PATH
+
+      # Remove optional packages from the loaded list
+      if test "$_FULFILLED" = "optional"; then
+        local new_loaded=""
+        for loaded_package in $(_split "$_LOADED"); do
+          if test "$loaded_package" = "$_RUNNING"; then
+            continue
+          fi
+          new_loaded=$(_add_item "$new_loaded" " " "$loaded_package")
+        done
+        _LOADED="$new_loaded"
+      fi
     done
   fi
 
@@ -582,6 +595,14 @@ add_post_install_message() {
   _POST_INSTALL_MSGS=$(_add_item "$_POST_INSTALL_MSGS" "\n  - " "$message")
 }
 
+# Mark current script as optional
+optional() {
+  if test -n "$_SKIP_OPTIONAL"; then
+    return
+  fi
+  _FULFILLED="optional"
+}
+
 # Skip installation if the package is not being installed
 # depends <package>
 depends() {
@@ -594,12 +615,16 @@ depends() {
     return
   fi
 
-  _FULFILLED="1"
+  _FULFILLED="fulfilled"
 }
 
 # Install package regardless of skipped components
 # require <package>
 require() {
+  if test "$_FULFILLED" = "optional"; then
+    return
+  fi
+
   local package="$1"
 
   # Depends on itself
@@ -623,6 +648,7 @@ require() {
   local old_fulfilled="$_FULFILLED"
   _RUNNING_TYPE="package"
   _RUNNING="$package"
+  _SKIP_OPTIONAL="1"
   _FULFILLED=""
   # Add package to the loaded list (prevent dependency cycle)
   _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
@@ -631,6 +657,7 @@ require() {
 
   _RUNNING_TYPE="$old_running_type"
   _RUNNING="$old_running"
+  _SKIP_OPTIONAL=""
   _FULFILLED="$old_fulfilled"
 }
 
@@ -645,19 +672,25 @@ _add_package() {
   done
 
   target=$(_add_item "$target" ";" "$package")
-  _FULFILLED="1"
+  _FULFILLED="fulfilled"
   printf "$target"
 }
 
 # Add package into installation list
 # add_package <manager> <package>...
 add_package() {
+  if test "$_FULFILLED" = "optional"; then
+    return
+  fi
   _PACKAGES=$(_add_package "$_PACKAGES" "$@")
 }
 
 # Add custom function into installation list
 # add_custom <function>
 add_custom() {
+  if test "$_FULFILLED" = "optional"; then
+    return
+  fi
   local fn="$1"
   _CUSTOM=$(_add_item "$_CUSTOM" ";" "$fn")
 }
