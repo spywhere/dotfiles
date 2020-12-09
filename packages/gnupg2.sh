@@ -12,3 +12,4 @@ then
 fi
 
 use_brew 'gnupg2'
+use_apk 'main' 'gnupg'

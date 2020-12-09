@@ -13,6 +13,7 @@ fi
 
 depends 'asdf'
 depends 'bash'
+require 'gnupg2'
 
 add_setup 'setup_version_manager'
 
