@@ -670,7 +670,6 @@ _add_package() {
   done
 
   target=$(_add_item "$target" ";" "$package")
-  _FULFILLED="fulfilled"
   printf "$target"
 }
 
@@ -681,6 +680,7 @@ add_package() {
     return
   fi
   _PACKAGES=$(_add_package "$_PACKAGES" "$@")
+  _FULFILLED="fulfilled"
 }
 
 # Add custom function into installation list
@@ -701,6 +701,7 @@ use_custom() {
   fi
 
   add_custom "$@"
+  _FULFILLED="fulfilled"
 }
 
 # Add docker build into installation list if no valid setup available
@@ -720,6 +721,7 @@ use_docker_build() {
     require 'docker'
   fi
   _DOCKER=$(_add_package "$_DOCKER" "$package")
+  _FULFILLED="fulfilled"
 }
 
 # Add custom function into setup list if no valid setup available
