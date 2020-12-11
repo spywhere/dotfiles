@@ -713,7 +713,7 @@ use_docker_build() {
   fi
 
   if ! test -f "$HOME/$DOTFILES/docker/$package/Dockerfile.$OS"; then
-    warn "docker build for package \"$package\" is not available on $OS"
+    warn "Docker build for package \"$package\" is not available on $OS"
     return
   fi
 
