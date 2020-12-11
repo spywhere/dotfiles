@@ -9,8 +9,6 @@ set -e
 CLONE_REPO="https://github.com/spywhere/dotfiles"
 
 CURRENT_DIR=$(pwd)
-RUN_DIRNAME=$(dirname $0)
-RUN_DIR=$(realpath $(pwd)/$RUN_DIRNAME)
 FLAGS=$@
 
 # Set a dot files directory if one is not found
@@ -708,12 +706,20 @@ use_custom() {
 # Add docker build into installation list if no valid setup available
 # use_docker <package>
 use_docker_build() {
+  local package="$1"
   if test -n "$_FULFILLED"; then
     return
   fi
 
-  require 'docker'
-  _DOCKER=$(_add_package "$_DOCKER" "$@")
+  if ! test -f "$HOME/$DOTFILES/docker/$package/Dockerfile.$OS"; then
+    warn "docker build for package \"$package\" is not available on $OS"
+    return
+  fi
+
+  if test -z "$_DOCKER"; then
+    require 'docker'
+  fi
+  _DOCKER=$(_add_package "$_DOCKER" "$package")
 }
 
 # Add custom function into setup list if no valid setup available
