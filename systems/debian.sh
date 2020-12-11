@@ -25,10 +25,11 @@ install_dpkg_packages() {
     local name=$(printf "%s" "$package" | cut -d'|' -f1)
     local url=$(printf "%s" "$package" | cut -d'|' -f2-)
 
-    # local path=$(deps "$name.deb")
-    # cmd curl -sSL $url -o $path
-    # sudo_cmd dpkg --install $path
-    echo "installing $name from $url through dpkg..."
+    local path=$(deps "$name.deb")
+    print "Downloading $path for installation..."
+    cmd curl -sSL $url -o $path
+    print "Installing $name through dpkg..."
+    sudo_cmd dpkg --install $path
   done
   return
 }
