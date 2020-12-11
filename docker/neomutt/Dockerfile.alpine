@@ -9,7 +9,9 @@ RUN ./configure --ssl --notmuch --gpgme --with-ui=ncurses --sasl --gss --lmdb --
 RUN make install
 
 FROM alpine
-WORKDIR /root
+LABEL DEPS="apk add --no-cache openssl ncurses-libs libidn notmuch gpgme libsasl lmdb krb5 pcre2 lz4-libs python2 w3m"
 RUN apk add --no-cache openssl ncurses-libs libidn notmuch gpgme libsasl lmdb krb5 pcre2 lz4-libs python2 w3m
 COPY --from=builder /usr/bin/neomutt /usr/bin/neomutt
+LABEL BINARY="neomutt"
+LABEL TEST="--version"
 CMD neomutt

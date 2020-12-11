@@ -11,8 +11,10 @@ RUN make
 RUN make install
 
 FROM debian:buster-slim
-WORKDIR /root
 RUN apt update
+LABEL DEPS="apt install -y libncursesw5 libreadline7"
 RUN apt install -y libncursesw5 libreadline7
 COPY --from=builder /usr/local/bin/hstr /usr/bin/hstr
+LABEL BINARY="hstr"
+LABEL TEST="--version"
 CMD hstr

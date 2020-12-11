@@ -14,7 +14,9 @@ RUN make
 RUN make install
 
 FROM alpine
-WORKDIR /root
-RUN apk add --no-cache ncurses-libs readline
 COPY --from=builder /usr/local/bin/hstr /usr/bin/hstr
+LABEL DEPS="apk add --no-cache ncurses-libs readline"
+RUN apk add --no-cache ncurses-libs readline
+LABEL BINARY="hstr"
+LABEL TEST="--version"
 CMD hstr

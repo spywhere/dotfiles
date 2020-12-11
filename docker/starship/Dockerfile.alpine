@@ -5,7 +5,9 @@ RUN apk add --no-cache cargo libressl-dev pkgconfig
 RUN cargo install starship --version ~0.45 --root /usr/local
 
 FROM alpine
-WORKDIR /root
+LABEL DEPS="apk add --no-cache libressl-dev libgcc"
 RUN apk add --no-cache libressl-dev libgcc
 COPY --from=builder /usr/local/bin/starship /usr/bin/starship
+LABEL BINARY="starship"
+LABEL TEST="--version"
 CMD starship

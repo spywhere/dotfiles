@@ -5,8 +5,10 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --pr
 RUN $HOME/.cargo/bin/cargo install starship --root /usr/local
 
 FROM debian:buster-slim
-WORKDIR /root
 RUN apt update
+LABEL DEPS="apt install -y libssl-dev"
 RUN apt install -y libssl-dev
 COPY --from=builder /usr/local/bin/starship /usr/bin/starship
+LABEL BINARY="starship"
+LABEL TEST="--version"
 CMD starship
