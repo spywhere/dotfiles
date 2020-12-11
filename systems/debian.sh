@@ -48,6 +48,7 @@ install_packages() {
     fi
   done
 
+  print "Installing packages..."
   sudo_cmd apt install --no-install-recommends -y $apt_packages
   install_dpkg_packages $dpkg_packages
 }

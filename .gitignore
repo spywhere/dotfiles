@@ -12,7 +12,7 @@ configs/nvim/autoload
 configs/nvim/plugged
 configs/w3m/cookie
 configs/w3m/history
-deps
+.deps
 **.zip
 **.tar.gz
 **.log

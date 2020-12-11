@@ -707,6 +707,9 @@ use_custom() {
 # Add docker build into installation list if no valid setup available
 # use_docker <package>
 use_docker_build() {
+  if _has_skip docker; then
+    return
+  fi
   local package="$1"
   if test -n "$_FULFILLED"; then
     return
