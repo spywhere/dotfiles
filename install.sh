@@ -223,9 +223,9 @@ _main() {
   # Read skip packages
   while test "$1" != ""; do
     case $1 in
-      no*)
+      no-*)
         # Add package to the skipped list
-        local name=$(printf "%s" "$1" | cut -c3-)
+        local name=$(printf "%s" "$1" | cut -c4-)
         _SKIPPED=$(_add_item "$_SKIPPED" " " "$name")
         ;;
       *)
@@ -256,16 +256,16 @@ _usage() {
   print 20 "  -p, --packages" "Print out available packages"
   print 20 "  -s, --setup" "Print out available setup"
   print
-  print "To skip specific package or setup, add a 'no' prefix to the package or setup name itself."
+  print "To skip specific package or setup, add a 'no-' prefix to the package or setup name itself."
   print
-  print "  Example: $0 noasdf nodocker"
+  print "  Example: $0 no-asdf no-docker"
   print "  Skip Docker and ASDF installation"
   print
   print "To skip system update/upgrade, package installation or setups, use"
-  print 20 "  noupdate" "Skip system update and system upgrade"
-  print 20 "  noupgrade" "Only perform a system update but not system upgrade"
-  print 20 "  nopackages" "Skip package installation, including a custom one"
-  print 20 "  nosetup" "Skip setups"
+  print 20 "  no-update" "Skip system update and system upgrade"
+  print 20 "  no-upgrade" "Only perform a system update but not system upgrade"
+  print 20 "  no-packages" "Skip package installation, including a custom one"
+  print 20 "  no-setup" "Skip setups"
   print "Note that if setup require particular packages, those packages will be automatically installed."
 }
 
