@@ -21,9 +21,15 @@ update() {
 }
 
 install_dpkg_packages() {
-  # local path=$(deps "$name.deb")
-  # cmd curl -sSL $url -o $path
-  # sudo_cmd dpkg --install $path
+  for package in $@; do
+    local name=$(printf "%s" "$package" | cut -d'|' -f1)
+    local url=$(printf "%s" "$package" | cut -d'|' -f2-)
+
+    # local path=$(deps "$name.deb")
+    # cmd curl -sSL $url -o $path
+    # sudo_cmd dpkg --install $path
+    echo "installing $name from $url through dpkg..."
+  done
   return
 }
 
@@ -53,5 +59,9 @@ use_apt() {
 use_dpkg() {
   local name="$1"
   local url="$2"
+
+  if ! has_package curl; then
+    require curl
+  fi
   add_package dpkg "$name" "$url"
 }
