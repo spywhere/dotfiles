@@ -114,5 +114,25 @@ printf "Testing $PACKAGE on $PLATFORM...\n"
 
 ARGS="$@"
 
-docker build --no-cache -t dots-$PACKAGE:$PLATFORM - <$VOLUME/docker/$PACKAGE/Dockerfile.$PLATFORM
+dockerfile="$VOLUME/docker/$PACKAGE/Dockerfile.$PLATFORM"
+docker build --no-cache -t dots-$PACKAGE:$PLATFORM - <$dockerfile
+test_image="$(cat $dockerfile | head -n1 | sed 's/^FROM //g' | sed 's/ AS .*//g')"
+binary_file="$(docker image inspect dots-hstr:alpine --format="{{.Config.Labels.BINARY}}")"
+dependency_cmd="$(docker image inspect dots-hstr:alpine --format="{{.Config.Labels.DEPS}}")"
+test_flags="$(docker image inspect dots-hstr:alpine --format="{{.Config.Labels.TEST}}")"
+echo "Running binary container..."
+container="$(docker run --rm -d dots-$PACKAGE:$PLATFORM sleep 30 | cut -c-12)"
+echo "Binary Container: $container"
+echo "Runnng testing container..."
+test_container="$(docker run --rm -d $test_image sleep 30 | cut -c-12)"
+echo "Test Container: $test_container"
+echo "Copying binary from binary container..."
+docker cp $container:/usr/bin/$PACKAGE $VOLUME/.deps/$binary_file
+echo "Copying binary to testing container..."
+docker cp $VOLUME/.deps/$binary_file $test_container:/usr/bin/$binary_file
+echo "Testing binary..."
+docker exec -it $test_container $dependency_cmd
+docker exec -it $test_container $binary_file $test_flags
+echo "Cleaning up..."
+docker stop "$container" "$test_container"
 docker rmi -f dots-$PACKAGE:$PLATFORM
