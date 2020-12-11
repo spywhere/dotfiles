@@ -13,8 +13,24 @@ fi
 
 use_brew 'cask' 'docker-edge'
 use_apk 'community' 'docker'
+
+require 'curl'
 use_custom 'install_docker'
 
 install_docker() {
-  echo 'Custom code work!'
+  if has_cmd docker; then
+    return
+  fi
+  print "Installing Docker..."
+
+  local path=$(deps "install-docker.sh")
+  print "Downloading installation script..."
+  cmd curl -sSL get.docker.com -o $path
+  print "Running installation script..."
+  cmd sh $path
+  if test "$(whoami)" = "root"; then
+    print "run as root: no user group set"
+  else
+    sudo_cmd usermod -aG docker $USER
+  fi
 }
