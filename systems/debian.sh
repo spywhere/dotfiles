@@ -31,7 +31,6 @@ install_dpkg_packages() {
     print "Installing $name through dpkg..."
     sudo_cmd dpkg --install $path
   done
-  return
 }
 
 install_packages() {

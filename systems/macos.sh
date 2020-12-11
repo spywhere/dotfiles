@@ -14,17 +14,17 @@ fi
 . systems/base.sh
 
 setup() {
-  if test "$(command -v brew)"; then
+  if has_cmd brew; then
     return
   fi
 
-  if test -f "/usr/bin/ruby"; then
+  if ! has_cmd ruby; then
     error "Failed: either install \"ruby\" or \"homebrew\", and try again"
     quit 1
   fi
 
   print "Installing Homebrew..."
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  cmd ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 
 update() {
@@ -35,7 +35,38 @@ update() {
   fi
 }
 
+tap_repo() {
+  for repo in $@; do
+    cmd brew tap $repo
+  done
+}
+
+install_packages() {
+  local tap_repos=""
+  local brew_packages=""
+  for package in $@; do
+    local manager=$(printf "%s" "$package" | cut -d'|' -f1)
+    local name=$(printf "%s" "$package" | cut -d'|' -f2-)
+
+    if test "$manager" = "brew"; then
+      brew_packages=$(_add_item "$brew_packages" " " "$name")
+    elif test "$manager" = "tap"; then
+      tap_repos=$(_add_item "$tap_repos" " " "$name")
+    fi
+  done
+
+  print "Tapping repositories..."
+  tap_repo $tap_repos
+  print "Installing packages..."
+  cmd brew install $brew_packages
+}
+
 use_brew() {
   local package="$1"
   add_package brew "$package"
+}
+
+use_brew_tap() {
+  local tap="$1"
+  add_package tap "$tap"
 }

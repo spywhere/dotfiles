@@ -51,6 +51,11 @@ use_brew() {
   return
 }
 
+# use_brew_tap <package>
+use_brew_tap() {
+  return
+}
+
 # use_dpkg <name> <url>
 use_dpkg() {
   return
