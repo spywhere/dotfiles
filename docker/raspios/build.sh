@@ -41,5 +41,9 @@ set -e
 echo "[$base_host] Building raspios_rootfs.tar.gz..."
 docker run --network=host --hostname=docker --privileged -it --rm -w /raspios -v /dev:/dev -v $(pwd):/app debian:buster-slim sh /app/build.sh rootfs
 echo "[$base_host] Building Docker image from rootfs..."
-docker build -t raspios:lite .
+docker build -t raspios:lite - <<EOF
+FROM scratch
+ADD ./raspios_rootfs.tar.gz /
+CMD ["bash"]
+EOF
 echo "[$base_host] Done"
