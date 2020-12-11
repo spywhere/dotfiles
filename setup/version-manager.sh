@@ -17,8 +17,11 @@ depends 'bash'
 require 'gnupg2'
 # python requirements
 require 'build-base'
-require 'zlib'
-require 'libssl'
+require 'lib-bz'
+require 'lib-readline'
+require 'lib-sqlite'
+require 'lib-ssl'
+require 'lib-zlib'
 
 add_setup 'setup_version_manager'
 
