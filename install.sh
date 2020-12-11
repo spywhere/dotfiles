@@ -474,7 +474,7 @@ _try_run_install() {
       print "  - $fn"
     done
   fi
-  if test -n "$_CUSTOM"; then
+  if test -n "$_SETUP"; then
     print "The following setups will be run:"
     for fn in $(_split "$_SETUP"); do
       print "  - $fn"
