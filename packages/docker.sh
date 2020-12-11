@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'docker-edge'
+use_brew 'docker-edge'
 use_apk 'community' 'docker'
 
 require 'curl'

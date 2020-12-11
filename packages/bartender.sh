@@ -11,4 +11,4 @@ then
   exit 1
 fi
 
-use_brew 'cask' 'bartender'
+use_brew 'bartender'
