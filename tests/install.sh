@@ -7,7 +7,7 @@ SCRIPT_DIR=$(realpath $(pwd)/$SCRIPT_DIRNAME)
 
 usage() {
   cat <<EOF
-usage: $0 [flag] [platform] -- [arguments ...]
+usage: $0 [flags] <platform> -- [arguments ...]
 
 flags:
   -h, --help      Show this help message
