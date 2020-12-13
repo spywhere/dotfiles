@@ -75,6 +75,10 @@ while test "$1" != ""; do
         shift
         break
         ;;
+      -*)
+        printf "ERROR: unexpected flag \"$1\" after the platform\n"
+        exit 1
+        ;;
       *)
         printf "ERROR: unknown platform \"$1\"\n"
         exit 1
