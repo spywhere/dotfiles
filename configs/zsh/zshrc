@@ -1,6 +1,6 @@
 #!/bin/bash
-alias recovery="if [ -f ~/recovery ]; then rm -f ~/recovery && echo 'Recovery mode disabled'; else touch ~/recovery && echo 'Recovery mode enabled'; fi"
-if [ -f ~/recovery ]; then
+alias recovery="if test -f ~/recovery; then rm -f ~/recovery && echo 'Recovery mode disabled'; else touch ~/recovery && echo 'Recovery mode enabled'; fi"
+if test -f ~/recovery; then
   return
 fi
 DOTFILES_NAME=.dots
@@ -8,13 +8,13 @@ DOTFILES_NAME=.dots
 autoload -Uz compinit
 autoload -Uz bashcompinit && bashcompinit
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
-if [ $(date +'%j') != $updated_at ]; then
+if test $(date +'%j') != $updated_at; then
   compinit -i
 else
   compinit -C -i
 fi
 
-if [[ ! -f /usr/local/bin/antibody ]]; then
+if ! test -f /usr/local/bin/antibody; then
   echo "installing antibody..."
   curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
@@ -69,7 +69,7 @@ SPACESHIP_HOST_PREFIX="on "
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_SEPARATE_LINE=false
 
-if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
+if test ! -f ~/.zsh_plugins -o ! -f ~/.zsh_plugins.tmux; then
   echo "ohmyzsh/ohmyzsh path:plugins/tmux" > ~/.zsh_plugins.list
 
   echo "denysdovhan/spaceship-prompt" > ~/.zsh_plugins.tmux.list
@@ -102,7 +102,7 @@ if [ ! -f ~/.zsh_plugins ] || [ ! -f ~/.zsh_plugins.tmux ]; then
   rm -rf ~/.zsh_plugins.tmux.list
 fi
 
-if [ "$TMUX" = "" ]; then
+if test -z "$TMUX" -a -z "$TERM_PROGRAM"; then
   source ~/.zsh_plugins
 fi
 
@@ -114,18 +114,18 @@ source ~/.zsh_plugins.tmux
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
 
 # Use personalize settings if found as well
-[ -f ~/.personal ] && source ~/.personal
+test -f ~/.personal && source ~/.personal
 
 # Use fzf if found
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+test -f ~/.fzf.zsh && source ~/.fzf.zsh
 
 # Setup hstr
-if [ `command -v hstr` ]; then
+if test -n "$(command -v hstr)"; then
   . <(hstr --show-zsh-configuration)
 fi
 
 # Setup github cli
-if [ `command -v gh` ]; then
+if test -n "$(command -v gh)"; then
   . <(gh completion -s zsh)
 fi
 
