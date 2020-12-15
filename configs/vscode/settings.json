@@ -1,0 +1,108 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "editor.roundedSelection": false,
+    "editor.scrollBeyondLastLine": false,
+    "editor.hideCursorInOverviewRuler": true,
+    "editor.rulers": [79],
+    "editor.cursorBlinking": "expand",
+    "editor.emptySelectionClipboard": false,
+    "editor.renderLineHighlight": "gutter",
+    "editor.minimap.enabled": false,
+    "editor.minimap.renderCharacters": false,
+    "editor.renderIndentGuides": false,
+    "editor.folding": false,
+    "editor.autoIndent": false,
+    "editor.snippetSuggestions": "top",
+
+    "diffEditor.renderSideBySide": true,
+
+    "git.autofetch": true,
+    "git.confirmSync": false,
+
+    "debug.toolBarLocation": "docked",
+    "outline.problems.enabled": false,
+    "workbench.editor.closeEmptyGroups": false,
+    "workbench.activityBar.visible": false,
+    "workbench.startupEditor": "none",
+    "workbench.iconTheme": "vs-nomo-dark",
+    "workbench.list.keyboardNavigation": "filter",
+
+    "files.insertFinalNewline": true,
+    "files.associations": {
+        "*.json": "jsonc",
+        ".nycrc": "json"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/__pycache__/**": true
+    },
+
+    "debug.inlineValues": true,
+
+    "explorer.openEditors.visible": 0,
+    "scm.providers.visible": 1,
+
+    "search.useIgnoreFiles": true,
+
+    "terminal.external.osxExec": "Alacritty.app",
+    "terminal.integrated.fontFamily": "Meslo LG S for Powerline",
+    "terminal.integrated.fontSize": 10,
+
+    "window.zoomLevel": 0,
+    "window.restoreWindows": "all",
+
+    "extensions.autoUpdate": true,
+    "extensions.ignoreRecommendations": true,
+    "extensions.showRecommendationsOnlyOnDemand": true,
+    "bracket-pair-colorizer-2.forceUniqueOpeningColor": true,
+    "bracket-pair-colorizer-2.forceIterationColorCycle": true,
+    "bracket-pair-colorizer-2.showVerticalScopeLine": false,
+    "bracket-pair-colorizer-2.showHorizontalScopeLine": false,
+    "dateTime.flashTimeSeparators": true,
+    "dateTime.customFormat": "ddd#W DD MMM YY, HH:mm",
+    "extension-api.pretty": true,
+    "markJump.showExplorerView": false,
+    "gitlens.currentLine.enabled": false,
+    "gitlens.statusBar.enabled": false,
+    "gitlens.advanced.messages": {
+        "suppressCommitHasNoPreviousCommitWarning": false,
+        "suppressCommitNotFoundWarning": false,
+        "suppressFileNotUnderSourceControlWarning": false,
+        "suppressGitVersionWarning": false,
+        "suppressLineUncommittedWarning": false,
+        "suppressNoRepositoryWarning": false,
+        "suppressResultsExplorerNotice": false,
+        "suppressShowKeyBindingsNotice": true,
+        "suppressUpdateNotice": false,
+        "suppressWelcomeNotice": true
+    },
+    "terminal.integrated.rendererType": "dom",
+    "markJump.maximumLimit": 1500,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "editor.suggest.localityBonus": true,
+    "gitlens.views.repositories.enabled": false,
+    "gitlens.views.fileHistory.enabled": true,
+    "gitlens.views.lineHistory.enabled": false,
+    "markJump.excludeFilePattern": "**/{node_modules,coverage,test-report}/**",
+    "breadcrumbs.enabled": false,
+    "editor.renderWhitespace": "none",
+    "whiteviz.overrideDefault": true,
+    "editor.cursorSurroundingLines": 5,
+    "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Cascadia Code', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "guides.limit.maximum": 10,
+    "atlascode.showWelcomeOnInstall": false,
+    "atlascode.jira.statusbar.enabled": false,
+    "atlascode.jira.statusbar.showProduct": true,
+    "atlascode.jira.statusbar.showUser": true,
+    "atlascode.bitbucket.statusbar.enabled": false,
+    "atlascode.bitbucket.issues.explorerEnabled": false,
+    "atlascode.bitbucket.pipelines.branchFilters": [
+        "master"
+    ],
+    "atlascode.bitbucket.pipelines.monitorEnabled": false,
+    "tabnine.experimentalAutoImports": true
+}

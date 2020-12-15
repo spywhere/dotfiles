@@ -1,0 +1,164 @@
+// Place your key bindings in this file to overwrite the defaults
+[
+    {
+        "key": "cmd+r",
+        "command": "workbench.action.gotoSymbol"
+    }, {
+        "key": "ctrl+alt+up",
+        "command": "workbench.action.previousEditor"
+    }, {
+        "key": "ctrl+alt+down",
+        "command": "workbench.action.nextEditor"
+    }, {
+        "key": "shift+cmd+r",
+        "command": "workbench.action.debug.start",
+        "when": "!inDebugMode"
+    }, {
+        "key": "shift+cmd+r",
+        "command": "workbench.action.debug.restart",
+        "when": "inDebugMode"
+    }, {
+        "key": "shift+cmd+g",
+        "command": "workbench.view.scm"
+    }, {
+        "key": "escape",
+        "command": "workbench.action.terminal.kill",
+        "when": "terminalFocus"
+    }, {
+        "key": "cmd+n",
+        "command": "workbench.action.terminal.new",
+        "when": "terminalFocus"
+    }, {
+        "key": "cmd+0",
+        "command": "workbench.action.zoomReset"
+    }, {
+        "key": "cmd+k cmd+m",
+        "command": "editor.action.toggleMinimap",
+        "when": "editorTextFocus"
+    }, {
+        "key": "shift+cmd+d",
+        "command": "-editor.action.copyLinesDownAction",
+        "when": "editorFocus"
+    }, {
+        "key": "tab",
+        "command": "-acceptSelectedSuggestion",
+        "when": "editorTextFocus && suggestWidgetVisible"
+    }, {
+        "key": "shift+cmd+[",
+        "command": "workbench.action.previousEditor"
+    }, {
+        "key": "shift+cmd+]",
+        "command": "workbench.action.nextEditor"
+    }, {
+        "key": "alt+cmd+s",
+        "command": "workbench.action.files.saveAll"
+    }, {
+        "key": "cmd+k cmd+b",
+        "command": "workbench.action.toggleSidebarVisibility"
+    }, {
+        "key": "shift+cmd+l",
+        "command": "editor.action.insertCursorAtEndOfEachLineSelected"
+    }, {
+        "key": "cmd+1",
+        "command": "workbench.action.openEditorAtIndex1"
+    }, {
+        "key": "cmd+2",
+        "command": "workbench.action.openEditorAtIndex2"
+    }, {
+        "key": "cmd+3",
+        "command": "workbench.action.openEditorAtIndex3"
+    }, {
+        "key": "cmd+4",
+        "command": "workbench.action.openEditorAtIndex4"
+    }, {
+        "key": "cmd+5",
+        "command": "workbench.action.openEditorAtIndex5"
+    }, {
+        "key": "cmd+k",
+        "command": "workbench.action.terminal.clear",
+        "when": "terminalFocus"
+    }, {
+        "key": "cmd+6",
+        "command": "workbench.action.openEditorAtIndex6"
+    }, {
+        "key": "cmd+7",
+        "command": "workbench.action.openEditorAtIndex7"
+    }, {
+        "key": "cmd+8",
+        "command": "workbench.action.openEditorAtIndex8"
+    }, {
+        "key": "cmd+9",
+        "command": "workbench.action.openEditorAtIndex9"
+    }, {
+        "key": "ctrl+cmd+g",
+        "command": "editor.action.selectHighlights"
+    }, {
+        "key": "alt+cmd+p",
+        "command": "git.checkout"
+    }, {
+        "key": "ctrl+alt+p",
+        "command": "quick-switch.switchProject"
+    }, {
+        "key": "cmd+l",
+        "command": "console.log.wrap.down.prefix",
+        "when": "editorTextFocus"
+    }, {
+        "key": "ctrl+alt+w ctrl+alt+down",
+        "command": "-console.log.wrap.down.prefix",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+cmd+down",
+        "command": "-editor.action.insertCursorBelow",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+cmd+down",
+        "command": "-workbench.action.terminal.focusNextPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+cmd+up",
+        "command": "-editor.action.insertCursorAbove",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+cmd+up",
+        "command": "-workbench.action.terminal.focusPreviousPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+cmd+left",
+        "command": "-workbench.action.previousEditor"
+    },
+    {
+        "key": "alt+cmd+left",
+        "command": "-workbench.action.terminal.focusPreviousPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+cmd+right",
+        "command": "-workbench.action.terminal.focusNextPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+cmd+right",
+        "command": "-workbench.action.nextEditor"
+    },
+    {
+        "key": "alt+cmd+down",
+        "command": "workbench.action.splitEditorDown"
+    },
+    {
+        "key": "alt+cmd+left",
+        "command": "workbench.action.splitEditorLeft"
+    },
+    {
+        "key": "alt+cmd+right",
+        "command": "workbench.action.splitEditorRight"
+    },
+    {
+        "key": "alt+cmd+up",
+        "command": "workbench.action.splitEditorUp"
+    }
+]
