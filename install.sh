@@ -22,9 +22,10 @@ if test -z "$HOME"; then
 fi
 
 # Figure out if we run through local file or not
-# $0 will produced a shell command if we piped the file
+#   $0 will produced a shell command if we piped the file
+#   $0 will produced "-" when being evaluated as a script
 REMOTE_INSTALL=0
-if test "$0" = "sh" -o "$0" = "bash"; then
+if test "$0" = "sh" -o "$0" = "bash" -o "$(echo $0 | sed 's/^--*$/-/g')" = "-"; then
   REMOTE_INSTALL=1
 fi
 
@@ -101,7 +102,7 @@ _split() {
 }
 
 _detect_os() {
-  case `uname -s` in
+  case "$(uname -s)" in
     Linux*)
       OS="Linux"
       if test -f /etc/debian_version; then

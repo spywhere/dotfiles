@@ -1,52 +1,43 @@
 # Dotfiles
 
-## Required Built-in Commands
-- `cd`
-- `rm`
-- `set`
-- `shift`
-- `printf`
-- `test`
-- `command`
-- `expr`
-- `exit`
-- `if`
-- `while`
-- `case`
-- `return`
-
 ## Required Commands
+
 - coreutils
   - `uname`
-  - `expr`
 
 ## Supported Platform
+
 - macOS
 - Linux
-  - Raspberry OS
+  - Debian (Raspberry OS)
   - Alpine
 
 ## Just run
-```
-curl -sSL bit.do/spywhere-dotfiles | sh
+
+```sh
+sh -c "$(curl -sSL bit.do/spywhere-dotfiles)"
 ```
 
 or
 
-```
-curl -sSL git.io/JvZB8 | sh
+```sh
+sh -c "$(curl -sSL git.io/JvZB8)"
 ```
 
 ## Development
 
-To run the setup without updating use
+To run the setup without auto updating use
 
-```
+```sh
 sh install.sh -l
 ```
 
-To simulate a remote setup use
+To simulate a remote setup use one of these commands
 
+```sh
+sh -c "$(cat install.sh)" - [args...]
 ```
+
+```sh
 cat install.sh | sh -s -- [args...]
 ```
