@@ -80,7 +80,7 @@ force_print() {
 }
 
 print() {
-  if test "$SILENT" -eq 1; then
+  if test "$VERBOSE" -eq 0; then
     return
   fi
 
@@ -147,8 +147,12 @@ RUN_LOCAL=0
 DUMB=0
 KEEP_FILES=0
 FORCE_INSTALL=0
-SILENT=0
-VERBOSE=0
+# Verbosity
+#   0: Quiet
+#   1: Quiet for commands, but not output (default)
+#   2: Default command verbosity (no verbose flags)
+#   3: More command verbosity (explicit verbose flags)
+VERBOSE=1
 PRINT_MODE=""
 
 PKGMGR=""
@@ -167,7 +171,12 @@ _CUSTOM="" # keep a list of custom function for installing packages
 _DOCKER="" # keep a list of docker build for installing packages
 _SETUP="" # keep a list of custom function for setups
 
-_POST_INSTALL_MSGS=""
+_QUIET_CMD="" # an alternative command for suppressing output
+_QUIET_FLAGS="" # an alternative flag for suppressing output
+_VERBOSE_CMD="" # an alternative command for producing more output
+_VERBOSE_FLAGS="" # an alternative flag for producing more output
+_POST_INSTALL_MSGS="" # keep a list of post installation messages
+
 
 _main() {
   _detect_os
@@ -198,10 +207,13 @@ _main() {
         FORCE_INSTALL=1
         ;;
       -q | --quiet)
-        SILENT=1
+        VERBOSE=0
         ;;
       -v | --verbose)
-        VERBOSE=1
+        VERBOSE=2
+        ;;
+      -vv)
+        VERBOSE=3
         ;;
       -p | --packages)
         PRINT_MODE="packages"
@@ -242,7 +254,7 @@ _main() {
 }
 
 _usage() {
-  SILENT=0
+  VERBOSE=1
   print "Usage: $0 [flag ...] [package/setup ...]"
   print
   print "Flags:"
@@ -253,7 +265,7 @@ _usage() {
   print 20 "  -k, --keep" "Keep downloaded dependencies"
   print 20 "  -f, --force" "Force reinstall any installed packages when possible"
   print 20 "  -q, --quiet" "Suppress output messages when possible"
-  print 20 "  -v, --verbose" "Produce command output messages when possible"
+  print 20 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
   print 20 "  -p, --packages" "Print out available packages"
   print 20 "  -s, --setup" "Print out available setup"
   print
@@ -271,7 +283,7 @@ _usage() {
 }
 
 _info() {
-  SILENT=0
+  VERBOSE=1
   print      20 "Execution" ": $0"
   print      20 "Operating System" ": $OSNAME$PKGMGR"
   print      20 "Home Directory" ": $HOME"
@@ -335,7 +347,7 @@ _try_run_install() {
       quit 1
     fi
 
-    if test "$VERBOSE" -eq 0; then
+    if test "$VERBOSE" -le 1; then
       clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES"
     else
       clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles"
@@ -537,21 +549,55 @@ deps() {
   fi
 }
 
+quiet_cmd() {
+  _QUIET_CMD="$@"
+}
+
+quiet_flags() {
+  _QUIET_FLAGS="$@"
+}
+
+verbose_cmd() {
+  _VERBOSE_CMD="$@"
+}
+
+verbose_flags() {
+  _VERBOSE_FLAGS="$@"
+}
+
 sudo_cmd() {
   if test "$(whoami)" = "root"; then
     cmd $@
   else
     _check_sudo
+    if test -n "$_VERBOSE_CMD"; then
+      _VERBOSE_CMD="sudo $_VERBOSE_CMD"
+    fi
+    if test -n "$_QUIET_FLAGS"; then
+      _QUIET_FLAGS="sudo $_QUIET_FLAGS"
+    fi
     cmd sudo $@
   fi
 }
 
 cmd() {
-  if test "$VERBOSE" -eq 0; then
+  if test "$VERBOSE" -le 1 -a "$_QUIET_CMD"; then
+    "$_QUIET_CMD"
+  elif test "$VERBOSE" -le 1 -a "$_QUIET_FLAGS"; then
+    "$@" "$_QUIET_FLAGS"
+  elif test "$VERBOSE" -le 1; then
     "$@" >/dev/null 2>&1
+  elif test "$VERBOSE" -ge 3 -a "$_VERBOSE_CMD"; then
+    "$_VERBOSE_CMD"
+  elif test "$VERBOSE" -ge 3 -a "$_VERBOSE_FLAGS"; then
+    "$@" "$_VERBOSE_FLAGS"
   else
     "$@"
   fi
+  _QUIET_CMD=""
+  _QUIET_FLAGS=""
+  _VERBOSE_CMD=""
+  _VERBOSE_FLAGS=""
 }
 
 full_clone() {
