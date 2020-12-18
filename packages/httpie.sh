@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'httpie'
 use_apt 'httpie'
-use_brew 'httpie'
+use_brew formula 'httpie'

@@ -13,5 +13,5 @@ fi
 
 require 'curl'
 
-use_brew 'bat'
+use_brew formula 'bat'
 use_dpkg 'bat' 'https://github.com/sharkdp/bat/releases/download/v0.17.1/bat_0.17.1_armhf.deb'

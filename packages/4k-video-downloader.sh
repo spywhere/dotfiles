@@ -11,4 +11,4 @@ then
   exit 1
 fi
 
-use_brew '4k-video-downloader'
+use_brew cask '4k-video-downloader'

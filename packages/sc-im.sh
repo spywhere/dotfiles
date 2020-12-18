@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
-use_brew 'sc-im'
+require lua
+
+use_brew formula 'sc-im'
 use_docker_build 'scim'

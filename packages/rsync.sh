@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'rsync'
 use_apt 'rsync'
-use_brew 'rsync'
+use_brew formula 'rsync'

@@ -13,7 +13,7 @@ fi
 
 require 'curl'
 
-use_brew 'gomplate'
+use_brew formula 'gomplate'
 use_custom 'curl_gomplate'
 
 curl_gomplate() {

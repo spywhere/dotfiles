@@ -12,5 +12,5 @@ then
 fi
 
 use_apk 'main' 'neovim'
-use_brew 'neovim' '--head'
+use_brew formula 'neovim' '--head'
 use_docker_build 'neovim'

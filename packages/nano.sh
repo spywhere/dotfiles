@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'nano'
 use_apt 'nano'
-use_brew 'nano'
+use_brew formula 'nano'

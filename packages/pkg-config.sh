@@ -12,4 +12,4 @@ then
 fi
 
 # https://github.com/driesvints/dotfiles/issues/20
-use_brew 'pkg-config'
+use_brew formula 'pkg-config'

@@ -11,5 +11,5 @@ then
   exit 1
 fi
 
-use_brew 'gnupg2'
+use_brew formula 'gnupg2'
 use_apk 'main' 'gnupg'

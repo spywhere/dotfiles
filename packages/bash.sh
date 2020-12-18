@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'bash'
 use_apt 'bash'
-use_brew 'bash'
+use_brew formula 'bash'

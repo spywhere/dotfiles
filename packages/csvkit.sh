@@ -12,4 +12,4 @@ then
 fi
 
 use_apt 'csvkit'
-use_brew 'csvkit'
+use_brew formula 'csvkit'

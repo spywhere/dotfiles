@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'git'
 use_apt 'git'
-use_brew 'git'
+use_brew formula 'git'

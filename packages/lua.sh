@@ -11,5 +11,5 @@ then
   exit 1
 fi
 
-# sc-im dependencies
-use_brew 'lua@5.1'
+optional
+use_brew formula 'lua@5.1'

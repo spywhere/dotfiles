@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'tig'
 use_apt 'tig'
-use_brew 'tig'
+use_brew formula 'tig'

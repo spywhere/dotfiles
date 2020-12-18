@@ -11,5 +11,5 @@ then
   exit 1
 fi
 
-use_brew 'mosh'
+use_brew formula 'mosh'
 use_docker_build 'mosh'

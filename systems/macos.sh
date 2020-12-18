@@ -44,31 +44,62 @@ tap_repo() {
 
 install_packages() {
   local tap_repos=""
-  local brew_packages=""
+  local formula_packages=""
+  local cask_packages=""
+  local flagged_packages=""
   for package in $@; do
     local manager=$(printf "%s" "$package" | cut -d'|' -f1)
-    local name=$(printf "%s" "$package" | cut -d'|' -f2-)
 
     if test "$manager" = "brew"; then
-      brew_packages=$(_add_item "$brew_packages" " " "$name")
+      local tap=$(printf "%s" "$package" | cut -d'|' -f2)
+      local name=$(printf "%s" "$package" | cut -d'|' -f3)
+      local flags=$(printf "%s" "$package" | cut -d'|' -f4-)
+
+      if test "$tap" = "cask"; then
+        cask_packages=$(_add_item "$cask_packages" " " "$name")
+      elif test "$tap" = "formula" -a -n "$flags"; then
+        flagged_packages=$(_add_item "$flagged_packages" " " "$name|$flags")
+      elif test "$tap" = "formula"; then
+        formula_packages=$(_add_item "$formula_packages" " " "$name")
+      fi
     elif test "$manager" = "tap"; then
+      local name=$(printf "%s" "$package" | cut -d'|' -f2)
       tap_repos=$(_add_item "$tap_repos" " " "$name")
     fi
   done
 
-  print "Tapping repositories..."
-  tap_repo $tap_repos
-  print "Installing packages..."
+  local brew_flags=""
   if test $FORCE_INSTALL -eq 1; then
-    cmd brew install $brew_packages --force
-  else
-    cmd brew install $brew_packages
+    brew_flags="--force"
+  fi
+  if test -n "$tap_repos"; then
+    print "Tapping repositories..."
+    tap_repo $tap_repos
+  fi
+  if test -n "$formula_packages"; then
+    print "Installing packages..."
+    cmd brew install --formula $brew_flags $formula_packages
+  fi
+  if test -n "$flagged_packages"; then
+    print "Installing packages with additional flags..."
+    for package in $flagged_packages; do
+      local name=$(printf "%s" "$package" | cut -d'|' -f1)
+      local flags=$(printf "%s" "$package" | cut -d'|' -f2-)
+      cmd brew install --formula $brew_flags $name $flags
+    done
+  fi
+  if test -n "$cask_packages"; then
+    print "Installing cask packages..."
+    cmd brew install --cask $brew_flags $cask_packages
   fi
 }
 
 use_brew() {
-  local package="$1"
-  add_package brew "$package"
+  local tap="$1"
+  local package="$2"
+  shift
+  shift
+  add_package brew "$tap" "$package" $@
 }
 
 use_brew_tap() {

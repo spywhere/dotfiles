@@ -13,4 +13,4 @@ fi
 
 use_apk 'community' 'mpd'
 use_apt 'mpd'
-use_brew 'mpd'
+use_brew formula 'mpd'

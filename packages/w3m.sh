@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'w3m'
 use_apt 'w3m'
-use_brew 'w3m'
+use_brew formula 'w3m'

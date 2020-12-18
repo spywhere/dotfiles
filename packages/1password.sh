@@ -11,4 +11,4 @@ then
   exit 1
 fi
 
-use_brew '1password'
+use_brew cask '1password'

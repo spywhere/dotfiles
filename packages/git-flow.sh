@@ -13,4 +13,4 @@ fi
 
 use_apk 'community' 'git-flow'
 use_apt 'git-flow'
-use_brew 'git-flow'
+use_brew formula 'git-flow'

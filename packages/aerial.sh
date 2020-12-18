@@ -11,4 +11,4 @@ then
   exit 1
 fi
 
-use_brew 'google-chrome'
+use_brew cask 'aerial'

@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'wget'
 use_apt 'wget'
-use_brew 'wget'
+use_brew formula 'wget'

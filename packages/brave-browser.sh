@@ -11,4 +11,4 @@ then
   exit 1
 fi
 
-use_brew 'git-lfs'
+use_brew cask 'brave-browser'

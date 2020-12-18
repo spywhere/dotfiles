@@ -14,4 +14,4 @@ fi
 # (a better grep) fzf.vim dependencies
 use_apk 'community' 'ripgrep'
 use_apt 'ripgrep'
-use_brew 'ripgrep'
+use_brew formula 'ripgrep'

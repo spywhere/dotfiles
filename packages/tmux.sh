@@ -12,7 +12,7 @@ then
 fi
 
 # tmux on arm is still outdated
-use_brew 'tmux'
+use_brew formula 'tmux'
 use_custom 'make_tmux'
 
 make_tmux() {

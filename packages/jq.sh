@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'jq'
 use_apt 'jq'
-use_brew 'jq'
+use_brew formula 'jq'

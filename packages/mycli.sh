@@ -13,4 +13,4 @@ fi
 
 use_apk 'testing' 'mycli'
 use_apt 'mycli'
-use_brew 'mycli'
+use_brew formula 'mycli'

@@ -11,12 +11,12 @@ then
   exit 1
 fi
 
-use_brew 'qlcolorcode'
-use_brew 'qlimagesize'
-use_brew 'qlmarkdown'
-use_brew 'qlprettypatch'
-use_brew 'qlstephen'
-use_brew 'quicklook-csv'
-use_brew 'quicklook-json'
-use_brew 'quicklookase'
-use_brew 'webpquicklook'
+use_brew cask 'qlcolorcode'
+use_brew cask 'qlimagesize'
+use_brew cask 'qlmarkdown'
+use_brew cask 'qlprettypatch'
+use_brew cask 'qlstephen'
+use_brew cask 'quicklook-csv'
+use_brew cask 'quicklook-json'
+use_brew cask 'quicklookase'
+use_brew cask 'webpquicklook'
