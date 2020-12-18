@@ -59,7 +59,11 @@ install_packages() {
   print "Tapping repositories..."
   tap_repo $tap_repos
   print "Installing packages..."
-  cmd brew install $brew_packages
+  if test $FORCE_INSTALL -eq 1; then
+    cmd brew install $brew_packages --force
+  else
+    cmd brew install $brew_packages
+  fi
 }
 
 use_brew() {
