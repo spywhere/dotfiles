@@ -98,7 +98,7 @@ if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
   docker build --no-cache -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
 fi
 if test $LOCAL -eq 0; then
-  docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "cat /root/dots/install.sh | sh -s -- $ARGS"
+  docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "sh -c \"\$(cat /root/dots/install.sh)\" - $ARGS"
 elif test $LOCAL -eq 1; then
   docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "sh /root/dots/install.sh $ARGS"
 else
