@@ -24,7 +24,8 @@ setup() {
   fi
 
   print "Installing Homebrew..."
-  cmd ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  sudo_cmd -v
+  cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 }
 
 update() {
