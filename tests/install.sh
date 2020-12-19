@@ -14,7 +14,9 @@ flags:
   -r, --recreate  Always recreate test image
   -k, --keep      Do not autoremove the container
   -l, --local     Simulate a local installation
-  -u, --upgrade   Simulate a local upgrade
+  -u, --upgrade   Simulate an upgrade
+
+By default, test will simulate a remote installation from scatch.
 
 supported platforms:
 EOF
@@ -32,6 +34,7 @@ fi
 RECREATE=0
 KEEP="--rm"
 LOCAL=0
+UPGRADE=0
 while test "$1" != ""; do
   case $1 in
     -h | --help)
@@ -48,7 +51,7 @@ while test "$1" != ""; do
       LOCAL=1
       ;;
     -u | --upgrade)
-      LOCAL=2
+      UPGRADE=1
       ;;
     -*)
       printf "ERROR: unknown flag \"$1\"\n"
@@ -94,13 +97,19 @@ printf "Testing on $PLATFORM...\n"
 VOLUME=$(dirname $SCRIPT_DIR)
 ARGS="$@"
 
+if test $UPGRADE -eq 0; then
+  INSTALL_PATH="/root/dots"
+else
+  INSTALL_PATH="/root/.dots"
+fi
+
+if test $LOCAL -eq 0; then
+  SCRIPT="sh -c \"\$(cat $INSTALL_PATH/install.sh)\" - $ARGS"
+else
+  SCRIPT="sh $INSTALL_PATH/install.sh $ARGS"
+fi
+
 if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
   docker build --no-cache -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
 fi
-if test $LOCAL -eq 0; then
-  docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "sh -c \"\$(cat /root/dots/install.sh)\" - $ARGS"
-elif test $LOCAL -eq 1; then
-  docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/dots dots:$PLATFORM sh -c "sh /root/dots/install.sh $ARGS"
-else
-  docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:/root/.dots dots:$PLATFORM sh -c "sh /root/.dots/install.sh $ARGS"
-fi
+docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:$INSTALL_PATH dots:$PLATFORM sh -c "$SCRIPT"
