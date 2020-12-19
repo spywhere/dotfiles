@@ -15,6 +15,7 @@ flags:
   -k, --keep      Do not autoremove the container
   -l, --local     Simulate a local installation
   -u, --upgrade   Simulate an upgrade
+  -f, --force     Suppress warnings
 
 By default, test will simulate a remote installation from scatch.
 
@@ -35,6 +36,7 @@ RECREATE=0
 KEEP="--rm"
 LOCAL=0
 UPGRADE=0
+FORCE=0
 while test "$1" != ""; do
   case $1 in
     -h | --help)
@@ -52,6 +54,9 @@ while test "$1" != ""; do
       ;;
     -u | --upgrade)
       UPGRADE=1
+      ;;
+    -f | --force)
+      FORCE=1
       ;;
     -*)
       printf "ERROR: unknown flag \"$1\"\n"
@@ -112,4 +117,12 @@ fi
 if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
   docker build --no-cache -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
 fi
+
+if test "$(git status -s)" != "" -a $FORCE -eq 0 -a $LOCAL -eq 0 -a $UPGRADE -eq 1; then
+  printf "Changes detected!\n"
+  printf "Perform a remote upgrade on local installation will override any changes you've made.\n"
+  printf "Run the test script again with --force flag to suppress this check.\n"
+  exit 1
+fi
+
 docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:$INSTALL_PATH dots:$PLATFORM sh -c "$SCRIPT"
