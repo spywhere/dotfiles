@@ -32,7 +32,11 @@ install_packages() {
 link() {
   local source="$1"
   local target="$2"
-  rm -rf "$HOME/$target"
+  if test -f "$HOME/$target"; then
+    rm -f "$HOME/$target"
+  elif test -d "$HOME/$target"; then
+    rm -rf "$HOME/$target"
+  fi
   ln -fs "$HOME/$DOTFILES/configs/$source" "$HOME/$target"
 }
 

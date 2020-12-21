@@ -27,10 +27,10 @@ main() {
   local cursor=""
   local manual=0
   while test "$1" != ""; do
-    local PARAM=$(printf "%s" "$1" | sed 's/=.*//g')
-    local VALUE=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
-    local EQUAL_SIGN=$(printf "%s" "$1" | sed 's/[^=]//g')
-    case $PARAM in
+    local param=$(printf "%s" "$1" | sed 's/=.*//g')
+    local value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    local equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
+    case $param in
       -h | --help)
         usage
         return
@@ -39,25 +39,25 @@ main() {
         manual=1
         ;;
       -L | --limit)
-        if test -z "$EQUAL_SIGN"; then
+        if test -z "$equal_sign"; then
           echo "ERROR: a limit is required (perhaps missing an equal sign?)"
           return 1
         fi
-        limit=$VALUE
+        limit=$value
         ;;
       -R | --repo)
-        if test -z "$EQUAL_SIGN"; then
+        if test -z "$equal_sign"; then
           echo "ERROR: a repository is required (perhaps missing an equal sign?)"
           return 1
         fi
-        repo=" repo:$VALUE"
+        repo=" repo:$value"
         ;;
       -n | --next)
-        if test -z "$EQUAL_SIGN"; then
+        if test -z "$equal_sign"; then
           echo "ERROR: a cursor is required (perhaps missing an equal sign?)"
           return 1
         fi
-        cursor=$VALUE
+        cursor=$value
         ;;
       --debug)
         debug=1
@@ -85,19 +85,19 @@ main() {
   fi
   if test "$repo" = "" -a $manual -eq 0; then
     source _git_helper
-    local repoOwner=$(get_repo_owner)
-    local repoName=$(get_repo_name)
-    repo=" repo:$repoOwner/$repoName"
+    local repo_owner=$(get_repo_owner)
+    local repo_name=$(get_repo_name)
+    repo=" repo:$repo_owner/$repo_name"
   fi
   if test $debug -eq 1; then
     echo "[limit=$limit,cursor=$cursor] $query$repo"
     return
   fi
-  graphQuery='query($q:String!,$limit:Int!,$after:String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
+  local graph_query='query($q:String!,$limit:Int!,$after:String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
   if test "$cursor" != ""; then
-    response=$(gh api graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graphQuery")
+    response=$(gh api graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graph_query")
   else
-    response=$(gh api graphql -F limit="$limit" -F q="$query$repo" -f query="$graphQuery")
+    response=$(gh api graphql -F limit="$limit" -F q="$query$repo" -f query="$graph_query")
   fi
   if test $? -ne 0; then
     return 1

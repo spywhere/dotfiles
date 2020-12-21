@@ -37,6 +37,7 @@ update() {
 }
 
 tap_repo() {
+  local repo
   for repo in $@; do
     cmd brew tap $repo
   done
@@ -47,6 +48,7 @@ install_packages() {
   local formula_packages=""
   local cask_packages=""
   local flagged_packages=""
+  local package
   for package in $@; do
     local manager=$(printf "%s" "$package" | cut -d'|' -f1)
 
@@ -82,6 +84,7 @@ install_packages() {
   fi
   if test -n "$flagged_packages"; then
     print "Installing packages with additional flags..."
+    local package
     for package in $flagged_packages; do
       local name=$(printf "%s" "$package" | cut -d'|' -f1)
       local flags=$(printf "%s" "$package" | cut -d'|' -f2-)

@@ -17,6 +17,7 @@ add_setup 'setup_tmux_plugins'
 
 setup_tmux_plugins() {
   # install tmux plugin manager and its plugins
+  print "Installing tmux plugin manager..."
 
   add_post_install_message 'Press <Prefix+I> for tmux plugins installation'
 }

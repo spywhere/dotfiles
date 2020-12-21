@@ -17,5 +17,5 @@ add_setup 'setup_shell'
 
 setup_shell() {
   # update default shell to a new one
-  return
+  print "Updating default shell to zsh..."
 }

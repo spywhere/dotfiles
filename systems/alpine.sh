@@ -34,6 +34,7 @@ install_packages() {
   local community_packages=""
   local testing_packages=""
   local edge_packages=""
+  local package
   for package in $@; do
     local repo=$(printf "%s" "$package" | cut -d'|' -f2)
     local name=$(printf "%s" "$package" | cut -d'|' -f3)

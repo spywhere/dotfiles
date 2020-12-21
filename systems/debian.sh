@@ -21,6 +21,7 @@ update() {
 }
 
 install_dpkg_packages() {
+  local package
   for package in $@; do
     local name=$(printf "%s" "$package" | cut -d'|' -f1)
     local url=$(printf "%s" "$package" | cut -d'|' -f2-)
@@ -36,6 +37,7 @@ install_dpkg_packages() {
 install_packages() {
   local apt_packages=""
   local dpkg_packages=""
+  local package
   for package in $@; do
     local manager=$(printf "%s" "$package" | cut -d'|' -f1)
     local name=$(printf "%s" "$package" | cut -d'|' -f2-)

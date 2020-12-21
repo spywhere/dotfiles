@@ -14,5 +14,5 @@ fi
 add_setup 'setup_usbc'
 
 setup_usbc() {
-  return
+  print "Enabling access over USB-C..."
 }

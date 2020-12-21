@@ -26,14 +26,17 @@ require 'lib-zlib'
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
+  print "Setting up version manager..."
   local plugins="1password deno docker-slim golang firebase nodejs python rust"
   set +e
+  print "Setting up version manager plugins..."
   for plugin in $plugins; do
     bash -c ". ~/.asdf/asdf.sh && asdf plugin add $plugin"
   done
   set -e
   bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
   cd $HOME
+  print "Installing version manager plugins..."
   bash -c '. ~/.asdf/asdf.sh && asdf install'
   cd $CURRENT_DIR
 }

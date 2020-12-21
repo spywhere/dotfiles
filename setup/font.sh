@@ -15,6 +15,7 @@ add_setup 'setup_font'
 
 # install fonts
 setup_font() {
+  print "Installing fonts..."
   # Try downloading fonts to this directory would be much faster and use
   #   smaller storage size
   # - https://github.com/ryanoasis/nerd-fonts#option-6-ad-hoc-curl-download

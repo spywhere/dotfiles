@@ -7,6 +7,7 @@ set -e
 ########################
 
 CLONE_REPO="https://github.com/spywhere/dotfiles"
+CLONE_REPO_BRANCH="modular-wip"
 
 CURRENT_DIR=$(pwd)
 FLAGS=$@
@@ -299,6 +300,7 @@ _info() {
 
 _has_skip() {
   local component="$1"
+  local skipped_component
   for skipped_component in $_SKIPPED; do
     if test "$skipped_component" = "$component"; then
       return 0
@@ -340,25 +342,29 @@ _try_git() {
 }
 
 _try_run_install() {
-  local SKIP_UPDATE=0
+  local skip_update=0
   if test "$LOCAL_COPY" -eq 0; then
     if test "$RUN_LOCAL" -eq 1; then
       error "local copy of dotfiles is not found at $HOME/$DOTFILES"
       quit 1
     fi
 
-    if test "$VERBOSE" -le 1; then
-      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES"
-    else
-      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles"
+    local clone_flags=""
+    if test -n "$CLONE_REPO_BRANCH"; then
+      clone_flags="--branch $CLONE_REPO_BRANCH"
     fi
-    SKIP_UPDATE=1
+    if test "$VERBOSE" -le 1; then
+      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" "$clone_flags"
+    else
+      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles" "$clone_flags"
+    fi
+    skip_update=1
   fi
 
   cd $HOME/$DOTFILES
 
   # Try to update when install remotely, but not the first clone
-  if test "$SKIP_UPDATE" -eq 0 && test "$REMOTE_INSTALL" -eq 1; then
+  if test "$skip_update" -eq 0 && test "$REMOTE_INSTALL" -eq 1; then
     _try_git
     print "Updating dotfiles to latest version..."
     cmd git reset --hard
@@ -379,6 +385,7 @@ _try_run_install() {
       quit
     fi
     print "Available $PRINT_MODE:"
+    local file_path
     for file_path in $HOME/$DOTFILES/$PRINT_MODE/*.sh; do
       name=$(basename $file_path)
       name=${name%.sh}
@@ -389,6 +396,7 @@ _try_run_install() {
 
   # testing basic requirements
   local commands="awk basename sed"
+  local command
   for command in $commands; do
     if ! test "$(command -v "$command")"; then
       error "'$command' is required, but not found"
@@ -413,29 +421,31 @@ _try_run_install() {
   # run packages
   _RUNNING_TYPE="package"
   if ! _has_skip packages; then
-    for PACKAGE_PATH in $HOME/$DOTFILES/packages/*.sh; do
-      local PACKAGE=$(basename "$PACKAGE_PATH")
-      PACKAGE=${PACKAGE%.sh}
+    local package_path
+    for package_path in $HOME/$DOTFILES/packages/*.sh; do
+      local package=$(basename "$package_path")
+      package=${package%.sh}
 
       # Skip requested packages
-      if _has_skip "$PACKAGE"; then
+      if _has_skip "$package"; then
         continue
       fi
 
       # Package could be loaded from the dependency list
-      if has_package "$PACKAGE"; then
+      if has_package "$package"; then
         continue
       fi
 
-      _RUNNING="$PACKAGE"
+      _RUNNING="$package"
       _FULFILLED=""
       # Add package to the loaded list (prevent dependency cycle)
       _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
-      . $PACKAGE_PATH
+      . $package_path
 
       # Remove optional packages from the loaded list
       if test "$_FULFILLED" = "optional"; then
         local new_loaded=""
+        local loaded_package
         for loaded_package in $(_split "$_LOADED"); do
           if test "$loaded_package" = "$_RUNNING"; then
             continue
@@ -450,18 +460,19 @@ _try_run_install() {
   # running setup preparation
   _RUNNING_TYPE="setup"
   if ! _has_skip setup; then
-    for SETUP_PATH in $HOME/$DOTFILES/setup/*.sh; do
-      local SETUP=$(basename "$SETUP_PATH")
-      SETUP=${SETUP%.sh}
+    local setup_path
+    for setup_path in $HOME/$DOTFILES/setup/*.sh; do
+      local setup=$(basename "$setup_path")
+      setup=${setup%.sh}
 
       # Skip requested setups
-      if _has_skip "$SETUP"; then
+      if _has_skip "$setup"; then
         continue
       fi
 
-      _RUNNING="$SETUP"
+      _RUNNING="$setup"
       _FULFILLED=""
-      . $SETUP_PATH
+      . $setup_path
     done
   fi
 
@@ -471,24 +482,28 @@ _try_run_install() {
 
   if test -n "$_PACKAGES"; then
     print "The following packages will be installed:"
+    local package
     for package in $(_split "$_PACKAGES"); do
       print "  - $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
   if test -n "$_DOCKER"; then
     print "The following Docker buildings will be run:"
+    local package
     for package in $(_split "$_DOCKER"); do
       print "  - $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
   if test -n "$_CUSTOM"; then
     print "The following installations will be run:"
+    local fn
     for fn in $(_split "$_CUSTOM"); do
       print "  - $fn"
     done
   fi
   if test -n "$_SETUP"; then
     print "The following setups will be run:"
+    local fn
     for fn in $(_split "$_SETUP"); do
       print "  - $fn"
     done
@@ -513,6 +528,7 @@ _try_run_install() {
   # run custom installations
   if test -n "$_CUSTOM"; then
     print "Performing custom installations..."
+    local fn
     for fn in $(_split "$_CUSTOM"); do
       "$fn"
     done
@@ -521,6 +537,7 @@ _try_run_install() {
   # run setups
   if test -n "$_SETUP"; then
     print "Running setups..."
+    local fn
     for fn in $(_split "$_SETUP"); do
       "$fn"
     done
@@ -601,21 +618,37 @@ cmd() {
 }
 
 full_clone() {
+  local repo="$1"
+  local dir_name="$2"
+  local name="$3"
+  shift
+  if test -n "$dir_name"; then
+    shift
+  fi
   _try_git
-  if test -n "$3"; then
-    print "Cloning $3..."
+  if test -n "$name"; then
+    shift
+    print "Cloning $name..."
   fi
 
-  cmd git clone "$1" "$2"
+  cmd git clone "$repo" "$dir_name" "$@"
 }
 
 clone() {
+  local repo="$1"
+  local dir_name="$2"
+  local name="$3"
+  shift
+  if test -n "$dir_name"; then
+    shift
+  fi
   _try_git
-  if test -n "$3"; then
-    print "Cloning $3..."
+  if test -n "$name"; then
+    shift
+    print "Cloning $name..."
   fi
 
-  cmd git clone --shallow-submodules --depth 1 "$1" "$2"
+  cmd git clone --shallow-submodules --depth 1 "$repo" "$dir_name" "$@"
 }
 
 # has_cmd <command>
@@ -627,6 +660,7 @@ has_cmd() {
 # has_package <package>
 has_package() {
   local package="$1"
+  local loaded_package
   for loaded_package in $_LOADED; do
     if test "$loaded_package" = "$package"; then
       return 0
@@ -712,6 +746,7 @@ _add_package() {
   shift
   shift
   local package="$manager"
+  local component
   for component in $@; do
     package=$(printf "%s|%s" "$package" "$component")
   done
