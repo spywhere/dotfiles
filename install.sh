@@ -14,7 +14,7 @@ FLAGS=$@
 
 # Set a dot files directory if one is not found
 if test -z "$DOTFILES"; then
-  DOTFILES=.dots
+  DOTFILES=".dots"
 fi
 
 # Try to set home variable if one is not found
@@ -36,6 +36,27 @@ if test -d "$HOME/$DOTFILES"; then
   LOCAL_COPY=1
 fi
 
+esc_reset="" # reset
+esc_blue="" # indicate information
+esc_green="" # indicate options
+esc_yellow="" # indicate warnings
+esc_red="" # indicate errors
+
+if test -n "$(command -v tput)" -a "$(tput colors)" -ge 8 -a -n "$(command -v tty)" && tty -s; then
+  esc_reset="$(tput sgr0)"
+  if test "$(tput colors)" -gt 8; then
+    esc_blue="$(tput setaf 12)"
+    esc_green="$(tput setaf 10)"
+    esc_yellow="$(tput setaf 11)"
+    esc_red="$(tput setaf 9)"
+  else
+    esc_blue="$(tput setaf 4)"
+    esc_green="$(tput setaf 2)"
+    esc_yellow="$(tput setaf 3)"
+    esc_red="$(tput setaf 1)"
+  fi
+fi
+
 #######################
 # Utilities Functions #
 #######################
@@ -54,7 +75,7 @@ error() {
     >&2 printf "\n"
     return
   fi
-  printf "ERROR: %s\n" "$@" >&2
+  printf "$esc_red ==> ERROR$esc_reset: %s\n" "$@" >&2
 }
 
 warn() {
@@ -62,7 +83,7 @@ warn() {
     print
     return
   fi
-  print "WARN: $@"
+  print "$esc_yellow==> WARN$esc_reset: $@"
 }
 
 # Print a padded string
@@ -327,13 +348,13 @@ _try_git() {
   fi
 
   if test "$OS" = "alpine"; then
-    print "Installing git..."
+    print "$esc_blue==>$esc_reset Installing git..."
     cmd apk add git
   elif test "$OS" = "debian"; then
-    print "Installing git..."
+    print "$esc_blue==>$esc_reset Installing git..."
     sudo_cmd apt install -y git
   elif test "$OS" = "macos" -a "$(command -v "brew")"; then
-    print "Installing git..."
+    print "$esc_blue==>$esc_reset Installing git..."
     cmd brew install git
   else
     error "command \"git\" is required"
@@ -366,7 +387,7 @@ _try_run_install() {
   # Try to update when install remotely, but not the first clone
   if test "$skip_update" -eq 0 && test "$REMOTE_INSTALL" -eq 1; then
     _try_git
-    print "Updating dotfiles to latest version..."
+    print "$esc_blue==>$esc_reset Updating dotfiles to latest version..."
     cmd git reset --hard
     cmd git fetch
     cmd git pull
@@ -374,7 +395,7 @@ _try_run_install() {
 
   # Run local script when install remotely
   if test "$REMOTE_INSTALL" -eq 1; then
-    print "Executing local script..."
+    print "$esc_blue==>$esc_reset Executing local script..."
     sh $HOME/$DOTFILES/install.sh $FLAGS
     quit
   fi
@@ -408,15 +429,15 @@ _try_run_install() {
     quit 1
   fi
 
-  print "Ready"
+  print "$esc_blue==>$esc_reset Ready"
   if ! test -f "$HOME/$DOTFILES/systems/$OS.sh"; then
     error "\"$OS\" is not supported"
     quit 1
   fi
   . $HOME/$DOTFILES/systems/$OS.sh
-  print "Setting up installation process..."
+  print "$esc_blue==>$esc_reset Setting up installation process..."
   setup
-  print "Gathering components..."
+  print "$esc_blue==>$esc_reset Gathering components..."
 
   # run packages
   _RUNNING_TYPE="package"
@@ -481,28 +502,28 @@ _try_run_install() {
   fi
 
   if test -n "$_PACKAGES"; then
-    print "The following packages will be installed:"
+    print "$esc_green==>$esc_reset The following packages will be installed:"
     local package
     for package in $(_split "$_PACKAGES"); do
       print "  - $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
   if test -n "$_DOCKER"; then
-    print "The following Docker buildings will be run:"
+    print "$esc_green==>$esc_reset The following Docker buildings will be run:"
     local package
     for package in $(_split "$_DOCKER"); do
       print "  - $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
   if test -n "$_CUSTOM"; then
-    print "The following installations will be run:"
+    print "$esc_green==>$esc_reset The following installations will be run:"
     local fn
     for fn in $(_split "$_CUSTOM"); do
       print "  - $fn"
     done
   fi
   if test -n "$_SETUP"; then
-    print "The following setups will be run:"
+    print "$esc_green==>$esc_reset The following setups will be run:"
     local fn
     for fn in $(_split "$_SETUP"); do
       print "  - $fn"
@@ -512,10 +533,10 @@ _try_run_install() {
   # update/upgrade system
   if ! _has_skip update; then
     if _has_skip upgrade; then
-      print "Updating system..."
+      print "$esc_blue==>$esc_reset Updating system..."
       update "update"
     else
-      print "Updating and upgrading system..."
+      print "$esc_blue==>$esc_reset Updating and upgrading system..."
       update "upgrade"
     fi
   fi
@@ -527,7 +548,7 @@ _try_run_install() {
 
   # run custom installations
   if test -n "$_CUSTOM"; then
-    print "Performing custom installations..."
+    print "$esc_blue==>$esc_reset Performing custom installations..."
     local fn
     for fn in $(_split "$_CUSTOM"); do
       "$fn"
@@ -536,14 +557,14 @@ _try_run_install() {
 
   # run setups
   if test -n "$_SETUP"; then
-    print "Running setups..."
+    print "$esc_blue==>$esc_reset Running setups..."
     local fn
     for fn in $(_split "$_SETUP"); do
       "$fn"
     done
   fi
 
-  print "Done!"
+  print "$esc_blue==>$esc_reset Done!"
   if test -n "$_POST_INSTALL_MSGS"; then
     print "NOTE: Don't forge to..."
     print "  - $_POST_INSTALL_MSGS"
@@ -628,7 +649,7 @@ full_clone() {
   _try_git
   if test -n "$name"; then
     shift
-    print "Cloning $name..."
+    print "$esc_blue==>$esc_reset Cloning $name..."
   fi
 
   cmd git clone "$repo" "$dir_name" "$@"
@@ -645,7 +666,7 @@ clone() {
   _try_git
   if test -n "$name"; then
     shift
-    print "Cloning $name..."
+    print "$esc_blue==>$esc_reset Cloning $name..."
   fi
 
   cmd git clone --shallow-submodules --depth 1 "$repo" "$dir_name" "$@"
