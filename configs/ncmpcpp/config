@@ -3,9 +3,8 @@ mpd_music_dir = "~/Music"
 mpd_connection_timeout = 5
 
 # visualizer
-visualizer_fifo_path = "/tmp/mpd.fifo"
+visualizer_data_source = "/tmp/mpd.fifo"
 visualizer_in_stereo = yes
-visualizer_sync_interval = 30
 visualizer_output_name = my_fifo
 visualizer_type = spectrum
 
