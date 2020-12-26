@@ -102,7 +102,7 @@ if test ! -f ~/.zsh_plugins -o ! -f ~/.zsh_plugins.tmux; then
   rm -rf ~/.zsh_plugins.tmux.list
 fi
 
-if test -z "$TMUX" -a -z "$TERM_PROGRAM"; then
+if test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
   source ~/.zsh_plugins
 fi
 
