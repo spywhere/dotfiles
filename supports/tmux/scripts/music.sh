@@ -60,8 +60,40 @@ elif [ $mpd = "yes" ]; then
   status=$mpd_status
   position=$(echo "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f1)
   duration=$(echo "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f2)
-  title=$(echo "$mpd_info" | awk 'BEGIN {FS=": "} $1 ~ /^Title$/ { print $2 }')
-  artist=$(echo "$mpd_info" | awk 'BEGIN {FS=": "} $1 ~ /^Artist$/ { print $2 }')
+  title=$(echo "$mpd_info" | awk '$1 ~ /^Title:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')
+  artist=$(echo "$mpd_info" | awk '$1 ~ /^Artist:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')
+fi
+
+_scrolling_text() {
+  local text="$1"
+  local size="$2"
+  local offset="$3"
+  if test $# -ge 4; then
+    local text_length="$4"
+  else
+    local text_length=$(printf "%s" "$text" | wc -m)
+  fi
+  if test "$text_length" -gt $size; then
+    local index=$(( $offset % ($text_length + 3) ))
+    local padded_text="$text   $text"
+    printf "%s" "${padded_text:$index:$size}"
+  else
+    printf "%s" "$text"
+  fi
+}
+
+title_max_length=25
+artist_max_length=20
+
+title_length=$(printf "%s" "$title" | wc -m)
+artist_length=$(printf "%s" "$artist" | wc -m)
+
+if test "$title_length" -gt "$title_max_length" -a "$artist_length" -gt "$artist_max_length"; then
+  text=$(_scrolling_text "$artist - $title" "$(( $title_max_length + $artist_max_length + 3 ))" "$position")
+else
+  title=$(_scrolling_text "$title" "$title_max_length" "$position" "$title_length")
+  artist=$(_scrolling_text "$artist" "$artist_max_length" "$position" "$artist_length")
+  text="$artist - $title"
 fi
 
 if [ $status -ne 0 ]; then
@@ -72,4 +104,4 @@ else
   tmux set-option -g status-interval 5
 fi
 
-printf "%s %s - %s [%02d:%02d/%02d:%02d]" "$symbol" "$artist" "$title" "$(($position / 60))" "$(($position % 60))" "$(($duration / 60))" "$(($duration % 60))"
+printf "%s %s [%02d:%02d/%02d:%02d]" "$symbol" "$text" "$(($position / 60))" "$(($position % 60))" "$(($duration / 60))" "$(($duration % 60))"
