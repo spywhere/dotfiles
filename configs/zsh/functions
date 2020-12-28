@@ -111,6 +111,13 @@ neomutt() {
   _try-docker-run neomutt:latest ${HOME}/$DOTFILES_NAME/docker/neomutt --name neomutt -v ${HOME}/$DOTFILES_NAME/binaries/passmgr:/usr/bin/passmgr -v ${HOME}/.cache/neomutt:/root/.cache/neomutt -v ${HOME}/.config/neomutt:/root/.config/neomutt -v ${HOME}/.config/neomutt/accounts/default:/root/.config/neomutt/accounts/default -v ${HOME}/.secret:/root/.secret neomutt $@
 }
 
+doctl() {
+  if _try-cmd doctl $@; then
+    return $?
+  fi
+  _docker-run -e "DIGITALOCEAN_ACCESS_TOKEN=$DIGITALOCEAN_ACCESS_TOKEN" -v ~/.ssh/id_rsa:/root/.ssh/id_rsa -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub digitalocean/doctl $@
+}
+
 mmdc() {
   if _try-cmd mmdc $@; then
     return $?
