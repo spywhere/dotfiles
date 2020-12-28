@@ -115,7 +115,8 @@ doctl() {
   if _try-cmd doctl $@; then
     return $?
   fi
-  _docker-run -e "DIGITALOCEAN_ACCESS_TOKEN=$DIGITALOCEAN_ACCESS_TOKEN" -v ~/.ssh/id_rsa:/root/.ssh/id_rsa -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub digitalocean/doctl $@
+  local dockerConfigPath="$(printf "%s" ~)/.docker/config.json"
+  _docker-run -e "DIGITALOCEAN_ACCESS_TOKEN=$DIGITALOCEAN_ACCESS_TOKEN" -v "$dockerConfigPath":/root/.docker/config.json -v ~/.ssh/id_rsa:/root/.ssh/id_rsa -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub digitalocean/doctl $@
 }
 
 mmdc() {
