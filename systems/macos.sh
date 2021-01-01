@@ -28,6 +28,20 @@ setup() {
   cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 }
 
+run_brew() {
+  local executable=""
+  if has_cmd brew; then
+    executable="brew"
+  elif test -f /opt/homebrew/bin/brew; then
+    executable="/opt/homebrew/bin/brew"
+  else
+    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found"
+    quit 1
+  fi
+
+  cmd $executable $@
+}
+
 update() {
   cmd brew update --force # https://github.com/Homebrew/brew/issues/1151
   if test $1 = "upgrade"; then
