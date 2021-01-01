@@ -41,21 +41,21 @@ run_brew() {
     quit 1
   fi
 
-  cmd $executable $@
+  cmd "$executable" $@
 }
 
 update() {
-  cmd brew update --force # https://github.com/Homebrew/brew/issues/1151
+  run_brew update --force # https://github.com/Homebrew/brew/issues/1151
   if test $1 = "upgrade"; then
-    cmd brew upgrade
-    cmd brew cleanup
+    run_brew upgrade
+    run_brew cleanup
   fi
 }
 
 tap_repo() {
   local repo
   for repo in $@; do
-    cmd brew tap $repo
+    run_brew tap $repo
   done
 }
 
@@ -96,7 +96,7 @@ install_packages() {
   fi
   if test -n "$formula_packages"; then
     print "Installing packages..."
-    cmd brew install --formula $brew_flags $formula_packages
+    run_brew install --formula $brew_flags $formula_packages
   fi
   if test -n "$flagged_packages"; then
     print "Installing packages with additional flags..."
@@ -104,12 +104,12 @@ install_packages() {
     for package in $flagged_packages; do
       local name=$(printf "%s" "$package" | cut -d'|' -f1)
       local flags=$(printf "%s" "$package" | cut -d'|' -f2-)
-      cmd brew install --formula $brew_flags $name $flags
+      run_brew install --formula $brew_flags $name $flags
     done
   fi
   if test -n "$cask_packages"; then
     print "Installing cask packages..."
-    cmd brew install --cask $brew_flags $cask_packages
+    run_brew install --cask $brew_flags $cask_packages
   fi
 }
 
