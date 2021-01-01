@@ -16,6 +16,8 @@ fi
 setup() {
   if has_cmd brew; then
     return
+  elif test -f /opt/homebrew/bin/brew; then
+    return
   fi
 
   if ! has_cmd ruby; then
