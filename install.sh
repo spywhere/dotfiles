@@ -652,7 +652,7 @@ full_clone() {
     print "$esc_blue==>$esc_reset Cloning $name..."
   fi
 
-  cmd git clone "$repo" "$dir_name" "$@"
+  cmd git clone $@ "$repo" "$dir_name"
 }
 
 clone() {
@@ -669,7 +669,7 @@ clone() {
     print "$esc_blue==>$esc_reset Cloning $name..."
   fi
 
-  cmd git clone --shallow-submodules --depth 1 "$repo" "$dir_name" "$@"
+  cmd git clone --shallow-submodules --depth 1 $@ "$repo" "$dir_name"
 }
 
 # has_cmd <command>
