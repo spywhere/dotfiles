@@ -32,10 +32,10 @@ setup() {
 
 run_brew() {
   local executable=""
-  if has_cmd brew; then
-    executable="brew"
-  elif test -f /opt/homebrew/bin/brew; then
+  if test "$(arch)" = "arm64" -a -f /opt/homebrew/bin/brew; then
     executable="/opt/homebrew/bin/brew"
+  elif has_cmd brew; then
+    executable="brew"
   else
     error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found"
     quit 1
