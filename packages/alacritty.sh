@@ -11,4 +11,24 @@ then
   exit 1
 fi
 
-use_brew cask 'alacritty'
+if has_flag "apple-silicon"; then
+  use_custom 'install_alacritty'
+else
+  use_brew cask 'alacritty'
+fi
+
+install_alacritty() {
+  if test -d /Applications/Alacritty.app; then
+    return
+  fi
+  local path=$(deps "alacritty")
+  clone https://github.com/alacritty/alacritty $path
+  cmd cd $path
+  print "Building Alacritty..."
+  cmd make app
+  if test -d "$path/target/release/osx/Alacritty.app"; then
+    cmd cp -r "$path/target/release/osx/Alacritty.app" /Applications/
+  else
+    error "Failed: Alacritty is failed to build"
+  fi
+}

@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'exa'
 use_apt 'exa'
-use_brew formula 'exa'
+use_brow formula 'exa'

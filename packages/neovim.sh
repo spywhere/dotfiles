@@ -11,6 +11,9 @@ then
   exit 1
 fi
 
+require tree-sitter
+require luajit
+
 use_apk 'main' 'neovim'
 use_brew formula 'neovim' '--head'
 use_docker_build 'neovim'

@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
-use_apk 'testing' 'mycli'
-use_apt 'mycli'
-use_brow formula 'mycli'
+optional
+if has_flag "apple-silicon"; then
+  use_brew formula 'tree-sitter' '--head' '--build-from-source'
+fi
