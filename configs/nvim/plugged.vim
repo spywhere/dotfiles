@@ -130,14 +130,14 @@ augroup lazyload_plugins
 augroup END
 
 " nvim-tree.lua
-let g:lua_tree_icons = {
+let g:nvim_tree_icons = {
 \   'default': ' '
 \ }
-let g:lua_tree_ignore = ['.git', '.DS_Store']
-let g:lua_tree_follow = 1
+let g:nvim_tree_ignore = ['.git', '.DS_Store']
+let g:nvim_tree_follow = 1
 
 " show cursorline when browsing in the tree explorer
-autocmd BufEnter,FileType LuaTree let &cursorline=1
+autocmd BufEnter,FileType NvimTree let &cursorline=1
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
@@ -250,43 +250,43 @@ let g:lightline.component_type = {
 \ }
 
 function! LightlineMode()
-  return &ft !=? 'luatree' ? lightline#mode() : ''
+  return &ft !=? 'nvimtree' ? lightline#mode() : ''
 endfunction
 
 function! LightlineBranch()
-  return &ft !=? 'luatree' ? FugitiveHead() : ''
+  return &ft !=? 'nvimtree' ? FugitiveHead() : ''
 endfunction
 
 function! LightlineReadonly()
-  return &ft !=? 'luatree' && &readonly ? 'RO' : ''
+  return &ft !=? 'nvimtree' && &readonly ? 'RO' : ''
 endfunction
 
 function! LightlineModified()
-  return &ft !=? 'luatree' && &modified ? '+' : ''
+  return &ft !=? 'nvimtree' && &modified ? '+' : ''
 endfunction
 
 function! LightlineRelativePath()
-  return &ft !=? 'luatree' ? expand('%:f') != '' ? expand('%:f') : '[no name]' : 'Explorer'
+  return &ft !=? 'nvimtree' ? expand('%:f') != '' ? expand('%:f') : '[no name]' : 'Explorer'
 endfunction
 
 function! LightlineLineInfo()
-  return &ft !=? 'luatree' ? line('.') . ':' . col('.') : ''
+  return &ft !=? 'nvimtree' ? line('.') . ':' . col('.') : ''
 endfunction
 
 function! LightlinePercent()
-  return &ft !=? 'luatree' ? line('.') * 100 / line('$') . '%' : ''
+  return &ft !=? 'nvimtree' ? line('.') * 100 / line('$') . '%' : ''
 endfunction
 
 function! LightlineFileFormat()
-  return &ft !=? 'luatree' ? &ff : ''
+  return &ft !=? 'nvimtree' ? &ff : ''
 endfunction
 
 function! LightlineFileEncoding()
-  return &ft !=? 'luatree' ? &enc : ''
+  return &ft !=? 'nvimtree' ? &enc : ''
 endfunction
 
 function! LightlineFileType()
-  return &ft !=? 'luatree' ? &filetype : ''
+  return &ft !=? 'nvimtree' ? &filetype : ''
 endfunction
 
 let g:lightline.component_function = {
