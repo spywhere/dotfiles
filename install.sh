@@ -109,6 +109,10 @@ print() {
   force_print "$@"
 }
 
+info() {
+  print "$esc_green==> INFO:$esc_reset $@"
+}
+
 # Print a boolean value as string
 #   print_bool <pad size> <padded string> <bool variable> [prefix] [suffix]
 print_bool() {
@@ -192,13 +196,13 @@ _PACKAGES="" # keep a list of install packages
 _CUSTOM="" # keep a list of custom function for installing packages
 _DOCKER="" # keep a list of docker build for installing packages
 _SETUP="" # keep a list of custom function for setups
+_INTERNAL_STATE="" # keep a list of internal flags and states
 
 _QUIET_CMD="" # an alternative command for suppressing output
 _QUIET_FLAGS="" # an alternative flag for suppressing output
 _VERBOSE_CMD="" # an alternative command for producing more output
 _VERBOSE_FLAGS="" # an alternative flag for producing more output
 _POST_INSTALL_MSGS="" # keep a list of post installation messages
-
 
 _main() {
   _detect_os
@@ -574,6 +578,22 @@ _try_run_install() {
 #############
 # Main APIs #
 #############
+
+add_flag() {
+  local flag="$1"
+  _INTERNAL_STATE=$(_add_item "$_INTERNAL_STATE" " " "$flag")
+}
+
+has_flag() {
+  local flag="$1"
+  local flag_component
+  for flag_component in $_INTERNAL_STATE; do
+    if test "$flag_component" = "$flag"; then
+      return 0
+    fi
+  done
+  return 1
+}
 
 deps() {
   if ! test -d "$HOME/$DOTFILES/.deps"; then

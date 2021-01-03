@@ -50,6 +50,11 @@ use_apt() {
   return
 }
 
+# use_brow <package>
+use_brow() {
+  return
+}
+
 # use_brew <package>
 use_brew() {
   return
