@@ -12,7 +12,7 @@ then
 fi
 
 setup() {
-  return
+  return 0
 }
 
 # update <mode>
@@ -20,12 +20,12 @@ setup() {
 #    update
 #    upgrade
 update() {
-  return
+  return 0
 }
 
 # install_packages <package>...
 install_packages() {
-  return
+  return 0
 }
 
 # link <source> <target>
@@ -42,30 +42,30 @@ link() {
 
 # use_apk <repo> <package>
 use_apk() {
-  return
+  return 0
 }
 
 # use_apt <package>
 use_apt() {
-  return
+  return 0
 }
 
 # use_brow <package>
 use_brow() {
-  return
+  return 0
 }
 
 # use_brew <package>
 use_brew() {
-  return
+  return 0
 }
 
 # use_brew_tap <package>
 use_brew_tap() {
-  return
+  return 0
 }
 
 # use_dpkg <name> <url>
 use_dpkg() {
-  return
+  return 0
 }
