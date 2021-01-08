@@ -156,6 +156,7 @@ let g:coc_global_extensions = [
 \   'coc-emmet',
 \   'coc-html',
 \   'coc-json',
+\   'coc-omnisharp',
 \   'coc-python',
 \   'coc-rls',
 \   'coc-sh',
