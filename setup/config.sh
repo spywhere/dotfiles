@@ -60,6 +60,9 @@ setup_config() {
   link nvim/ .config/nvim
   add_post_install_message "Run 'nvim' for the first time setup"
 
+  # starship
+  link starship/starship.toml .config/starship.toml
+
   # tig
   link tig/tig.conf .tigrc
 
