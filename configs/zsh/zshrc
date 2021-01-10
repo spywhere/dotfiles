@@ -109,6 +109,8 @@ fi
 if test -d /opt/homebrew/bin; then
   export PATH="/opt/homebrew/bin:$PATH"
 fi
+
+# early set the variables for terminal and tmux to use
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
 
 if test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
