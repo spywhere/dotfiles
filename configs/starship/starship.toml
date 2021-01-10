@@ -4,17 +4,6 @@ add_newline = false
 success_symbol = "[➜](bold green) "
 error_symbol = "[➜](bold red) "
 
-[git_branch]
-disabled = true
-
-[git_commit]
-disabled = true
-
-[git_state]
-disabled = true
-
-[git_status]
-disabled = true
 # hostname
 
 [line_break]
