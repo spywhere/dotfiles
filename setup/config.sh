@@ -44,6 +44,9 @@ setup_config() {
   # github
   link github/ .config/github
 
+  # kitty
+  link kitty/ .config/kitty
+
   # mpd
   link mpd/ .mpd
 

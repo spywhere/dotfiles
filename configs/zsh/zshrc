@@ -50,6 +50,7 @@ zstyle ':completion:*' cache-path ~/.cache/zsh
 
 ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOCONNECT=false
+ZSH_TMUX_UNICODE=true
 
 SPACESHIP_PROMPT_ORDER=(
   user

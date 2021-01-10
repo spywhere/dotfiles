@@ -24,6 +24,10 @@ key_bindings:
   - key: W
     mods: Command
     action: None
+  - key: PageUp
+    action: None
+  - key: PageDown
+    action: None
   # https://github.com/alacritty/alacritty/issues/623
   - key: A
     mods: Alt
