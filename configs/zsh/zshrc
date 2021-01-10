@@ -110,6 +110,11 @@ if test -d /opt/homebrew/bin; then
   export PATH="/opt/homebrew/bin:$PATH"
 fi
 
+. $HOME/$DOTFILES_NAME/configs/zsh/aliases
+. $HOME/$DOTFILES_NAME/configs/zsh/functions
+. $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
+. $HOME/$DOTFILES_NAME/configs/zsh/variables
+
 if test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
   source ~/.zsh_plugins
 fi
@@ -121,11 +126,6 @@ if test ! -f ~/.no-starship -a -n "$(command -v starship)"; then
 else
   source ~/.zsh_plugins.tmux
 fi
-
-. $HOME/$DOTFILES_NAME/configs/zsh/aliases
-. $HOME/$DOTFILES_NAME/configs/zsh/functions
-. $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
-. $HOME/$DOTFILES_NAME/configs/zsh/variables
 
 # Use personalize settings if found as well
 test -f ~/.personal && source ~/.personal
