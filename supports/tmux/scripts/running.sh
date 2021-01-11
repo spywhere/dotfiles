@@ -2,11 +2,13 @@ CYCLE_INTERVAL=5
 
 docker_start=""
 
-if test "$(uname)" = "Darwin"; then
+if test "$(uname)" = "Darwin" -o "$(uname -r | sed 's/.*Microsoft.*/microsoft/g')" = "microsoft"; then
   if test "$(command -v docker 2>/dev/null)"; then
     docker_info=$(docker info 2>&1)
     if test $? -eq 0; then
       docker_start=""
+    else
+      echo nope $?
     fi
     if echo $docker_info | grep "refused"; then
       docker_start=""
