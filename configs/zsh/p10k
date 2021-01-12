@@ -401,9 +401,7 @@
       head_ref+="${meta}:${clean}${(V)VCS_STATUS_REMOTE_BRANCH//\%/%%}"
     fi
 
-    if test -n "$head_ref"; then
-      res+="$head_ref "
-    fi
+    res+="$head_ref"
 
     local head_status=""
 
@@ -439,6 +437,9 @@
     (( VCS_STATUS_HAS_UNSTAGED == -1 )) && head_status+="${modified}─"
 
     if test -n "$head_status"; then
+      if test -n "$head_ref"; then
+        res+=" "
+      fi
       res+="${clean}[${head_status}${clean}]"
     fi
 
