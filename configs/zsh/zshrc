@@ -5,6 +5,13 @@ if test -f ~/recovery; then
 fi
 DOTFILES_NAME=.dots
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 autoload -Uz compinit
 autoload -Uz bashcompinit && bashcompinit
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
@@ -18,9 +25,6 @@ if ! test -f /usr/local/bin/antibody; then
   echo "installing antibody..."
   curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
-
-# Will use this instead of spaceship prompt when available for arm arch
-# curl -fsSL https://starship.rs/install.sh | bash
 
 setopt append_history # append history list to history file, rather than replace it
 setopt hist_ignore_dups # don't record a command that just run
@@ -52,28 +56,10 @@ ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOCONNECT=false
 ZSH_TMUX_UNICODE=true
 
-SPACESHIP_PROMPT_ORDER=(
-  user
-  dir
-  git
-  line_sep
-  exit_code
-  char
-)
-SPACESHIP_RPROMPT_ORDER=(
-  time
-  host
-  exec_time
-)
-SPACESHIP_USER_SHOW=needed
-SPACESHIP_HOST_PREFIX="on "
-SPACESHIP_PROMPT_ADD_NEWLINE=false
-SPACESHIP_PROMPT_SEPARATE_LINE=false
+if test ! -f ~/.zsh_plugins.startup -o ! -f ~/.zsh_plugins.base -o ! -f ~/.zsh_plugins.prompt; then
+  echo "ohmyzsh/ohmyzsh path:plugins/tmux" > ~/.zsh_plugins.startup.list
 
-if test ! -f ~/.zsh_plugins -o ! -f ~/.zsh_plugins.tmux -o ! -f ~/.zsh_plugins.base; then
-  echo "ohmyzsh/ohmyzsh path:plugins/tmux" > ~/.zsh_plugins.list
-
-  echo "denysdovhan/spaceship-prompt" > ~/.zsh_plugins.tmux.list
+  echo "romkatv/powerlevel10k" > ~/.zsh_plugins.prompt.list
 
   echo "michaelaquilina/zsh-you-should-use" >> ~/.zsh_plugins.base.list
   echo "aloxaf/fzf-tab" >> ~/.zsh_plugins.base.list
@@ -95,15 +81,15 @@ if test ! -f ~/.zsh_plugins -o ! -f ~/.zsh_plugins.tmux -o ! -f ~/.zsh_plugins.b
   echo "ohmyzsh/ohmyzsh path:plugins/npm" >> ~/.zsh_plugins.base.list
 
   echo -n "Installing startup plugins..."
-  antibody bundle < ~/.zsh_plugins.list > ~/.zsh_plugins
+  antibody bundle < ~/.zsh_plugins.startup.list > ~/.zsh_plugins.startup
   echo -en "\\rInstalling plugins...        "
-  antibody bundle < ~/.zsh_plugins.tmux.list > ~/.zsh_plugins.tmux
   antibody bundle < ~/.zsh_plugins.base.list > ~/.zsh_plugins.base
+  antibody bundle < ~/.zsh_plugins.prompt.list > ~/.zsh_plugins.prompt
   echo -e "\\rReady                 "
 
-  rm -rf ~/.zsh_plugins.list
-  rm -rf ~/.zsh_plugins.tmux.list
+  rm -rf ~/.zsh_plugins.startup.list
   rm -rf ~/.zsh_plugins.base.list
+  rm -rf ~/.zsh_plugins.prompt.list
 fi
 
 if test -d /opt/homebrew/bin; then
@@ -114,16 +100,14 @@ fi
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
 
 if test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
-  source ~/.zsh_plugins
+  source ~/.zsh_plugins.startup
 fi
 
 source ~/.zsh_plugins.base
-# Setup starship
-if test ! -f ~/.no-starship -a -n "$(command -v starship)"; then
-  . <(starship init zsh)
-else
-  source ~/.zsh_plugins.tmux
-fi
+source ~/.zsh_plugins.prompt
+
+# Setup powerlevel10k
+test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/configs/zsh/p10k
 
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
@@ -147,4 +131,3 @@ fi
 
 # Export binaries
 export PATH=$HOME/$DOTFILES_NAME/bin:$PATH
-
