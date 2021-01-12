@@ -6,9 +6,13 @@ TITLE_MAX_LENGTH=25
 ARTIST_MAX_LENGTH=20
 IDLE_UPDATE_INTERVAL=5
 PLAYING_UPDATE_INTERVAL=1
+PLAYING_UPDATE_INTERVAL_SLOW=3
+
+slow="no"
 
 cmus="no"
 mpd="no"
+ps="no"
 
 if test "$(command -v cmus-remote)"; then
   # cmus installed
@@ -18,6 +22,11 @@ fi
 if $(printf "close\n" | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
   # mpd is running
   mpd="yes"
+fi
+
+if test "$(command -v powershell.exe)"; then
+  # powershell installed (most probably running on WSL)
+  ps="yes"
 fi
 
 if test "$cmus" = "yes"; then
@@ -45,8 +54,24 @@ if test "$mpd" = "yes"; then
   fi
 fi
 
-# if both playing is not running
-if test "$mpd" = "no" -a "$cmus" = "no"; then
+if test "$ps" = "yes"; then
+  ps_info=$(powershell.exe -F "$(printf "%s" ~)/.dots/supports/tmux/scripts/music.ps1" | sed 's/\r//g')
+  if test "$ps_info" = "stopped"; then
+    # stopped
+    ps="no"
+  else
+    slow="yes"
+    ps_state=$(printf "%s" "$ps_info" | sed -n 's/^state://p')
+    if test "$ps_state" = "play"; then
+      ps_status=1
+    else
+      ps_status=0
+    fi
+  fi
+fi
+
+# if no player is running
+if test "$mpd" = "no" -a "$cmus" = "no" -a "$ps" = "no"; then
   printf ""
   tmux set-option -g status-interval $IDLE_UPDATE_INTERVAL
   exit
@@ -66,6 +91,13 @@ elif test "$mpd" = "yes"; then
   duration=$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f2)
   title=$(printf "%s" "$mpd_info" | awk '$1 ~ /^Title:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')
   artist=$(printf "%s" "$mpd_info" | awk '$1 ~ /^Artist:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')
+elif test "$ps" = "yes"; then
+  # ps is running
+  status=$ps_status
+  position="$(printf "%s" "$ps_info" | sed -n 's/^position://p')"
+  duration=$(printf "%s" "$ps_info" | sed -n 's/^duration://p')
+  title=$(printf "%s" "$ps_info" | sed -n 's/^title://p')
+  artist=$(printf "%s" "$ps_info" | sed -n 's/^artist://p')
 fi
 
 _scrolling_text() {
@@ -99,7 +131,11 @@ fi
 
 if test $status -ne 0; then
   symbol="▶"
-  tmux set-option -g status-interval $PLAYING_UPDATE_INTERVAL
+  if test "$slow" = "yes"; then
+    tmux set-option -g status-interval $PLAYING_UPDATE_INTERVAL_SLOW
+  else
+    tmux set-option -g status-interval $PLAYING_UPDATE_INTERVAL
+  fi
 else
   symbol=" "
   tmux set-option -g status-interval $IDLE_UPDATE_INTERVAL
