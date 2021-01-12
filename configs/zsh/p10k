@@ -415,8 +415,8 @@
     (( VCS_STATUS_PUSH_COMMITS_BEHIND )) && head_status+="${clean}⇠${VCS_STATUS_PUSH_COMMITS_BEHIND}"
     # ⇢42 if ahead of the push remote; no leading space if also behind: ⇠42⇢42.
     (( VCS_STATUS_PUSH_COMMITS_AHEAD  )) && head_status+="${clean}⇢${VCS_STATUS_PUSH_COMMITS_AHEAD}"
-    # *42 if have stashes.
-    (( VCS_STATUS_STASHES        )) && head_status+="${clean}*"
+    # $42 if have stashes.
+    (( VCS_STATUS_STASHES        )) && head_status+="${clean}\$"
     # 'merge' if the repo is in an unusual state.
     [[ -n $VCS_STATUS_ACTION     ]] && head_status+="${conflicted}"
     # ~42 if have merge conflicts.
@@ -425,6 +425,8 @@
     (( VCS_STATUS_NUM_STAGED     )) && head_status+="${modified}+"
     # !42 if have unstaged changes.
     (( VCS_STATUS_NUM_UNSTAGED   )) && head_status+="${modified}!"
+    # ✘42 if have staged deleted changes.
+    (( VCS_STATUS_NUM_STAGED_DELETED )) && head_status+="${modified}✘"
     # ?42 if have untracked files. It's really a question mark, your font isn't broken.
     # See POWERLEVEL9K_VCS_UNTRACKED_ICON above if you want to use a different icon.
     # Remove the next line if you don't want to see untracked files at all.
