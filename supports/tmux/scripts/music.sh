@@ -80,7 +80,7 @@ _scrolling_text() {
   if test "$text_length" -gt $size; then
     local index=$(( $offset % ($text_length + 3) ))
     local padded_text="$text   $text"
-    printf "%s" "${padded_text:$index:$size}"
+    printf "%s" "$padded_text" | cut -c"$index-$(( $index + $size ))"
   else
     printf "%s" "$text"
   fi
