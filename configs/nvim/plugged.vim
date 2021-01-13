@@ -34,6 +34,12 @@ Plug 'tpope/vim-speeddating'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'wellle/tmux-complete.vim'
 
+" Experimental: A replacement for coc.nvim
+" Currently need to manually install a language server as opposed to coc.nvim
+"   where you can have it auto install for you with less hassle
+" Plug 'neovim/nvim-lspconfig'
+" Plug 'nvim-lua/completion-nvim'
+
 " Debugging
 Plug 'puremourning/vimspector'
 
@@ -44,7 +50,6 @@ Plug 'szw/vim-maximizer'
 Plug 'Yggdroot/indentLine'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'AndrewRadev/linediff.vim'
-Plug 'machakann/vim-highlightedyank'
 
 " Navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -59,7 +64,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-rsi'
 Plug 'wellle/targets.vim'
 Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
-" Plug 'yuttie/comfortable-motion.vim' " Disabled due to screen lags
+" Plug 'psliwka/vim-smoothie' # smooth scrolling
 Plug 'justinmk/vim-sneak'
 
 " Syntax Highlight
@@ -67,7 +72,7 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'sheerun/vim-polyglot'
 Plug 'kien/rainbow_parentheses.vim'
 if has('nvim-0.5')
-  Plug 'nvim-treesitter/nvim-treesitter' " Experimental until nvim-0.5
+  Plug 'nvim-treesitter/nvim-treesitter', { 'do': 'TSUpdate' } " Experimental until nvim-0.5
 endif
 
 " Linting
@@ -129,250 +134,10 @@ augroup lazyload_plugins
   autocmd CursorHold * call plug#load('vim-tmux-navigator') | autocmd! lazyload_plugins
 augroup END
 
-" nvim-tree.lua
-let g:nvim_tree_icons = {
-\   'default': ' '
-\ }
-let g:nvim_tree_ignore = ['.git', '.DS_Store']
-let g:nvim_tree_follow = 1
-
-" show cursorline when browsing in the tree explorer
-autocmd BufEnter,FileType NvimTree let &cursorline=1
-
-" NERDCommenter
-let g:NERDSpaceDelims = 1
-
-" vim-markdown
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_conceal_code_blocks = 0
-
-" fzf
-let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.9, 'height': 0.9,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
-let g:fzf_preview_window = 'right:50%'
-
-" Coc
-let g:coc_global_extensions = [
-\   'coc-css',
-\   'coc-emmet',
-\   'coc-html',
-\   'coc-json',
-\   'coc-omnisharp',
-\   'coc-python',
-\   'coc-rls',
-\   'coc-sh',
-\   'coc-tsserver',
-\   'coc-yaml',
-\ ]
-
-" ALE
-" Only run on open or save file
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 0
-
-" QuickUI
-let g:quickui_show_tip = 1
-let g:quickui_border_style = 2
-let g:quickui_color_scheme = 'papercol dark'
-
-call quickui#menu#reset()
-
-call quickui#menu#install('&File', [
-\   ["&New Buffer\t:enew", 'enew', 'Create a new empty buffer in current window'],
-\   ["New &Vertical Buffer\t:vnew", 'vnew', 'Create a new empty buffer in a new vertical split'],
-\   ['--'],
-\   ["&Save\t,w", 'write', 'Save changes on current buffer'],
-\   ["Save &All\t:wall", 'wall', 'Save changes on all buffers'],
-\   ['--'],
-\   ["&Reload %{&modified?'Unsaved ':''}Buffer\t:edit!", 'edit!', 'Reload current buffer'],
-\   ["Close &Window\t<C-w>q", 'close', 'Close current window'],
-\   ["&Close %{&modified?'Unsaved ':''}Buffer\t<A-w>", 'bdelete!', 'Close current buffer'],
-\   ["Close &Others\t<A-w>", '%bd | e# | bd#', 'Close all buffers including no name except current one'],
-\ ])
-call quickui#menu#install('&Edit', [
-\   ["&Undo\tu", 'undo', 'Undo the latest change'],
-\   ["&Redo\t<C-y>", 'redo', 'Redo the latest change'],
-\   ['--'],
-\   ["&Cut\td", 'delete', 'Cut the current line into the yank register'],
-\   ["Cop&y\ty", 'yank', 'Yank the current line into the yank register'],
-\   ["&Paste\tp", 'put', 'Put the content in yank register after the cursor'],
-\   ['--'],
-\   ["F&ind\t:<leader>/", 'BLines', 'Initiate a search mode'],
-\   ["&Find in Files\t:<leader>f", 'Rg', 'Search for pattern across the project'],
-\   ['--'],
-\   ["Toggle &Line Comment\t<leader>c<space>", 'call NERDComment("n", "Toggle")', 'Toggle line comments'],
-\   ["Insert &Block Comment\t<leader>cs>", 'call NERDComment("n", "Sexy")', 'Insert block comments'],
-\ ])
-call quickui#menu#install('&View', [
-\   [" Command &Palette\t:Commands", 'Commands', 'Open a command list'],
-\   ['--'],
-\   ["%{exists('w:indentLine_indentLineId') && ! empty(w:indentLine_indentLineId)?'✓':' '}Render &Indent Guides\t:IndentLinesToggle", 'IndentLinesToggle', 'Toggle indentation guide lines'],
-\   ["%{&list?'✓':' '}&Render Whitespace\t:set invlist", 'set invlist | LeadingSpaceToggle', 'Toggle render of whitespace characters'],
-\   ["%{&wrap?'✓':' '}&Word Wrap\t:set invwrap", 'set invwrap', 'Toggle a word wrap'],
-\   ['--'],
-\   ["%{&spell?'✓':' '}&Spell Check\t:set invspell", 'set invspell', 'Toggle a spell check'],
-\   ["%{&cursorline?'✓':' '}Cursor &Line\t:set invcursorline", 'set invcursorline', 'Toggle render of current cursor line'],
-\   ["%{&cursorcolumn?'✓':' '}Cursor &Column\t:set invcursorcolumn", 'set invcursorcolumn', 'Toggle render of current cursor column'],
-\ ])
-
-" Lightline-bufferline
-let g:lightline#bufferline#enable_devicons = 1
-let g:lightline#bufferline#min_buffer_count = 2
-
-" Lightline
-let g:lightline = {
-\   'colorscheme': 'n0rd',
-\ }
-
-let g:lightline.tabline = {
-\   'left': [
-\     ['buffers']
-\   ],
-\   'right': [
-\     []
-\   ],
-\ }
-
-let g:lightline.component_expand = {
-\   'linter_checking': 'lightline#ale#checking',
-\   'linter_infos': 'lightline#ale#infos',
-\   'linter_warnings': 'lightline#ale#warnings',
-\   'linter_errors': 'lightline#ale#errors',
-\   'linter_ok': 'lightline#ale#ok',
-\   'buffers': 'lightline#bufferline#buffers',
-\ }
-
-let g:lightline.component_type = {
-\   'linter_checking': 'right',
-\   'linter_infos': 'right',
-\   'linter_warnings': 'warning',
-\   'linter_errors': 'error',
-\   'linter_ok': 'right',
-\   'buffers': 'tabsel',
-\ }
-
-function! LightlineMode()
-  return &ft !=? 'nvimtree' ? lightline#mode() : ''
-endfunction
-
-function! LightlineBranch()
-  return &ft !=? 'nvimtree' ? FugitiveHead() : ''
-endfunction
-
-function! LightlineReadonly()
-  return &ft !=? 'nvimtree' && &readonly ? 'RO' : ''
-endfunction
-
-function! LightlineModified()
-  return &ft !=? 'nvimtree' && &modified ? '+' : ''
-endfunction
-
-function! LightlineRelativePath()
-  return &ft !=? 'nvimtree' ? expand('%:f') != '' ? expand('%:f') : '[no name]' : 'Explorer'
-endfunction
-
-function! LightlineLineInfo()
-  return &ft !=? 'nvimtree' ? line('.') . ':' . col('.') : ''
-endfunction
-
-function! LightlinePercent()
-  return &ft !=? 'nvimtree' ? line('.') * 100 / line('$') . '%' : ''
-endfunction
-
-function! LightlineFileFormat()
-  return &ft !=? 'nvimtree' ? &ff : ''
-endfunction
-
-function! LightlineFileEncoding()
-  return &ft !=? 'nvimtree' ? &enc : ''
-endfunction
-
-function! LightlineFileType()
-  return &ft !=? 'nvimtree' ? &filetype : ''
-endfunction
-
-let g:lightline.component_function = {
-\   'obsession': 'ObsessionStatus',
-\   'gitbranch': 'LightlineBranch',
-\   'mode': 'LightlineMode',
-\   'readonly': 'LightlineReadonly',
-\   'modified': 'LightlineModified',
-\   'relativepath': 'LightlineRelativePath',
-\   'lineinfo': 'LightlineLineInfo',
-\   'percent': 'LightlinePercent',
-\   'fileformat': 'LightlineFileFormat',
-\   'fileencoding': 'LightlineFileEncoding',
-\   'filetype': 'LightlineFileType'
-\ }
-
-let g:lightline.inactive = {
-\   'left': [
-\     [],
-\     ['relativepath']
-\   ],
-\   'right': [
-\     ['lineinfo'],
-\     ['percent']
-\   ]
-\ }
-
-let g:lightline.active = {
-\   'left': [
-\     ['mode', 'paste'],
-\     ['gitbranch', 'readonly', 'relativepath', 'modified']
-\   ],
-\   'right': [
-\     [
-\       'linter_ok',
-\       'linter_checking',
-\       'linter_errors',
-\       'linter_warnings',
-\       'linter_infos'
-\     ],
-\     ['lineinfo'],
-\     ['percent'],
-\     [
-\       'fileformat',
-\       'fileencoding',
-\       'filetype'
-\     ],
-\     ['obsession'],
-\   ]
-\ }
-
-" speed-dating
-" Disabled as we will map switch.vim and speeddating ourselves
-let g:speeddating_no_mappings = 1
-
-" vim-rooter
-let g:rooter_silent_chdir = 1
-
-" indentLine
-let g:indentLine_char = '|'
-let g:indentLine_leadingSpaceChar = '·'
-let g:indentLine_fileTypeExclude = ['text', 'startify']
-
-" startify
-let g:startify_files_number = 20
-let g:startify_fortune_use_unicode = 1
-let g:startify_enable_special = 0
-let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
-
-lua <<EOF
-function _G.GetIcons(path)
-  local filename = vim.api.nvim_eval("fnamemodify('"..path.."', ':t')")
-  local extension = vim.api.nvim_eval("fnamemodify('"..path.."', ':e')")
-  local icon, hl_group = require'nvim-web-devicons'.get_icon(filename, extension, { default = true })
-  if icon then
-    return icon.." "
-  else
-    return ""
-  end
-end
-EOF
-
-function! StartifyEntryFormat()
-  return 'v:lua.GetIcons(absolute_path) . " " . entry_path'
-endfunction
+augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 300})
+augroup END
 
 " Running some patches
 source ~/.config/nvim/monkey-patch.vim

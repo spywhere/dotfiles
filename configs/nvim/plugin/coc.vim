@@ -1,14 +1,15 @@
-" if hidden is not set, TextEdit might fail.
-set hidden
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
-" always show signcolumns
-set signcolumn=yes
+let g:coc_global_extensions = [
+\   'coc-css',
+\   'coc-emmet',
+\   'coc-html',
+\   'coc-json',
+\   'coc-omnisharp',
+\   'coc-python',
+\   'coc-rls',
+\   'coc-sh',
+\   'coc-tsserver',
+\   'coc-yaml',
+\ ]
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -58,4 +59,3 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " use `:OR` for organize import of current buffer
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-

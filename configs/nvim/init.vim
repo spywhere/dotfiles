@@ -16,6 +16,10 @@ set noshowmode
 set showmatch
 " Yank into system clipboard as well
 set clipboard=unnamed
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+" always show signcolumns
+set signcolumn=yes
 
 set wildignore=*.o,*~,*.pyc
 
@@ -66,5 +70,4 @@ source ~/.config/nvim/plugged.vim
 if exists("g:init_vim_loaded")
   source ~/.config/nvim/keymap.vim
   source ~/.config/nvim/commands.vim
-  source ~/.config/nvim/coc.vim
 endif
