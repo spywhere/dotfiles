@@ -1,0 +1,22 @@
+#!/bin/bash
+DOTFILES_NAME=.dots
+
+# increase history size
+export HISTSIZE=1000000
+export SAVEHIST=100000
+
+# use ripgrep by default for fzf
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
+
+# zsh-you-should-use
+export YSU_MESSAGE_POSITION="after"
+export YSU_IGNORED_ALIASES=("g" "ga." "d" "vi" "vim")
+
+# export binaries to path
+export PATH=$HOME/$DOTFILES_NAME/binaries:$PATH
+
+# setup locales, to fix...
+# - https://github.com/jwilm/alacritty/issues/2566
+# - https://github.com/neovim/neovim/issues/5683
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8

@@ -97,7 +97,7 @@ if test -d /opt/homebrew/bin; then
 fi
 
 # early set the variables for terminal and tmux to use
-. $HOME/$DOTFILES_NAME/configs/zsh/variables
+. $HOME/$DOTFILES_NAME/configs/zsh/setup
 
 if test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
   source ~/.zsh_plugins.startup
@@ -112,11 +112,7 @@ test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/con
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
-
-if test "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
-  export DOTNET_ROOT="$(asdf where dotnet-core)"
-  export PATH="$DOTNET_ROOT:$PATH"
-fi
+. $HOME/$DOTFILES_NAME/configs/zsh/variables
 
 # Use personalize settings if found as well
 test -f ~/.personal && source ~/.personal
@@ -133,6 +129,3 @@ fi
 if test -n "$(command -v gh)"; then
   . <(gh completion -s zsh)
 fi
-
-# Export binaries
-export PATH=$HOME/$DOTFILES_NAME/bin:$PATH
