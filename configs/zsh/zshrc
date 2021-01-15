@@ -113,6 +113,11 @@ test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/con
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
 
+if test "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
+  export DOTNET_ROOT="$(asdf where dotnet-core)"
+  export PATH="$DOTNET_ROOT:$PATH"
+fi
+
 # Use personalize settings if found as well
 test -f ~/.personal && source ~/.personal
 
