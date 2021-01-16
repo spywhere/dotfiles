@@ -1,5 +1,8 @@
 jest
-typescript
 eslint
 neovim
+bash-language-server
+typescript-language-server
+vim-language-server
+typescript
 vsce

@@ -12,16 +12,16 @@ let g:lightline.tabline = {
 \ }
 
 let g:lightline.component_expand = {
-\   'linter_checking': 'lightline#ale#checking',
-\   'linter_infos': 'lightline#ale#infos',
-\   'linter_warnings': 'lightline#ale#warnings',
-\   'linter_errors': 'lightline#ale#errors',
-\   'linter_ok': 'lightline#ale#ok',
+\   'linter_hints': 'lightline#lsp#hints',
+\   'linter_infos': 'lightline#lsp#infos',
+\   'linter_warnings': 'lightline#lsp#warnings',
+\   'linter_errors': 'lightline#lsp#errors',
+\   'linter_ok': 'lightline#lsp#ok',
 \   'buffers': 'lightline#bufferline#buffers',
 \ }
 
 let g:lightline.component_type = {
-\   'linter_checking': 'right',
+\   'linter_hints': 'right',
 \   'linter_infos': 'right',
 \   'linter_warnings': 'warning',
 \   'linter_errors': 'error',
@@ -102,10 +102,10 @@ let g:lightline.active = {
 \   'right': [
 \     [
 \       'linter_ok',
-\       'linter_checking',
 \       'linter_errors',
 \       'linter_warnings',
-\       'linter_infos'
+\       'linter_infos',
+\       'linter_hints'
 \     ],
 \     ['lineinfo'],
 \     ['percent'],
