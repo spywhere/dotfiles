@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set dotnet root and its binary to have it running properly with coc.nvim
-if test "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
+if test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
   export DOTNET_ROOT="$(asdf where dotnet-core)"
   export PATH="$DOTNET_ROOT:$PATH"
 fi
