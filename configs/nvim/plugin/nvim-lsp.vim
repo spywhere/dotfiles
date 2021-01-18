@@ -31,6 +31,11 @@ nnoremap <silent> ]d :lua vim.lsp.diagnostic.goto_next()<cr>
 
 command! Format execute 'lua vim.lsp.buf.formatting()'
 
+sign define LspDiagnosticsSignError text=• texthl=LspDiagnosticsSignError linehl= numhl=
+sign define LspDiagnosticsSignWarning text=• texthl=LspDiagnosticsSignWarning linehl= numhl=
+sign define LspDiagnosticsSignInformation text=• texthl=LspDiagnosticsSignInformation linehl= numhl=
+sign define LspDiagnosticsSignHint text=• texthl=LspDiagnosticsSignHint linehl= numhl=
+
 lua << EOF
   local nvim_lsp = require('lspconfig')
   local on_attach = function(client, bufnr)
@@ -61,12 +66,6 @@ lua << EOF
     }
   end
 
-  -- setup omnisharp language server
-  local pid = vim.fn.getpid()
-  nvim_lsp.omnisharp.setup{
-    cmd = { 'omnisharp', '--languageserver' , '--hostPID', tostring(pid) },
-    on_attach = on_attach
-  }
 
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -76,11 +75,57 @@ lua << EOF
       virtual_text = false,
       -- Use a function to dynamically turn signs off
       -- and on, using buffer local variables
-      signs = true,
+      signs = { priority = 30 },
       -- Disable a feature
       update_in_insert = false,
     }
   )
+EOF
+
+lua << EOF
+  local nvim_lsp = require('lspconfig')
+  local util = require('lspconfig/util')
+
+  local base_install_dir = util.path.join(vim.fn.stdpath("cache"), "lspconfig")
+  local install_dir = util.path.join{base_install_dir, 'omnisharp'}
+  local url = 'linux-x64'
+  local bin_name = 'run'
+
+  if vim.fn.has('win32') == 1 then
+    url = 'win-x64'
+    bin_name = 'Omnisharp.exe'
+  elseif vim.fn.has('mac') == 1 then
+    url = 'osx'
+  end
+  local bin_path = util.path.join{install_dir, bin_name}
+
+  local download_target = util.path.join{install_dir, string.format("omnisharp-%s.zip", url)}
+  local extract_cmd = string.format("unzip '%s' -d '%s'", download_target, install_dir)
+  local download_cmd = string.format('curl -fLo "%s" --create-dirs "https://github.com/OmniSharp/omnisharp-roslyn/releases/latest/download/omnisharp-%s.zip"', download_target, url)
+  local make_executable_cmd = string.format("chmod u+x '%s'", bin_path)
+
+  if not util.path.exists(bin_path) then
+    if not (util.has_bins("curl")) then
+      error('Need "curl" to install omnisharp language server.')
+      return
+    end
+    if not (util.has_bins("unzip")) then
+      error('Need "unzip" to install omnisharp language server.')
+      return
+    end
+    vim.fn.mkdir(install_dir, 'p')
+    vim.fn.system(download_cmd)
+    print('Installing omnisharp...')
+    vim.fn.system(extract_cmd)
+    vim.fn.system(make_executable_cmd)
+  end
+
+  -- setup omnisharp language server
+  local pid = vim.fn.getpid()
+  nvim_lsp.omnisharp.setup{
+    cmd = { bin_path, '--languageserver' , '--hostPID', tostring(pid) },
+    on_attach = on_attach
+  }
 EOF
 
 let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
