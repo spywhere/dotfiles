@@ -412,7 +412,7 @@
     # $42 if have stashes.
     (( VCS_STATUS_STASHES        )) && head_status+="${clean}\$"
     # 'merge' if the repo is in an unusual state.
-    [[ -n $VCS_STATUS_ACTION     ]] && head_status+="${conflicted}"
+    [[ -n $VCS_STATUS_ACTION     ]] && head_status+="${conflicted}^"
     # ~42 if have merge conflicts.
     (( VCS_STATUS_NUM_CONFLICTED )) && head_status+="${conflicted}~"
     # +42 if have staged changes.
