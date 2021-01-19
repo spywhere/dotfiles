@@ -7,8 +7,6 @@ if test "$(uname)" = "Darwin" -o "$(uname -r | sed 's/.*Microsoft.*/microsoft/g'
     docker_info=$(docker info 2>&1)
     if test $? -eq 0; then
       docker_start=""
-    else
-      echo nope $?
     fi
     if echo $docker_info | grep "refused"; then
       docker_start=""
