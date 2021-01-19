@@ -123,12 +123,13 @@ if !exists('g:init_vim_loaded')
 endif
 
 " Automatically install missing plugins on startup
-autocmd VimEnter *
-\  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-\  |   PlugInstall --sync | q
-\  | endif
-
-syntax on
+augroup install_missing
+  autocmd!
+  autocmd VimEnter *
+  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \  |   PlugInstall --sync | q
+  \  | endif
+augroup END
 
 augroup lazyload_plugins
   autocmd!
@@ -142,24 +143,6 @@ augroup END
 
 " Running some patches
 source ~/.config/nvim/monkey-patch.vim
-
-if (has("termguicolors"))
-  set termguicolors
-endif
-" colorizer
-lua require'colorizer'.setup()
-
-" treesitter
-if has('nvim-0.5')
-  lua <<EOF
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = 'all',
-    highlight = {
-      enable = true
-    }
-  }
-EOF
-endif
 
 " Try to startup autocommand manually on first install completion
 if exists('g:first_install')
