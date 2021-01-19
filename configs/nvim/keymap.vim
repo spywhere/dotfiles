@@ -5,9 +5,21 @@ map nf :NvimTreeFindFile<cr>
 " kill the annoyance
 nnoremap Q <Nop>
 noremap <PageUp> <Nop>
+inoremap <PageUp> <Nop>
 noremap <PageDown> <Nop>
+inoremap <PageDown> <Nop>
 noremap <A-PageUp> <Nop>
+inoremap <A-PageUp> <Nop>
 noremap <A-PageDown> <Nop>
+inoremap <A-PageDown> <Nop>
+noremap <S-PageUp> <Nop>
+inoremap <S-PageUp> <Nop>
+noremap <S-PageDown> <Nop>
+inoremap <S-PageDown> <Nop>
+noremap <A-S-PageUp> <Nop>
+inoremap <A-S-PageUp> <Nop>
+noremap <A-S-PageDown> <Nop>
+inoremap <A-S-PageDown> <Nop>
 
 " arrow keys resize pane
 nnoremap <A-S-Left> :vertical resize -5<cr>
