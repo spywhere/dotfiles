@@ -114,14 +114,40 @@ lua << EOF
       return
     end
     vim.fn.mkdir(install_dir, 'p')
+    vim.cmd('redraw')
+    vim.cmd('echo "Downloading omnisharp..."')
     vim.fn.system(download_cmd)
-    print('Installing omnisharp...')
+    vim.cmd('redraw')
+    vim.cmd('echo "Installing omnisharp..."')
     vim.fn.system(extract_cmd)
     vim.fn.system(make_executable_cmd)
+    vim.cmd('redraw')
+    vim.cmd('echo "Omnisharp has been installed"')
   end
 
   -- setup omnisharp language server
   local pid = vim.fn.getpid()
+
+  local on_attach = function(client, bufnr)
+    require('completion').on_attach(client)
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    if client.resolved_capabilities.document_highlight then
+      require('lspconfig').util.nvim_multiline_command [[
+        :hi default link LspReferenceRead CursorColumn
+        :hi default link LspReferenceText CursorColumn
+        :hi default link LspReferenceWrite CursorColumn
+        augroup lsp_document_highlight
+          autocmd!
+          autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+          autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+        augroup END
+      ]]
+    end
+  end
+
   nvim_lsp.omnisharp.setup{
     cmd = { bin_path, '--languageserver' , '--hostPID', tostring(pid) },
     on_attach = on_attach
