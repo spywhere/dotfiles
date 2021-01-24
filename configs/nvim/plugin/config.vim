@@ -15,7 +15,7 @@ set clipboard=unnamed
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
 " always show signcolumns
-set signcolumn=yes
+set signcolumn=auto:1-3
 
 set wildignore=*.o,*~,*.pyc
 
