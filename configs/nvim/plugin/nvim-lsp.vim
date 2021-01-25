@@ -42,8 +42,6 @@ lua << EOF
     require('completion').on_attach(client)
     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
     if client.resolved_capabilities.document_highlight then
       require('lspconfig').util.nvim_multiline_command [[
         :hi default link LspReferenceRead CursorColumn
@@ -131,8 +129,6 @@ lua << EOF
   local on_attach = function(client, bufnr)
     require('completion').on_attach(client)
     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     if client.resolved_capabilities.document_highlight then
       require('lspconfig').util.nvim_multiline_command [[
