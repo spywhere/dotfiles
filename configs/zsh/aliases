@@ -4,8 +4,10 @@ DOTFILES_NAME=.dots
 # Ctrl+Z will send the process to background, use "resume" to bring it back
 alias resume="fg"
 
-# Kill the annoyance
-alias ga.='ga .'
+# git
+alias gfp="git fetch --prune"
+# kill the annoyance
+alias ga.="ga ."
 
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
@@ -41,7 +43,7 @@ else
 fi
 
 # Docker
-alias d='docker'
+alias d="docker"
 
 _test_alias() {
   test ${+aliases[$1]} -eq 1
@@ -147,10 +149,10 @@ else
   alias vol="amixer set Master"
 fi
 
-# TMUX
+# tmux
 alias tmux="tmux -2"
 
-# NVIM
+# nvim
 alias vim="nvim"
 alias vi="nvim"
 alias nvim-profile="nvim --startuptime vim.log -c 'qa!' && cat vim.log && rm -f vim.log"
