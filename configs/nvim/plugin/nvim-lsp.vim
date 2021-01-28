@@ -43,7 +43,7 @@ lua << EOF
     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
     if client.resolved_capabilities.document_highlight then
-      require('lspconfig').util.nvim_multiline_command [[
+      vim.api.nvim_exec([[
         :hi default link LspReferenceRead CursorColumn
         :hi default link LspReferenceText CursorColumn
         :hi default link LspReferenceWrite CursorColumn
@@ -52,7 +52,7 @@ lua << EOF
           autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
           autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
         augroup END
-      ]]
+      ]], false)
     end
   end
 
@@ -131,7 +131,7 @@ lua << EOF
     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
     if client.resolved_capabilities.document_highlight then
-      require('lspconfig').util.nvim_multiline_command [[
+      vim.api.nvim_exec([[
         :hi default link LspReferenceRead CursorColumn
         :hi default link LspReferenceText CursorColumn
         :hi default link LspReferenceWrite CursorColumn
@@ -140,7 +140,7 @@ lua << EOF
           autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
           autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
         augroup END
-      ]]
+      ]], false)
     end
   end
 
