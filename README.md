@@ -15,13 +15,13 @@
 ## Just run
 
 ```sh
-sh -c "$(curl -sSL bit.do/spywhere-dotfiles)"
+sh -c "$(curl -sSL bit.do/spywhere-dots-install)"
 ```
 
 or
 
 ```sh
-sh -c "$(curl -sSL git.io/JvZB8)"
+sh -c "$(curl -sSL git.io/Jt8w0)"
 ```
 
 ## Development
