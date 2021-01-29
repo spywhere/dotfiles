@@ -7,7 +7,6 @@ set -e
 ########################
 
 CLONE_REPO="https://github.com/spywhere/dotfiles"
-CLONE_REPO_BRANCH="modular-wip"
 
 CURRENT_DIR=$(pwd)
 FLAGS=$@
