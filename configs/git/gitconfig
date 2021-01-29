@@ -4,6 +4,8 @@
   pager = delta
   compression = 9
   preloadIndex = true
+[init]
+	defaultBranch = main
 [delta]
   syntax-theme = Nord
 [interactive]
