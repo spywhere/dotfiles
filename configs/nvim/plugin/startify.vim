@@ -3,6 +3,11 @@ let g:startify_fortune_use_unicode = 1
 let g:startify_enable_special = 0
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
+let g:startify_lists = [
+\ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+\ { 'type': 'files',     'header': ['   MRU']            },
+\ ]
+
 lua <<EOF
 function _G.GetIcons(path)
   local filename = vim.api.nvim_eval("fnamemodify('"..path.."', ':t')")
