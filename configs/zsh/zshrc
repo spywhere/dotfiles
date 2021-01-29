@@ -80,12 +80,13 @@ if test ! -f ~/.zsh_plugins.startup -o ! -f ~/.zsh_plugins.base -o ! -f ~/.zsh_p
   echo "ohmyzsh/ohmyzsh path:plugins/httpie" >> ~/.zsh_plugins.base.list
   echo "ohmyzsh/ohmyzsh path:plugins/npm" >> ~/.zsh_plugins.base.list
 
-  echo -n "Installing startup plugins..."
+  echo -n "Installing startup plugins...\\r"
   antibody bundle < ~/.zsh_plugins.startup.list > ~/.zsh_plugins.startup
-  echo -en "\\rInstalling plugins...        "
+  echo -en "Installing plugins...        \\r"
   antibody bundle < ~/.zsh_plugins.base.list > ~/.zsh_plugins.base
+  echo -en "Installing prompt... \\r"
   antibody bundle < ~/.zsh_plugins.prompt.list > ~/.zsh_plugins.prompt
-  echo -e "\\rReady                 "
+  echo -e "Ready                "
 
   rm -rf ~/.zsh_plugins.startup.list
   rm -rf ~/.zsh_plugins.base.list
