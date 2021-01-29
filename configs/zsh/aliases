@@ -5,7 +5,9 @@ DOTFILES_NAME=.dots
 alias resume="fg"
 
 # git
-alias gfp="git fetch --prune"
+alias gfp="gf --prune"
+alias glgfp="glg --first-parent"
+alias glggfp="glgg --first-parent"
 # kill the annoyance
 alias ga.="ga ."
 
