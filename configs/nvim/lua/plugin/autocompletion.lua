@@ -227,6 +227,9 @@ local setup_lsps = function ()
     bashls = {
       executable = 'bash-language-server'
     },
+    metals = {
+      executable = 'metals'
+    },
     omnisharp = {
       pre = install_omnisharp,
       cmd = function (bin_path)
