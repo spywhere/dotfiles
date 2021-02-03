@@ -7,7 +7,7 @@ registry.post(function ()
       return fn['lightline#mode']()
     end,
     Branch = function ()
-      return fn.FugitiveHead()
+      return fn['gitbranch#name']()
     end,
     Readonly = function ()
       if vim.bo.readonly then
