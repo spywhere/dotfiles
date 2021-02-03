@@ -164,6 +164,12 @@ local install_omnisharp = function ()
 
   local commands = {
     {
+      error = 'Error while preparing to install omnisharp',
+      command = function ()
+        vim.fn.mkdir(install_dir, 'p')
+      end
+    },
+    {
       message = 'Downloading omnisharp...',
       error = 'Error while downloading omnisharp',
       command = 'curl',
@@ -212,7 +218,6 @@ local install_omnisharp = function ()
       error('Need "unzip" to install omnisharp language server.')
       return
     end
-    vim.fn.mkdir(install_dir, 'p')
     _M.iterate_commands(commands, 1, 'Omnisharp has been installed')
   end
 
