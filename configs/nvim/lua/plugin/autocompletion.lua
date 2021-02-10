@@ -146,16 +146,38 @@ local install_omnisharp = function ()
     'lspconfig'
   )
   local install_dir = util.path.join { base_install_dir, 'omnisharp' }
+
   local url = 'linux-x64'
   local bin_name = 'run'
+  local update_bin_permission = true
 
   if vim.fn.has('win32') == 1 then
     url = 'win-x64'
-    bin_name = 'Omnisharp.exe'
+    bin_name = 'OmniSharp.exe'
+    update_bin_permission = false
   elseif vim.fn.has('mac') == 1 then
     url = 'osx'
+    bin_name = 'run'
+    update_bin_permission = true
   end
+
+  -- use mono version if mono is installed
+  if util.has_bins('mono') then
+    url = 'mono'
+    bin_name = 'OmniSharp.exe'
+    update_bin_permission = false
+  end
+
   local bin_path = util.path.join { install_dir, bin_name }
+  local omnisharp_run_command = {
+    bin_path
+  }
+
+  if url == 'mono' then
+    omnisharp_run_command = {
+      'mono', bin_path
+    }
+  end
 
   local download_target = util.path.join {
     install_dir,
@@ -170,7 +192,7 @@ local install_omnisharp = function ()
       end
     },
     {
-      message = 'Downloading omnisharp...',
+      message = string.format('Downloading omnisharp (%s)...', url),
       error = 'Error while downloading omnisharp',
       command = 'curl',
       options = {
@@ -196,8 +218,11 @@ local install_omnisharp = function ()
           install_dir
         }
       }
-    },
-    {
+    }
+  }
+
+  if update_bin_permission then
+    table.insert(commands, {
       error = 'Error while making omnisharp executable',
       command = 'chmod',
       options = {
@@ -206,8 +231,20 @@ local install_omnisharp = function ()
           bin_path
         }
       }
+    })
+  end
+
+  table.insert(commands, {
+    message = 'Cleaning up downloaded files...',
+    error = 'Error while cleaning up downloaded files',
+    command = 'rm',
+    options = {
+      args = {
+        '-f',
+        download_target
+      }
     }
-  }
+  })
 
   if not util.path.exists(bin_path) then
     if not (util.has_bins('curl')) then
@@ -221,7 +258,7 @@ local install_omnisharp = function ()
     _M.iterate_commands(commands, 1, 'Omnisharp has been installed')
   end
 
-  return bin_path
+  return omnisharp_run_command
 end
 
 local setup_lsps = function ()
@@ -237,11 +274,12 @@ local setup_lsps = function ()
     },
     omnisharp = {
       pre = install_omnisharp,
-      cmd = function (bin_path)
+      cmd = function (command)
         local pid = fn.getpid()
-        return {
-          bin_path, '--languageserver', '--hostPID', tostring(pid)
-        }
+        table.insert(command, '--languageserver')
+        table.insert(command, '--hostPID')
+        table.insert(command, tostring(pid))
+        return command
       end
     },
     tsserver = {
