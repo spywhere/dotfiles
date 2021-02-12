@@ -18,7 +18,7 @@ fi
 
 if test "$mpd" = "yes"; then
   _mpd_music() {
-    sh -c '(printf "status\ncurrentsong\nclose\n"; sleep 0.05) | nc $MPD_HOST $MPD_PORT'
+    sh -c "(printf \"status\ncurrentsong\nclose\n\"; sleep 0.05) | nc $MPD_HOST $MPD_PORT"
   }
   mpd_info=$(_cache_value mpd_info _mpd_music)
   if test "$(printf "%s" "$mpd_info" | awk '$1 ~ /^state:/ { print $2 }')" = "play"; then
