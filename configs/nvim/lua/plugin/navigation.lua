@@ -18,7 +18,7 @@ registry.defer(function ()
       border = 'sharp'
     }
   }
-  vim.g.fzf_preview_window = 'right:50%'
+  vim.g.fzf_preview_window =  { 'right:50%', 'ctrl-/' }
 end)
 registry.defer(function ()
   bindings.map.normal('<C-p>', '<cmd>Files<cr>')
@@ -111,6 +111,7 @@ registry.defer(function ()
 
       local default_layout = {
         options = {
+          '--prompt=RG> ',
           '--phony',
           '--query',
           modifiers.args,
