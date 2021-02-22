@@ -79,8 +79,28 @@ end
 
 local define_sign = function (name, arguments)
   local expression = { 'sign', 'define', name }
-  for key, value in pairs(arguments) do
-    table.insert(expression, key .. '=' .. value)
+  for k, v in pairs(arguments) do
+    if type(k) == 'string' and type(v) == 'string' then
+      table.insert(expression, string.format('%s=%s', k, v))
+    elseif type(k) == 'number' and type(v) == 'string' then
+      table.insert(expression, v)
+    end
+  end
+  api.nvim_command(table.concat(expression, ' '))
+end
+
+local define_highlight = function (name, colors)
+  local expression = { 'highlight', name }
+  if type(colors) == 'string' then
+    table.insert(expression, colors)
+  elseif type(colors) == 'table' then
+    for k, v in pairs(colors) do
+      if type(k) == 'string' and type(v) == 'string' then
+        table.insert(expression, string.format('%s=%s', k, v))
+      elseif type(k) == 'number' and type(v) == 'string' then
+        table.insert(expression, v)
+      end
+    end
   end
   api.nvim_command(table.concat(expression, ' '))
 end
@@ -100,6 +120,7 @@ M.sign = {
   define = define_sign
 }
 M.highlight = {
+  define = define_highlight,
   link = link_highlight
 }
 
