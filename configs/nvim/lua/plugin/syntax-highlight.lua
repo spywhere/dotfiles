@@ -15,12 +15,7 @@ end)
 registry.defer(function ()
   require('colorizer').setup()
 end)
-registry.install('sheerun/vim-polyglot', { lazy = 'vim-polyglot' })
 registry.install('kien/rainbow_parentheses.vim')
-
-local disable_polyglot = function ()
-  vim.g.polyglot_disabled = { 'javascript' }
-end
 
 if fn.has('nvim-0.5') then
   -- Experimental until nvim-0.5
@@ -35,6 +30,4 @@ if fn.has('nvim-0.5') then
       }
     }
   end)
-else
-  registry.pre(disable_polyglot)
 end
