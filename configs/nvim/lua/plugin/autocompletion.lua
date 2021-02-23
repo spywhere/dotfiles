@@ -67,15 +67,15 @@ registry.post(function ()
   bindings.map.normal(']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>')
 
   local sign_symbols = {
-    LspDiagnosticsSignError = '•',
-    LspDiagnosticsSignWarning = '•',
-    LspDiagnosticsSignInformation = '•',
-    LspDiagnosticsSignHint = '•'
+    Error = '•',
+    Warning = '•',
+    Information = '•',
+    Hint = '•'
   }
-  for name, symbol in pairs(sign_symbols) do
-    bindings.sign.define(name, {
+  for severity, symbol in pairs(sign_symbols) do
+    bindings.sign.define(string.format('LspDiagnosticsSign%s', severity), {
       text = symbol,
-      texthl = name,
+      texthl = string.format('LspDiagnostics%s', severity),
       linehl = '',
       numhl = ''
     })
