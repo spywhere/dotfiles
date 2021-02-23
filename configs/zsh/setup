@@ -12,6 +12,9 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden'
 export YSU_MESSAGE_POSITION="after"
 export YSU_IGNORED_ALIASES=("g" "ga." "d" "vi" "vim")
 
+# use bat as a man pager
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 # export binaries to path
 export PATH=$HOME/$DOTFILES_NAME/binaries:$PATH
 
