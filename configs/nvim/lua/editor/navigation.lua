@@ -13,3 +13,17 @@ local horizontal_scrolling = function ()
   bindings.map.normal('gl', '20zl')
 end
 registry.defer(horizontal_scrolling)
+
+local quickfix_keymap = function ()
+  local map_quickfix = function ()
+    -- quick close
+    bindings.map.buffer.normal('q', '<cmd>cclose<cr>')
+    -- easy split navigations (not working?)
+    -- bindings.map.buffer.normal('<C-h>', '<cmd>wincmd h<cr>')
+    -- bindings.map.buffer.normal('<C-j>', '<cmd>wincmd j<cr>')
+    -- bindings.map.buffer.normal('<C-k>', '<cmd>wincmd k<cr>')
+    -- bindings.map.buffer.normal('<C-l>', '<cmd>wincmd l<cr>')
+  end
+  registry.auto({ 'BufEnter', 'FileType' }, map_quickfix, 'qf')
+end
+registry.defer(quickfix_keymap)

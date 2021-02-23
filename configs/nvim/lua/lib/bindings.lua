@@ -139,7 +139,7 @@ local build_lua_map_ops = function (tbl)
   end
 end
 
-local map = function ()
+local map = function (mapper)
   local defaultOptions = { noremap = true, silent = true }
 
   local keymap = function (modes)
@@ -189,7 +189,13 @@ local map = function ()
     nv = keymap {'n', 'v'}
   }
 end
-M.map = map()
+
+local buffer_set_keymap = function (mode, lhs, rhs, opts)
+  api.nvim_buf_set_keymap(0, mode, lhs, rhs, opts)
+end
+
+M.map = map(api.nvim_set_keymap)
+M.map.buffer = map(buffer_set_keymap)
 
 M.executable = function (executable)
   return fn.executable(executable) == 1
