@@ -41,6 +41,14 @@ local quick_save = function ()
 end
 registry.defer(quick_save)
 
+if fn.has('win32') == 1 then
+  -- use X for visual block since Ctrl-V is paste
+  local alternative_visual_block = function ()
+    bindings.map.nv('X', '<C-v>')
+  end
+  registry.defer(alternative_visual_block)
+end
+
 local visual_increment = function ()
   bindings.map.visual('<C-a>', 'g<C-a>')
   bindings.map.visual('<C-x>', 'g<C-x>')
