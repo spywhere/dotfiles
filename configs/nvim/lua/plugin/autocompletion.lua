@@ -142,7 +142,7 @@ local install_omnisharp = function ()
   local util = require('lspconfig/util')
 
   local base_install_dir = util.path.join(
-    vim.fn.stdpath('cache'),
+    fn.stdpath('cache'),
     'lspconfig'
   )
   local install_dir = util.path.join { base_install_dir, 'omnisharp' }
@@ -151,11 +151,11 @@ local install_omnisharp = function ()
   local bin_name = 'run'
   local update_bin_permission = true
 
-  if vim.fn.has('win32') == 1 then
+  if fn.has('win32') == 1 then
     url = 'win-x64'
     bin_name = 'OmniSharp.exe'
     update_bin_permission = false
-  elseif vim.fn.has('mac') == 1 then
+  elseif fn.has('mac') == 1 then
     url = 'osx'
     bin_name = 'run'
     update_bin_permission = true
@@ -188,7 +188,7 @@ local install_omnisharp = function ()
     {
       error = 'Error while preparing to install omnisharp',
       command = function ()
-        vim.fn.mkdir(install_dir, 'p')
+        fn.mkdir(install_dir, 'p')
       end
     },
     {

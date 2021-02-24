@@ -167,8 +167,8 @@ registry.post(function ()
 
   local get_icon = function (path)
     local devicons = require('nvim-web-devicons')
-    local filename = vim.fn.fnamemodify(path, ':t')
-    local extension = vim.fn.fnamemodify(path, ':e')
+    local filename = fn.fnamemodify(path, ':t')
+    local extension = fn.fnamemodify(path, ':e')
     local icon = devicons.get_icon(filename, extension, { default = true })
     if icon then
       return icon.." "
