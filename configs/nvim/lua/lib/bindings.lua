@@ -165,12 +165,12 @@ local map = function (mapper)
       end
 
       if not modes then
-        api.nvim_set_keymap('', key, ops, options)
+        mapper('', key, ops, options)
         return
       end
 
       for _, mode in ipairs(modes) do
-        api.nvim_set_keymap(mode, key, ops, options)
+        mapper(mode, key, ops, options)
       end
     end
   end

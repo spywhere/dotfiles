@@ -24,6 +24,6 @@ local quickfix_keymap = function ()
     bindings.map.buffer.normal('<C-k>', '<cmd>wincmd k<cr>')
     bindings.map.buffer.normal('<C-l>', '<cmd>wincmd l<cr>')
   end
-  registry.auto({ 'BufEnter', 'FileType' }, map_quickfix, { 'qf', 'help' })
+  registry.auto('FileType', map_quickfix, { 'qf', 'help' })
 end
 registry.defer(quickfix_keymap)
