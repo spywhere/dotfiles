@@ -5,7 +5,6 @@ DOTFILES_NAME=.dots
 alias resume="fg"
 
 # git
-alias gfp="gf --prune"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 # kill the annoyance

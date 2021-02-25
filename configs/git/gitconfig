@@ -30,3 +30,5 @@
 	ff = only
 [advice]
 	addEmptyPathspec = false
+[fetch]
+	prune = true
