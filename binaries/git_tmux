@@ -1,0 +1,79 @@
+#!/bin/zsh
+
+if test "$1" = "gitstatusd"; then
+  shift
+  local git="$1"
+  shift
+  local daemon="$1"
+
+  local response="$(printf "$0\x1f%s\x1e" "$git" | "$daemon" 2>/dev/null)"
+  get_field() {
+    printf "%s" "$response" | cut -d $(printf "\x1f") -f"$1"
+  }
+
+  is_git="$(get_field 2)"
+  if test "$is_git" -eq 0; then
+    printf ""
+    exit
+  fi
+  branch="$(get_field 5)"
+  staged="$(get_field 11)"
+  unstaged="$(get_field 12)"
+  conflicted="$(get_field 13)"
+  untracked="$(get_field 14)"
+  commit_ahead="$(get_field 15)"
+  commit_behind="$(get_field 16)"
+  stashes="$(get_field 17)"
+  unstaged_delete="$(get_field 19)"
+  staged_new="$(get_field 20)"
+  staged_delete="$(get_field 21)"
+
+  echo "$branch"
+  # echo "is_git         : $(get_field "2")"
+  # echo "workdir        : $(get_field "3")"
+  # echo "head           : $(get_field "4")"
+  # echo "branch         : $(get_field "5")"
+  # echo "upstream       : $(get_field "6")"
+  # echo "remote         : $(get_field "7")"
+  # echo "remote url     : $(get_field "8")"
+  # echo "state          : $(get_field "9")"
+  # echo "files          : $(get_field "10")"
+  # echo "staged         : $(get_field "11")"
+  # echo "unstaged       : $(get_field "12")"
+  # echo "conflicted     : $(get_field "13")"
+  # echo "untracked      : $(get_field "14")"
+  # echo "commit ahead   : $(get_field "15")"
+  # echo "commit behind  : $(get_field "16")"
+  # echo "stashes        : $(get_field "17")"
+  # echo "last tag       : $(get_field "18")"
+  # echo "unstaged del   : $(get_field "19")"
+  # echo "staged new     : $(get_field "20")"
+  # echo "staged del     : $(get_field "21")"
+  # echo "push remote    : $(get_field "22")"
+  # echo "push remote url: $(get_field "23")"
+  # echo "ahead push     : $(get_field "24")"
+  # echo "behind push    : $(get_field "25")"
+  # echo "num. skip wktr : $(get_field "26")"
+  # echo "num. assm unchg: $(get_field "27")"
+  exit
+fi
+
+# start gitstatus
+if ! test "$(command -v antibody)"; then
+  # no antibody
+  echo "E001"
+  exit 1
+fi
+
+if ! test -d $(antibody path romkatv/gitstatus); then
+  # gitstatus is not found
+  echo "E002"
+  exit 1
+fi
+
+if test -z "$1"; then
+  echo "Error: a directory is required"
+  exit 1
+fi
+
+$(antibody path romkatv/gitstatus)/install -- "$0" gitstatusd "$1"
