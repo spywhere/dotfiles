@@ -61,6 +61,7 @@ if test ! -f ~/.zsh_plugins.startup -o ! -f ~/.zsh_plugins.base -o ! -f ~/.zsh_p
 
   echo "romkatv/powerlevel10k" > ~/.zsh_plugins.prompt.list
 
+  echo "romkatv/gitstatus" > ~/.zsh_plugins.base.list
   echo "michaelaquilina/zsh-you-should-use" >> ~/.zsh_plugins.base.list
   echo "aloxaf/fzf-tab" >> ~/.zsh_plugins.base.list
   echo "bigH/git-fuzzy path:bin kind:path" >> ~/.zsh_plugins.base.list
