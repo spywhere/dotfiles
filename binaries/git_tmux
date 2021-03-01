@@ -6,12 +6,15 @@ if test "$1" = "gitstatusd"; then
   shift
   local git="$1"
   shift
+  local identifier="$1"
+  shift
   local daemon="$1"
 
   _gitstatusd() {
     printf "$0\x1f%s\x1e" "$git" | "$daemon" 2>/dev/null
   }
-  local response="$(_cache_value git_tmux _gitstatusd -t 0)"
+  local cache_id="$(printf "git_tmux_%s" "$identifier")"
+  local response="$(_cache_value "$cache_id" _gitstatusd -t 1)"
   get_field() {
     printf "%s" "$response" | cut -d $(printf "\x1f") -f"$1"
   }
@@ -81,4 +84,9 @@ if test -z "$1"; then
   exit 1
 fi
 
-$(antibody path romkatv/gitstatus)/install -- "$0" gitstatusd "$1"
+if test -z "$2"; then
+  echo "Error: identifier is required"
+  exit 1
+fi
+
+$(antibody path romkatv/gitstatus)/install -- "$0" gitstatusd "$1" "$2"
