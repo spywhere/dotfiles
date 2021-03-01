@@ -85,12 +85,19 @@ local color_setup = function ()
     return group
   end
 
-  local highlight_definitions = {
+  local base_highlights = {
     -- dark background
     Normal = { guibg='#1c1c1c', ctermbg='234' },
     -- invisible splits
     SignColumn = { guibg='#1c1c1c', ctermbg='234' },
-    VertSplit = { guifg='bg', ctermfg='bg', guibg='#1c1c1c', ctermbg='234' },
+    VertSplit = { guifg='bg', ctermfg='bg', guibg='#1c1c1c', ctermbg='234' }
+  }
+
+  for k, v in pairs(base_highlights) do
+    bindings.highlight.define(k, v)
+  end
+
+  local highlight_definitions = {
     -- color definition (taken from https://github.com/arcticicestudio/nord-vim/issues/235)
     TSError = color_group('brightred'),
     TSPunctDelimiter = color_group('blue'),
