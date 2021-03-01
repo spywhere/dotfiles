@@ -65,7 +65,7 @@ if ! test "$(command -v antibody)"; then
   exit 1
 fi
 
-if ! test -d $(antibody path romkatv/gitstatus); then
+if ! antibody path romkatv/gitstatus 1>/dev/null 2>&1 || test ! -d $(antibody path romkatv/gitstatus); then
   # gitstatus is not found
   echo "E002"
   exit 1
