@@ -90,7 +90,7 @@ local color_setup = function ()
     Normal = { guibg='#1c1c1c', ctermbg='234' },
     -- invisible splits
     SignColumn = { guibg='#1c1c1c', ctermbg='234' },
-    VertSplit = { guifg='1c1c1c', ctermfg='234', guibg='#1c1c1c', ctermbg='234' }
+    VertSplit = { guifg='#1c1c1c', ctermfg='234', guibg='#1c1c1c', ctermbg='234' }
   }
 
   for k, v in pairs(base_highlights) do
