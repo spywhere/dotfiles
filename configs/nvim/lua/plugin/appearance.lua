@@ -143,9 +143,7 @@ registry.post(function ()
   vim.g.lightline = lightline
 end)
 
--- registry.install('mengelbrecht/lightline-bufferline')
--- patched for lua on nvim
-registry.install('spywhere/lightline-bufferline', { branch = 'lua-nvim' })
+registry.install('mengelbrecht/lightline-bufferline')
 registry.post(function ()
   vim.g['lightline#bufferline#enable_devicons'] = 1
   vim.g['lightline#bufferline#min_buffer_count'] = 2
