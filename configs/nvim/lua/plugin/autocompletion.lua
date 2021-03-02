@@ -1,5 +1,6 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
+local logger = require('lib/logger')
 
 -- registry.install('neoclide/coc.nvim', { branch = 'release' })
 -- registry.install('welle/tmux-complete.vim')
@@ -109,7 +110,7 @@ _M.iterate_commands = function (commands, index, success)
     if ok then
       _M.iterate_commands(commands, index + 1, success)
     else
-      api.nvim_err_writeln(command.error ..'\n'..vim.inspect(error))
+      logger.error(command.error ..'\n'..vim.inspect(error))
       return
     end
   else
@@ -120,7 +121,7 @@ _M.iterate_commands = function (commands, index, success)
       vim.schedule_wrap(function(code)
         handle:close()
         if code ~= 0 then
-          api.nvim_err_writeln(command.error ..'\n')
+          logger.error(command.error ..'\n')
         end
         _M.iterate_commands(commands, index + 1, success)
       end)

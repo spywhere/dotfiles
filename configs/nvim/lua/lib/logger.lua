@@ -1,11 +1,15 @@
 local M = {}
 
-M.info = function (message)
-  api.nvim_write_out(message .. '\n')
+local log = function (severity)
+  return function (message)
+    vim.notify(message .. '\n', severity)
+  end
 end
 
-M.error = function (message)
-  api.nvim_err_write(message .. '\n')
-end
-
-return M
+return {
+  error = log(vim.log.levels.ERROR),
+  warn = log(vim.log.levels.WARN),
+  info = log(vim.log.levels.INFO),
+  trace = log(vim.log.levels.TRACE),
+  debug = log(vim.log.levels.DEBUG)
+}
