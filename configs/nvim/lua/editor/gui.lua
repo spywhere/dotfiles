@@ -13,10 +13,12 @@ local gui = function ()
   api.nvim_command('GuiFont! JetBrainsMono Nerd Font Mono:h9')
 end
 
-if fn.exists('g:GuiLoaded') then
-  registry.defer(gui)
+registry.defer(function ()
+  if fn.exists('g:GuiLoaded') == 1 then
+    gui()
 
-  if fn.has('win32') == 1 then
-    registry.pre(windows)
+    if fn.has('win32') == 1 then
+      windows()
+    end
   end
-end
+end)
