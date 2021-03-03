@@ -11,6 +11,8 @@ local gui = function ()
   -- use TUI completion menu instead
   api.nvim_command('GuiPopupmenu 0')
   api.nvim_command('GuiFont! JetBrainsMono Nerd Font Mono:h9')
+
+  bindings.set('mouse', 'a')
 end
 
 registry.defer(function ()
