@@ -6,6 +6,7 @@ registry.install('junegunn/fzf', {
   ['do'] = './install --all'
 })
 registry.install('junegunn/fzf.vim')
+registry.install('stsewd/fzf-checkout.vim')
 registry.defer(function ()
   vim.g.fzf_layout = {
     up = '~90%',
