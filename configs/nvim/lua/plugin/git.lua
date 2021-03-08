@@ -1,7 +1,7 @@
 local registry = require('lib/registry')
 local bindings = require('lib/bindings')
 
-registry.install('airblade/vim-gitgutter', { lazy = 'vim-gitgutter' })
+registry.install('mhinz/vim-signify', { lazy = 'vim-signify' })
 registry.install('tpope/vim-fugitive', { lazy = 'vim-fugitive' })
 registry.post(function ()
   bindings.map.normal('gst', '<cmd>Gstatus<cr>')
