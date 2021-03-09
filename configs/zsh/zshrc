@@ -101,7 +101,7 @@ fi
 # early set the variables for terminal and tmux to use
 . $HOME/$DOTFILES_NAME/configs/zsh/setup
 
-if test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
+if ! (echo "$PATH" | grep -q vim) && test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
   source ~/.zsh_plugins.startup
 fi
 
