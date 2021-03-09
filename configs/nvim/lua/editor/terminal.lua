@@ -7,3 +7,16 @@ local terminal_keymap = function ()
 end
 -- conflicted with fzf as it's running in terminal mode
 -- registry.defer(terminal_keymap)
+
+if fn.has('win32') then
+  local quick_terminal = function ()
+    local wsl_terminal = {
+      function()
+        api.nvim_command('terminal wsl.exe')
+      end
+    }
+    bindings.cmd('WSLTerminal', wsl_terminal)
+    bindings.map.normal('<C-a>c', '<cmd>WSLTerminal<cr>')
+  end
+  registry.defer(quick_terminal)
+end
