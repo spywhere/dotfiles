@@ -5,4 +5,5 @@ local terminal_keymap = function ()
   -- easy exit to normal mode
   bindings.map.terminal('<esc>', '<C-\\><C-n>')
 end
-registry.defer(terminal_keymap)
+-- conflicted with fzf as it's running in terminal mode
+-- registry.defer(terminal_keymap)
