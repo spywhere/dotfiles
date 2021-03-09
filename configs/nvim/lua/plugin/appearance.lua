@@ -76,6 +76,9 @@ registry.post(function ()
         {}
       }
     },
+    component_raw = {
+      buffers = 1
+    },
     component_expand = {
       linter_hints = 'lightline#lsp#hints',
       linter_infos = 'lightline#lsp#infos',
@@ -147,6 +150,7 @@ registry.install('mengelbrecht/lightline-bufferline')
 registry.post(function ()
   vim.g['lightline#bufferline#enable_devicons'] = 1
   vim.g['lightline#bufferline#min_buffer_count'] = 2
+  vim.g['lightline#bufferline#clickable'] = 1
 end)
 
 registry.install('spywhere/lightline-lsp')
