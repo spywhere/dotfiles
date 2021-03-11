@@ -41,7 +41,7 @@ local quick_save = function ()
 end
 registry.defer(quick_save)
 
-if fn.has('wsl') then
+if fn.has('wsl') == 1 then
   -- use X for visual block since Ctrl-V is paste
   local alternative_visual_block = function ()
     bindings.map.nv('X', '<C-v>')
