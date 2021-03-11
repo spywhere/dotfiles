@@ -16,7 +16,8 @@ if fn.has('win32') then
       end
     }
     bindings.cmd('WSLTerminal', wsl_terminal)
-    bindings.map.normal('<C-a>c', '<cmd>WSLTerminal<cr>')
+    bindings.map.normal('<C-a>c', '<cmd>vsplit | WSLTerminal<cr>')
+    bindings.map.normal('<C-a><space>', '<cmd>WSLTerminal<cr>')
   end
   registry.defer(quick_terminal)
 end
