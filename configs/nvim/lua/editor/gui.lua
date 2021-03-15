@@ -3,6 +3,9 @@ local bindings = require('lib/bindings')
 
 local windows = function ()
   bindings.map.all('<F11>', '<cmd>call GuiWindowFullScreen(!g:GuiWindowFullScreen)<cr>')
+
+  bindings.map.normal('<C-=>', '<cmd>GuiFont! JetBrainsMono Nerd Font Mono:h12<cr>')
+  bindings.map.normal('<C-0>', '<cmd>GuiFont! JetBrainsMono Nerd Font Mono:h9<cr>')
 end
 
 local gui = function ()
