@@ -1,7 +1,7 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
-registry.install('remko/detectindent', { on = 'DetectIndent' })
+registry.install('tpope/vim-sleuth', { lazy = 'vim-sleuth' })
 registry.install('preservim/nerdcommenter', { lazy = 'nerdcommenter' })
 registry.post(function ()
   vim.g.NERDSpaceDelims = 1
