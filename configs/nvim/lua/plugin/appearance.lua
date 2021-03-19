@@ -24,11 +24,15 @@ registry.post(function ()
       end
     end,
     RelativePath = function ()
+      local winwidth = fn.winwidth(0)
       local path = fn.expand('%:f')
-      if path ~= '' then
+
+      if path == '' then
+        return '[no name]'
+      elseif winwidth > (50 + path:len()) then
         return path
       else
-        return '[no name]'
+        return fn.expand('%:t')
       end
     end,
     LineInfo = function ()
