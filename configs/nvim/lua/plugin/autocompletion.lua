@@ -2,41 +2,18 @@ local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 local logger = require('lib/logger')
 
--- registry.install('neoclide/coc.nvim', { branch = 'release' })
--- registry.install('welle/tmux-complete.vim')
-
--- Experimental: a replacement for coc.nvim
 registry.install('neovim/nvim-lspconfig')
-registry.install('nvim-lua/completion-nvim')
-registry.install('albertoCaroM/completion-tmux')
-registry.install('steelsojka/completion-buffers')
+registry.install('onsails/lspkind-nvim')
+registry.install('hrsh7th/nvim-compe')
+-- tmux integration?
 registry.post(function ()
   bindings.set('completeopt', 'menuone,noinsert,noselect')
 
-  vim.g.completion_matching_strategy_list = {
-    'exact',
-    'substring',
-    'fuzzy'
-  }
-  vim.g.completion_chain_complete_list = {
-    default = {
-      comment = {},
-      default = {
-        {
-          complete_items = {
-            'lsp',
-            'tmux',
-            'buffers'
-          }
-        }, {
-          mode = '<c-p>'
-        }, {
-          mode = '<c-n>'
-        }
-      }
-    }
-  }
-
+  bindings.map.insert(
+    '<C-Space>',
+    'compe#complete()',
+    { expr = true }
+  )
   bindings.map.insert(
     '<tab>',
     'pumvisible() ? "\\<C-n>" : "\\<tab>"',
@@ -49,7 +26,7 @@ registry.post(function ()
   )
   bindings.map.insert(
     '<cr>',
-    'pumvisible() ? "\\<C-y>" : "\\<C-g>u\\<cr>"',
+    'compe#confirm(\'<cr>\')',
     { expr = true }
   )
 
@@ -302,8 +279,6 @@ local setup_lsps = function ()
 
   local nvim_lsp = require('lspconfig')
   local on_attach = function (client, bufnr)
-    require('completion').on_attach(client)
-
     if not client.resolved_capabilities.document_highlight then
       return
     end
@@ -361,5 +336,19 @@ local setup_lsps = function ()
       update_in_insert = false,
     }
   )
+
+  -- completion popup
+  require('compe').setup({
+    source = {
+      path = true,
+      buffer = true,
+      calc = true,
+      nvim_lsp = true,
+      nvim_lua = true,
+      nvim_treesitter = true
+    }
+  })
+  -- symbol icon for completion items
+  require('lspkind').init()
 end
 registry.defer(setup_lsps)
