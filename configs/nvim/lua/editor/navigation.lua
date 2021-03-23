@@ -9,8 +9,8 @@ end
 registry.defer(split)
 
 local horizontal_scrolling = function ()
-  bindings.map.normal('gh', '20zh')
-  bindings.map.normal('gl', '20zl')
+  bindings.map.nv('gh', '20zh')
+  bindings.map.nv('gl', '20zl')
 end
 registry.defer(horizontal_scrolling)
 
