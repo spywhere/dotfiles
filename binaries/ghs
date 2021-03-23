@@ -7,6 +7,7 @@ usage() {
   echo "FLAGS"
   echo "  -h, --help              Show this message"
   echo "  -L, --limit=<limit>     Maximum number of items to fetch (default 30)"
+  echo "  -H, --hostname=<HOST>   Set the host for accessing its API (default to github.com)"
   echo "  -R, --repo=<OWNER/REPO> Select another repository using the OWNER/REPO format"
   echo "  -M, --manual            Disable repository auto-detection"
   echo "  -n, --next=<cursor>     Search from the cursor position forward"
@@ -23,6 +24,7 @@ usage() {
 main() {
   local limit=30
   local repo=""
+  local host=""
   local debug=0
   local cursor=""
   local manual=0
@@ -44,6 +46,13 @@ main() {
           return 1
         fi
         limit=$value
+        ;;
+      -H | --hostname)
+        if test -z "$equal_sign"; then
+          echo "ERROR: a hostname is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        host="$value"
         ;;
       -R | --repo)
         if test -z "$equal_sign"; then
@@ -94,10 +103,14 @@ main() {
     return
   fi
   local graph_query='query($q:String!,$limit:Int!,$after:String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
+  local host_flags=""
+  if test -n "$host"; then
+    host_flags="--hostname $host"
+  fi
   if test "$cursor" != ""; then
-    response=$(gh api graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graph_query")
+    response=$(gh api $host_flags graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graph_query")
   else
-    response=$(gh api graphql -F limit="$limit" -F q="$query$repo" -f query="$graph_query")
+    response=$(gh api $host_flags graphql -F limit="$limit" -F q="$query$repo" -f query="$graph_query")
   fi
   if test $? -ne 0; then
     return 1
