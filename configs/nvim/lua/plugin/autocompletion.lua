@@ -26,7 +26,7 @@ registry.post(function ()
   )
   bindings.map.insert(
     '<cr>',
-    'compe#confirm(\'<cr>\')',
+    'pumvisible() ? compe#confirm(\'<cr>\') : "\\<cr>"',
     { expr = true }
   )
 
