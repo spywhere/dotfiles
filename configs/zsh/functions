@@ -172,6 +172,18 @@ _is_number() {
   esac
 }
 
+_gh_api() {
+  local method="$1"
+  shift
+  local host="$1"
+  shift
+  if test -z "$host"; then
+    gh api -X $method $@ 2>/dev/null
+  else
+    gh api -X $method --hostname $host $@ 2>/dev/null
+  fi
+}
+
 _label_operation() {
   local operation="$1"
   shift
@@ -207,14 +219,14 @@ _label_operation() {
   if test -z "$1"; then
     # process issue numbers from stdin
     while IFS= read -r issue; do
-      "$operation" "$dry" "$issue" "$labels"
+      "$operation" "$dry" "$host" "$issue" "$labels"
     done
     return 0
   fi
 
   # process issue numbers from arguments
   while test "$1" != ""; do
-    "$operation" "$dry" "$1" "$labels"
+    "$operation" "$dry" "$host" "$1" "$labels"
     shift
   done
 }
@@ -222,6 +234,8 @@ _label_operation() {
 apply_label() {
   apply_label_to_issue() {
     local dry="$1"
+    shift
+    local host="$1"
     shift
     local issue="$1"
     shift
@@ -235,7 +249,7 @@ apply_label() {
 
     local response=""
     if test -z "$dry"; then
-      response=$(printf '{"labels": [%s]}' "$labels" | gh api -X POST --hostname $host /repos/:owner/:repo/issues/$issue/labels --input -)
+      response=$(printf '{"labels": [%s]}' "$labels" | _gh_api POST "$host" /repos/:owner/:repo/issues/$issue/labels --input -)
     fi
     if test $? -eq 0; then
       printf " done\n"
@@ -252,6 +266,8 @@ remove_label() {
   remove_label_from_issue() {
     local dry="$1"
     shift
+    local host="$1"
+    shift
     local issue="$1"
     shift
     local labels="$@"
@@ -265,7 +281,7 @@ remove_label() {
 
       local response=""
       if test -z "$dry"; then
-        response=$(gh api -X DELETE --hostname $host "/repos/:owner/:repo/issues/$issue/labels/$label")
+        response=$(_gh_api DELETE "$host" "/repos/:owner/:repo/issues/$issue/labels/$(printf "%s" "$label" | jq -sRr @uri)")
       fi
       if test $? -eq 0; then
         printf " done\n"
