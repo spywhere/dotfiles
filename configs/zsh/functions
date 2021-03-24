@@ -166,6 +166,15 @@ search_github() {
   done
 
   local query="$@"
+  if test -z "$query"; then
+    echo "usage: $0 [flag]... <query>"
+    echo
+    echo "Search GitHub for issues/prs using specified query"
+    echo
+    echo "flags:"
+    echo "  --hostname, -H <hostname>    Set GitHub host (default to github.com)"
+    return 1
+  fi
   _gh_api GET "$host" /search/issues -f q="$query" -q '.items[]'
 }
 
@@ -211,6 +220,16 @@ _label_operation() {
       labels=$(printf "%s\0%s" "$labels" "$label")
     fi
   done
+
+  if test -z "$labels"; then
+    echo "usage: $0 [flag]... <label name>... -- [issue/pr number]..."
+    echo
+    echo "flags:"
+    echo "  --dry                      Show the action that will be perform"
+    echo "  --hostname, H <hostname>   Set GitHub host (default to github.com)"
+    echo "  --                         Stop processing labels and start processing issue/pr numbers"
+    return 1
+  fi
 
   if test -z "$1"; then
     # process issue numbers from stdin
