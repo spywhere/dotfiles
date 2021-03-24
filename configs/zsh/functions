@@ -133,6 +133,18 @@ slack-term() {
   _docker-run --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
 }
 
+_gh_api() {
+  local method="$1"
+  shift
+  local host="$1"
+  shift
+  if test -z "$host"; then
+    gh api -X $method $@ 2>/dev/null
+  else
+    gh api -X $method --hostname $host $@ 2>/dev/null
+  fi
+}
+
 search_github() {
   local host=""
   while test "$1" != ""; do
@@ -154,11 +166,7 @@ search_github() {
   done
 
   local query="$@"
-  if test -n "$host"; then
-    gh api -X GET --hostname $host /search/issues -f q="$query" -q '.items[]'
-  else
-    gh api -X GET $host_flag /search/issues -f q="$query" -q '.items[]'
-  fi
+  _gh_api GET "$host" /search/issues -f q="$query" -q '.items[]'
 }
 
 _is_number() {
@@ -170,18 +178,6 @@ _is_number() {
       return 0
       ;;
   esac
-}
-
-_gh_api() {
-  local method="$1"
-  shift
-  local host="$1"
-  shift
-  if test -z "$host"; then
-    gh api -X $method $@ 2>/dev/null
-  else
-    gh api -X $method --hostname $host $@ 2>/dev/null
-  fi
 }
 
 _label_operation() {
