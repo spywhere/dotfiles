@@ -43,6 +43,10 @@ else
   alias myip="echo GET / | nc eth0.me 80"
 fi
 
+# function aliases
+alias search_prs=search_github
+alias search_issues=search_github
+
 # Docker
 alias d="docker"
 

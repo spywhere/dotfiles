@@ -132,3 +132,149 @@ slack-term() {
   fi
   _docker-run --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
 }
+
+search_github() {
+  local host=""
+  while test "$1" != ""; do
+    local param="$1"
+    case $param in
+      -H | --hostname)
+        shift
+        if test -z "$1"; then
+          echo "ERROR: hostname is required"
+          return 1
+        fi
+        host="$1"
+        ;;
+      *)
+        break
+        ;;
+    esac
+    shift
+  done
+
+  local query="$@"
+  if test -n "$host"; then
+    gh api -X GET --hostname $host /search/issues -f q="$query" -q '.items[]'
+  else
+    gh api -X GET $host_flag /search/issues -f q="$query" -q '.items[]'
+  fi
+}
+
+_is_number() {
+  case $@ in
+    '' | *[!0-9]*)
+      return 1
+      ;;
+    *)
+      return 0
+      ;;
+  esac
+}
+
+_label_operation() {
+  local operation="$1"
+  shift
+
+  local host=""
+  local dry=""
+  local labels=""
+  # process labels
+  while test "$1" != ""; do
+    local label="$1"
+    shift
+    if test "$label" = "--dry"; then
+      dry="yes"
+      continue
+    elif test "$label" = "-H" -o "$label" = "--hostname"; then
+      if test -z "$1"; then
+        echo "ERROR: hostname is required"
+        return 1
+      fi
+      host="$1"
+      shift
+      continue
+    elif test "$label" = "--"; then
+      break
+    fi
+    if test -z "$labels"; then
+      labels=$label
+    else
+      labels=$(printf "%s\0%s" "$labels" "$label")
+    fi
+  done
+
+  if test -z "$1"; then
+    # process issue numbers from stdin
+    while IFS= read -r issue; do
+      "$operation" "$dry" "$issue" "$labels"
+    done
+    return 0
+  fi
+
+  # process issue numbers from arguments
+  while test "$1" != ""; do
+    "$operation" "$dry" "$1" "$labels"
+    shift
+  done
+}
+
+apply_label() {
+  apply_label_to_issue() {
+    local dry="$1"
+    shift
+    local issue="$1"
+    shift
+    local labels="\"$(echo "$@" | sed 's/\x0/", "/g')\""
+
+    printf "Applying label $labels to issue #$issue..."
+    if ! _is_number $issue; then
+      printf " fail\nERROR: Issue \"%s\" is not a valid number\n" "$issue"
+      return
+    fi
+
+    local response=""
+    if test -z "$dry"; then
+      response=$(printf '{"labels": [%s]}' "$labels" | gh api -X POST --hostname $host /repos/:owner/:repo/issues/$issue/labels --input -)
+    fi
+    if test $? -eq 0; then
+      printf " done\n"
+    else
+      printf " fail\n"
+      printf "%s\n" "$response"
+    fi
+  }
+
+  _label_operation apply_label_to_issue $@
+}
+
+remove_label() {
+  remove_label_from_issue() {
+    local dry="$1"
+    shift
+    local issue="$1"
+    shift
+    local labels="$@"
+
+    while read -r label; do
+      printf "Removing label \"$label\" from issue #$issue..."
+      if ! _is_number $issue; then
+        printf " fail\nERROR: Issue \"%s\" is not a valid number\n" "$issue"
+        continue
+      fi
+
+      local response=""
+      if test -z "$dry"; then
+        response=$(gh api -X DELETE --hostname $host "/repos/:owner/:repo/issues/$issue/labels/$label")
+      fi
+      if test $? -eq 0; then
+        printf " done\n"
+      else
+        printf " fail\n"
+        printf "%s\n" "$response"
+      fi
+    done <<< $(echo $labels | xargs -d'\0' -n1)
+  }
+
+  _label_operation remove_label_from_issue $@
+}
