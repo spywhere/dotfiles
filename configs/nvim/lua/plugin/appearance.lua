@@ -27,25 +27,33 @@ registry.post(function ()
     RelativePath = function ()
       local winwidth = fn.winwidth(0)
       function fallback_name(winwidth, list)
-        local name
-        if vim.tbl_count(list) > 1 and winwidth < 60 + list[1]:len() then
-          table.remove(list, 1)
-          name = fallback_name(winwidth, list)
-        else
-          name = list[1] or ''
+        local list_count = vim.tbl_count(list)
+
+        if list_count < 1 then
+          return ''
+        end
+        local name = list[1]()
+
+        if list_count == 1 then
+          if name == '' then
+            return '[no name]'
+          else
+            return name
+          end
         end
 
-        if name == '' then
-          return '[no name]'
-        else
-          return name
+        if winwidth < 60 + name:len() then
+          table.remove(list, 1)
+          return fallback_name(winwidth, list)
         end
+
+        return name
       end
 
       return fallback_name(fn.winwidth(0), {
-        fn.expand('%:f'),
-        -- buffer.smart_name(),
-        fn.expand('%:t')
+        function () return fn.expand('%:f') end,
+        function () return fn.pathshorten(fn.expand('%:f')) end,
+        function () return fn.expand('%:t') end
       })
     end,
     LineInfo = function ()
