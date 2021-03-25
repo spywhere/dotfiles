@@ -67,26 +67,24 @@ registry.post(function ()
 
   local component = function (name)
     local filetypes = {
-      nvimtree = {
-        relativepath = 'Explorer',
-        ['*'] = ''
-      },
-      startify = {
-        relativepath = '',
-        percent = '',
-        fileformat = '',
-        fileencoding = '',
-        lineinfo = ''
-      }
+      ['NvimTree.RelativePath'] = 'Explorer',
+      ['NvimTree.*'] = '',
+      ['startify.RelativePath'] = '',
+      ['startify.Percent'] = '',
+      ['startify.FileFormat'] = '',
+      ['startify.FileEncoding'] = '',
+      ['startify.LineInfo'] = ''
     }
 
     return function ()
-      local filetype_map = filetypes[string.lower(vim.bo.filetype)] or filetypes['*']
-      if not filetype_map then
-        return components[name]()
-      end
-
-      return filetype_map[string.lower(name)] or filetype_map['*'] or components[name]()
+      local filetype = vim.bo.filetype
+      return (
+        filetypes[filetype .. '.' .. name] or
+        filetypes[filetype .. '.*'] or
+        filetypes['*.' .. name] or
+        filetypes['*'] or
+        components[name]()
+      )
     end
   end
 
