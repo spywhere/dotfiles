@@ -53,14 +53,28 @@ registry.post(function ()
   }
 
   local component = function (name)
-    if string.lower(vim.bo.filetype) == 'nvimtree' then
-      if string.lower(name) == 'relativepath' then
-        return function () return 'Explorer' end
-      else
-        return function () return '' end
+    local filetypes = {
+      nvimtree = {
+        relativepath = 'Explorer',
+        ['*'] = ''
+      },
+      startify = {
+        relativepath = '',
+        percent = '',
+        fileformat = '',
+        fileencoding = '',
+        lineinfo = ''
+      }
+    }
+
+    return function ()
+      local filetype_map = filetypes[string.lower(vim.bo.filetype)] or filetypes['*']
+      if not filetype_map then
+        return components[name]()
       end
+
+      return filetype_map[string.lower(name)] or filetype_map['*'] or components[name]()
     end
-    return components[name]
   end
 
   for name, func in pairs(components) do
@@ -119,7 +133,10 @@ registry.post(function ()
       },
       right = {
         { 'lineinfo' },
-        { 'percent' }
+        { 'percent' },
+        {
+          'filetype'
+        },
       }
     },
     active = {
