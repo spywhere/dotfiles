@@ -1,4 +1,5 @@
 local registry = require('lib/registry')
+local buffer = require('common/buffer')
 
 registry.install('itchyny/lightline.vim')
 registry.post(function ()
@@ -25,15 +26,27 @@ registry.post(function ()
     end,
     RelativePath = function ()
       local winwidth = fn.winwidth(0)
-      local path = fn.expand('%:f')
+      function fallback_name(winwidth, list)
+        local name
+        if vim.tbl_count(list) > 1 and winwidth < 60 + list[1]:len() then
+          table.remove(list, 1)
+          name = fallback_name(winwidth, list)
+        else
+          name = list[1] or ''
+        end
 
-      if path == '' then
-        return '[no name]'
-      elseif winwidth > (50 + path:len()) then
-        return path
-      else
-        return fn.expand('%:t')
+        if name == '' then
+          return '[no name]'
+        else
+          return name
+        end
       end
+
+      return fallback_name(fn.winwidth(0), {
+        fn.expand('%:f'),
+        buffer.smart_name(),
+        fn.expand('%:t')
+      })
     end,
     LineInfo = function ()
       return fn.line('.') .. ':' .. fn.col('.')
