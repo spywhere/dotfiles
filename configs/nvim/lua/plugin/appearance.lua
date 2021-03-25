@@ -1,5 +1,4 @@
 local registry = require('lib/registry')
-local buffer = require('common/buffer')
 
 registry.install('itchyny/lightline.vim')
 registry.post(function ()
