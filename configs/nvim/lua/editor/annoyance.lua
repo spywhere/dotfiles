@@ -1,7 +1,7 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
-registry.defer(function ()
+registry.defer_first(function ()
   bindings.map.normal('Q')
 
   bindings.map.ni('<PageUp>')

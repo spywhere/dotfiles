@@ -26,4 +26,4 @@ local quickfix_keymap = function ()
   end
   registry.auto('FileType', map_quickfix, { 'qf', 'help' })
 end
-registry.defer(quickfix_keymap)
+registry.defer_first(quickfix_keymap)

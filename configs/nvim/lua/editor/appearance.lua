@@ -51,7 +51,7 @@ registry.pre(messages)
 local netrw = function ()
   vim.g.loaded_netrwPlugin = 1
 end
-registry.defer(netrw)
+registry.defer_first(netrw)
 
 local highlight_yank = function ()
   require('vim.highlight').on_yank({ timeout = 300 })

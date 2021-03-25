@@ -203,6 +203,10 @@ M.post = function (callback)
   table.insert(_post, callback)
 end
 
+M.defer_first = function (callback)
+  table.insert(_defers, 1, callback)
+end
+
 M.defer = function (callback)
   table.insert(_defers, callback)
 end
@@ -213,8 +217,10 @@ local iterate_defer = function ()
   end
   _post = {}
 
+  local delay = 300
   for _, func in ipairs(_defers) do
-    vim.defer_fn(func, 0)
+    vim.defer_fn(func, delay)
+    delay = delay + 10
   end
   _defers = {}
 end

@@ -56,8 +56,12 @@ M.load = function (plugin)
 end
 
 local lazy_load = function ()
+  local delay = 0
   for _, plugin in ipairs(_lazy) do
-    fn['plug#load'](plugin)
+    vim.defer_fn(function ()
+      fn['plug#load'](plugin)
+    end, delay)
+    delay = delay + 100
   end
   _lazy = nil
 end

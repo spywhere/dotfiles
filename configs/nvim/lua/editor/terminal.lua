@@ -19,5 +19,5 @@ if fn.has('win32') == 1 and fn.executable('wsl.exe') == 1 then
     bindings.map.normal('<C-a>c', '<cmd>vsplit | WSLTerminal<cr>')
     bindings.map.normal('<C-a><space>', '<cmd>WSLTerminal<cr>')
   end
-  registry.defer(quick_terminal)
+  registry.defer_first(quick_terminal)
 end

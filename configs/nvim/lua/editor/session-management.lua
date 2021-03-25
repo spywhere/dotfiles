@@ -16,4 +16,4 @@ local session_commands = function ()
   }
   bindings.cmd('LoadSession', load_session)
 end
-registry.defer(session_commands)
+registry.defer_first(session_commands)

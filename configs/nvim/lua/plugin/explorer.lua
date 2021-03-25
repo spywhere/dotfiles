@@ -10,7 +10,7 @@ registry.post(function ()
   vim.g.nvim_tree_ignore = { '.git', '.DS_Store' }
   vim.g.nvim_tree_follow = 1
 end)
-registry.defer(function ()
+registry.defer_first(function ()
   local show_cursorline = function ()
     vim.wo.cursorline = true
   end
@@ -23,7 +23,7 @@ registry.post(function ()
   vim.g.rooter_silent_chdir = 1
 end)
 
-registry.defer(function ()
+registry.defer_first(function ()
   bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
   bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
 end)

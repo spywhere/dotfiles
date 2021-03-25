@@ -36,7 +36,7 @@ registry.post(function ()
   vim.g.quickui_border_style = 2
   vim.g.quickui_color_scheme = 'papercol dark'
 end)
-registry.defer(function ()
+registry.defer_first(function ()
   bindings.map.normal('<leader>m', '<cmd>call quickui#menu#open()<cr>')
   bindings.map.normal('<leader>m', '<cmd>call quickui#menu#open()<cr>')
 end)

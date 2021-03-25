@@ -21,7 +21,7 @@ registry.defer(function ()
   }
   vim.g.fzf_preview_window =  { 'right:50%', 'ctrl-/' }
 end)
-registry.defer(function ()
+registry.defer_first(function ()
   bindings.map.normal('<C-p>', '<cmd>Files<cr>')
   bindings.map.normal('<C-A-p>', '<cmd>Files!<cr>')
   bindings.map.normal('<leader>/', '<cmd>BLines<cr>')
@@ -31,7 +31,7 @@ registry.defer(function ()
   bindings.map.normal('<leader>F', '<cmd>RG<cr>')
   bindings.map.normal('<leader><A-F>', '<cmd>RG!<cr>')
 end)
-registry.defer(function ()
+registry.defer_first(function ()
   local layout = {
     options = { '--layout=reverse' },
     window = {
