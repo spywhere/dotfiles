@@ -44,7 +44,7 @@ registry.post(function ()
 
       return fallback_name(fn.winwidth(0), {
         fn.expand('%:f'),
-        buffer.smart_name(),
+        -- buffer.smart_name(),
         fn.expand('%:t')
       })
     end,
