@@ -27,7 +27,7 @@ add_setup 'setup_version_manager'
 
 setup_version_manager() {
   print "Setting up version manager..."
-  local plugins="1password deno docker-slim golang firebase nodejs python rust"
+  local plugins="1password deno golang nodejs python rust"
   set +e
   print "Setting up version manager plugins..."
   for plugin in $plugins; do
