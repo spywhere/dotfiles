@@ -204,7 +204,7 @@ registry.post(function ()
   vim.g.startify_change_to_dir = 0
 
   vim.g.startify_lists = {
-    { type = 'dir',   header = { '   MRU' .. fn.getcwd() } },
+    { type = 'dir',   header = { '   MRU ' .. fn.getcwd() } },
     { type = 'files', header = { '   MRU' } }
   }
 
