@@ -2,7 +2,7 @@ local logger = require('lib/logger')
 
 local M = {}
 
-M.explore = function (dir)
+M.explore = function (dir, recurse)
   local handle = luv.fs_scandir(lua_home .. '/' .. dir)
   if type(handle) == 'string' then
     logger.error(handle)
@@ -17,6 +17,9 @@ M.explore = function (dir)
 
     if item_type == 'file' then
       require(dir .. '/' .. string.gsub(name, '[.]lua$', ''))
+    elseif item_type == 'dir' and recurse == true then
+      -- load subdirectory as well
+      M.explore(dir .. '/' .. name, recurse)
     end
   end
 end

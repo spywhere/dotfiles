@@ -98,6 +98,9 @@ local color_setup = function ()
   end
 
   local highlight_definitions = {
+    -- TabLine = color_group(nil, 'brightblack'),
+    -- TabLineFill = color_group(nil, 'cyan'),
+    -- TabLineSel = color_group(nil, 'cyan'),
     -- color definition (taken from https://github.com/arcticicestudio/nord-vim/issues/235)
     TSError = color_group('brightred'),
     TSPunctDelimiter = color_group('blue'),

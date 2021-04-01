@@ -1,4 +1,5 @@
 local registry = require('lib/registry')
+local bindings = require('lib/bindings')
 
 registry.install('itchyny/lightline.vim')
 registry.post(function ()
@@ -187,11 +188,35 @@ registry.post(function ()
   vim.g.lightline = lightline
 end)
 
-registry.install('mengelbrecht/lightline-bufferline')
-registry.post(function ()
-  vim.g['lightline#bufferline#enable_devicons'] = 1
-  vim.g['lightline#bufferline#min_buffer_count'] = 2
-  vim.g['lightline#bufferline#clickable'] = 1
+-- registry.install('mengelbrecht/lightline-bufferline')
+-- registry.post(function ()
+  -- vim.g['lightline#bufferline#enable_devicons'] = 1
+  -- vim.g['lightline#bufferline#min_buffer_count'] = 2
+  -- vim.g['lightline#bufferline#clickable'] = 1
+-- end)
+registry.install('akinsho/nvim-bufferline.lua')
+registry.defer(function ()
+  local is_gui = fn.exists('g:GuiLoaded') == 1
+  require('bufferline').setup({
+    options = {
+      diagnostics = false,
+      always_show_bufferline = false,
+      show_close_icon = false,
+      show_buffer_close_icons = is_gui,
+      separator_style = { '', '' }
+    }
+  })
+
+  -- workaround to fix tabline from showing during start up with startify
+  local hide_tabline = function ()
+    local total_buffers = vim.tbl_count(fn.getbufinfo({ buflisted = 1 }))
+    if total_buffers > 1 then
+      return
+    end
+
+    bindings.set('showtabline', 0)
+  end
+  vim.defer_fn(hide_tabline, 0)
 end)
 
 registry.install('spywhere/lightline-lsp')
