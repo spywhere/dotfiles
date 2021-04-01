@@ -24,17 +24,10 @@ registry.post(function ()
     'pumvisible() ? "\\<C-p>" : "\\<C-h>"',
     { expr = true }
   )
-
-  -- fix for vim-endwise (https://github.com/tpope/vim-endwise/issues/109#issuecomment-652793808)
   bindings.map.insert(
     '<cr>',
-    function ()
-      if fn.pumvisible() then
-        fn['compe#confirm']('<cr>')
-      else
-        return '\\<cr>'
-      end
-    end
+    'pumvisible() ? compe#confirm(\'<cr>\') : "\\<cr>"',
+    { expr = true }
   )
 
   bindings.map.normal('gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
