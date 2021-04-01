@@ -3,9 +3,15 @@ local registry = require('lib/registry')
 registry.install('lukas-reineke/indent-blankline.nvim', { branch = 'lua' })
 -- registry.install('Yggdroot/indentLine', { lazy = 'indentLine' })
 registry.post(function ()
+  vim.g.indent_blankline_char = '▏'
   vim.g.indent_blankline_use_treesitter = true
   vim.g.indent_blankline_show_current_context = true
-  vim.g.indent_blankline_filetype_exclude = { 'text', 'startify' }
+  vim.g.indent_blankline_filetype_exclude = { 'text', 'help', 'startify' }
+  -- better context scope highlight (https://github.com/lukas-reineke/indent-blankline.nvim/issues/61#issuecomment-803613439)
+  vim.g.indent_blankline_context_patterns = {
+    'class', 'function', 'method', '^if', '^while',
+    '^for', '^object', '^table', 'block', 'arguments'
+  }
 
   vim.g.indentLine_leadingSpaceChar = '·'
   -- vim.g.indentLine_fileTypeExclude = { 'text', 'startify' }
