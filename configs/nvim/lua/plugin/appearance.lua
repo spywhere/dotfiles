@@ -116,9 +116,13 @@ registry.post(function ()
 
   local refine_section = function (palette, sections, inactive)
     local line = {}
+    local is_gui = fn.exists('g:GuiLoaded') == 1
 
     local section_map = function (key, section)
       if section.inactive == false and inactive then
+        return
+      end
+      if section.gui and not is_gui then
         return
       end
 
@@ -390,36 +394,35 @@ registry.post(function ()
           background = 'cyan',
           inactive = false
         }
+      },
+      {
+        ClockLeft = {
+          provider = '',
+          foreground = 'lightblue',
+          background = 'black',
+          inactive = false,
+          gui = true
+        }
+      },
+      {
+        Clock = {
+          component = 'Clock',
+          background = 'lightblue',
+          inactive = false,
+          gui = true
+        }
+      },
+      {
+        ClockRight = {
+          provider = '',
+          foreground = 'lightblue',
+          background = 'black',
+          inactive = false,
+          gui = true
+        }
       }
     }
   }
-
-  local is_gui = fn.exists('g:GuiLoaded') ~= 1
-  if is_gui then
-    table.insert(sections.right, {
-      ClockLeft = {
-        provider = '',
-        foreground = 'lightblue',
-        background = 'black',
-        inactive = false
-      }
-    })
-    table.insert(sections.right, {
-      Clock = {
-        component = 'Clock',
-        background = 'lightblue',
-        inactive = false
-      }
-    })
-    table.insert(sections.right, {
-      ClockRight = {
-        provider = '',
-        foreground = 'lightblue',
-        background = 'black',
-        inactive = false
-      }
-    })
-  end
 
   local gl = require('galaxyline')
   gl.short_line_list = { '' }
