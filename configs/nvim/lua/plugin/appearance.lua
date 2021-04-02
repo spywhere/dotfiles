@@ -224,13 +224,14 @@ registry.post(function ()
               alias=fn.mode(),
               color='red'
             }
-            bindings.highlight.define('GalaxyModeLeft', colors.group(mode.color, 'black'))
+            bindings.highlight.define('GalaxyModeLeft', colors.group(mode.color, 'brightblack'))
             bindings.highlight.define('GalaxyModeRight', colors.group(mode.color, 'black'))
             bindings.highlight.define('GalaxyMode', colors.group('black', mode.color))
             bindings.highlight.define('GalaxyGitBranch', colors.group('black', mode.color))
 
             return mode.alias
-          end
+          end,
+          inactive = false
         },
       },
       {
