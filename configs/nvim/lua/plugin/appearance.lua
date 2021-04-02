@@ -80,6 +80,10 @@ registry.post(function ()
       return vim.bo.filetype
     end,
     Clock = function ()
+      if fn.exists('g:GuiLoaded') == 0 then
+        return ''
+      end
+
       return os.date('%d %b %y %H:%M')
     end
   }
@@ -116,13 +120,9 @@ registry.post(function ()
 
   local refine_section = function (palette, sections, inactive)
     local line = {}
-    local is_gui = fn.exists('g:GuiLoaded') == 1
 
     local section_map = function (key, section)
       if section.inactive == false and inactive then
-        return
-      end
-      if section.gui and not is_gui then
         return
       end
 
@@ -397,11 +397,16 @@ registry.post(function ()
       },
       {
         ClockLeft = {
-          provider = '',
+          provider = function ()
+            if fn.exists('g:GuiLoaded') == 0 then
+              return ''
+            end
+
+            return ''
+          end,
           foreground = 'lightblue',
           background = 'black',
-          inactive = false,
-          gui = true
+          inactive = false
         }
       },
       {
@@ -414,11 +419,16 @@ registry.post(function ()
       },
       {
         ClockRight = {
-          provider = '',
+          provider = function ()
+            if fn.exists('g:GuiLoaded') == 0 then
+              return ''
+            end
+
+            return ''
+          end,
           foreground = 'lightblue',
           background = 'black',
-          inactive = false,
-          gui = true
+          inactive = false
         }
       }
     }
