@@ -285,14 +285,18 @@ registry.post(function ()
       },
       {
         FileType = {
-          component = 'FileType'
+          component = 'FileType',
+          separator = {
+            right = ' '
+          }
         }
       },
       {
         FileEncoding = {
           component = 'FileEncoding',
           separator = {
-            left = ' | '
+            left = '| ',
+            right = ' | '
           }
         }
       },
@@ -300,7 +304,6 @@ registry.post(function ()
         FileFormat = {
           component = 'FileFormat',
           separator = {
-            left = ' | ',
             right = ' '
           }
         }
@@ -323,12 +326,6 @@ registry.post(function ()
             left = ' ',
             right = ' '
           }
-        }
-      },
-      {
-        Spacing = {
-          provider = ' ',
-          background = 'black'
         }
       },
       {
@@ -396,6 +393,19 @@ registry.post(function ()
         }
       },
       {
+        ClockSpacing = {
+          provider = function ()
+            if fn.exists('g:GuiLoaded') == 0 then
+              return ''
+            end
+
+            return ' '
+          end,
+          background = 'black',
+          inactive = false
+        }
+      },
+      {
         ClockLeft = {
           provider = function ()
             if fn.exists('g:GuiLoaded') == 0 then
@@ -413,8 +423,7 @@ registry.post(function ()
         Clock = {
           component = 'Clock',
           background = 'lightblue',
-          inactive = false,
-          gui = true
+          inactive = false
         }
       },
       {
