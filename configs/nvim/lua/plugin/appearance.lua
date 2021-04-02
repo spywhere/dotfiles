@@ -211,12 +211,12 @@ registry.post(function ()
               i = { alias='INS', color='white' },
               v = { alias='VIS', color='green' },
               V = { alias='V-L', color='green' },
-              ['CTRL-V'] = { alias='V-B', color='green' },
+              [''] = { alias='V-B', color='green' },
               c = { alias='CMD', color='cyan' },
               t = { alias='TRM', color='white' },
               s = { alias='SEL', color='brightcyan' },
               S = { alias='S-L', color='brightcyan' },
-              ['CTRL-S'] = { alias='S-B', color='brightcyan' },
+              [''] = { alias='S-B', color='brightcyan' },
               R = { alias='REP', color='yellow' }
             }
 

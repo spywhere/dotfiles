@@ -67,3 +67,8 @@ local sudo_write = function ()
   bindings.cmd('SudoWrite', write)
 end
 registry.defer(sudo_write)
+
+local alternate_digraph = function ()
+  bindings.map.insert('<C-d>', '<C-k>')
+end
+registry.defer(alternate_digraph)
