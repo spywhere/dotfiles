@@ -32,6 +32,8 @@ registry.defer(function ()
   bindings.map.normal('<c-x>', '<cmd>if !switch#Switch({\'reverse\': 1}) <bar>call speeddating#increment(-v:count1) <bar> endif<cr>')
 end)
 
+registry.install('lambdalisue/suda.vim')
+
 registry.install('skywind3000/vim-quickui')
 registry.post(function ()
   vim.g.quickui_show_tip = 1

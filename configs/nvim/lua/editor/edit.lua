@@ -57,17 +57,6 @@ local visual_increment = function ()
 end
 registry.defer(visual_increment)
 
-local sudo_write = function ()
-  local write = {
-    function()
-      api.nvim_command('w !sudo tee %')
-    end
-  }
-  bindings.cmd('WS', write)
-  bindings.cmd('SudoWrite', write)
-end
-registry.defer(sudo_write)
-
 local alternate_digraph = function ()
   bindings.map.insert('<C-d>', '<C-k>')
 end
