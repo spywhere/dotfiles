@@ -5,9 +5,16 @@
   compression = 9
   preloadIndex = true
 [init]
-	defaultBranch = main
+  defaultBranch = main
+[fetch]
+  prune = true
+[pull]
+  ff = only
+[advice]
+  addEmptyPathspec = false
 [delta]
   syntax-theme = Nord
+  line-numbers = true
 [interactive]
   diffFilter = delta --color-only
 [user]
@@ -20,15 +27,6 @@
   email = sirisak.lueangsaksri@agoda.com
 [color]
   ui = true
-[diff-so-fancy]
-  stripLeadingSymbols = false
-  markEmptyLines = false
 [include]
   path = .gitalias
   path = .gitconfig.platform
-[pull]
-	ff = only
-[advice]
-	addEmptyPathspec = false
-[fetch]
-	prune = true
