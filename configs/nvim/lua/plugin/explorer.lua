@@ -15,7 +15,7 @@ registry.defer_first(function ()
     vim.wo.cursorline = true
   end
   -- show cursorline when browsing in the tree explorer
-  registry.auto({ 'BufEnter', 'FileType' }, show_cursorline, 'NvimTree')
+  registry.auto({ 'CursorHold', 'FileType' }, show_cursorline, 'NvimTree')
 end)
 
 registry.install('airblade/vim-rooter')
