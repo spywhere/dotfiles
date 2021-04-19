@@ -1,6 +1,19 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
+registry.install('nvim-lua/popup.nvim')
+registry.install('nvim-lua/plenary.nvim')
+registry.install('nvim-telescope/telescope.nvim')
+registry.defer_first(function ()
+  bindings.map.normal('<C-p>', '<cmd>lua require("telescope.builtin").find_files()<cr>')
+  -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
+  bindings.map.normal('<leader>f', '<cmd>lua require("telescope.builtin").live_grep()<cr>')
+  -- ripgrep the whole project with rg itself
+end)
+registry.defer(function ()
+  require('telescope').setup()
+end)
+
 registry.install('junegunn/fzf', {
   dir = '~/.fzf',
   ['do'] = './install --all'
@@ -22,12 +35,10 @@ registry.defer(function ()
   vim.g.fzf_preview_window =  { 'right:50%', 'ctrl-/' }
 end)
 registry.defer_first(function ()
-  bindings.map.normal('<C-p>', '<cmd>Files<cr>')
-  bindings.map.normal('<C-A-p>', '<cmd>Files!<cr>')
+  bindings.map.normal('<C-A-p>', '<cmd>Files<cr>')
   bindings.map.normal('<leader>/', '<cmd>BLines<cr>')
   bindings.map.normal('<leader><A-/>', '<cmd>BLines!<cr>')
-  bindings.map.normal('<leader>f', '<cmd>Rg<cr>')
-  bindings.map.normal('<leader><A-f>', '<cmd>Rg!<cr>')
+  bindings.map.normal('<leader><A-f>', '<cmd>Rg<cr>')
   bindings.map.normal('<leader>F', '<cmd>RG<cr>')
   bindings.map.normal('<leader><A-F>', '<cmd>RG!<cr>')
 end)
