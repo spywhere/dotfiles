@@ -22,7 +22,7 @@ registry.post(function ()
         return ''
       end
     end,
-    RelativePath = function ()
+    RelativePath = function (options)
       local winwidth = fn.winwidth(0)
       function fallback_name(winwidth, list)
         local list_count = vim.tbl_count(list)
@@ -40,7 +40,7 @@ registry.post(function ()
           end
         end
 
-        if winwidth < 70 + name:len() then
+        if winwidth < options.limit + name:len() then
           table.remove(list, 1)
           return fallback_name(winwidth, list)
         end
@@ -103,13 +103,13 @@ registry.post(function ()
       }
     }
 
-    return function ()
+    return function (options)
       local filetype_map = filetypes[string.lower(vim.bo.filetype)] or filetypes['*']
       if not filetype_map then
-        return components[name]()
+        return components[name](options)
       end
 
-      return filetype_map[string.lower(name)] or filetype_map['*'] or components[name]()
+      return filetype_map[string.lower(name)] or filetype_map['*'] or components[name](options)
     end
   end
 
@@ -122,7 +122,9 @@ registry.post(function ()
     local line = {}
 
     local section_map = function (key, section)
-      if section.inactive == false and inactive then
+      local hide_on_inactive = section.inactive == false and inactive
+      local hide_on_active = section.active == false and not inactive
+      if hide_on_active or hide_on_inactive then
         return
       end
 
@@ -142,15 +144,13 @@ registry.post(function ()
         nohighlight = section.nohighlight or false
       end
 
-      local transform_provider = function (provider, separator)
-        if separator == nil then
-          return provider
-        end
-
+      local transform_provider = function (provider, separator, options)
         return function ()
-          local value = provider() or ''
+          local value = provider(options) or ''
           if value == '' then
             return ''
+          elseif separator == nil then
+            return value
           else
             return (separator.left or '') .. value .. (separator.right or '')
           end
@@ -160,9 +160,9 @@ registry.post(function ()
       if type(provider) == 'string' then
         raw_provider = transform_provider(function () return provider end, section.separator)
       elseif raw_provider == nil then
-        raw_provider = transform_provider(provider, section.separator)
+        raw_provider = transform_provider(provider, section.separator, section.options)
       else
-        raw_provider = transform_provider(raw_provider, section.separator)
+        raw_provider = transform_provider(raw_provider, section.separator, section.options or {})
       end
 
       local component = {
@@ -265,7 +265,17 @@ registry.post(function ()
       {
         RelativePath = {
           component = 'RelativePath',
-          background = 'black'
+          options = { limit = 70 },
+          background = 'black',
+          inactive = false
+        }
+      },
+      {
+        RelativePathInactive = {
+          component = 'RelativePath',
+          options = { limit = 50 },
+          background = 'black',
+          active = false
         }
       },
       {
