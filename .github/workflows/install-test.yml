@@ -1,0 +1,136 @@
+name: Install Test
+on: push
+
+jobs:
+  ubuntu-local-verbose:
+    name: Local Install - Verbose (Ubuntu)
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -v
+  ubuntu-local-normal:
+    name: Local Install - Normal (Ubuntu)
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh
+  ubuntu-local-quiet:
+    name: Local Install - Quiet (Ubuntu)
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -q
+
+  alpine-local-verbose:
+    name: Local Install - Verbose (Alpine)
+    runs-on: alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -v
+  alpine-local-normal:
+    name: Local Install - Normal (Alpine)
+    runs-on: alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh
+  alpine-local-quiet:
+    name: Local Install - Quiet (Alpine)
+    runs-on: alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -q
+
+  macos-local-verbose:
+    name: Local Install - Verbose (MacOS)
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -v
+  macos-local-normal:
+    name: Local Install - Normal (MacOS)
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh
+  macos-local-quiet:
+    name: Local Install - Quiet (MacOS)
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -q
+
+  ubuntu-remote-verbose:
+    name: Remote Install - Verbose (Ubuntu)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Installation Info
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+      - name: Perform Installation
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -v
+  alpine-remote-verbose:
+    name: Remote Install - Verbose (Alpine)
+    runs-on: alpine
+    steps:
+      - name: Installation Info
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+      - name: Perform Installation
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -v
+  macos-remote-verbose:
+    name: Remote Install - Verbose (MacOS)
+    runs-on: macos-10.15
+    steps:
+      - name: Installation Info
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+      - name: Perform Installation
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -v
