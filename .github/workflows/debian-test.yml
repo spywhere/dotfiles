@@ -1,0 +1,49 @@
+name: Debian Test
+on: push
+
+jobs:
+  debian-local-verbose:
+    name: Local Install - Verbose (Debian)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh -i
+      - name: Perform Installation
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh -v
+  debian-local-normal:
+    name: Local Install - Normal (Debian)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh -i
+      - name: Perform Installation
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh
+  debian-local-quiet:
+    name: Local Install - Quiet (Debian)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh -i
+      - name: Perform Installation
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh -q
+
+  debian-remote-verbose:
+    name: Remote Install - Verbose (Debian)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh -c "$(cat install.sh)" - -i
+      - name: Perform Installation
+        run: |
+          docker run -v $(pwd):/root/dots debian:buster-slim sh -c "$(cat install.sh)" - -v
