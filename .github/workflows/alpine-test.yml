@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          cat install.sh | docker run -v $(pwd):/root/dots alpine sh -s -- -i
+          docker run -v $(pwd):/root/dots alpine sh -c "$(cat install.sh)" - -i
       - name: Perform Installation
         run: |
-          cat install.sh | docker run -v $(pwd):/root/dots alpine sh -s -- -y
+          docker run -v $(pwd):/root/dots alpine sh -c "$(cat install.sh)" - -v
