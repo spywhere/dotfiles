@@ -40,6 +40,7 @@ jobs:
     name: Remote Install - Verbose (Alpine)
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Installation Info
         run: |
           cat install.sh | docker run -v $(pwd):/root/dots alpine sh -s -- -i
