@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'netcat-openbsd'
 use_apt 'netcat'
-use_brow formula 'netcat'
+use_brew formula 'netcat'

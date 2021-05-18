@@ -13,5 +13,5 @@ fi
 
 require 'curl'
 
-use_brow formula 'git-delta'
+use_brew formula 'git-delta'
 use_dpkg 'git-delta' 'https://github.com/dandavison/delta/releases/download/0.6.0/git-delta_0.6.0_armhf.deb'
