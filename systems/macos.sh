@@ -41,10 +41,7 @@ setup() {
     return
   fi
 
-  if test -n "$apple_silicon"; then
-    print "Installing (Intel) Homebrew..."
-    cmd arch -x86_64 bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  else
+  if test -z "$apple_silicon"; then
     print "Installing Homebrew..."
     sudo_cmd -v
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
