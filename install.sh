@@ -127,6 +127,7 @@ _split() {
 }
 
 _detect_os() {
+  OSARCH=" ($(uname -m))"
   case "$(uname -s)" in
     Linux*)
       OS="Linux"
@@ -151,6 +152,7 @@ _detect_os() {
     *)
       OSNAME="Unsupported"
       OS="unsupported"
+      OSARCH=""
       ;;
   esac
 }
@@ -171,6 +173,7 @@ _add_item() {
 RUN_LOCAL=0
 DUMB=0
 KEEP_FILES=0
+CONFIRMATION=0
 FORCE_INSTALL=0
 # Verbosity
 #   0: Quiet
@@ -183,6 +186,7 @@ PRINT_MODE=""
 PKGMGR=""
 OS="unsupported"
 OSNAME="Unsupported"
+OSARCH=""
 
 _HALT=0 # flag to indicate if the installation should be stopped
 _FULFILLED="" # a flag indicate if the task has been fulfilled
@@ -221,6 +225,9 @@ _main() {
         ;;
       -l | --local)
         RUN_LOCAL=1
+        ;;
+      -c | --confirmation)
+        CONFIRMATION=1
         ;;
       -d | --dumb)
         DUMB=1
@@ -286,6 +293,7 @@ _usage() {
   print 20 "  -h, --help" "Show this help message"
   print 20 "  -i, --info" "Print out the setup environment information"
   print 20 "  -l, --local" "Run install script locally without update"
+  print 20 "  -c, --confirmation" "Ask for confirmation before performing installation"
   print 20 "  -d, --dumb" "Do not attempt to install dependencies automatically"
   print 20 "  -k, --keep" "Keep downloaded dependencies"
   print 20 "  -f, --force" "Force reinstall any installed packages when possible"
@@ -310,7 +318,7 @@ _usage() {
 _info() {
   VERBOSE=1
   print      20 "Execution" ": $0"
-  print      20 "Operating System" ": $OSNAME$PKGMGR"
+  print      20 "Operating System" ": $OSNAME$OSARCH$PKGMGR"
   print      20 "Home Directory" ": $HOME"
   print      20 "Working Directory" ": $CURRENT_DIR"
   print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES"
@@ -388,7 +396,7 @@ _try_run_install() {
   cd $HOME/$DOTFILES
 
   # Try to update when install remotely, but not the first clone
-  if test "$skip_update" -eq 0 && test "$REMOTE_INSTALL" -eq 1; then
+  if test "$skip_update" -eq 0 -a "$REMOTE_INSTALL" -eq 1; then
     _try_git
     print "$esc_blue==>$esc_reset Updating dotfiles to latest version..."
     cmd git reset --hard
@@ -508,28 +516,52 @@ _try_run_install() {
     print "$esc_green==>$esc_reset The following packages will be installed:"
     local package
     for package in $(_split "$_PACKAGES"); do
-      print "  - $(printf "$package" | sed 's/|/ - /g')"
+      print "  $esc_blue-$esc_reset $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
   if test -n "$_DOCKER"; then
     print "$esc_green==>$esc_reset The following Docker buildings will be run:"
     local package
     for package in $(_split "$_DOCKER"); do
-      print "  - $(printf "$package" | sed 's/|/ - /g')"
+      print "  $esc_blue-$esc_reset $(printf "$package" | sed 's/|/ - /g')"
     done
   fi
   if test -n "$_CUSTOM"; then
     print "$esc_green==>$esc_reset The following installations will be run:"
     local fn
     for fn in $(_split "$_CUSTOM"); do
-      print "  - $fn"
+      print "  $esc_blue-$esc_reset $fn"
     done
   fi
   if test -n "$_SETUP"; then
     print "$esc_green==>$esc_reset The following setups will be run:"
     local fn
     for fn in $(_split "$_SETUP"); do
-      print "  - $fn"
+      print "  $esc_blue-$esc_reset $fn"
+    done
+  fi
+
+  if ! _has_skip update; then
+    if _has_skip upgrade; then
+      print "$esc_green==>$esc_reset System update will be performed"
+    else
+      print "$esc_green==>$esc_reset System update and upgrade will be performed"
+    fi
+  fi
+
+  if test "$CONFIRMATION" -eq 1; then
+    printf "$esc_yellow==>$esc_reset Perform the installation? [y/N] "
+    while test !; do
+      local choice
+      if ! read -n1 -s choice; then
+        quit 1
+      fi
+      if test "$choice" = "y" -o "$choice" = "Y"; then
+        force_print
+        break
+      fi
+      force_print
+      quit
     done
   fi
 
