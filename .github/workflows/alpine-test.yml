@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          docker run -v $(pwd):/root/dots alpine sh -c "$(cat /root/dots/install.sh)" - -i
+          docker run -v $(pwd):/root/dots alpine sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
           docker run -v $(pwd):/root/dots alpine sh /root/dots/install.sh -v
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          docker run -v $(pwd):/root/dots alpine sh -c "$(cat /root/dots/install.sh)" - -i
+          docker run -v $(pwd):/root/dots alpine sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
           docker run -v $(pwd):/root/dots alpine sh /root/dots/install.sh
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          docker run -v $(pwd):/root/dots alpine sh -c "$(cat /root/dots/install.sh)" - -i
+          docker run -v $(pwd):/root/dots alpine sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
           docker run -v $(pwd):/root/dots alpine sh /root/dots/install.sh -q
@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Installation Info
         run: |
-          docker run -v $(pwd):/root/dots alpine sh -c "$(cat /root/dots/install.sh)" - -i
+          cat install.sh | docker run -v $(pwd):/root/dots alpine sh -s -- -i
       - name: Perform Installation
         run: |
-          docker run -v $(pwd):/root/dots alpine sh -c "$(cat /root/dots/install.sh)" - -v
+          cat install.sh | docker run -v $(pwd):/root/dots alpine sh -s -- -y
