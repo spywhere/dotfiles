@@ -4,7 +4,7 @@ on: push
 jobs:
   macos-local-verbose:
     name: Local Install - Verbose (MacOS)
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -15,7 +15,7 @@ jobs:
           sh install.sh -v
   macos-local-normal:
     name: Local Install - Normal (MacOS)
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -26,7 +26,7 @@ jobs:
           sh install.sh
   macos-local-quiet:
     name: Local Install - Quiet (MacOS)
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -38,7 +38,7 @@ jobs:
 
   macos-remote-verbose:
     name: Remote Install - Verbose (MacOS)
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     steps:
       - name: Installation Info
         run: |

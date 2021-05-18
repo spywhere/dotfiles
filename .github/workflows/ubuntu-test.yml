@@ -4,7 +4,7 @@ on: push
 jobs:
   ubuntu-local-verbose:
     name: Local Install - Verbose (Ubuntu)
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -15,7 +15,7 @@ jobs:
           sh install.sh -v
   ubuntu-local-normal:
     name: Local Install - Normal (Ubuntu)
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -26,7 +26,7 @@ jobs:
           sh install.sh
   ubuntu-local-quiet:
     name: Local Install - Quiet (Ubuntu)
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -38,7 +38,7 @@ jobs:
 
   ubuntu-remote-verbose:
     name: Remote Install - Verbose (Ubuntu)
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - name: Installation Info
         run: |
