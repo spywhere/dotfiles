@@ -98,7 +98,13 @@ _M.iterate_commands = function (commands, index, success)
       vim.schedule_wrap(function(code)
         handle:close()
         if code ~= 0 then
-          logger.error(command.error ..'\n')
+          local execute_cmd = command.command
+          if command.options and command.options.args then
+            execute_cmd = string.format(
+              '%s %s', execute_cmd, table.concat(command.options.args, ' ')
+            )
+          end
+          logger.error(string.gsub(command.error, '<msg>', execute_cmd) ..'\n')
         end
         _M.iterate_commands(commands, index + 1, success)
       end)
@@ -106,7 +112,7 @@ _M.iterate_commands = function (commands, index, success)
   end
 end
 
-local install_omnisharp = function ()
+local install_omnisharp = function (force)
   local omnisharp_url = {
     'https://github.com',
     'OmniSharp',
@@ -187,10 +193,11 @@ local install_omnisharp = function ()
     },
     {
       message = 'Installing omnisharp...',
-      error = 'Error while installing omnisharp',
+      error = 'Error while installing omnisharp: <msg>',
       command = 'unzip',
       options = {
         args = {
+          '-o',
           download_target,
           '-d',
           install_dir
@@ -224,7 +231,7 @@ local install_omnisharp = function ()
     }
   })
 
-  if not util.path.exists(bin_path) then
+  if force or not util.path.exists(bin_path) then
     if not (util.has_bins('curl')) then
       error('Need "curl" to install omnisharp language server.')
       return
@@ -233,13 +240,25 @@ local install_omnisharp = function ()
       error('Need "unzip" to install omnisharp language server.')
       return
     end
-    _M.iterate_commands(commands, 1, 'Omnisharp has been installed')
+    local install_word = 'installed'
+    if force then
+      install_word = string.format('re%s', install_word)
+    end
+    _M.iterate_commands(
+      commands, 1, string.format('Omnisharp has been %s', install_word)
+    )
   end
 
   return omnisharp_run_command
 end
 
 local setup_lsps = function ()
+  bindings.cmd('OmnisharpReinstall', {
+    function ()
+      install_omnisharp(true)
+    end
+  })
+
   local lsps = {
     clangd = {
       executable = 'clangd'
