@@ -12,7 +12,7 @@ jobs:
           docker run -v $(pwd):/root/dots debian:buster-slim sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
-          docker run -v $(pwd):/root/dots debian:buster-slim sh -c 'apt update && sh /root/dots/install.sh -y'
+          docker run -v $(pwd):/root/dots debian:buster-slim sh -c 'apt update && sh /root/dots/install.sh -v'
   debian-local-normal:
     name: Local Install - Normal (Debian)
     runs-on: ubuntu-latest
@@ -46,4 +46,4 @@ jobs:
           docker run -v $(pwd):/root/dots debian:buster-slim sh -c "$(cat install.sh)" - -i
       - name: Perform Installation
         run: |
-          docker run -v $(pwd):/root/dots debian:buster-slim sh -c "apt update && sh \"$(cat install.sh)\" - -v"
+          docker run -v $(pwd):/root/dots debian:buster-slim sh -c 'apt update && cat /root/dots/install.sh | sh -s -- -v'
