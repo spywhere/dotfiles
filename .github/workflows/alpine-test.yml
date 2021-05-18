@@ -2,7 +2,7 @@ name: Alpine Test
 on: push
 
 jobs:
-  local-verbose:
+  alpine-local-verbose:
     name: Local Install - Verbose (Alpine)
     runs-on: alpine
     steps:
@@ -13,7 +13,7 @@ jobs:
       - name: Perform Installation
         run: |
           sh install.sh -v
-  local-normal:
+  alpine-local-normal:
     name: Local Install - Normal (Alpine)
     runs-on: alpine
     steps:
@@ -24,7 +24,7 @@ jobs:
       - name: Perform Installation
         run: |
           sh install.sh
-  local-quiet:
+  alpine-local-quiet:
     name: Local Install - Quiet (Alpine)
     runs-on: alpine
     steps:
@@ -36,7 +36,7 @@ jobs:
         run: |
           sh install.sh -q
 
-  remote-verbose:
+  alpine-remote-verbose:
     name: Remote Install - Verbose (Alpine)
     runs-on: alpine
     steps:

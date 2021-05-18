@@ -2,7 +2,7 @@ name: Ubuntu Test
 on: push
 
 jobs:
-  local-verbose:
+  ubuntu-local-verbose:
     name: Local Install - Verbose (Ubuntu)
     runs-on: ubuntu
     steps:
@@ -13,7 +13,7 @@ jobs:
       - name: Perform Installation
         run: |
           sh install.sh -v
-  local-normal:
+  ubuntu-local-normal:
     name: Local Install - Normal (Ubuntu)
     runs-on: ubuntu
     steps:
@@ -24,7 +24,7 @@ jobs:
       - name: Perform Installation
         run: |
           sh install.sh
-  local-quiet:
+  ubuntu-local-quiet:
     name: Local Install - Quiet (Ubuntu)
     runs-on: ubuntu
     steps:
@@ -36,7 +36,7 @@ jobs:
         run: |
           sh install.sh -q
 
-  remote-verbose:
+  ubuntu-remote-verbose:
     name: Remote Install - Verbose (Ubuntu)
     runs-on: ubuntu
     steps:
