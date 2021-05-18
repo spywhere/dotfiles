@@ -41,7 +41,7 @@ esc_green="" # indicate options
 esc_yellow="" # indicate warnings
 esc_red="" # indicate errors
 
-if test -n "$TERM" -a -n "$(command -v tput)" -a "$(tput colors)" -ge 8 -a -n "$(command -v tty)" && tty -s; then
+if test -n "$TERM" -a -n "$(command -v tput)" && test "$(tput colors)" -ge 8 && test -n "$(command -v tty)" && tty -s; then
   esc_reset="$(tput sgr0)"
   if test "$(tput colors)" -gt 8; then
     esc_blue="$(tput setaf 12)"
