@@ -1,0 +1,48 @@
+name: Ubuntu Test
+on: push
+
+jobs:
+  local-verbose:
+    name: Local Install - Verbose (Ubuntu)
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -v
+  local-normal:
+    name: Local Install - Normal (Ubuntu)
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh
+  local-quiet:
+    name: Local Install - Quiet (Ubuntu)
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -q
+
+  remote-verbose:
+    name: Remote Install - Verbose (Ubuntu)
+    runs-on: ubuntu
+    steps:
+      - name: Installation Info
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+      - name: Perform Installation
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -v

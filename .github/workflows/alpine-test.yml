@@ -1,0 +1,48 @@
+name: Alpine Test
+on: push
+
+jobs:
+  local-verbose:
+    name: Local Install - Verbose (Alpine)
+    runs-on: alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -v
+  local-normal:
+    name: Local Install - Normal (Alpine)
+    runs-on: alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh
+  local-quiet:
+    name: Local Install - Quiet (Alpine)
+    runs-on: alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          sh install.sh -i
+      - name: Perform Installation
+        run: |
+          sh install.sh -q
+
+  remote-verbose:
+    name: Remote Install - Verbose (Alpine)
+    runs-on: alpine
+    steps:
+      - name: Installation Info
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+      - name: Perform Installation
+        run: |
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -v
