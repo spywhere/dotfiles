@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          docker run -v $(pwd):/root/dots debian:buster-slim sh -c "$(cat install.sh)" - -i
+          docker run -v $(pwd):/root/dots debian:buster-slim sh -c 'cat /root/dots/install.sh | sh -s -- -i'
       - name: Perform Installation
         run: |
           docker run -v $(pwd):/root/dots debian:buster-slim sh -c 'apt update && cat /root/dots/install.sh | sh -s -- -v'
