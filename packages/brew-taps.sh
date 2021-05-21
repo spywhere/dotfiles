@@ -15,9 +15,9 @@ use_brew_tap 'homebrew/cask'
 use_brew_tap 'homebrew/cask-fonts'
 use_brew_tap 'homebrew/cask-versions'
 use_brew_tap 'homebrew/services'
+use_brew_tap 'homebrew/autoupdate'
 
 use_brew_tap 'buo/cask-upgrade'
-use_brew_tap 'domt4/autoupdate'
 
 # for sc-im
 use_brew_tap 'nickolasburr/pfa'
