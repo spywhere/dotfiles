@@ -9,10 +9,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          sh install.sh -i
+          docker run -v $(pwd):/root/dots ubuntu sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh -v
+          docker run -v $(pwd):/root/dots ubuntu sh -c 'apt update && sh /root/dots/install.sh -v'
   ubuntu-local-normal:
     name: Local Install - Normal (Ubuntu)
     runs-on: ubuntu-latest
@@ -20,10 +20,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          sh install.sh -i
+          docker run -v $(pwd):/root/dots ubuntu sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh
+          docker run -v $(pwd):/root/dots ubuntu sh -c 'apt update && sh /root/dots/install.sh'
   ubuntu-local-quiet:
     name: Local Install - Quiet (Ubuntu)
     runs-on: ubuntu-latest
@@ -31,10 +31,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Installation Info
         run: |
-          sh install.sh -i
+          docker run -v $(pwd):/root/dots ubuntu sh /root/dots/install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh -q
+          docker run -v $(pwd):/root/dots ubuntu sh -c 'apt update && sh /root/dots/install.sh -q'
 
   ubuntu-remote-verbose:
     name: Remote Install - Verbose (Ubuntu)
@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Installation Info
         run: |
-          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+          docker run -v $(pwd):/root/dots ubuntu sh -c 'cat /root/dots/install.sh | sh -s -- -i'
       - name: Perform Installation
         run: |
-          sh -c "$(curl -sSL git.io/Jt8w0)" - -v
+          docker run -v $(pwd):/root/dots ubuntu sh -c 'apt update && cat /root/dots/install.sh | sh -s -- -v'
