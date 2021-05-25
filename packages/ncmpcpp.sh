@@ -13,6 +13,6 @@ fi
 
 require 'boost-dev'
 
-use_apk 'testing' 'ncmpcpp'
+use_apk 'community' 'ncmpcpp'
 use_apt 'ncmpcpp'
 use_brew formula 'ncmpcpp'

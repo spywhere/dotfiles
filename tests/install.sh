@@ -115,7 +115,7 @@ else
 fi
 
 if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
-  docker build --no-cache -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
+  docker build --no-cache --network=host -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
 fi
 
 if test "$(git status -s)" != "" -a $FORCE -eq 0 -a $LOCAL -eq 0 -a $UPGRADE -eq 1; then
@@ -125,4 +125,4 @@ if test "$(git status -s)" != "" -a $FORCE -eq 0 -a $LOCAL -eq 0 -a $UPGRADE -eq
   exit 1
 fi
 
-docker run -it $KEEP -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:$INSTALL_PATH dots:$PLATFORM sh -c "$SCRIPT"
+docker run -it $KEEP --network=host -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:$INSTALL_PATH dots:$PLATFORM sh -c "$SCRIPT"

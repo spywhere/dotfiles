@@ -11,9 +11,5 @@ then
   exit 1
 fi
 
-require 'py3-pyaes'
-require 'py3-pyperclip'
-
-use_apk 'testing' 'mycli'
-use_apt 'mycli'
-use_brew formula 'mycli'
+optional
+use_apk 'community' 'py3-pyaes'

@@ -1,2 +1,5 @@
-FROM alpine
+FROM alpine:3.12
+# use 3.12 as there is issue when installing packages
+# see https://github.com/alpinelinux/docker-alpine/issues/135
+
 RUN apk add --no-cache docker
