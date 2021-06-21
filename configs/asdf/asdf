@@ -1,4 +1,5 @@
 nodejs 14.15.4
 python 3.9.0
 dotnet-core 5.0.102
-java openjdk-15.0.2
+java adoptopenjdk-8.0.292+10
+shellcheck 0.7.2
