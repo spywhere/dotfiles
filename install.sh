@@ -642,7 +642,7 @@ add_flag() {
 
 has_flag() {
   local flag="$1"
-  ! _has_item "$_INTERNAL_STATE" "$flag"
+  _has_item "$_INTERNAL_STATE" "$flag"
 }
 
 deps() {
