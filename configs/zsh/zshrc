@@ -13,7 +13,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 if ! test -f ~/.zinit/bin/zinit.zsh; then
-  echo "installing zinit..."
+  echo "Installing zinit..."
   mkdir -p ~/.zinit
   git clone https://github.com/zdharma/zinit ~/.zinit/bin
 fi
