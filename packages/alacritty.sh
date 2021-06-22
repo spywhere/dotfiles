@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+optional
+
 if has_flag "apple-silicon"; then
   use_custom 'install_alacritty'
 else
