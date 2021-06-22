@@ -169,6 +169,19 @@ _add_item() {
   fi
 }
 
+_has_item() {
+  local list="$1"
+  local item="$2"
+
+  local found_item
+  for found_item  in $list; do
+    if test "$found_item" = "$item"; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 # All options turned on
 RUN_LOCAL=0
 DUMB=0
@@ -194,6 +207,7 @@ _SKIP_OPTIONAL="" # a flag to indicate if the current task is optional
 _RUNNING_TYPE="package" # a string indicate the type of running script
 _RUNNING="" # keep the currently running sub-script
 _SKIPPED="" # keep a list of skipped components (scripts)
+_INDICATED="" # keep a list of specified components (scripts)
 _LOADED="" # keep a list of install components (scripts)
 _PACKAGES="" # keep a list of install packages
 _CUSTOM="" # keep a list of custom function for installing packages
@@ -274,7 +288,9 @@ _main() {
         _SKIPPED=$(_add_item "$_SKIPPED" " " "$name")
         ;;
       *)
-        break
+        # Add package to the indicated list
+        local name="$1"
+        _INDICATED=$(_add_item "$_INDICATED" " " "$name")
         ;;
     esac
 
@@ -302,17 +318,24 @@ _usage() {
   print 20 "  -p, --packages" "Print out available packages"
   print 20 "  -s, --setup" "Print out available setup"
   print
-  print "To skip specific package or setup, add a 'no-' prefix to the package or setup name itself."
+  print "To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself."
   print
   print "  Example: $0 no-asdf no-docker"
   print "  Skip Docker and ASDF installation"
+  print
+  print "To include a specific package or setup, simply add a package or setup name after exclusions."
+  print
+  print "  Example: $0 no-packages asdf docker"
+  print "  Skip package installation, but install ASDF and Docker"
   print
   print "To skip system update/upgrade, package installation or setups, use"
   print 20 "  no-update" "Skip system update and system upgrade"
   print 20 "  no-upgrade" "Only perform a system update but not system upgrade"
   print 20 "  no-packages" "Skip package installation, including a custom one"
   print 20 "  no-setup" "Skip setups"
-  print "Note that if setup require particular packages, those packages will be automatically installed."
+  print "Note:"
+  print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
+  print "  - If the setup require particular packages, those packages will be automatically installed."
 }
 
 _info() {
@@ -332,13 +355,12 @@ _info() {
 
 _has_skip() {
   local component="$1"
-  local skipped_component
-  for skipped_component in $_SKIPPED; do
-    if test "$skipped_component" = "$component"; then
-      return 0
-    fi
-  done
-  return 1
+  _has_item "$_SKIPPED" "$component"
+}
+
+_has_indicate() {
+  local component="$1"
+  _has_item "$_INDICATED" "$component"
 }
 
 _check_sudo() {
@@ -401,7 +423,7 @@ _try_run_install() {
     print "$esc_blue==>$esc_reset Updating dotfiles to latest version..."
     cmd git reset --hard
     cmd git fetch
-    cmd git pull
+    cmd git pull --rebase
   fi
 
   # Run local script when install remotely
@@ -452,14 +474,14 @@ _try_run_install() {
 
   # run packages
   _RUNNING_TYPE="package"
-  if ! _has_skip packages; then
+  if ! _has_skip packages || test -n "$_INDICATED"; then
     local package_path
     for package_path in $HOME/$DOTFILES/packages/*.sh; do
       local package=$(basename "$package_path")
       package=${package%.sh}
 
       # Skip requested packages
-      if _has_skip "$package"; then
+      if (_has_skip packages || _has_skip "$package") && ! _has_indicate "$package"; then
         continue
       fi
 
@@ -617,13 +639,7 @@ add_flag() {
 
 has_flag() {
   local flag="$1"
-  local flag_component
-  for flag_component in $_INTERNAL_STATE; do
-    if test "$flag_component" = "$flag"; then
-      return 0
-    fi
-  done
-  return 1
+  ! _has_item "$_INTERNAL_STATE" "$flag"
 }
 
 deps() {
@@ -732,13 +748,7 @@ has_cmd() {
 # has_package <package>
 has_package() {
   local package="$1"
-  local loaded_package
-  for loaded_package in $_LOADED; do
-    if test "$loaded_package" = "$package"; then
-      return 0
-    fi
-  done
-  return 1
+  _has_item "$_LOADED" "$package"
 }
 
 add_post_install_message() {
