@@ -17,7 +17,12 @@ add_setup 'setup_tmux_plugins'
 
 setup_tmux_plugins() {
   # install tmux plugin manager and its plugins
-  print "Installing tmux plugin manager..."
+  if test -d "$HOME/.tmux/plugins/tpm"; then
+    return
+  fi
+
+  info "Installing tmux plugin manager..."
+  clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm" "tpm"
 
   add_post_install_message 'Press <Prefix+I> for tmux plugins installation'
 }

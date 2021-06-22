@@ -15,10 +15,14 @@ add_setup 'setup_font'
 
 # install fonts
 setup_font() {
-  print "Installing fonts..."
-  # Try downloading fonts to this directory would be much faster and use
-  #   smaller storage size
-  # - https://github.com/ryanoasis/nerd-fonts#option-6-ad-hoc-curl-download
-  # - https://github.com/ryanoasis/nerd-fonts/blob/master/install.sh#L238-L254
-  return
+  local font_path="$HOME/.local/share/fonts/NerdFonts"
+
+  if test -d "$HOME/Library/Fonts"; then
+    font_path="$HOME/Library/Fonts/NerdFonts"
+  fi
+
+  info "Installing fonts into $font_path..."
+  mkdir -p "$font_path"
+  info "Installing JetBrains Mono Nerd Font..."
+  cmd curl -fLo "$font_path/JetBrains Mono Regular Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/Ligatures/Regular/complete/JetBrains%20Mono%20Regular%20Nerd%20Font%20Complete.ttf?raw=true
 }

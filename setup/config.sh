@@ -14,7 +14,7 @@ fi
 add_setup 'setup_config'
 
 setup_config() {
-  print "Setting up configurations..."
+  info "Setting up configurations..."
 
   # alacritty
   link alacritty/alacritty.yml .alacritty.yml
