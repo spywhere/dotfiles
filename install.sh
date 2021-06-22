@@ -626,7 +626,7 @@ _try_run_install() {
 
   print "$esc_blue==>$esc_reset Done!"
   if test -n "$_POST_INSTALL_MSGS"; then
-    print "NOTE: Don't forge to..."
+    print "NOTE: Don't forget to..."
     print "  - $_POST_INSTALL_MSGS"
   fi
 }
