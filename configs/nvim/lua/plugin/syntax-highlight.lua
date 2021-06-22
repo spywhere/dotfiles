@@ -26,7 +26,7 @@ if fn.has('nvim-0.5') == 1 then
     require('nvim-treesitter.configs').setup {
       ensure_installed = 'all',
       ignore_install = {
-        'julia', 'kotlin', 'ocamel', 'ocaml_interface',
+        'julia', 'haskell', 'kotlin', 'ocamel', 'ocaml_interface',
         'ocamllex', 'verilog', 'zig'
       },
       highlight = {
