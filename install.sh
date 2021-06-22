@@ -516,14 +516,14 @@ _try_run_install() {
 
   # running setup preparation
   _RUNNING_TYPE="setup"
-  if ! _has_skip setup; then
+  if ! _has_skip setup || test -n "$_INDICATED"; then
     local setup_path
     for setup_path in $HOME/$DOTFILES/setup/*.sh; do
       local setup=$(basename "$setup_path")
       setup=${setup%.sh}
 
       # Skip requested setups
-      if _has_skip "$setup"; then
+      if (_has_skip setup || _has_skip "$setup") && ! _has_indicate "$setup"; then
         continue
       fi
 
