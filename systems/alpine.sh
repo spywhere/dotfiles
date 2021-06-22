@@ -57,19 +57,19 @@ install_packages() {
     esac
   done
   if test -n "$main_packages"; then
-    print "Installing main packages..."
+    info "Installing main packages..."
     cmd apk add $main_packages
   fi
   if test -n "$edge_packages"; then
-    print "Installing edge packages..."
+    info "Installing edge packages..."
     cmd apk add --repository=$(_get_mirror_repo main edge) $edge_packages
   fi
   if test -n "$community_packages"; then
-    print "Installing community packages..."
+    info "Installing community packages..."
     cmd apk add --repository=$(_get_mirror_repo community edge) $community_packages
   fi
   if test -n "$testing_packages"; then
-    print "Installing testing packages..."
+    info "Installing testing packages..."
     cmd apk add --repository=$(_get_mirror_repo testing edge) $testing_packages
   fi
 }

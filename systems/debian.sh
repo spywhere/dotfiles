@@ -27,9 +27,9 @@ install_dpkg_packages() {
     local url=$(printf "%s" "$package" | cut -d'|' -f2-)
 
     local path=$(deps "$name.deb")
-    print "Downloading $path for installation..."
+    info "Downloading $path for installation..."
     cmd curl -sSL $url -o $path
-    print "Installing $name through dpkg..."
+    info "Installing $name through dpkg..."
     sudo_cmd dpkg --install $path
   done
 }
@@ -49,7 +49,7 @@ install_packages() {
     fi
   done
 
-  print "Installing packages..."
+  info "Installing packages..."
   sudo_cmd apt install --no-install-recommends -y $apt_packages
   install_dpkg_packages $dpkg_packages
 }

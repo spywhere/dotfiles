@@ -22,7 +22,7 @@ setup() {
   fi
 
   if has_cmd pkgutil && test -n "$apple_silicon" -a "$(pkgutil --pkgs=com.apple.pkg.RosettaUpdateAuto)" != "com.apple.pkg.RosettaUpdateAuto"; then
-    print "Installing Rosetta 2..."
+    info "Installing Rosetta 2..."
     cmd softwareupdate --install-rosetta --agree-to-license
   fi
 
@@ -32,7 +32,7 @@ setup() {
   fi
 
   if test -n "$apple_silicon" -a ! -f /opt/homebrew/bin/brew; then
-    print "Installing (Apple Silicon) Homebrew..."
+    info "Installing (Apple Silicon) Homebrew..."
     sudo_cmd -v
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
@@ -42,7 +42,7 @@ setup() {
   fi
 
   if test -z "$apple_silicon"; then
-    print "Installing Homebrew..."
+    info "Installing Homebrew..."
     sudo_cmd -v
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
@@ -137,18 +137,18 @@ install_packages() {
     brew_flags="--force"
   fi
   if test -n "$tap_repos"; then
-    print "Tapping repositories..."
+    info "Tapping repositories..."
     tap_repo $tap_repos
   fi
   if test -n "$formula_packages"; then
-    print "Installing packages..."
+    info "Installing packages..."
     run_brew install --formula $brew_flags $formula_packages
     if test -n "$intel_formula_packages"; then
       run_intel_brew install --formula $brew_flags $intel_formula_packages
     fi
   fi
   if test -n "$flagged_packages"; then
-    print "Installing packages with additional flags..."
+    info "Installing packages with additional flags..."
     local package
     for package in $flagged_packages; do
       local name=$(printf "%s" "$package" | cut -d'|' -f1)
@@ -164,7 +164,7 @@ install_packages() {
     fi
   fi
   if test -n "$cask_packages"; then
-    print "Installing cask packages..."
+    info "Installing cask packages..."
     run_brew install --cask $brew_flags $cask_packages
     if test -n "$intel_cask_packages"; then
       run_intel_brew install --cask $brew_flags $intel_cask_packages
