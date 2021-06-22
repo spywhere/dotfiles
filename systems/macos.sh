@@ -50,11 +50,13 @@ setup() {
 }
 
 run_intel_brew() {
+  local brew_path="/usr/local/Homebrew/bin"
   local executable=""
-  if test -f /usr/local/Homebrew/bin/brew; then
-    executable="/usr/local/Homebrew/bin/brew"
+
+  if test -f "$brew_path/brew"; then
+    executable="$brew_path/brew"
   else
-    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $(dirname $executable)"
+    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $brew_path"
     quit 1
   fi
 
@@ -62,13 +64,16 @@ run_intel_brew() {
 }
 
 run_brew() {
+  local brew_path="/usr/local/Homebrew/bin"
   local executable=""
-  if has_flag "apple-silicon" && test -f /opt/homebrew/bin/brew; then
-    executable="/opt/homebrew/bin/brew"
-  elif test -f /usr/local/Homebrew/bin/brew; then
-    executable="/usr/local/Homebrew/bin/brew"
+  if has_flag "apple-silicon"; then
+    brew_path="/opt/homebrew/bin"
+  fi
+
+  if test -f "$brew_path/brew"; then
+    executable="$brew_path/brew"
   else
-    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $(dirname $executable)"
+    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $brew_path"
     quit 1
   fi
 
