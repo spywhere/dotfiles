@@ -81,6 +81,7 @@ else
   zinit ice lucid depth"1" blockf
   zinit light zsh-users/zsh-completions
   zinit light zsh-users/zsh-history-substring-search
+  zinit light zdharma/fast-syntax-highlighting
   zinit snippet OMZ::plugins/asdf
   zinit snippet OMZ::plugins/brew
   zinit snippet OMZ::plugins/common-aliases
