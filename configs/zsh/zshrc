@@ -12,6 +12,14 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+if ! test -f ~/.zinit/bin/zinit.zsh; then
+  echo "installing zinit..."
+  mkdir -p ~/.zinit
+  git clone https://github.com/zdharma/zinit ~/.zinit/bin
+fi
+
+source ~/.zinit/bin/zinit.zsh
+
 autoload -Uz compinit
 autoload -Uz bashcompinit && bashcompinit
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
@@ -19,11 +27,6 @@ if test $(date +'%j') != $updated_at; then
   compinit -i
 else
   compinit -C -i
-fi
-
-if ! test -f /usr/local/bin/antibody; then
-  echo "installing antibody..."
-  curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 fi
 
 setopt append_history # append history list to history file, rather than replace it
@@ -56,57 +59,45 @@ ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOCONNECT=false
 ZSH_TMUX_UNICODE=true
 
-if test ! -f ~/.zsh_plugins.startup -o ! -f ~/.zsh_plugins.base -o ! -f ~/.zsh_plugins.prompt; then
-  echo "ohmyzsh/ohmyzsh path:plugins/tmux" > ~/.zsh_plugins.startup.list
-
-  echo "romkatv/powerlevel10k" > ~/.zsh_plugins.prompt.list
-
-  echo "romkatv/gitstatus" > ~/.zsh_plugins.base.list
-  echo "michaelaquilina/zsh-you-should-use" >> ~/.zsh_plugins.base.list
-  echo "aloxaf/fzf-tab" >> ~/.zsh_plugins.base.list
-  echo "bigH/git-fuzzy path:bin kind:path" >> ~/.zsh_plugins.base.list
-  echo "zsh-users/zsh-autosuggestions" >> ~/.zsh_plugins.base.list
-  echo "zsh-users/zsh-completions" >> ~/.zsh_plugins.base.list
-  echo "zsh-users/zsh-history-substring-search" >> ~/.zsh_plugins.base.list
-  echo "zdharma/fast-syntax-highlighting" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/asdf" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/brew" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/common-aliases" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/docker" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:lib/git.zsh" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/git" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/git-auto-fetch" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/git-flow" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/gitignore" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/httpie" >> ~/.zsh_plugins.base.list
-  echo "ohmyzsh/ohmyzsh path:plugins/npm" >> ~/.zsh_plugins.base.list
-
-  echo -n "Installing startup plugins...\\r"
-  antibody bundle < ~/.zsh_plugins.startup.list > ~/.zsh_plugins.startup
-  echo -en "Installing plugins...        \\r"
-  antibody bundle < ~/.zsh_plugins.base.list > ~/.zsh_plugins.base
-  echo -en "Installing prompt... \\r"
-  antibody bundle < ~/.zsh_plugins.prompt.list > ~/.zsh_plugins.prompt
-  echo -e "Ready                "
-
-  rm -rf ~/.zsh_plugins.startup.list
-  rm -rf ~/.zsh_plugins.base.list
-  rm -rf ~/.zsh_plugins.prompt.list
-fi
-
-if test -d /opt/homebrew/bin; then
-  export PATH="/opt/homebrew/bin:$PATH"
-fi
+# Workaround for tmux with zinit: https://github.com/zdharma/zinit/issues/503
+ZSH_TMUX_FIXTERM=false
 
 # early set the variables for terminal and tmux to use
 . $HOME/$DOTFILES_NAME/configs/zsh/setup
 
 if ! (echo "$PATH" | grep -q vim) && test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
-  source ~/.zsh_plugins.startup
+  zinit ice lucid wait"0"
+  zinit snippet OMZ::plugins/tmux
+else
+  zinit ice lucid depth"1"
+  zinit light romkatv/powerlevel10k
+
+  zinit light romkatv/gitstatus
+  zinit light michaelaquilina/zsh-you-should-use
+  zinit light aloxaf/fzf-tab
+  zinit ice lucid depth"1" as"program" pick"bin/git-fuzzy"
+  zinit light bigH/git-fuzzy
+  zinit light zsh-users/zsh-autosuggestions
+  zinit ice lucid depth"1" blockf
+  zinit light zsh-users/zsh-completions
+  zinit light zsh-users/zsh-history-substring-search
+  zinit snippet OMZ::plugins/asdf
+  zinit snippet OMZ::plugins/brew
+  zinit snippet OMZ::plugins/common-aliases
+  zinit ice lucid as"completion"
+  zinit snippet OMZ::plugins/docker/_docker
+  zinit snippet OMZ::lib/git.zsh
+  zinit snippet OMZ::plugins/git
+  zinit snippet OMZ::plugins/git-auto-fetch
+  zinit snippet OMZ::plugins/git-flow
+  zinit snippet OMZ::plugins/gitignore
+  zinit snippet OMZ::plugins/httpie
+  zinit snippet OMZ::plugins/npm
 fi
 
-source ~/.zsh_plugins.base
-source ~/.zsh_plugins.prompt
+if test -d /opt/homebrew/bin; then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
 
 # Setup powerlevel10k
 test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/configs/zsh/p10k

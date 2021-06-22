@@ -12,7 +12,6 @@ alias ga.="ga ."
 
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
-alias reloadzshplugins="rm -f ~/.zsh_plugins.base ~/.zsh_plugins.prompt ~/.zsh_plugins.startup && source ~/.zshrc"
 
 alias dr="defaults read"
 alias dw="defaults write"
