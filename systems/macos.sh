@@ -37,6 +37,10 @@ setup() {
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
 
+  if test -f /opt/homebrew/bin/brew; then
+    export PATH="/opt/homebrew/bin:$PATH"
+  fi
+
   if test -f /usr/local/Homebrew/bin/brew; then
     return
   fi
@@ -46,7 +50,6 @@ setup() {
     sudo_cmd -v
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
-
 }
 
 run_intel_brew() {
