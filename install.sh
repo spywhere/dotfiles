@@ -240,6 +240,9 @@ _main() {
       -l | --local)
         RUN_LOCAL=1
         ;;
+      -ll)
+        RUN_LOCAL=2
+        ;;
       -c | --confirmation)
         CONFIRMATION=1
         ;;
@@ -306,17 +309,17 @@ _usage() {
   print "Usage: $0 [flag ...] [package/setup ...]"
   print
   print "Flags:"
-  print 20 "  -h, --help" "Show this help message"
-  print 20 "  -i, --info" "Print out the setup environment information"
-  print 20 "  -l, --local" "Run install script locally without update"
-  print 20 "  -c, --confirmation" "Ask for confirmation before performing installation"
-  print 20 "  -d, --dumb" "Do not attempt to install dependencies automatically"
-  print 20 "  -k, --keep" "Keep downloaded dependencies"
-  print 20 "  -f, --force" "Force reinstall any installed packages when possible"
-  print 20 "  -q, --quiet" "Suppress output messages when possible"
-  print 20 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
-  print 20 "  -p, --packages" "Print out available packages"
-  print 20 "  -s, --setup" "Print out available setup"
+  print 22 "  -h, --help" "Show this help message"
+  print 22 "  -i, --info" "Print out the setup environment information"
+  print 22 "  -l, --local" "Run install script locally without update (use -ll for force running local script even through remote install)"
+  print 22 "  -c, --confirmation" "Ask for confirmation before performing installation"
+  print 22 "  -d, --dumb" "Do not attempt to install dependencies automatically"
+  print 22 "  -k, --keep" "Keep downloaded dependencies"
+  print 22 "  -f, --force" "Force reinstall any installed packages when possible"
+  print 22 "  -q, --quiet" "Suppress output messages when possible"
+  print 22 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
+  print 22 "  -p, --packages" "Print out available packages"
+  print 22 "  -s, --setup" "Print out available setup"
   print
   print "To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself."
   print
@@ -329,10 +332,10 @@ _usage() {
   print "  Skip package installation, but install ASDF and Docker"
   print
   print "To skip system update/upgrade, package installation or setups, use"
-  print 20 "  no-update" "Skip system update and system upgrade"
-  print 20 "  no-upgrade" "Only perform a system update but not system upgrade"
-  print 20 "  no-packages" "Skip package installation, including a custom one"
-  print 20 "  no-setup" "Skip setups"
+  print 22 "  no-update" "Skip system update and system upgrade"
+  print 22 "  no-upgrade" "Only perform a system update but not system upgrade"
+  print 22 "  no-packages" "Skip package installation, including a custom one"
+  print 22 "  no-setup" "Skip setups"
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
   print "  - If the setup require particular packages, those packages will be automatically installed."
@@ -398,7 +401,7 @@ _try_git() {
 _try_run_install() {
   local skip_update=0
   if test "$LOCAL_COPY" -eq 0; then
-    if test "$RUN_LOCAL" -eq 1; then
+    if test "$RUN_LOCAL" -ge 1; then
       error "local copy of dotfiles is not found at $HOME/$DOTFILES"
       quit 1
     fi
@@ -418,7 +421,7 @@ _try_run_install() {
   cd $HOME/$DOTFILES
 
   # Try to update when install remotely, but not the first clone
-  if test "$skip_update" -eq 0 -a "$REMOTE_INSTALL" -eq 1; then
+  if test "$skip_update" -eq 0 -a "$REMOTE_INSTALL" -eq 1 -a "$RUN_LOCAL" -lt 2; then
     _try_git
     print "$esc_blue==>$esc_reset Updating dotfiles to latest version..."
     cmd git reset --hard
