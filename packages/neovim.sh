@@ -16,4 +16,4 @@ require luajit
 
 use_apk 'main' 'neovim'
 use_brew formula 'neovim' '--head'
-use_docker_build 'neovim'
+use_docker_build

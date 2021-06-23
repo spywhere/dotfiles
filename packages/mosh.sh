@@ -12,4 +12,4 @@ then
 fi
 
 use_brew formula 'mosh'
-use_docker_build 'mosh'
+use_docker_build

@@ -14,4 +14,4 @@ fi
 require lua
 
 use_brew formula 'sc-im'
-use_docker_build 'scim'
+use_docker_build

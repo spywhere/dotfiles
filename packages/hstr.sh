@@ -13,4 +13,4 @@ fi
 
 use_apk 'main' 'hstr'
 use_brew formula 'hstr'
-use_docker_build 'hstr'
+use_docker_build

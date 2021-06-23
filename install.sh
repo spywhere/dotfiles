@@ -881,7 +881,7 @@ use_docker_build() {
   if _has_skip docker; then
     return
   fi
-  local package="$1"
+  local package="$_RUNNING"
   if test -n "$_FULFILLED"; then
     return
   fi
