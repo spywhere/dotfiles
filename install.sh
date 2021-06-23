@@ -219,15 +219,15 @@ _escape_special() {
 
 _unescape_special() {
   printf "%s" "$@" |
+    sed 's/%0A/\n/g' |
+    sed 's/%20/ /g' |
     sed 's/%22/"/g' |
     sed "s/%27/'/g" |
-    sed 's/%0A/\n/g' |
     sed 's/%7C/|/g' |
     sed 's/%3B/;/g' |
     sed 's/%3A/:/g' |
     sed 's/%5C/\\/g' |
-    sed 's/%25/%/g' |
-    sed 's/%20/ /g'
+    sed 's/%25/%/g'
 }
 
 _FIELDS=""
