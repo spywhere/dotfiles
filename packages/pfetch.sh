@@ -13,7 +13,9 @@ fi
 
 require 'curl'
 
-use_custom 'curl_pfetch'
+if ! has_cmd pfetch; then
+  use_custom 'curl_pfetch'
+fi
 
 curl_pfetch() {
   # use_curl 'pfetch' 'https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch'

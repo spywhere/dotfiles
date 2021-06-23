@@ -11,13 +11,11 @@ then
   exit 1
 fi
 
-use_custom 'install_asdf'
+if ! has_cmd asdf; then
+  use_custom 'install_asdf'
+fi
 
 install_asdf() {
-  if has_cmd asdf; then
-    return
-  fi
-
   if ! test -d "$HOME/.asdf"; then
     full_clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
     cmd cd $HOME/.asdf
