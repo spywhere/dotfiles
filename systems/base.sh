@@ -65,6 +65,11 @@ use_brew_tap() {
   return 0
 }
 
+# use_mas <package>
+use_mas() {
+  return 0
+}
+
 # use_dpkg <name> <url>
 use_dpkg() {
   return 0
