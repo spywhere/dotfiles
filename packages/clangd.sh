@@ -12,8 +12,8 @@ then
 fi
 
 # use as a language server for C-based languages
-use_apt 'clangd-9'
+use_apt 'clang-tools'
 # see https://releases.llvm.org/10.0.0/tools/clang/tools/extra/docs/clangd/Installation.html
 use_brew formula 'llvm'
 # see https://github.com/clangd/clangd/issues/450
-# use_apk 'main' 'clangd-9'
+use_apk 'main' 'clang-extra-tools'
