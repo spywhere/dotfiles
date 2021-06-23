@@ -15,7 +15,7 @@ fi
 
 update() {
   sudo_cmd apt update -y
-  if test $1 = "upgrade"; then
+  if test "$1" = "upgrade"; then
     sudo_cmd apt full-upgrade -y
   fi
 }

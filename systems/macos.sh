@@ -85,7 +85,7 @@ run_brew() {
 
 update() {
   run_brew update --force # https://github.com/Homebrew/brew/issues/1151
-  if test $1 = "upgrade"; then
+  if test "$1" = "upgrade"; then
     run_brew upgrade
     run_brew cleanup
   fi

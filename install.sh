@@ -9,7 +9,7 @@ set -e
 CLONE_REPO="https://github.com/spywhere/dotfiles"
 
 CURRENT_DIR=$(pwd)
-FLAGS=$@
+FLAGS="$@"
 
 # Set a dot files directory if one is not found
 if test -z "$DOTFILES"; then
@@ -36,8 +36,8 @@ if test -d "$HOME/$DOTFILES"; then
 fi
 
 esc_reset="" # reset
-esc_blue="" # indicate information
-esc_green="" # indicate options
+esc_blue="" # indicate process
+esc_green="" # indicate options and information
 esc_yellow="" # indicate warnings
 esc_red="" # indicate errors
 
@@ -110,6 +110,10 @@ print() {
 
 info() {
   print "$esc_green==> INFO:$esc_reset $@"
+}
+
+step() {
+  print "$esc_blue==>$esc_reset $@"
 }
 
 # Print a boolean value as string
@@ -367,7 +371,7 @@ _has_indicate() {
 }
 
 _check_sudo() {
-  if test "$(command -v "sudo")"; then
+  if test "$(command -v sudo)"; then
     return
   fi
 
@@ -384,13 +388,13 @@ _try_git() {
   fi
 
   if test "$OS" = "alpine"; then
-    print "$esc_blue==>$esc_reset Installing git..."
+    step "Installing git..."
     cmd apk add git
   elif test "$OS" = "debian"; then
-    print "$esc_blue==>$esc_reset Installing git..."
+    step "Installing git..."
     sudo_cmd apt install -y git
   elif test "$OS" = "macos" -a "$(command -v "brew")"; then
-    print "$esc_blue==>$esc_reset Installing git..."
+    step "Installing git..."
     cmd brew install git
   else
     error "command \"git\" is required"
@@ -423,7 +427,7 @@ _try_run_install() {
   # Try to update when install remotely, but not the first clone
   if test "$skip_update" -eq 0 -a "$REMOTE_INSTALL" -eq 1 -a "$RUN_LOCAL" -lt 2; then
     _try_git
-    print "$esc_blue==>$esc_reset Updating dotfiles to latest version..."
+    step "Updating dotfiles to latest version..."
     cmd git reset --hard
     cmd git fetch
     cmd git pull --rebase
@@ -431,7 +435,7 @@ _try_run_install() {
 
   # Run local script when install remotely
   if test "$REMOTE_INSTALL" -eq 1; then
-    print "$esc_blue==>$esc_reset Executing local script..."
+    step "Executing local script..."
     sh $HOME/$DOTFILES/install.sh $FLAGS
     quit
   fi
@@ -465,15 +469,15 @@ _try_run_install() {
     quit 1
   fi
 
-  print "$esc_blue==>$esc_reset Ready"
+  step "Ready"
   if ! test -f "$HOME/$DOTFILES/systems/$OS.sh"; then
     error "\"$OS\" is not supported"
     quit 1
   fi
   . $HOME/$DOTFILES/systems/$OS.sh
-  print "$esc_blue==>$esc_reset Setting up installation process..."
+  step "Setting up installation process..."
   setup
-  print "$esc_blue==>$esc_reset Gathering components..."
+  step "Gathering components..."
 
   # run packages
   _RUNNING_TYPE="package"
@@ -593,10 +597,10 @@ _try_run_install() {
   # update/upgrade system
   if ! _has_skip update; then
     if _has_skip upgrade; then
-      print "$esc_blue==>$esc_reset Updating system..."
+      step "Updating system..."
       update "update"
     else
-      print "$esc_blue==>$esc_reset Updating and upgrading system..."
+      step "Updating and upgrading system..."
       update "upgrade"
     fi
   fi
@@ -608,7 +612,7 @@ _try_run_install() {
 
   # run custom installations
   if test -n "$_CUSTOM"; then
-    print "$esc_blue==>$esc_reset Performing custom installations..."
+    step "Performing custom installations..."
     local fn
     for fn in $(_split "$_CUSTOM"); do
       "$fn"
@@ -617,14 +621,14 @@ _try_run_install() {
 
   # run setups
   if test -n "$_SETUP"; then
-    print "$esc_blue==>$esc_reset Running setups..."
+    step "Running setups..."
     local fn
     for fn in $(_split "$_SETUP"); do
       "$fn"
     done
   fi
 
-  print "$esc_blue==>$esc_reset Done!"
+  step "Done!"
   if test -n "$_POST_INSTALL_MSGS"; then
     print "NOTE: Don't forget to..."
     print "  - $_POST_INSTALL_MSGS"
@@ -650,7 +654,7 @@ deps() {
     mkdir -p $HOME/$DOTFILES/.deps
   fi
 
-  if test "$1"; then
+  if test -n "$1"; then
     printf "$HOME/$DOTFILES/.deps/$1"
   else
     printf "$HOME/$DOTFILES/.deps"
@@ -719,7 +723,7 @@ full_clone() {
   _try_git
   if test -n "$name"; then
     shift
-    print "$esc_blue==>$esc_reset Cloning $name..."
+    step "Cloning $name..."
   fi
 
   cmd git clone $@ "$repo" "$dir_name"
@@ -736,7 +740,7 @@ clone() {
   _try_git
   if test -n "$name"; then
     shift
-    print "$esc_blue==>$esc_reset Cloning $name..."
+    step "Cloning $name..."
   fi
 
   cmd git clone --shallow-submodules --depth 1 $@ "$repo" "$dir_name"

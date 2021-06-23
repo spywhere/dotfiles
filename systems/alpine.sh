@@ -22,7 +22,7 @@ _get_mirror_repo() {
 }
 
 update() {
-  if test $1 = "upgrade"; then
+  if test "$1" = "upgrade"; then
     cmd apk -U upgrade
   else
     cmd apk update
