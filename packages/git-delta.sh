@@ -28,7 +28,7 @@ case "$cpu_type" in
   *)
     ;;
 esac
-if "$cpu_type" = "amd64"; then
+if test "$cpu_type" = "amd64"; then
   libc_type="-musl"
 fi
 
