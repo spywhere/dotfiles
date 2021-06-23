@@ -584,14 +584,12 @@ _try_run_install() {
     printf "$esc_yellow==>$esc_reset Perform the installation? [y/N] "
     while test !; do
       local choice
-      if ! read -n1 -s choice; then
+      if ! read choice; then
         quit 1
       fi
       if test "$choice" = "y" -o "$choice" = "Y"; then
-        force_print
         break
       fi
-      force_print
       quit
     done
   fi
