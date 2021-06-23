@@ -21,7 +21,7 @@ setup_tmux_plugins() {
     return
   fi
 
-  info "Installing tmux plugin manager..."
+  step "Installing tmux plugin manager..."
   clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm" "tpm"
 
   add_post_install_message 'Press <Prefix+I> for tmux plugins installation'

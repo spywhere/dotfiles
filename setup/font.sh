@@ -49,7 +49,7 @@ install_fonts() {
       local file=$(printf "%s" "$font_info" | cut -d'|' -f2 | sed 's/%20/ /g')
       local url=$(printf "%s" "$font_info" | cut -d'|' -f3)
 
-      info "Installing $name..."
+      step "Installing $name..."
       cmd curl -fLo "$font_path/$file" "$url"
     done
   fi
