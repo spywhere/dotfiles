@@ -26,7 +26,7 @@ require 'lib-zlib'
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
-  local plugins="1password deno golang nodejs python rust shellcheck"
+  local plugins="1password-cli deno golang nodejs python rust shellcheck"
   set +e
   step "Setting up version manager plugins..."
   for plugin in $plugins; do
