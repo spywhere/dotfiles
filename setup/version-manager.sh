@@ -28,14 +28,14 @@ add_setup 'setup_version_manager'
 setup_version_manager() {
   local plugins="1password deno golang nodejs python rust shellcheck"
   set +e
-  info "Setting up version manager plugins..."
+  step "Setting up version manager plugins..."
   for plugin in $plugins; do
     bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add $plugin"
   done
   set -e
   bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
   cd $HOME
-  info "Installing version manager plugins..."
+  step "Installing version manager plugins..."
   bash -c '. $HOME/.asdf/asdf.sh && asdf install'
   cd $CURRENT_DIR
 }

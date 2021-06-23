@@ -40,7 +40,7 @@ install_fonts() {
   done
 
   if test -n "$missing_fonts"; then
-    info "Installing fonts into $font_path..."
+    step "Installing fonts into $font_path..."
     if ! test -d "$font_path"; then
       mkdir -p "$font_path"
     fi
