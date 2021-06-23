@@ -12,4 +12,5 @@ then
 fi
 
 optional
+use_apt 'zlib1g-dev'
 use_apk 'main' 'zlib-dev'
