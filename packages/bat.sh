@@ -33,4 +33,4 @@ if test "$OS" = "alpine" && test "$cpu_type" = "amd64" -o "$cpu_type" = "i686"; 
 fi
 
 use_brew formula 'bat'
-use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb"
+use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb" "0.18.1"

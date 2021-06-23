@@ -71,7 +71,7 @@ _sort_version() {
 }
 
 _get_latest_version() {
-  git ls-remote --tags --refs "$1" |
+  git ls-remote --tags --refs "$1.git" 2>/dev/null |
     grep -o 'refs/tags/v*[0-9].*' |
     cut -d/ -f3- |
     sed 's/^v//' |
@@ -83,6 +83,7 @@ use_dpkg() {
   local name="$1"
   local url="$2"
   local format_url="$3"
+  local fallback_version="$4"
 
   if ! has_package curl; then
     require curl
@@ -90,7 +91,12 @@ use_dpkg() {
 
   if test -n "$format_url"; then
     _try_git
+    step "Acquiring latest version of $name..."
     local version="$(_get_latest_version "$url" | sed 's/\//\\\//g')"
+    if test -z "$version" -a -n "$fallback_version"; then
+      warn "Failed to acquire the latest version of $name, will install version $fallback_version instead"
+      version="$fallback_version"
+    fi
     local safe_url="$(printf "%s" "$url" | sed 's/\//\\\//g')"
     url="$(printf "%s" "$format_url" | sed "s/%url/$safe_url/g" | sed "s/%version/$version/g" | sed 's/%%/%/g')"
   fi
