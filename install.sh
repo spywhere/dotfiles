@@ -338,7 +338,9 @@ _usage() {
   print "To skip system update/upgrade, package installation or setups, use"
   print 22 "  no-update" "Skip system update and system upgrade"
   print 22 "  no-upgrade" "Only perform a system update but not system upgrade"
-  print 22 "  no-packages" "Skip package installation, including a custom one"
+  print 22 "  no-packages" "Skip package installations, including a custom and a Docker one"
+  print 22 "  no-docker" "Skip Docker based installations"
+  print 22 "  no-custom" "Skip custom installations"
   print 22 "  no-setup" "Skip setups"
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
@@ -867,6 +869,9 @@ add_custom() {
 # Add custom function into installation list if no valid setup available
 # use_custom <function>
 use_custom() {
+  if _has_skip custom; then
+    return
+  fi
   if test -n "$_FULFILLED"; then
     return
   fi
