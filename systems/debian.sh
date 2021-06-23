@@ -22,12 +22,12 @@ update() {
 
 install_dpkg_packages() {
   local package
-  for package in $@; do
-    local name=$(printf "%s" "$package" | cut -d'|' -f1)
-    local url=$(printf "%s" "$package" | cut -d'|' -f2-)
+  for package in "$@"; do
+    local name="$(parse_field "$package" package)"
+    local url="$(parse_field "$package" url)"
 
     local path=$(deps "$name.deb")
-    info "Downloading $path for installation..."
+    step "Downloading $path for installation..."
     cmd curl -sSL $url -o $path
     info "Installing $name through dpkg..."
     sudo_cmd dpkg --install $path
@@ -38,25 +38,30 @@ install_packages() {
   local apt_packages=""
   local dpkg_packages=""
   local package
-  for package in $@; do
-    local manager=$(printf "%s" "$package" | cut -d'|' -f1)
-    local name=$(printf "%s" "$package" | cut -d'|' -f2-)
+  for package in "$@"; do
+    local manager="$(parse_field "$package" manager)"
+    local name="$(parse_field "$package" package)"
 
     if test "$manager" = "apt"; then
-      apt_packages=$(_add_item "$apt_packages" " " "$name")
+      apt_packages="$(_add_to_list "$apt_packages" "$name")"
     elif test "$manager" = "dpkg"; then
-      dpkg_packages=$(_add_item "$dpkg_packages" " " "$name")
+      dpkg_packages="$(_add_to_list "$dpkg_packages" "$package")"
     fi
   done
 
-  info "Installing packages..."
-  sudo_cmd apt install --no-install-recommends -y $apt_packages
-  install_dpkg_packages $dpkg_packages
+  step "Installing packages..."
+  eval "set -- $apt_packages"
+  sudo_cmd apt install --no-install-recommends -y "$@"
+  eval "set -- $dpkg_packages"
+  install_dpkg_packages "$@"
 }
 
 use_apt() {
   local package="$1"
-  add_package apt "$package"
+
+  field manager apt
+  field package "$package"
+  add_package
 }
 
 use_dpkg() {
@@ -66,5 +71,9 @@ use_dpkg() {
   if ! has_package curl; then
     require curl
   fi
-  add_package dpkg "$name" "$url"
+
+  field manager dpkg
+  field package "$name"
+  field url "$url"
+  add_package
 }

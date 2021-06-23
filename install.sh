@@ -161,6 +161,23 @@ _detect_os() {
   esac
 }
 
+_add_to_list() {
+  local target="$(printf "%s" "$1" | sed 's/^ $//g')"
+  shift
+
+  if test -n "$target"; then
+    printf "%s\n" "$target"
+  fi
+  for i in "$@"; do
+    printf '%s\n' "$i" | sed "s/'/'\\\\''/g" | sed "1s/^/'/" | sed "\$s/\$/' \\\\/"
+  done
+  printf ' '
+}
+
+_make_list() {
+  _add_to_list "" "$@"
+}
+
 _add_item() {
   local target="$1"
   local separator="$2"
@@ -184,6 +201,101 @@ _has_item() {
     fi
   done
   return 1
+}
+
+_escape_special() {
+  printf "%s" "$@" |
+    sed 's/%/%25/g' |
+    sed 's/\\/%5C/g' |
+    sed 's/:/%3A/g' |
+    sed 's/;/%3B/g' |
+    sed 's/|/%7C/g' |
+    sed "s/'/%27/g" |
+    sed 's/"/%22/g' |
+    sed 's/ /%20/g' |
+    awk 'ORS="%0A"' |
+    sed 's/%0A$//g'
+}
+
+_unescape_special() {
+  printf "%s" "$@" |
+    sed 's/%22/"/g' |
+    sed "s/%27/'/g" |
+    sed 's/%0A/\n/g' |
+    sed 's/%7C/|/g' |
+    sed 's/%3B/;/g' |
+    sed 's/%3A/:/g' |
+    sed 's/%5C/\\/g' |
+    sed 's/%25/%/g' |
+    sed 's/%20/ /g'
+}
+
+_FIELDS=""
+field () {
+	local name="$1"
+	shift
+  if test "$#" -eq 0; then
+    printf ""
+    return
+  fi
+	local output="$name"
+	for value in "$@"
+	do
+		output="$output:$(_escape_special "$value")"
+	done
+
+  _FIELDS="$(_add_item "$_FIELDS" ";" "$output")"
+}
+
+reset_object() {
+  _FIELDS=""
+}
+
+make_object() {
+  printf "%s" "$_FIELDS"
+}
+
+_map_field() {
+	local object="$1"
+	local name="$2"
+  local callback="$3"
+	for field in $(printf "%s" "$object" | awk 'BEGIN{RS=";"}{print $0}')
+	do
+    local field_name="$(printf "%s" "$field" | cut -d':' -f1)"
+    local field_value="$(printf "%s" "$field" | cut -d':' -f2-)"
+    if ! "$callback" "$field_name" "$field_value"; then
+      return 1
+    fi
+	done
+}
+
+has_field() {
+	local object="$1"
+	local name="$2"
+
+  _has_field() {
+    if test "$1" = "$name"; then
+      return 1
+    fi
+  }
+  if ! _map_field "$object" "$name" "_has_field"; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+parse_field() {
+	local object="$1"
+	local name="$2"
+
+  _parse_field() {
+    if test "$1" = "$name"; then
+      printf "%s" "$2"
+      return 1
+    fi
+  }
+  _unescape_special "$(_map_field "$object" "$name" "_parse_field")"
 }
 
 # All options turned on
@@ -545,30 +657,66 @@ _try_run_install() {
 
   if test -n "$_PACKAGES"; then
     print "$esc_green==>$esc_reset The following packages will be installed:"
+    eval "set -- $_PACKAGES"
     local package
-    for package in $(_split "$_PACKAGES"); do
-      print "  $esc_blue-$esc_reset $(printf "$package" | sed 's/|/ - /g')"
+    for package in "$@"; do
+      local manager_name="$(parse_field "$package" manager_name)"
+      local package_name="$(parse_field "$package" package_name)"
+      if test -z "$manager_name"; then
+        manager_name="$(parse_field "$package" manager)"
+      fi
+
+      if test -z "$package_name"; then
+        package_name="$(parse_field "$package" package)"
+      fi
+
+      if test -n "$manager_name"; then
+        manager_name=" ${esc_blue}via$esc_reset $manager_name"
+      fi
+
+      print "  $esc_blue-$esc_reset $package_name$manager_name"
     done
   fi
   if test -n "$_DOCKER"; then
     print "$esc_green==>$esc_reset The following Docker buildings will be run:"
+    eval "set -- $_DOCKER"
     local package
-    for package in $(_split "$_DOCKER"); do
-      print "  $esc_blue-$esc_reset $(printf "$package" | sed 's/|/ - /g')"
+    for package in "$@"; do
+      local package_name="$(parse_field "$package" package_name)"
+
+      if test -z "$package_name"; then
+        package_name="$(parse_field "$package" package)"
+      fi
+
+      print "  $esc_blue-$esc_reset $package_name"
     done
   fi
   if test -n "$_CUSTOM"; then
     print "$esc_green==>$esc_reset The following installations will be run:"
+    eval "set -- $_CUSTOM"
     local fn
-    for fn in $(_split "$_CUSTOM"); do
-      print "  $esc_blue-$esc_reset $fn"
+    for fn in "$@"; do
+      local package_name="$(parse_field "$fn" package_name)"
+
+      if test -z "$package_name"; then
+        package_name="$(parse_field "$fn" fn)"
+      fi
+
+      print "  $esc_blue-$esc_reset $package_name"
     done
   fi
   if test -n "$_SETUP"; then
     print "$esc_green==>$esc_reset The following setups will be run:"
+    eval "set -- $_SETUP"
     local fn
-    for fn in $(_split "$_SETUP"); do
-      print "  $esc_blue-$esc_reset $fn"
+    for fn in "$@"; do
+      local setup_name="$(parse_field "$fn" display_name)"
+
+      if test -z "$setup_name"; then
+        setup_name="$(parse_field "$fn" fn)"
+      fi
+
+      print "  $esc_blue-$esc_reset $setup_name"
     done
   fi
 
@@ -607,14 +755,17 @@ _try_run_install() {
 
   # install packages
   if test -n "$_PACKAGES"; then
-    install_packages $(_split "$_PACKAGES")
+    eval "set -- $_PACKAGES"
+    install_packages "$@"
   fi
 
   # run custom installations
   if test -n "$_CUSTOM"; then
     step "Performing custom installations..."
-    local fn
-    for fn in $(_split "$_CUSTOM"); do
+    eval "set -- $_CUSTOM"
+    local custom
+    for custom in "$@"; do
+      local fn="$(parse_field "$custom" fn)"
       "$fn"
     done
   fi
@@ -622,8 +773,10 @@ _try_run_install() {
   # run setups
   if test -n "$_SETUP"; then
     step "Running setups..."
-    local fn
-    for fn in $(_split "$_SETUP"); do
+    eval "set -- $_SETUP"
+    local setup
+    for setup in "$@"; do
+      local fn="$(parse_field "$setup" fn)"
       "$fn"
     done
   fi
@@ -829,87 +982,107 @@ require() {
   _FULFILLED="$old_fulfilled"
 }
 
-_add_package() {
-  local target="$1"
-  local manager="$2"
-  shift
-  shift
-  local package="$manager"
-  local component
-  for component in $@; do
-    package=$(printf "%s|%s" "$package" "$component")
-  done
-
-  target=$(_add_item "$target" ";" "$package")
-  printf "$target"
-}
-
 # Add package into installation list
-# add_package <manager> <package>...
+# add_package [display name]
+# Fields:
+#   + manager      : string
+#   - manager_name : string
+#   + package      : string
+#   - package_name : string
 add_package() {
   if test "$_FULFILLED" = "optional"; then
+    reset_object
     return
   fi
-  _PACKAGES=$(_add_package "$_PACKAGES" "$@")
+
+  field package_name "$1"
+  _PACKAGES="$(_add_to_list "$_PACKAGES" "$(make_object)")"
+  reset_object
+
   _FULFILLED="fulfilled"
 }
 
-# Add custom function into installation list
-# add_custom <function>
-add_custom() {
-  if test "$_FULFILLED" = "optional"; then
-    return
-  fi
-  local fn="$1"
-  _CUSTOM=$(_add_item "$_CUSTOM" ";" "$fn")
-}
-
 # Add custom function into installation list if no valid setup available
-# use_custom <function>
+# use_custom <function> [display name]
+# Fields:
+#   + fn           : function
+#   - package_name : string
 use_custom() {
   if _has_skip custom; then
     return
   fi
   if test -n "$_FULFILLED"; then
+    reset_object
     return
   fi
 
-  add_custom "$@"
+  if test "$_FULFILLED" = "optional"; then
+    reset_object
+    return
+  fi
+
+  field fn "$1"
+  if test -n "$2"; then
+    field package_name "$2"
+  else
+    field package_name "$_RUNNING"
+  fi
+  _CUSTOM="$(_add_to_list "$_CUSTOM" "$(make_object)")"
+  reset_object
   _FULFILLED="fulfilled"
 }
 
 # Add docker build into installation list if no valid setup available
-# use_docker <package>
+# use_docker_build [display name]
+# Fields:
+#   - package_name : string
 use_docker_build() {
   if _has_skip docker; then
     return
   fi
   local package="$_RUNNING"
   if test -n "$_FULFILLED"; then
+    reset_object
     return
   fi
 
   if ! test -f "$HOME/$DOTFILES/docker/$package/Dockerfile.$OS"; then
     warn "Docker build for package \"$package\" is not available on $OS"
+    reset_object
     return
   fi
 
   if test -z "$_DOCKER"; then
     require 'docker'
   fi
-  _DOCKER=$(_add_package "$_DOCKER" "$package")
+
+  field package "$package"
+  field package_name "$1"
+  _DOCKER="$(_add_to_list "$_DOCKER" "$(make_object)")"
+  reset_object
+
   _FULFILLED="fulfilled"
 }
 
 # Add custom function into setup list if no valid setup available
-# add_setup <function>
+# add_setup <function> [display name]
+# Fields:
+#   + fn           : function
+#   - display_name : string
 add_setup() {
   if test -n "$_FULFILLED"; then
+    reset_object
     return
   fi
 
-  local fn="$1"
-  _SETUP=$(_add_item "$_SETUP" ";" "$fn")
+  field fn "$1"
+  if test -n "$2"; then
+    field display_name "$2"
+  else
+    field display_name "$_RUNNING"
+  fi
+  _SETUP="$(_add_to_list "$_SETUP" "$(make_object)")"
+  reset_object
 }
 
 _main "$@"

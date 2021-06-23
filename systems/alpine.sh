@@ -35,21 +35,22 @@ install_packages() {
   local testing_packages=""
   local edge_packages=""
   local package
-  for package in $@; do
-    local repo=$(printf "%s" "$package" | cut -d'|' -f2)
-    local name=$(printf "%s" "$package" | cut -d'|' -f3)
+  step "Collecting packages..."
+  for package in "$@"; do
+    local repo="$(parse_field "$package" repo)"
+    local name="$(parse_field "$package" package)"
     case $repo in
       main)
-        main_packages=$(_add_item "$main_packages" " " "$name")
+        main_packages="$(_add_to_list "$main_packages" "$name")"
         ;;
       community)
-        community_packages=$(_add_item "$community_packages" " " "$name")
+        community_packages="$(_add_to_list "$community_packages" "$name")"
         ;;
       testing)
-        testing_packages=$(_add_item "$testing_packages" " " "$name")
+        testing_packages="$(_add_to_list "$testing_packages" "$name")"
         ;;
       edge)
-        edge_packages=$(_add_item "$edge_packages" " " "$name")
+        edge_packages="$(_add_to_list "$edge_packages" "$name")"
         ;;
       *)
         warn "unknown repository \"$repo\" for \"$name\""
@@ -57,25 +58,33 @@ install_packages() {
     esac
   done
   if test -n "$main_packages"; then
-    info "Installing main packages..."
-    cmd apk add $main_packages
+    step "Installing main packages..."
+    eval "set -- $main_packages"
+    cmd apk add "$@"
   fi
   if test -n "$edge_packages"; then
-    info "Installing edge packages..."
-    cmd apk add --repository=$(_get_mirror_repo main edge) $edge_packages
+    step "Installing edge packages..."
+    eval "set -- $edge_packages"
+    cmd apk add --repository="$(_get_mirror_repo main edge)" "$@"
   fi
   if test -n "$community_packages"; then
-    info "Installing community packages..."
-    cmd apk add --repository=$(_get_mirror_repo community edge) $community_packages
+    step "Installing community packages..."
+    eval "set -- $community_packages"
+    cmd apk add --repository="$(_get_mirror_repo community edge)" "$@"
   fi
   if test -n "$testing_packages"; then
-    info "Installing testing packages..."
-    cmd apk add --repository=$(_get_mirror_repo testing edge) $testing_packages
+    step "Installing testing packages..."
+    eval "set -- $testing_packages"
+    cmd apk add --repository="$(_get_mirror_repo testing edge)" "$@"
   fi
 }
 
 use_apk() {
   local repo="$1"
   local package="$2"
-  add_package apk "$repo" "$package"
+
+  field manager apk
+  field repo "$repo"
+  field package "$package"
+  add_package
 }
