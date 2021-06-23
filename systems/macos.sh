@@ -83,6 +83,37 @@ run_brew() {
   cmd "$executable" $@
 }
 
+has_login_app_store() {
+  if mas account >/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+wait_for_app_store() {
+  last_check=""
+  while ! has_login_app_store; do
+    printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store..." "$last_check"
+    sleep 5
+    last_check=" (last check at $(date "+%H:%M:%S"))"
+  done
+  if test -n "$last_check"; then
+    info "App Store signed in                                                 "
+  fi
+}
+
+run_mas() {
+  if ! has_cmd mas; then
+    error "Failed: \"mas\" command cannot be found, eventhough it pass the checks. This might indicate some issue"
+    quit 1
+  fi
+
+  wait_for_app_store
+
+  cmd mas install $@
+}
+
 update() {
   run_brew update --force # https://github.com/Homebrew/brew/issues/1151
   if test "$1" = "upgrade"; then
@@ -107,6 +138,7 @@ install_packages() {
   local intel_formula_packages=""
   local intel_cask_packages=""
   local intel_flagged_packages=""
+  local mas_packages=""
 
   local package
   for package in $@; do
@@ -144,10 +176,20 @@ install_packages() {
   if test $FORCE_INSTALL -eq 1; then
     brew_flags="--force"
   fi
+
+  if test -n "$mas_packages"; then
+    if ! has_cmd mas; then
+      info "Installing mas for App Store installation..."
+      run_brew install --formula $brew_flags mas
+    fi
+    wait_for_app_store
+  fi
+
   if test -n "$tap_repos"; then
     info "Tapping repositories..."
     tap_repo $tap_repos
   fi
+
   if test -n "$formula_packages"; then
     info "Installing packages..."
     run_brew install --formula $brew_flags $formula_packages
@@ -155,6 +197,7 @@ install_packages() {
       run_intel_brew install --formula $brew_flags $intel_formula_packages
     fi
   fi
+
   if test -n "$flagged_packages"; then
     info "Installing packages with additional flags..."
     local package
@@ -171,12 +214,18 @@ install_packages() {
       done
     fi
   fi
+
   if test -n "$cask_packages"; then
     info "Installing cask packages..."
     run_brew install --cask $brew_flags $cask_packages
     if test -n "$intel_cask_packages"; then
       run_intel_brew install --cask $brew_flags $intel_cask_packages
     fi
+  fi
+
+  if test -n "$mas_packages"; then
+    info "Installing App Store packages..."
+    run_mas $mas_packages
   fi
 }
 
