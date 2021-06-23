@@ -297,6 +297,10 @@ use_brew_tap() {
 }
 
 use_mas() {
+  if _has_skip mas; then
+    return
+  fi
+
   local package="$1"
   local package_id="$2"
 

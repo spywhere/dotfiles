@@ -12,7 +12,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh -v
+          sh install.sh -v no-mas
   macos-local-normal:
     name: Local Install - Normal (MacOS)
     runs-on: macos-latest
@@ -23,7 +23,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh
+          sh install.sh no-mas
   macos-local-quiet:
     name: Local Install - Quiet (MacOS)
     runs-on: macos-latest
@@ -34,7 +34,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh -q
+          sh install.sh -q no-mas
 
   macos-remote-verbose:
     name: Remote Install - Verbose (MacOS)
@@ -45,4 +45,4 @@ jobs:
           sh -c "$(curl -sSL git.io/Jt8w0)" - -i
       - name: Perform Installation
         run: |
-          sh -c "$(curl -sSL git.io/Jt8w0)" - -v
+          sh -c "$(curl -sSL git.io/Jt8w0)" - -v no-mas
