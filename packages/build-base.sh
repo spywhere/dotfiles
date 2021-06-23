@@ -12,4 +12,5 @@ then
 fi
 
 optional
+use_apt 'build-essential'
 use_apk 'main' 'build-base'
