@@ -29,7 +29,7 @@ install_dpkg_packages() {
     local path=$(deps "$name.deb")
     step "Downloading $path for installation..."
     cmd curl -sSL $url -o $path
-    info "Installing $name through dpkg..."
+    step "Installing $name through dpkg..."
     sudo_cmd dpkg --install $path
   done
 }
@@ -64,12 +64,35 @@ use_apt() {
   add_package
 }
 
+_sort_version() {
+  sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' |
+    LC_ALL=C sort -i -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n |
+    awk '{print $2}'
+}
+
+_get_latest_version() {
+  git ls-remote --tags --refs "$1" |
+    grep -o 'refs/tags/v*[0-9].*' |
+    cut -d/ -f3- |
+    sed 's/^v//' |
+    _sort_version |
+    tail -n 1
+}
+
 use_dpkg() {
   local name="$1"
   local url="$2"
+  local format_url="$3"
 
   if ! has_package curl; then
     require curl
+  fi
+
+  if test -n "$format_url"; then
+    _try_git
+    local version="$(_get_latest_version "$url" | sed 's/\//\\\//g')"
+    local safe_url="$(printf "%s" "$url" | sed 's/\//\\\//g')"
+    url="$(printf "%s" "$format_url" | sed "s/%url/$safe_url/g" | sed "s/%version/$version/g" | sed 's/%%/%/g')"
   fi
 
   field manager dpkg

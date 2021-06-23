@@ -13,5 +13,24 @@ fi
 
 require 'curl'
 
+local cpu_type="$(uname -m)"
+local libc_type=""
+case "$cpu_type" in
+  x86_64)
+    cpu_type="amd64"
+    ;;
+  i686)
+    cpu_type="i386"
+    ;;
+  aarch64)
+    cpu_type="arm64"
+    ;;
+  *)
+    ;;
+esac
+if test "$OS" = "alpine" -a "$cpu_type" = "amd64"; then
+  libc_type="-musl"
+fi
+
 use_brew formula 'git-delta'
-use_dpkg 'git-delta' 'https://github.com/dandavison/delta/releases/download/0.6.0/git-delta_0.6.0_armhf.deb'
+use_dpkg 'git-delta' "https://github.com/dandavison/delta" "%url/releases/download/%version/git-delta${libc_type}_%version_$cpu_type.deb"
