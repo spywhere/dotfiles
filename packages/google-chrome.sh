@@ -12,4 +12,4 @@ then
 fi
 
 optional
-use_brew cask 'flux'
+use_brew cask 'google-chrome'

@@ -11,5 +11,4 @@ then
   exit 1
 fi
 
-optional
-use_brew cask 'flux'
+use_brew formula 'mas'
