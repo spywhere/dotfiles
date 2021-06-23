@@ -29,6 +29,8 @@ case "$cpu_type" in
     ;;
 esac
 if test "$cpu_type" = "amd64"; then
+  # there seems to be an issue with Ubuntu setup, where musl is needed
+  # https://github.com/dandavison/delta/issues/504
   libc_type="-musl"
 fi
 
