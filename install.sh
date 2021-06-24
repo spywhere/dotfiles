@@ -132,6 +132,12 @@ _split() {
 
 _detect_os() {
   OSARCH=" ($(uname -m))"
+  WSL_SUFFIX=""
+  if test -n "$(command -v wsl.exe)"; then
+    WSL_SUFFIX=" (through WSL)"
+    add_flag "wsl"
+  fi
+
   case "$(uname -s)" in
     Linux*)
       OS="Linux"
@@ -152,6 +158,10 @@ _detect_os() {
       PKGMGR=" - Homebrew (brew)"
       OSNAME="Mac"
       OS="macos"
+
+      if test "$(arch)" = "arm64"; then
+        add_flag "apple-silicon"
+      fi
       ;;
     *)
       OSNAME="Unsupported"
@@ -159,6 +169,7 @@ _detect_os() {
       OSARCH=""
       ;;
   esac
+  OSNAME="$OSNAME$WSL_SUFFIX"
 }
 
 _add_to_list() {
@@ -485,7 +496,7 @@ _has_indicate() {
 }
 
 _check_sudo() {
-  if test "$(command -v sudo)"; then
+  if test -n "$(command -v sudo)"; then
     return
   fi
 
@@ -493,7 +504,7 @@ _check_sudo() {
 }
 
 _try_git() {
-  if test "$(command -v git)"; then
+  if test -n "$(command -v git)"; then
     return
   fi
   if test "$DUMB" -eq 1; then
@@ -507,7 +518,7 @@ _try_git() {
   elif test "$OS" = "debian"; then
     step "Installing git..."
     sudo_cmd apt install -y git
-  elif test "$OS" = "macos" -a "$(command -v "brew")"; then
+  elif test "$OS" = "macos" -a -n "$(command -v "brew")"; then
     step "Installing git..."
     cmd brew install git
   else
@@ -573,7 +584,7 @@ _try_run_install() {
   local commands="awk basename sed"
   local command
   for command in $commands; do
-    if ! test "$(command -v "$command")"; then
+    if ! test -n "$(command -v "$command")"; then
       error "'$command' is required, but not found"
       _HALT=1
     fi
@@ -588,6 +599,14 @@ _try_run_install() {
     error "\"$OS\" is not supported"
     quit 1
   fi
+
+  if has_flag wsl; then
+    info "Detected running on WSL..."
+  fi
+  if has_flag "apple-silicon"; then
+    info "Detected running on Apple Silicon..."
+  fi
+
   . $HOME/$DOTFILES/systems/$OS.sh
   step "Setting up installation process..."
   setup
@@ -902,7 +921,7 @@ clone() {
 # has_cmd <command>
 has_cmd() {
   local cmd="$1"
-  test "$(command -v $cmd)"
+  test -n "$(command -v $cmd)"
 }
 
 # has_package <package>

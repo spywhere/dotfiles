@@ -11,11 +11,18 @@ then
   exit 1
 fi
 
-# use as a language server for C-based languages
-field package_name clangd
+if ! has_cmd clangd; then
+  # use as a language server for C-based languages
+  field package_name clangd
 
-use_apt 'clang-tools'
-# see https://releases.llvm.org/10.0.0/tools/clang/tools/extra/docs/clangd/Installation.html
-use_brew formula 'llvm'
-# see https://github.com/clangd/clangd/issues/450
-use_apk 'main' 'clang-extra-tools'
+  if has_flag wsl; then
+    # Somehow, Ubuntu on WSL doesn't like to have clang-tools install
+    use_apt 'clangd-9'
+  else
+    use_apt 'clang-tools'
+  fi
+  # see https://releases.llvm.org/10.0.0/tools/clang/tools/extra/docs/clangd/Installation.html
+  use_brew formula 'llvm'
+  # see https://github.com/clangd/clangd/issues/450
+  use_apk 'main' 'clang-extra-tools'
+fi

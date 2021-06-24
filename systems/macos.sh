@@ -15,9 +15,7 @@ fi
 
 setup() {
   local apple_silicon=""
-  if test "$(arch)" = "arm64"; then
-    info "Detected running on Apple Silicon..."
-    add_flag "apple-silicon"
+  if has_flag "apple-silicon"; then
     apple_silicon="arm64"
   fi
 

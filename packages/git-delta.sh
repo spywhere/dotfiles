@@ -11,8 +11,6 @@ then
   exit 1
 fi
 
-require 'curl'
-
 local cpu_type="$(uname -m)"
 local libc_type=""
 case "$cpu_type" in
