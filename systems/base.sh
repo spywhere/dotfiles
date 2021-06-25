@@ -61,8 +61,7 @@ copy() {
   local target="$2"
   shift
   shift
-  # add -n to override any -i flag that might be set through aliases
-  _sh_cmd "$source" "$target" cp -n -R "$@"
+  _sh_cmd "$source" "$target" cp -R "$@"
 }
 
 # use_apk <repo> <package>
