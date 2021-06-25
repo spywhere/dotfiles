@@ -961,7 +961,7 @@ depends() {
 # Install package regardless of skipped components
 # require <package>
 require() {
-  if test "$_FULFILLED" = "optional"; then
+  if test -n "$_FULFILLED"; then
     return
   fi
 

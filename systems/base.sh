@@ -28,16 +28,41 @@ install_packages() {
   return 0
 }
 
+# _sh_cmd <source> <target> <command>
+_sh_cmd() {
+  local source="$HOME/$DOTFILES/configs/$1"
+  local target="$HOME/$2"
+  shift
+  shift
+  if ! test -f "$source" -o -d "$source"; then
+    warn "No source file \"$source\""
+    return
+  fi
+  if test -f "$target"; then
+    rm -f "$target"
+  elif test -d "$target"; then
+    rm -rf "$target"
+  fi
+  "$@" "$source" "$target"
+}
+
 # link <source> <target>
 link() {
   local source="$1"
   local target="$2"
-  if test -f "$HOME/$target"; then
-    rm -f "$HOME/$target"
-  elif test -d "$HOME/$target"; then
-    rm -rf "$HOME/$target"
-  fi
-  ln -fs "$HOME/$DOTFILES/configs/$source" "$HOME/$target"
+  shift
+  shift
+  _sh_cmd "$source" "$target" ln -fs "$@"
+}
+
+# copy <source> <target>
+copy() {
+  local source="$1"
+  local target="$2"
+  shift
+  shift
+  # add -n to override any -i flag that might be set through aliases
+  _sh_cmd "$source" "$target" cp -n -R "$@"
 }
 
 # use_apk <repo> <package>
