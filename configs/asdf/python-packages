@@ -1,3 +1,4 @@
 pynvim
 gallery-dl
 pre-commit
+detect-secrets==1.0.3
