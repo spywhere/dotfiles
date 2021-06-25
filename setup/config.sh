@@ -70,7 +70,7 @@ setup_config() {
   link tmux/tmux.conf .tmux.conf
 
   # wakatime
-  link wakatime/wakatime.cfg .wakatime.cfg
+  copy wakatime/wakatime.cfg .wakatime.cfg
 
   # w3m
   link w3m/ .w3m
