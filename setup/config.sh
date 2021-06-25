@@ -71,6 +71,7 @@ setup_config() {
 
   # wakatime
   if ! test -f "$HOME/.wakatime.cfg"; then
+    # copy instead as file can contain a secret
     copy wakatime/wakatime.cfg .wakatime.cfg
   fi
 
