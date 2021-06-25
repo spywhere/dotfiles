@@ -9,7 +9,9 @@
 
 - macOS
 - Linux
-  - Debian (Raspberry OS)
+  - Debian
+    - Raspberry OS
+    - Ubuntu
   - Alpine
 
 ## Just run
