@@ -21,4 +21,3 @@ curl_pfetch() {
   # use_curl 'pfetch' 'https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch'
   return
 }
-

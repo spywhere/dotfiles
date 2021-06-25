@@ -12,4 +12,3 @@ then
 fi
 
 print "zsh.sh"
-

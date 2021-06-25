@@ -14,8 +14,12 @@ repos:
   hooks:
   - id: check-executables-have-shebangs
   - id: check-json
+    exclude: "vscode/(keybindings|settings)\\.json$"
   - id: check-merge-conflict
   - id: check-symlinks
+  - id: check-toml
+  - id: check-xml
+  - id: check-yaml
   - id: detect-private-key
   - id: end-of-file-fixer
 

@@ -11,4 +11,3 @@ if [[ $inst ]]; then
   do brew install $prog
   done
 fi
-

@@ -1,3 +1,5 @@
+#!/bin/sh
+
 CYCLE_INTERVAL=5
 
 docker_start=""
