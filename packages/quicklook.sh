@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-use_brew cask 'qlcolorcode'
 use_brew cask 'qlimagesize'
 use_brew cask 'qlmarkdown'
 use_brew cask 'qlprettypatch'
