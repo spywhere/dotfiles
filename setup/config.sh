@@ -70,7 +70,9 @@ setup_config() {
   link tmux/tmux.conf .tmux.conf
 
   # wakatime
-  copy wakatime/wakatime.cfg .wakatime.cfg
+  if ! test -f "$HOME/.wakatime.cfg"; then
+    copy wakatime/wakatime.cfg .wakatime.cfg
+  fi
 
   # w3m
   link w3m/ .w3m
