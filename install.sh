@@ -674,6 +674,12 @@ _try_run_install() {
     quit 1
   fi
 
+  # if nothing is getting done
+  if test -z "$_PACKAGES" -a -z "$_DOCKER" -a -z "$_CUSTOM" -a -z "$_SETUP" && _has_skip update; then
+    info "Nothing to perform, exiting..."
+    quit 0
+  fi
+
   if test -n "$_PACKAGES"; then
     print "$esc_green==>$esc_reset The following packages will be installed:"
     eval "set -- $_PACKAGES"
