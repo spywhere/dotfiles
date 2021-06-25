@@ -806,6 +806,11 @@ _try_run_install() {
     done
   fi
 
+  local deps_path="$(deps)"
+  if test -d "$deps_path" -a "$KEEP_FILES" -eq 0; then
+    step "Cleaning up downloaded files..."
+    cmd rm -rf "$deps_path"
+  fi
   step "Done!"
   if test -n "$_POST_INSTALL_MSGS"; then
     print "NOTE: Don't forget to..."
@@ -828,11 +833,11 @@ has_flag() {
 }
 
 deps() {
-  if ! test -d "$HOME/$DOTFILES/.deps"; then
-    mkdir -p $HOME/$DOTFILES/.deps
-  fi
-
   if test -n "$1"; then
+    if ! test -d "$HOME/$DOTFILES/.deps"; then
+      mkdir -p $HOME/$DOTFILES/.deps
+    fi
+
     printf "$HOME/$DOTFILES/.deps/$1"
   else
     printf "$HOME/$DOTFILES/.deps"
