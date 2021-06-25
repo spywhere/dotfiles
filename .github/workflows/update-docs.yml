@@ -1,0 +1,19 @@
+name: Update Documentations
+on: push
+
+jobs:
+  ubuntu-local-verbose:
+    name: Update README
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Installation Info
+        run: |
+          export START='<!--FLAGS:START-->'
+          export END='<!--FLAGS:END-->'
+          export OPTIONS="$(sh install.sh -h | sed 's/^/    /g')"
+          export OPTIONS="$(printf "%s\n\n%s\n\n%s" "$START" "$OPTIONS" "$END" | sed "s/\$/\\\\/g")"
+          export PATTERN='\n%s'
+          sed -i.bck -e "/<\!--FLAGS:START-->/,/<\!--FLAGS:END-->/ c\\$(printf "$PATTERN" "$OPTIONS")" README.md
+          sed -i.bck -e "/<\!--FLAGS:START-->/,/<\!--FLAGS:END-->/ s/\\\\$//g" README.md
+          cat README.md
