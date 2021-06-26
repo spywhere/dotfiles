@@ -10,17 +10,33 @@ IDLE_UPDATE_INTERVAL=5
 PLAYING_UPDATE_INTERVAL=1
 
 mpd="no"
+music="no"
 
 if $(printf "close\n" | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
   # mpd is running
   mpd="yes"
 fi
 
+if test -n "$(command -v osascript)"; then
+  _music_data() {
+    osascript -l JavaScript "$HOME/.dots/supports/tmux/scripts/music.js"
+  }
+  music_info="$(_cache_value music_info _music_data)"
+  music_state="$(printf "%s" "$music_info" | awk 'NR==1')"
+  if test "$music_state" = "playing"; then
+    music="yes"
+    music_status=1
+  elif test "$music_state" = "paused"; then
+    music="yes"
+    music_status=0
+  fi
+fi
+
 if test "$mpd" = "yes"; then
-  _mpd_music() {
+  _mpd_data() {
     sh -c "(printf \"status\ncurrentsong\nclose\n\"; sleep 0.05) | nc $MPD_HOST $MPD_PORT"
   }
-  mpd_info=$(_cache_value mpd_info _mpd_music)
+  mpd_info=$(_cache_value mpd_info _mpd_data)
   if test "$(printf "%s" "$mpd_info" | awk '$1 ~ /^state:/ { print $2 }')" = "play"; then
     mpd_status=1
   else
@@ -29,7 +45,7 @@ if test "$mpd" = "yes"; then
 fi
 
 # if no player is running
-if test "$mpd" = "no"; then
+if test "$mpd" = "no" -a "$music" = "no"; then
   printf ""
   tmux set-option -g status-interval $IDLE_UPDATE_INTERVAL
   exit
@@ -38,10 +54,17 @@ fi
 if test "$mpd" = "yes"; then
   # mpd is running
   status=$mpd_status
-  position=$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f1)
-  duration=$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f2)
-  title=$(printf "%s" "$mpd_info" | awk '$1 ~ /^Title:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')
-  artist=$(printf "%s" "$mpd_info" | awk '$1 ~ /^Artist:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')
+  position="$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f1)"
+  duration="$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f2)"
+  title="$(printf "%s" "$mpd_info" | awk '$1 ~ /^Title:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')"
+  artist="$(printf "%s" "$mpd_info" | awk '$1 ~ /^Artist:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')"
+elif test "$music" = "yes"; then
+  # music is running
+  status=$music_status
+  position="$(printf "%s" "$music_info" | awk 'NR==2')"
+  duration="$(printf "%s" "$music_info" | awk 'NR==3')"
+  title="$(printf "%s" "$music_info" | awk 'NR==4')"
+  artist="$(printf "%s" "$music_info" | awk 'NR==5')"
 fi
 
 _scrolling_text() {
