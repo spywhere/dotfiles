@@ -157,11 +157,11 @@ fi
 alias tmux="tmux -2"
 
 # nvim
-alias vim="nvim"
 alias vi="nvim"
-alias nvim-profile="nvim --startuptime vim.log -c 'qa!' && cat vim.log && rm -f vim.log"
-alias vim-profile="nvim-profile"
+alias vim="nvim"
 alias vi-profile="nvim-profile"
+alias vim-profile="nvim-profile"
+alias nvim-profile="nvim --startuptime vim.log -c 'qa!' && cat vim.log && rm -f vim.log"
 
 # lazygit
 alias lg="lazygit"
