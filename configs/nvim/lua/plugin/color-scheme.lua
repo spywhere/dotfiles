@@ -2,10 +2,6 @@ local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 local colors = require('common/colors')
 
--- registry.install('gruvbox-community/gruvbox')
--- registry.install('joshdick/onedark.vim')
-registry.install('arcticicestudio/nord-vim')
-
 local color_setup = function ()
   local base_highlights = {
     -- dark background
@@ -80,6 +76,12 @@ local color_setup = function ()
 end
 registry.auto('ColorScheme', color_setup)
 
-registry.post(function ()
-  api.nvim_exec('colorscheme nord', false)
-end)
+registry.install {
+  'arcticicestudio/nord-vim',
+  config = function ()
+    api.nvim_command('colorscheme nord')
+  end,
+  post_install = function ()
+    api.nvim_command('colorscheme nord')
+  end
+}
