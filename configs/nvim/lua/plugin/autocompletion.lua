@@ -69,9 +69,11 @@ end)
 
 local _M = {}
 _M.iterate_commands = function (commands, index, success)
-  if index == vim.tbl_count(commands) then
-    vim.cmd('redraw')
-    vim.cmd('echo ' .. string.format('%q', success))
+  if index == vim.tbl_count(commands) + 1 then
+    if success and type(success) == 'string' then
+      vim.cmd('redraw')
+      vim.cmd('echo ' .. string.format('%q', success))
+    end
     return
   end
 
