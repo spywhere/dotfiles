@@ -27,7 +27,6 @@ local _pre = {}
 local _post = {}
 local _defers = {}
 local _callbacks = {}
-local _post_install = function () end
 local _require_reload = false
 local increment = std.count()
 
@@ -166,10 +165,6 @@ M.fn = function (fn_signature, fn_ref)
   return name
 end
 
-M.post_install = function (func)
-  _post_install = func
-end
-
 local install_plugin_manager = function (callback)
   if pm.is_installed() then
     callback(true)
@@ -273,15 +268,9 @@ M.startup = function()
 
   iterate_pre()
   install_plugin_manager(function (installed)
-    if not installed then
-      vim.g.first_install = 1
-    end
     iterate_plugins()
     if installed then
       iterate_defer()
-    end
-    if vim.g.first_install then
-      _post_install()
     end
   end)
 end
