@@ -474,7 +474,16 @@ registry.defer(function ()
       always_show_bufferline = false,
       show_close_icon = false,
       show_buffer_close_icons = is_gui,
-      separator_style = { '', '' }
+      indicator_icon = ' ',
+      separator_style = { '', '' },
+      offsets = {
+        {
+          filetype = "NvimTree",
+          text = "Explorer",
+          highlight = "Directory",
+          text_align = "left"
+        }
+      }
     }
   })
 
