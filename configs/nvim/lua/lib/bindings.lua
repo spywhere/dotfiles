@@ -133,9 +133,9 @@ local build_lua_map_ops = function (tbl)
   local ops = table.concat(tbl, sep)
 
   if tbl.import then
-    return '<cmd>lua require(\'' .. tbl.import .. '\')' .. ops
+    return '<cmd>lua require(\'' .. tbl.import .. '\').' .. ops .. '<cr>'
   else
-    return '<cmd>lua ' .. ops
+    return '<cmd>lua ' .. ops .. '<cr>'
   end
 end
 
@@ -161,7 +161,7 @@ local map = function (mapper)
       end
 
       if type(ops) == 'table' then
-        ops = '<cmd>lua ' .. build_lua_map_ops(ops)
+        ops = build_lua_map_ops(ops)
       end
 
       if not modes then
