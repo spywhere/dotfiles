@@ -11,7 +11,7 @@ local install_plugins = function (registry)
   vim.schedule_wrap(registry.reload)
 end
 
-local install_missing_plugins = function (registry)
+local install_missing_plugins = function ()
   local is_plugin_missing = function (plugin)
     local stat = luv.fs_stat(plugin.dir)
     if not stat or stat.type ~= 'directory' then

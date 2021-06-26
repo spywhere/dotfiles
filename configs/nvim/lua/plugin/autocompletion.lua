@@ -297,7 +297,7 @@ local setup_lsps = function ()
   }
 
   local nvim_lsp = require('lspconfig')
-  local on_attach = function (client, bufnr)
+  local on_attach = function (client)
     if not client.resolved_capabilities.document_highlight then
       return
     end
@@ -312,26 +312,33 @@ local setup_lsps = function ()
   end
 
   local setup_lsp = function (name, options)
-    local options = options or {}
+    local lsp_options = (options or {}).options or {}
     if options.executable and not bindings.executable(options.executable) then
       return
     end
 
-    local pre_value = {}
-    if options.pre and type(options.pre) == 'function' then
-      pre_value = options.pre()
+    local pre_value = (options or {}).pre or {}
+
+    if type(pre_value) == 'function' then
+      pre_value = pre_value()
+    end
+
+    if type(pre_value) ~= 'table' then
+      pre_value = { pre_value }
     end
 
     if not pre_value then
       return
     end
 
-    if options.cmd then
+    if options.cmd and type(options.cmd) == 'function' then
       options.cmd = options.cmd(pre_value)
     end
 
-    options.on_attach = on_attach
-    nvim_lsp[name].setup(options)
+    lsp_options.cmd = options.cmd
+    lsp_options.on_attach = on_attach
+
+    nvim_lsp[name].setup(lsp_options)
   end
 
   for name, options in pairs(lsps) do

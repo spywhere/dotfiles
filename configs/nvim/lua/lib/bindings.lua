@@ -143,12 +143,12 @@ local map = function (mapper)
   local defaultOptions = { noremap = true, silent = true }
 
   local keymap = function (modes)
-    return function (key, ops, options)
-      local ops = ops or ''
+    return function (key, _ops, _options)
+      local ops = _ops or ''
       local options = vim.tbl_extend(
         'force',
         defaultOptions,
-        options or {}
+        _options or {}
       )
 
       if type(ops) == 'function' then

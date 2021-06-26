@@ -146,7 +146,7 @@ registry.defer(function ()
 
   bindings.map.normal('gk', '<cmd>ContextMenu<cr>')
   bindings.cmd('ContextMenu', {
-    function (modifiers)
+    function ()
       local content = {
         { "&Help Keyword\t\\ch", 'echo 100'  },
         { "&Signature\t\\cs", 'echo 101' },

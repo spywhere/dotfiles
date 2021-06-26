@@ -18,13 +18,11 @@ std.wrap = function (value)
   end
 end
 
-
 _fn = {}
 local M = {}
 
 local _group = nil
 local _plugins = {}
-local _lazy_plugins = {}
 local _pre = {}
 local _post = {}
 local _defers = {}
@@ -78,25 +76,25 @@ M.group = function (group_name, group_fn)
   _group = nil
 end
 
-M.auto = function (events, func, filter, modifiers)
+M.auto = function (_events, func, _filter, _modifiers)
   if not _group then
     M.group(
       function ()
-        M.auto(events, func, filter, modifiers)
+        M.auto(_events, func, _filter, _modifiers)
       end
     )
     return
   end
 
-  local evnts = std.wrap(events)
+  local evnts = std.wrap(_events)
   for event in ipairs(evnts) do
     assert(fn.exists('##' .. event))
   end
 
   local index = increment()
   local events = table.concat(evnts, ',')
-  local filter = table.concat(std.wrap(filter or '*'), ',')
-  local modifiers = table.concat(std.wrap(modifiers or {}), ' ')
+  local filter = table.concat(std.wrap(_filter or '*'), ',')
+  local modifiers = table.concat(std.wrap(_modifiers or {}), ' ')
   local call_args = {
     index,
     string.format('%q', _group.name)

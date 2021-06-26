@@ -23,7 +23,6 @@ registry.post(function ()
       end
     end,
     RelativePath = function (options)
-      local winwidth = fn.winwidth(0)
       function fallback_name(winwidth, list)
         local list_count = vim.tbl_count(list)
 
