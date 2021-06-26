@@ -182,6 +182,8 @@ registry.install(
   'christoomey/vim-tmux-navigator', { lazy = 'vim-tmux-navigator' }
 )
 
+registry.install('kevinhwang91/nvim-bqf')
+
 -- registry.install('psliwka/vim-smoothie') -- smooth scrolling
 registry.install('justinmk/vim-sneak')
 registry.defer(function ()
