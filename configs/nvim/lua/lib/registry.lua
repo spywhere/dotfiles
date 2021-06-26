@@ -128,10 +128,17 @@ M.call_for_fn = function (func, args)
   return table.concat(call, '.')
 end
 
-M.fn = function (signature, func)
-  assert(signature, 'function signature is required')
-  assert(signature.name, 'function name is required')
-  local name = signature.name
+M.fn = function (fn_signature, fn_ref)
+  local func = fn_ref
+  local signature = fn_signature or {}
+  if type(signature) == 'function' then
+    func = signature
+    signature = {}
+  end
+  local name = signature.name or string.format(
+    '_lua_%s',
+    increment()
+  )
   assert(type(name) == 'string', 'function name must be a string')
   assert(
     func,
@@ -156,6 +163,7 @@ M.fn = function (signature, func)
     'endfunction'
   }
   api.nvim_exec(table.concat(definition, '\n'), false)
+  return name
 end
 
 M.post_install = function (func)
