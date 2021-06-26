@@ -3,15 +3,37 @@ local registry = require('lib/registry')
 
 registry.install('nvim-lua/popup.nvim')
 registry.install('nvim-lua/plenary.nvim')
-registry.install('nvim-telescope/telescope.nvim')
+
+registry.install('camspiers/snap')
 registry.defer_first(function ()
-  bindings.map.normal('<C-p>', '<cmd>lua require("telescope.builtin").find_files()<cr>')
-  -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
-  bindings.map.normal('<leader>f', '<cmd>lua require("telescope.builtin").live_grep()<cr>')
-  -- ripgrep the whole project with rg itself
-end)
-registry.defer(function ()
-  require('telescope').setup()
+  bindings.map.normal('<C-p>', function ()
+    local snap = require('snap')
+    snap.run({
+      reverse = true,
+      producer = snap.get('consumer.fzf')(snap.get('producer.ripgrep.file')),
+      select = snap.get('select.file').select,
+      multiselect = snap.get('select.file').multiselect,
+      views = { snap.get('preview.file') }
+    })
+  end)
+  bindings.map.normal('<leader>/', function ()
+    local snap = require('snap')
+    snap.run({
+      producer = snap.get('consumer.fzf')(snap.get('producer.vim.currentbuffer')),
+      select = snap.get('select.currentbuffer').select
+    })
+  end)
+  -- search is rerun every input
+  bindings.map.normal('<leader>f', function ()
+    local snap = require('snap')
+    snap.run({
+      reverse = true,
+      producer = snap.get('producer.ripgrep.vimgrep'),
+      select = snap.get('select.vimgrep').select,
+      multiselect = snap.get('select.vimgrep').multiselect,
+      views = { snap.get('preview.vimgrep') }
+    })
+  end)
 end)
 
 registry.install('junegunn/fzf', {
@@ -36,10 +58,10 @@ registry.defer(function ()
 end)
 registry.defer_first(function ()
   bindings.map.normal('<C-A-p>', '<cmd>Files<cr>')
-  bindings.map.normal('<leader>/', '<cmd>BLines<cr>')
-  bindings.map.normal('<leader><A-/>', '<cmd>BLines!<cr>')
+  -- bindings.map.normal('<leader>/', '<cmd>BLines<cr>')
+  bindings.map.normal('<leader><A-/>', '<cmd>BLines<cr>')
   bindings.map.normal('<leader><A-f>', '<cmd>Rg<cr>')
-  bindings.map.normal('<leader>F', '<cmd>RG<cr>')
+  -- bindings.map.normal('<leader>F', '<cmd>RG<cr>')
   bindings.map.normal('<leader><A-F>', '<cmd>RG!<cr>')
 end)
 registry.defer_first(function ()
