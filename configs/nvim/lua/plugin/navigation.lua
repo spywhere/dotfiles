@@ -23,12 +23,18 @@ registry.defer_first(function ()
       select = snap.get('select.currentbuffer').select
     })
   end)
-  -- search is rerun every input
   bindings.map.normal('<leader>f', function ()
     local snap = require('snap')
     snap.run({
       reverse = true,
       producer = snap.get('producer.ripgrep.vimgrep'),
+      prompt = 'Rg>',
+      steps = {
+        {
+          consumer = snap.get('consumer.fzf'),
+          config = { prompt = 'FZF>' }
+        }
+      },
       select = snap.get('select.vimgrep').select,
       multiselect = snap.get('select.vimgrep').multiselect,
       views = { snap.get('preview.vimgrep') }
@@ -58,10 +64,9 @@ registry.defer(function ()
 end)
 registry.defer_first(function ()
   bindings.map.normal('<C-A-p>', '<cmd>Files<cr>')
-  -- bindings.map.normal('<leader>/', '<cmd>BLines<cr>')
   bindings.map.normal('<leader><A-/>', '<cmd>BLines<cr>')
   bindings.map.normal('<leader><A-f>', '<cmd>Rg<cr>')
-  -- bindings.map.normal('<leader>F', '<cmd>RG<cr>')
+  bindings.map.normal('<leader>F', '<cmd>RG<cr>')
   bindings.map.normal('<leader><A-F>', '<cmd>RG!<cr>')
 end)
 registry.defer_first(function ()
