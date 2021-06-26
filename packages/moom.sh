@@ -12,4 +12,4 @@ then
 fi
 
 optional
-use_brew cask 'notion'
+use_mas 'moom' '419330170'

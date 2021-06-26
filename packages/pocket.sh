@@ -12,4 +12,4 @@ then
 fi
 
 optional
-use_brew cask 'notion'
+use_mas 'pocket' '568494494'
