@@ -181,13 +181,34 @@ local install_plugin_manager = function (callback)
 end
 
 M.install = function (plugin, options)
-  table.insert(_plugins, { name = plugin, options = options })
+  local name = plugin
+  local plugin_options = {}
+
+  if type(name) == 'string' then
+    plugin_options.options = options
+  else
+    plugin_options = {}
+    for k, v in pairs(name) do
+      if type(k) == 'string' then
+        plugin_options[k] = v
+      else
+        name = v
+      end
+    end
+  end
+
+  plugin_options.name = name
+  if type(plugin_options.setup) == 'function' then
+    M.pre(plugin_options.setup)
+  end
+
+  table.insert(_plugins, plugin_options)
 end
 
 local iterate_plugins = function ()
   pm.pre(M)
   for _, plugin in ipairs(_plugins) do
-    pm.load(plugin)
+    pm.load(plugin, M)
   end
   pm.post(M)
 
@@ -250,10 +271,9 @@ M.startup = function()
   -- run plugins
   -- run post / defer
 
+  iterate_pre()
   install_plugin_manager(function (installed)
-    if installed then
-      iterate_pre()
-    else
+    if not installed then
       vim.g.first_install = 1
     end
     iterate_plugins()
