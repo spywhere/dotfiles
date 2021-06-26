@@ -1,9 +1,12 @@
-jest
-eslint
-neovim
 bash-language-server
+eslint
+graphql-language-server-cli
+jest
+neovim
+sql-language-server
 tree-sitter-cli
+typescript
 typescript-language-server
 vim-language-server
-typescript
 vsce
+yaml-language-server
