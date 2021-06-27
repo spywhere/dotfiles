@@ -88,7 +88,10 @@ local install_lualsp = function (force)
 
   local commands = {}
 
-  if force then
+  if
+    force or
+    (fn.isdirectory(install_dir) and not util.path.exists(bin_path))
+  then
     table.insert(commands, {
       message = 'Cleaning up previously downloaded files',
       error = 'Error while cleaning up previously downloaded files',
