@@ -43,11 +43,20 @@ M.pre = function ()
   fn['plug#begin'](plugin_home)
 end
 
-local is_plugin_load = function (name)
+local is_plugin_installed = function (name)
   if not vim.g.plugs or vim.g.plugs[name] == nil then
     return false
   end
-  return fn.isdirectory(vim.g.plugs[name].dir)
+  return fn.isdirectory(vim.g.plugs[name].dir) == 1
+end
+
+local is_plugin_loaded = function (name)
+  if not vim.g.plugs or vim.g.plugs[name] == nil then
+    return false
+  end
+  local plugin_path = vim.g.plugs[name].dir
+  plugin_path = string.gsub(plugin_path, '[/\\]*$', '')
+  return fn.stridx(vim.o.rtp, plugin_path) >= 0
 end
 
 local perform_post = function (plugin, post_fn, defer_fn, defer_first_fn)
@@ -55,12 +64,23 @@ local perform_post = function (plugin, post_fn, defer_fn, defer_first_fn)
   local defer = defer_fn or function (fn) vim.defer_fn(fn, 10) end
   local defer_first = defer_first_fn or function (fn) vim.defer_fn(fn, 0) end
 
-  if not is_plugin_load(plugin.identifier) then
+  if not is_plugin_installed(plugin.identifier) then
     return
   end
 
   if plugin.config then
-    post(plugin.config)
+    post(
+      function ()
+        plugin.config({
+          installed = function ()
+            return is_plugin_installed(plugin.identifier)
+          end,
+          loaded = function ()
+            return is_plugin_loaded(plugin.identifier)
+          end
+        })
+      end
+    )
   end
 
   if plugin.defer then
@@ -98,8 +118,10 @@ M.load = function (plugin, registry)
       function (info)
         -- post install
         if info.status == 'installed' then
-          vim.defer_fn(function () perform_post(plugin.identifier) end, 0)
-          vim.defer_fn(plugin.post_install, 100)
+          vim.defer_fn(function () perform_post(plugin) end, 0)
+          if plugin.post_install then
+            vim.defer_fn(plugin.post_install, 100)
+          end
         end
 
         -- perform original action
