@@ -1,6 +1,15 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
+registry.pre(function ()
+  -- improve startup time (https://github.com/neovim/neovim/issues/2437)
+  vim.g.python_host_skip_check = 1
+  vim.g.python3_host_skip_check = 1
+
+  vim.g.python_host_prog = '~/.asdf/shims/python'
+  vim.g.python3_host_prog = '~/.asdf/shims/python3'
+end)
+
 registry.defer_first(function ()
   bindings.map.normal('Q')
 
