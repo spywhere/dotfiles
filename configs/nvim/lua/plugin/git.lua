@@ -23,6 +23,11 @@ registry.install {
   end
 }
 
+registry.install {
+  'rhysd/conflict-marker.vim',
+  lazy = true
+}
+
 registry.install('itchyny/vim-gitbranch')
 registry.install {
   'rhysd/git-messenger.vim',
