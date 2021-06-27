@@ -131,7 +131,6 @@ _split() {
 }
 
 _detect_os() {
-  OSARCH=" ($(uname -m))"
   WSL_SUFFIX=""
   if test -n "$(command -v wsl.exe)"; then
     WSL_SUFFIX=" (through WSL)"
@@ -141,23 +140,35 @@ _detect_os() {
   case "$(uname -s)" in
     Linux*)
       OS="Linux"
-      if test -f /etc/debian_version; then
-        PKGMGR=" - Advanced Packaging Tool (apt)"
+      if test -f /etc/os-release; then
+        OSNAME="$(cat /etc/os-release | awk 'BEGIN{FS="="} /^NAME=/ { print $2 }' | sed 's/^"//g' | sed 's/"$//g')"
+        OS="$(cat /etc/os-release | awk 'BEGIN{FS="="} /^ID=/ { print $2 }')"
+        OSKIND="$(cat /etc/os-release | awk 'BEGIN{FS="="} /^ID_LIKE=/ { print $2 }')"
+      elif test -f /etc/debian_version; then
         OSNAME="Debian"
         OS="debian"
+        OSKIND="debian"
       elif test -f /etc/alpine-release; then
-        PKGMGR=" - Alpine Linux Package Manager (apk)"
         OSNAME="Alpine"
         OS="alpine"
+        OSKIND="alpine"
       else
         OSNAME="Linux"
         OS="linux"
+        OSKIND="linux"
+      fi
+
+      if test -n "$(command -v apt)"; then
+        PKGMGR=" - Advanced Packaging Tool (apt)"
+      elif test -n "$(command -v apk)"; then
+        PKGMGR=" - Alpine Linux Package Manager (apk)"
       fi
       ;;
     Darwin*)
       PKGMGR=" - Homebrew (brew)"
       OSNAME="Mac"
       OS="macos"
+      OSKIND="macos"
 
       if test "$(arch)" = "arm64"; then
         add_flag "apple-silicon"
@@ -166,9 +177,13 @@ _detect_os() {
     *)
       OSNAME="Unsupported"
       OS="unsupported"
+      OSKIND="unsupported"
       OSARCH=""
       ;;
   esac
+  if test "$OSKIND" != "unsupported"; then
+    OSARCH=" ($OSKIND/$(uname -m))"
+  fi
   OSNAME="$OSNAME$WSL_SUFFIX"
 }
 
@@ -325,6 +340,7 @@ PRINT_MODE=""
 
 PKGMGR=""
 OS="unsupported"
+OSKIND="unsupported"
 OSNAME="Unsupported"
 OSARCH=""
 
@@ -512,13 +528,13 @@ _try_git() {
     quit 1
   fi
 
-  if test "$OS" = "alpine"; then
+  if test "$OSKIND" = "alpine"; then
     step "Installing git..."
     cmd apk add git
-  elif test "$OS" = "debian"; then
+  elif test "$OSKIND" = "debian"; then
     step "Installing git..."
     sudo_cmd apt install -y git
-  elif test "$OS" = "macos" -a -n "$(command -v "brew")"; then
+  elif test "$OSKIND" = "macos" -a -n "$(command -v "brew")"; then
     step "Installing git..."
     cmd brew install git
   else
@@ -595,7 +611,11 @@ _try_run_install() {
   fi
 
   step "Ready"
-  if ! test -f "$HOME/$DOTFILES/systems/$OS.sh"; then
+  local system_script="$HOME/$DOTFILES/sytems/$OS.sh"
+  if ! test -f "$system_script"; then
+    system_script="$HOME/$DOTFILES/systems/$OSKIND.sh"
+  fi
+  if ! test -f "$system_script"; then
     error "\"$OS\" is not supported"
     quit 1
   fi
@@ -607,7 +627,7 @@ _try_run_install() {
     info "Detected running on Apple Silicon..."
   fi
 
-  . $HOME/$DOTFILES/systems/$OS.sh
+  . "$system_script"
   step "Setting up installation process..."
   setup
   step "Gathering components..."
@@ -1076,7 +1096,11 @@ use_docker_build() {
     return
   fi
 
-  if ! test -f "$HOME/$DOTFILES/docker/$package/Dockerfile.$OS"; then
+  local dockerfile="$HOME/$DOTFILES/docker/$package/Dockerfile.$OS"
+  if ! test -f "$dockerfile"; then
+    dockerfile="$HOME/$DOTFILES/docker/$package/Dockerfile.$OSKIND"
+  fi
+  if ! test -f "$dockerfile"; then
     warn "Docker build for package \"$package\" is not available on $OS"
     reset_object
     return

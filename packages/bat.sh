@@ -29,7 +29,7 @@ case "$cpu_type" in
   *)
     ;;
 esac
-if test "$OS" = "alpine" && test "$cpu_type" = "amd64" -o "$cpu_type" = "i686"; then
+if test "$OSKIND" = "alpine" && test "$cpu_type" = "amd64" -o "$cpu_type" = "i686"; then
   libc_type="-musl"
 fi
 

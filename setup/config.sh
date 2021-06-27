@@ -34,8 +34,11 @@ setup_config() {
   # git
   link git/gitalias .gitalias
   link git/gitconfig .gitconfig
+  local gitconfig=""
   if test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OS"; then
-    link git/gitconfig.$OS .gitconfig.platform
+    link "git/gitconfig.$OS" .gitconfig.platform
+  elif test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OSKIND"; then
+    link "git/gitconfig.$OSKIND" .gitconfig.platform
   else
     warn "No platform specific git configuration for \"$OSNAME\""
   fi
