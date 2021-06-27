@@ -147,7 +147,11 @@ local install_lualsp = function (force)
 
   if force or not util.path.exists(bin_path) then
     if not (util.has_bins('git')) then
-      error('Need "git" to install lua language server.')
+      logger.inline.error('Need "git" to install lua language server.')
+      return
+    end
+    if not (util.has_bins('ninja')) then
+      logger.inline.error('Need "ninja" to install lua language server.')
       return
     end
     local install_word = 'installed'
@@ -285,11 +289,11 @@ local install_omnisharp = function (force)
 
   if force or not util.path.exists(bin_path) then
     if not (util.has_bins('curl')) then
-      error('Need "curl" to install omnisharp language server.')
+      logger.inline.error('Need "curl" to install omnisharp language server.')
       return
     end
     if not (util.has_bins('unzip')) then
-      error('Need "unzip" to install omnisharp language server.')
+      logger.inline.error('Need "unzip" to install omnisharp language server.')
       return
     end
     local install_word = 'installed'
