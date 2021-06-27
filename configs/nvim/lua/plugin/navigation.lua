@@ -11,7 +11,14 @@ registry.install {
       local snap = require('snap')
       snap.run({
         reverse = true,
-        producer = snap.get('consumer.fzf')(snap.get('producer.ripgrep.file')),
+        producer = snap.get('consumer.fzf')(
+          snap.get('consumer.try')(
+            snap.get('producer.ripgrep.file'),
+            snap.get('producer.git.file'),
+            snap.get('producer.fd.file'),
+            snap.get('producer.luv.file')
+          )
+        ),
         select = snap.get('select.file').select,
         multiselect = snap.get('select.file').multiselect,
         views = { snap.get('preview.file') }
