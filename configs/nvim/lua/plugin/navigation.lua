@@ -1,9 +1,6 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
-registry.install('nvim-lua/popup.nvim')
-registry.install('nvim-lua/plenary.nvim')
-
 registry.install {
   'camspiers/snap',
   defer_first = function ()
