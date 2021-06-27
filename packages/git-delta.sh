@@ -25,6 +25,7 @@ case "$cpu_type" in
     ;;
   armv7l)
     cpu_type="armhf"
+    ;;
   *)
     ;;
 esac
