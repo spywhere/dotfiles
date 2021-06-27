@@ -409,7 +409,7 @@ local setup_lsps = function ()
       pre_value = { pre_value }
     end
 
-    if not pre_value then
+    if vim.tbl_count(pre_value) == 0 then
       return
     end
 
