@@ -78,8 +78,15 @@ registry.auto('ColorScheme', color_setup)
 
 registry.install {
   'arcticicestudio/nord-vim',
-  config = function ()
-    api.nvim_command('colorscheme nord')
+  config = function (plugin)
+    function setup_colorscheme()
+      if plugin.installed() and plugin.loaded() then
+        api.nvim_command('colorscheme nord')
+      else
+        vim.defer_fn(setup_colorscheme, 100)
+      end
+    end
+    setup_colorscheme()
   end,
   post_install = function ()
     api.nvim_command('colorscheme nord')
