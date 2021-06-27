@@ -17,6 +17,9 @@ registry.install {
     end
     -- show cursorline when browsing in the tree explorer
     registry.auto({ 'CursorHold', 'FileType' }, show_cursorline, 'NvimTree')
+
+    bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
+    bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
   end
 }
 
@@ -24,9 +27,5 @@ registry.install {
   'airblade/vim-rooter',
   config = function ()
     vim.g.rooter_silent_chdir = 1
-  end,
-  defer_first = function ()
-    bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
-    bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
   end
 }
