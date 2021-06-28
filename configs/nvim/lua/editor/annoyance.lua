@@ -6,8 +6,10 @@ registry.pre(function ()
   vim.g.python_host_skip_check = 1
   vim.g.python3_host_skip_check = 1
 
-  vim.g.python_host_prog = '~/.asdf/shims/python'
-  vim.g.python3_host_prog = '~/.asdf/shims/python3'
+  if fn.has('win32') == 0 then
+    vim.g.python_host_prog = '~/.asdf/shims/python'
+    vim.g.python3_host_prog = '~/.asdf/shims/python3'
+  end
 end)
 
 registry.defer_first(function ()
