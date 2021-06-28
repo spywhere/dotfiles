@@ -30,9 +30,9 @@ setup_usbc() {
   echo "denyinterfaces usb0" | sudo tee -a /etc/dhcpcd.conf >/dev/null
   cmd mkdir -p /etc/dnsmasq.d
   cmd mkdir -p /etc/network/interfaces.d
-  cat $HOME/$DOTFILES_NAME/supports/usbc/etc/dnsmasq.d/usb | sudo tee /etc/dnsmasq.d/usb >/dev/null
-  cat $HOME/$DOTFILES_NAME/supports/usbc/etc/network/interfaces.d/usb0 | sudo tee /etc/network/interfaces.d/usb0 >/dev/null
-  cat $HOME/$DOTFILES_NAME/supports/usbc/root/usb.sh | sudo tee /root/usb.sh >/dev/null
+  sudo_cmd cp "$HOME/$DOTFILES_NAME/supports/usbc/etc/dnsmasq.d/usb" /etc/dnsmasq.d/usb
+  sudo_cmd cp "$HOME/$DOTFILES_NAME/supports/usbc/etc/network/interfaces.d/usb0" /etc/network/interfaces.d/usb0
+  sudo_cmd cp "$HOME/$DOTFILES_NAME/supports/usbc/root/usb.sh" /root/usb.sh
   sudo_cmd chmod 755 /root/usb.sh
-  sudo_cmd sed -i $'s/exit 0$/sh \\/root\\/usb.sh\\\nexit 0/g' /etc/rc.local
+  sudo_cmd sed -i 's/exit 0$/sh \/root\/usb.sh\nexit 0/g' /etc/rc.local
 }
