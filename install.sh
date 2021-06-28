@@ -147,15 +147,12 @@ _detect_os() {
       elif test -f /etc/debian_version; then
         OSNAME="Debian"
         OS="debian"
-        OSKIND="debian"
       elif test -f /etc/alpine-release; then
         OSNAME="Alpine"
         OS="alpine"
-        OSKIND="alpine"
       else
         OSNAME="Linux"
         OS="linux"
-        OSKIND="linux"
       fi
 
       if test -n "$(command -v apt)"; then
@@ -168,7 +165,6 @@ _detect_os() {
       PKGMGR=" - Homebrew (brew)"
       OSNAME="Mac"
       OS="macos"
-      OSKIND="macos"
 
       if test "$(arch)" = "arm64"; then
         add_flag "apple-silicon"
@@ -177,10 +173,12 @@ _detect_os() {
     *)
       OSNAME="Unsupported"
       OS="unsupported"
-      OSKIND="unsupported"
       OSARCH=""
       ;;
   esac
+  if test -z "$OSKIND"; then
+    OSKIND="$OS"
+  fi
   if test "$OSKIND" != "unsupported"; then
     OSARCH=" ($OSKIND/$(uname -m))"
   fi
