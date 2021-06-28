@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -30,38 +30,38 @@ install_packages() {
 
 # _sh_cmd <source> <target> <command>
 _sh_cmd() {
-  local source="$HOME/$DOTFILES/configs/$1"
-  local target="$HOME/$2"
+  sh_cmd__source="$HOME/$DOTFILES/configs/$1"
+  sh_cmd__target="$HOME/$2"
   shift
   shift
-  if ! test -f "$source" -o -d "$source"; then
-    warn "No source file \"$source\""
+  if ! test -f "$sh_cmd__source" -o -d "$sh_cmd__source"; then
+    warn "No source file \"$sh_cmd__source\""
     return
   fi
-  if test -f "$target"; then
-    rm -f "$target"
-  elif test -d "$target"; then
-    rm -rf "$target"
+  if test -f "$sh_cmd__target"; then
+    rm -f "$sh_cmd__target"
+  elif test -d "$sh_cmd__target"; then
+    rm -rf "$sh_cmd__target"
   fi
-  "$@" "$source" "$target"
+  "$@" "$sh_cmd__source" "$sh_cmd__target"
 }
 
 # link <source> <target>
 link() {
-  local source="$1"
-  local target="$2"
+  link__source="$1"
+  link__target="$2"
   shift
   shift
-  _sh_cmd "$source" "$target" ln -fs "$@"
+  _sh_cmd "$link__source" "$link__target" ln -fs "$@"
 }
 
 # copy <source> <target>
 copy() {
-  local source="$1"
-  local target="$2"
+  copy__source="$1"
+  copy__target="$2"
   shift
   shift
-  _sh_cmd "$source" "$target" cp -R "$@"
+  _sh_cmd "$copy__source" "$copy__target" cp -R "$@"
 }
 
 # use_apk <repo> <package>

@@ -13,9 +13,9 @@ build_rootfs () {
   wget -nc https://downloads.raspberrypi.org/raspios_lite_armhf_latest -O raspios_lite.zip
   echo "[$target_host] Extracting image..."
   unzip -n raspios_lite.zip
-  image=$(ls *.img)
-  device=`kpartx -va ${image} | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
-  device="/dev/mapper/${device}"
+  image=$(ls ./*.img)
+  device=$(kpartx -va "$image" | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1)
+  device="/dev/mapper/$device"
   mkdir -p rootfs
   echo "[$target_host] Mounting rootfs..."
   mount "${device}p2" rootfs
@@ -25,7 +25,7 @@ build_rootfs () {
   mv raspios_rootfs.tar.gz /app
   echo "[$target_host] Cleaning up..."
   umount rootfs
-  kpartx -d $image
+  kpartx -d "$image"
   rm -rf rootfs
   echo "[$target_host] Done"
 }
@@ -40,7 +40,7 @@ base_host=$(hostname)
 set -e
 if ! test -f "raspios_rootfs.tar.gz"; then
   echo "[$base_host] Building raspios_rootfs.tar.gz..."
-  docker run --network=host --hostname=docker --privileged -it --rm -w /raspios -v /dev:/dev -v $(pwd):/app debian:buster-slim sh /app/build.sh rootfs
+  docker run --network=host --hostname=docker --privileged -it --rm -w /raspios -v /dev:/dev -v "$(pwd):/app" debian:buster-slim sh /app/build.sh rootfs
 fi
 echo "[$base_host] Building Docker image from rootfs..."
 docker build -t raspios:lite . -f- <<EOF

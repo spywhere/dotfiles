@@ -1,10 +1,10 @@
-#!/bin/zsh
+#!/bin/sh
 
 current=$(git rev-parse --abbrev-ref HEAD)
 git fetch --all --prune
 for branch in $(git branch --format "%(refname:short)");
 do
-  git checkout $branch;
+  git checkout "$branch";
   git pull --rebase --autostash
 done
-git checkout $current
+git checkout "$current"

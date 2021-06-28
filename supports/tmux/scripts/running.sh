@@ -10,7 +10,7 @@ if test "$(uname)" = "Darwin" -o "$(uname -r | sed 's/.*Microsoft.*/microsoft/g'
     if test $? -eq 0; then
       docker_start=""
     fi
-    if echo $docker_info | grep "refused"; then
+    if echo "$docker_info" | grep "refused"; then
       docker_start=""
     fi
   fi
@@ -20,25 +20,25 @@ badges="$docker_start"
 badge_sizes=$(printf "%s" "$badges" | wc -m)
 
 _scrolling_text() {
-  local text="$1"
-  local size="$2"
-  local offset="$3"
+  __text="$1"
+  __size="$2"
+  __offset="$3"
   if test $# -ge 4; then
-    local text_length="$4"
+    __text_length="$4"
   else
-    local text_length=$(printf "%s" "$text" | wc -m)
+    __text_length=$(printf "%s" "$__text" | wc -m)
   fi
-  if test "$text_length" -gt $size; then
-    local index=$(( $offset % $text_length ))
-    local padded_text="$text$text"
-    printf "%s" "$padded_text" | cut -c"$(( $index + 1 ))-$(( $index + $size ))"
+  if test "$__text_length" -gt "$__size"; then
+    __index=$(( __offset % __text_length ))
+    __padded_text="$__text$__text"
+    printf "%s" "$__padded_text" | cut -c"$(( __index + 1 ))-$(( __index + __size ))"
   else
-    printf "%s" "$text"
+    printf "%s" "$__text"
   fi
 }
 
 if test "$badge_sizes" -gt 1; then
-  printf "%s" "$(_scrolling_text "$badges" "1" "$(( $(date "+%s") / $CYCLE_INTERVAL ))" "$badge_sizes")"
+  printf "%s" "$(_scrolling_text "$badges" "1" "$(( $(date "+%s") / CYCLE_INTERVAL ))" "$badge_sizes")"
 else
   printf "%s" "$badges"
 fi

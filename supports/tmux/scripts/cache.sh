@@ -1,11 +1,11 @@
 #!/bin/sh
 
 _get_tmp_dir() {
-  local tmpdir="${TMPDIR:-${TMP:-${TEMP:-/tmp}}}"
-  if test ! -d "$tmpdir"; then
-    tmpdir=~/.tmp
+  __tmpdir="${TMPDIR:-${TMP:-${TEMP:-/tmp}}}"
+  if test ! -d "$__tmpdir"; then
+    __tmpdir=~/.tmp
   fi
-  printf "%s/tmux-scripts-%s" "$tmpdir" "$(id -u)"
+  printf "%s/tmux-scripts-%s" "$__tmpdir" "$(id -u)"
 }
 
 _now() {
@@ -13,60 +13,60 @@ _now() {
 }
 
 _get_cache_value() {
-  local key="$1"
-  local timeout="${2:-1}"
-  local cache="$(_get_tmp_dir)/$key"
-  if test ! -f "$cache"; then
+  __key="$1"
+  __timeout="${2:-1}"
+  __cache="$(_get_tmp_dir)/$__key"
+  if test ! -f "$__cache"; then
     return
   fi
-  if test "$timeout" -eq 0; then
+  if test "$__timeout" -eq 0; then
     printf "yes\n"
-    tail -n+2 "$cache"
+    tail -n+2 "$__cache"
     return
   fi
-  local store="$(head -n1 "$cache")"
+  __store="$(head -n1 "$__cache")"
   if awk \
-    -v store="$store" \
-    -v timeout="$timeout" \
-    -v now=$(_now) \
+    -v store="$__store" \
+    -v timeout="$__timeout" \
+    -v now="$(_now)" \
     'BEGIN{if (now - timeout < store) exit 1; exit 0}'; then
     printf "no\n"
   else
     printf "yes\n"
   fi
-  tail -n+2 "$cache"
+  tail -n+2 "$__cache"
 }
 
 _put_cache_value() {
-  local sync="$1"
-  local key="$2"
+  __sync="$1"
+  __key="$2"
   shift
   shift
-  local value="$@"
-  local tmpdir="$(_get_tmp_dir)"
-  if test ! -d "$tmpdir"; then
-    mkdir -p "$tmpdir"
-    chmod 700 "$tmpdir"
+  __value="$*"
+  __tmpdir="$(_get_tmp_dir)"
+  if test ! -d "$__tmpdir"; then
+    mkdir -p "$__tmpdir"
+    chmod 700 "$__tmpdir"
   fi
-  printf  "%s\n%s" "$(_now)" "$value" > "$tmpdir/$key"
-  if test "$sync" = "yes"; then
-    printf "%s" "$value"
+  printf  "%s\n%s" "$(_now)" "$__value" > "$__tmpdir/$__key"
+  if test "$__sync" = "yes"; then
+    printf "%s" "$__value"
   fi
 }
 
 _cache_value() {
-  local key="$1"
-  local cmd="$2"
+  __key="$1"
+  __cmd="$2"
   shift
   shift
-  local value="$(_get_cache_value "$key")"
-  if test -z "$value"; then
-    _put_cache_value "yes" "$key" "$($cmd $@)"
+  __value="$(_get_cache_value "$__key")"
+  if test -z "$__value"; then
+    _put_cache_value "yes" "$__key" "$($__cmd "$@")"
     return
   fi
-  local valid="$(printf "%s" "$value" | head -n1)"
-  if test "$valid" = "no"; then
-    (_put_cache_value "no" "$key" "$($cmd $@)" &)
+  __valid="$(printf "%s" "$__value" | head -n1)"
+  if test "$__valid" = "no"; then
+    (_put_cache_value "no" "$__key" "$($__cmd "$@")" &)
   fi
-  printf "%s" "$(printf "%s" "$value" | tail -n+2)"
+  printf "%s" "$(printf "%s" "$__value" | tail -n+2)"
 }

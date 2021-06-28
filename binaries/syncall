@@ -16,7 +16,8 @@ usage() {
 }
 
 print-inline() {
-  local columes=$(tput cols)
+  local columes
+  columes=$(tput cols)
   printf "%-${columes}s\r" "$1"
 }
 
@@ -26,9 +27,12 @@ main() {
   local zip_repo=0
   local keep_repo=0
   while test "$1" != ""; do
-    local param=$(printf "%s" "$1" | sed 's/=.*//g')
-    local value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
-    local equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
+    local param
+    param=$(printf "%s" "$1" | sed 's/=.*//g')
+    local value
+    value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    local equal_sign
+    equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
     case $param in
       -h | --help)
         usage
@@ -67,25 +71,31 @@ main() {
     return 1
   fi
 
-  local graph_query=$(cat ~/.dots/binaries/_syncall.graphql)
+  local graph_query
+  graph_query=$(cat ~/.dots/binaries/_syncall.graphql)
 
-  local working_dir=$(pwd)
+  local working_dir
+  working_dir=$(pwd)
   local next_cursor=""
   local has_next_page="true"
   local raw_repos=""
   while test "$has_next_page" = "true"; do
     if test "$next_cursor" = ""; then
       print-inline "Fetching..."
-      local response=$(gh api graphql -F limit="50" -F org="$1" -f query="$graph_query")
+      local response
+      response=$(gh api graphql -F limit="50" -F org="$1" -f query="$graph_query")
     else
       print-inline "Fetching... $(echo "$raw_repos" | grep -c '$') found and counting..."
-      local response=$(gh api graphql -F limit="50" -F cursor="$next_cursor" -F org="$1" -f query="$graph_query")
+      local response
+      response=$(gh api graphql -F limit="50" -F cursor="$next_cursor" -F org="$1" -f query="$graph_query")
     fi
 
-    local repo_json=$(echo "$response" | jq -r '.data.organization.repositories')
+    local repo_json
+    repo_json=$(echo "$response" | jq -r '.data.organization.repositories')
     has_next_page=$(echo "$repo_json" | jq -r '.pageInfo.hasNextPage')
     next_cursor=$(echo "$repo_json" | jq -r '.pageInfo.endCursor')
-    local new_repos=$(echo "$repo_json" | jq -r '.nodes | [ .[] | [ .name, .url, .sshUrl ] | join("|") ] | join("$")' | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1,$2,$3}')
+    local new_repos
+    new_repos=$(echo "$repo_json" | jq -r '.nodes | [ .[] | [ .name, .url, .sshUrl ] | join("|") ] | join("$")' | awk 'BEGIN{FS="|";RS="$";OFS="|"}{print $1,$2,$3}')
     if test "$raw_repos" = ""; then
       raw_repos=$new_repos
     else
@@ -93,32 +103,38 @@ main() {
     fi
   done
 
-  local total_repos=$(echo "$raw_repos" | grep -c '$')
+  local total_repos
+  total_repos=$(echo "$raw_repos" | grep -c '$')
   print-inline "Found $total_repos repositories"
   echo
   if test "$repo_file" != ""; then
-    echo "$raw_repos" | awk 'BEGIN{FS="|";}{print $1,$2}' > $repo_file
+    echo "$raw_repos" | awk 'BEGIN{FS="|";}{print $1,$2}' > "$repo_file"
   fi
 
   local current_index=0
   while read -r item; do
-    local repo_name=$(echo "$item" | cut -d'|' -f1)
-    local repo_ssh_url=$(echo "$item" | cut -d'|' -f3)
+    local repo_name
+    repo_name=$(echo "$item" | cut -d'|' -f1)
+    local repo_ssh_url
+    repo_ssh_url=$(echo "$item" | cut -d'|' -f3)
 
-    local progress=$(expr $current_index \* 100 / $total_repos)
+    local progress
+    progress=$(( current_index * 100 / total_repos ))
     if test -d "$repo_name"; then
       if test $only_clone -eq 1; then
         continue
       fi
 
-      local output=$(printf "[%2d%%] Updating '%s'..." "$progress" "$repo_name")
+      local output
+      output=$(printf "[%2d%%] Updating '%s'..." "$progress" "$repo_name")
       print-inline "$output"
-      cd "$repo_name"
+      cd "$repo_name" || exit 1
       git fetch >/dev/null 2>&1
       git reset --hard origin >/dev/null 2>&1
-      cd "$working_dir"
+      cd "$working_dir" || exit 1
     else
-      local output=$(printf "[%2d%%] Cloning '%s'..." "$progress" "$repo_name")
+      local output
+      output=$(printf "[%2d%%] Cloning '%s'..." "$progress" "$repo_name")
       print-inline "$output"
       git clone "$repo_ssh_url" "$repo_name" >/dev/null 2>&1
     fi
@@ -126,7 +142,8 @@ main() {
     if test $zip_repo -eq 1; then
       rm -f "${repo_name}.zip"
 
-      local output=$(printf "[%2d%%] Zipping '%s' into '%s'..." "$progress" "$repo_name" "${repo_name}.zip")
+      local output
+      output=$(printf "[%2d%%] Zipping '%s' into '%s'..." "$progress" "$repo_name" "${repo_name}.zip")
       print-inline "$output"
 
       zip -9qr "${repo_name}.zip" "$repo_name"
@@ -135,10 +152,10 @@ main() {
       fi
     fi
 
-    current_index=$(expr $current_index + 1)
-  done <<< "$(echo "$raw_repos")"
+    current_index=$(( current_index + 1 ))
+  done <<< "$raw_repos"
   print-inline "All done"
   echo
 }
 
-main $@
+main "$@"

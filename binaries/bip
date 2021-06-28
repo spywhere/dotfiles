@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 
 # brew and fzf
 # update multiple packages at once
 # mnemonic [B]rew [U]pdate [P]lugin
 
-local inst=$(brew search | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[brew:install]'")
+__inst=$(brew search | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[brew:install]'")
 
-if [[ $inst ]]; then
-  for prog in $(echo $inst)
-  do brew install $prog
+if test -n "$__inst"; then
+  for __prog in $__inst; do
+    brew install "$__prog"
   done
 fi

@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -14,12 +14,12 @@ fi
 . systems/base.sh
 
 setup() {
-  local apple_silicon=""
+  setup__apple_silicon=""
   if has_flag "apple-silicon"; then
-    apple_silicon="arm64"
+    setup__apple_silicon="arm64"
   fi
 
-  if has_cmd pkgutil && test -n "$apple_silicon" -a "$(pkgutil --pkgs=com.apple.pkg.RosettaUpdateAuto)" != "com.apple.pkg.RosettaUpdateAuto"; then
+  if has_cmd pkgutil && test -n "$setup__apple_silicon" -a "$(pkgutil --pkgs=com.apple.pkg.RosettaUpdateAuto)" != "com.apple.pkg.RosettaUpdateAuto"; then
     info "Installing Rosetta 2..."
     cmd softwareupdate --install-rosetta --agree-to-license
   fi
@@ -29,7 +29,7 @@ setup() {
     quit 1
   fi
 
-  if test -n "$apple_silicon" -a ! -f /opt/homebrew/bin/brew; then
+  if test -n "$setup__apple_silicon" -a ! -f /opt/homebrew/bin/brew; then
     info "Installing (Apple Silicon) Homebrew..."
     sudo_cmd -v
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -43,7 +43,7 @@ setup() {
     return
   fi
 
-  if test -z "$apple_silicon"; then
+  if test -z "$setup__apple_silicon"; then
     info "Installing Homebrew..."
     sudo_cmd -v
     cmd bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -51,34 +51,34 @@ setup() {
 }
 
 _run_intel_brew() {
-  local brew_path="/usr/local/Homebrew/bin"
-  local executable=""
+  run_intel_brew__brew_path="/usr/local/Homebrew/bin"
+  run_intel_brew__executable=""
 
-  if test -f "$brew_path/brew"; then
-    executable="$brew_path/brew"
+  if test -f "$run_intel_brew__brew_path/brew"; then
+    run_intel_brew__executable="$run_intel_brew__brew_path/brew"
   else
-    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $brew_path"
+    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $run_intel_brew__brew_path"
     quit 1
   fi
 
-  cmd arch -x86_64 "$executable" $@
+  cmd arch -x86_64 "$run_intel_brew__executable" "$@"
 }
 
 _run_brew() {
-  local brew_path="/usr/local/Homebrew/bin"
-  local executable=""
+  run_brew__brew_path="/usr/local/Homebrew/bin"
+  run_brew__executable=""
   if has_flag "apple-silicon"; then
-    brew_path="/opt/homebrew/bin"
+    run_brew__brew_path="/opt/homebrew/bin"
   fi
 
-  if test -f "$brew_path/brew"; then
-    executable="$brew_path/brew"
+  if test -f "$run_brew__brew_path/brew"; then
+    run_brew__executable="$run_brew__brew_path/brew"
   else
-    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $brew_path"
+    error "Failed: homebrew setup has been completed, but \"brew\" command cannot be found at $run_brew__brew_path"
     quit 1
   fi
 
-  cmd "$executable" "$@"
+  cmd "$run_brew__executable" "$@"
 }
 
 has_login_app_store() {
@@ -90,13 +90,14 @@ has_login_app_store() {
 }
 
 wait_for_app_store() {
-  last_check=""
+  wait_for_app_store__last_check=""
   while ! has_login_app_store; do
-    printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store..." "$last_check"
+    # shellcheck disable=SC2154
+    printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store..." "$wait_for_app_store__last_check"
     sleep 5
-    last_check=" (last check at $(date "+%H:%M:%S"))"
+    wait_for_app_store__last_check=" (last check at $(date "+%H:%M:%S"))"
   done
-  if test -n "$last_check"; then
+  if test -n "$wait_for_app_store__last_check"; then
     info "App Store signed in                                                 "
   fi
 }
@@ -121,80 +122,78 @@ update() {
 }
 
 tap_repo() {
-  local repo
-  for repo in $@; do
-    _run_brew tap $repo
+  for tap_repo__repo in "$@"; do
+    _run_brew tap "$tap_repo__repo"
   done
 }
 
 install_packages() {
-  local tap_repos=""
+  install_packages__tap_repos=""
 
-  local formula_packages=""
-  local cask_packages=""
-  local flagged_packages=""
-  local intel_formula_packages=""
-  local intel_cask_packages=""
-  local intel_flagged_packages=""
-  local mas_packages=""
+  install_packages__formula_packages=""
+  install_packages__cask_packages=""
+  install_packages__flagged_packages=""
+  install_packages__intel_formula_packages=""
+  install_packages__intel_cask_packages=""
+  install_packages__intel_flagged_packages=""
+  install_packages__mas_packages=""
 
   step "Collecting packages..."
-  local package
-  for package in "$@"; do
-    local manager="$(parse_field "$package" manager)"
+  for install_packages__package in "$@"; do
+    install_packages__manager="$(parse_field "$install_packages__package" manager)"
 
-    if test "$manager" = "brew" -o "$manager" = "brow"; then
-      local name="$(parse_field "$package" package)"
-      local kind="$(parse_field "$package" kind)"
-      local flags="$(parse_field "$package" flags)"
-      if test -n "$flags"; then
-        flags="$(_escape_special "$flags")"
+    if test "$install_packages__manager" = "brew" -o "$install_packages__manager" = "brow"; then
+      install_packages__name="$(parse_field "$install_packages__package" package)"
+      install_packages__kind="$(parse_field "$install_packages__package" kind)"
+      install_packages__flags="$(parse_field "$install_packages__package" flags)"
+      if test -n "$install_packages__flags"; then
+        install_packages__flags="$(_escape_special "$install_packages__flags")"
       fi
 
-      if has_flag "apple-silicon" && test "$manager" = "brow"; then
-        if test "$kind" = "cask"; then
-          intel_cask_packages="$(_add_to_list "$intel_cask_packages" "$name")"
-        elif test "$kind" = "formula" -a -n "$flags"; then
-          intel_flagged_packages="$(_add_to_list "$intel_flagged_packages" "$name;$flags")"
-        elif test "$kind" = "formula"; then
-          intel_formula_packages="$(_add_to_list "$intel_formula_packages" "$name")"
+      if has_flag "apple-silicon" && test "$install_packages__manager" = "brow"; then
+        if test "$install_packages__kind" = "cask"; then
+          install_packages__intel_cask_packages="$(_add_to_list "$install_packages__intel_cask_packages" "$install_packages__name")"
+        elif test "$install_packages__kind" = "formula" -a -n "$install_packages__flags"; then
+          install_packages__intel_flagged_packages="$(_add_to_list "$install_packages__intel_flagged_packages" "$install_packages__name;$install_packages__flags")"
+        elif test "$install_packages__kind" = "formula"; then
+          install_packages__intel_formula_packages="$(_add_to_list "$install_packages__intel_formula_packages" "$install_packages__name")"
         fi
       else
-        if test "$kind" = "cask"; then
-          cask_packages="$(_add_to_list "$cask_packages" "$name")"
-        elif test "$kind" = "formula" -a -n "$flags"; then
-          flagged_packages="$(_add_to_list "$flagged_packages" "$name;$flags")"
-        elif test "$kind" = "formula"; then
-          formula_packages="$(_add_to_list "$formula_packages" "$name")"
+        if test "$install_packages__kind" = "cask"; then
+          install_packages__cask_packages="$(_add_to_list "$install_packages__cask_packages" "$install_packages__name")"
+        elif test "$install_packages__kind" = "formula" -a -n "$install_packages__flags"; then
+          install_packages__flagged_packages="$(_add_to_list "$install_packages__flagged_packages" "$install_packages__name;$install_packages__flags")"
+        elif test "$install_packages__kind" = "formula"; then
+          install_packages__formula_packages="$(_add_to_list "$install_packages__formula_packages" "$install_packages__name")"
         fi
       fi
-    elif test "$manager" = "tap"; then
-      local tap="$(parse_field "$package" tap)"
-      tap_repos="$(_add_to_list "$tap_repos" "$tap")"
-    elif test "$manager" = "mas"; then
-      local package_id="$(parse_field "$package" package)"
-      mas_packages="$(_add_to_list "$mas_packages" "$package_id")"
+    elif test "$install_packages__manager" = "tap"; then
+      install_packages__tap="$(parse_field "$install_packages__package" tap)"
+      install_packages__tap_repos="$(_add_to_list "$install_packages__tap_repos" "$install_packages__tap")"
+    elif test "$install_packages__manager" = "mas"; then
+      install_packages__package_id="$(parse_field "$install_packages__package" package)"
+      install_packages__mas_packages="$(_add_to_list "$install_packages__mas_packages" "$install_packages__package_id")"
     fi
   done
 
-  local brew_flags=""
+  install_packages__brew_flags=""
   if test "$FORCE_INSTALL" -eq 1; then
-    brew_flags="--force"
+    install_packages__brew_flags="--force"
   fi
 
   run_brew() {
-    local kind="$1"
+    install_packages_run_brew__kind="$1"
     shift
-    _run_brew install "--$kind" $brew_flags $@
+    _run_brew install "--$install_packages_run_brew__kind" $install_packages__brew_flags "$@"
   }
 
   run_intel_brew() {
-    local kind="$1"
+    install_packages_run_intel_brew__kind="$1"
     shift
-    _run_intel_brew install "--$kind" $brew_flags $@
+    _run_intel_brew install "--$install_packages_run_intel_brew__kind" $install_packages__brew_flags "$@"
   }
 
-  if test -n "$mas_packages"; then
+  if test -n "$install_packages__mas_packages"; then
     if ! has_cmd mas; then
       step "Installing mas for App Store installation..."
       run_brew formula mas
@@ -202,96 +201,95 @@ install_packages() {
     wait_for_app_store
   fi
 
-  if test -n "$tap_repos"; then
+  if test -n "$install_packages__tap_repos"; then
     step "Tapping repositories..."
-    eval "set -- $tap_repos"
+    eval "set -- $install_packages__tap_repos"
     tap_repo "$@"
   fi
 
-  if test -n "$formula_packages"; then
+  if test -n "$install_packages__formula_packages"; then
     step "Installing packages..."
-    eval "set -- $formula_packages"
+    eval "set -- $install_packages__formula_packages"
     run_brew formula "$@"
-    if test -n "$intel_formula_packages"; then
-      eval "set -- $intel_formula_packages"
+    if test -n "$install_packages__intel_formula_packages"; then
+      eval "set -- $install_packages__intel_formula_packages"
       run_intel_brew formula "$@"
     fi
   fi
 
-  if test -n "$flagged_packages"; then
+  if test -n "$install_packages__flagged_packages"; then
     step "Installing packages with additional flags..."
-    eval "set -- $flagged_packages"
-    local package
-    for package in "$@"; do
-      local name=$(printf "%s" "$package" | cut -d';' -f1)
-      local flags=$(printf "%s" "$package" | cut -d';' -f2-)
-      eval "set -- $(_unescape_special "$flags")"
-      run_brew formula $name "$@"
+    eval "set -- $install_packages__flagged_packages"
+    for install_packages__package in "$@"; do
+      install_packages__name=$(printf "%s" "$install_packages__package" | cut -d';' -f1)
+      install_packages__flags=$(printf "%s" "$install_packages__package" | cut -d';' -f2-)
+      eval "set -- $(_unescape_special "$install_packages__flags")"
+      run_brew formula "$install_packages__name" "$@"
     done
-    if test -n "$intel_flagged_packages"; then
-      eval "set -- $intel_flagged_packages"
-      for package in "$@"; do
-        local name=$(printf "%s" "$package" | cut -d';' -f1)
-        local flags=$(printf "%s" "$package" | cut -d';' -f2-)
-        eval "set -- $(_unescape_special "$flags")"
-        run_intel_brew formula $name "$@"
+    if test -n "$install_packages__intel_flagged_packages"; then
+      eval "set -- $install_packages__intel_flagged_packages"
+      for install_packages__package in "$@"; do
+        install_packages__name=$(printf "%s" "$install_packages__package" | cut -d';' -f1)
+        install_packages__flags=$(printf "%s" "$install_packages__package" | cut -d';' -f2-)
+        eval "set -- $(_unescape_special "$install_packages__flags")"
+        run_intel_brew formula "$install_packages__name" "$@"
       done
     fi
   fi
 
-  if test -n "$cask_packages"; then
+  if test -n "$install_packages__cask_packages"; then
     step "Installing cask packages..."
-    eval "set -- $cask_packages"
+    eval "set -- $install_packages__cask_packages"
     run_brew cask "$@"
-    if test -n "$intel_cask_packages"; then
-      eval "set -- $intel_cask_packages"
+    if test -n "$install_packages__intel_cask_packages"; then
+      eval "set -- $install_packages__intel_cask_packages"
       run_intel_brew cask "$@"
     fi
   fi
 
-  if test -n "$mas_packages"; then
+  if test -n "$install_packages__mas_packages"; then
     step "Installing App Store packages..."
-    eval "set -- $mas_packages"
+    eval "set -- $install_packages__mas_packages"
     run_mas "$@"
   fi
 }
 
 use_brow() {
-  local kind="$1"
-  local package="$2"
+  use_brow__kind="$1"
+  use_brow__package="$2"
   shift
   shift
 
   field manager brow
-  field kind "$kind"
-  field package "$package"
+  field kind "$use_brow__kind"
+  field package "$use_brow__package"
   if test "$#" -gt 0; then
     field flags "$(_make_list "$@")"
   fi
-  add_package "$package"
+  add_package "$use_brow__package"
 }
 
 use_brew() {
-  local kind="$1"
-  local package="$2"
+  use_brew__kind="$1"
+  use_brew__package="$2"
   shift
   shift
 
   field manager brew
-  field kind "$kind"
-  field package "$package"
+  field kind "$use_brew__kind"
+  field package "$use_brew__package"
   if test "$#" -gt 0; then
     field flags "$(_make_list "$@")"
   fi
-  add_package "$package"
+  add_package "$use_brew__package"
 }
 
 use_brew_tap() {
-  local tap="$1"
+  _use_brew_tap__tap="$1"
 
   field manager tap
-  field tap "$tap"
-  add_package "$tap"
+  field tap "$_use_brew_tap__tap"
+  add_package "$_use_brew_tap__tap"
 }
 
 use_mas() {
@@ -299,11 +297,11 @@ use_mas() {
     return
   fi
 
-  local package="$1"
-  local package_id="$2"
+  use_mas__package="$1"
+  use_mas__package_id="$2"
 
   field manager_name "App Store"
   field manager mas
-  field package "$package_id"
-  add_package "$package"
+  field package "$use_mas__package_id"
+  add_package "$use_mas__package"
 }

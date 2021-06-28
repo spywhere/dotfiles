@@ -2,8 +2,8 @@
 
 set -e
 
-SCRIPT_DIRNAME=$(dirname $0)
-SCRIPT_DIR=$(realpath $(pwd)/$SCRIPT_DIRNAME)
+SCRIPT_DIRNAME=$(dirname "$0")
+SCRIPT_DIR=$(realpath "$(pwd)/$SCRIPT_DIRNAME")
 
 usage() {
   cat <<EOF
@@ -21,9 +21,10 @@ By default, test will simulate a remote installation from scatch.
 
 supported platforms:
 EOF
-  for file in $SCRIPT_DIR/Dockerfile.*; do
-    local name=$(basename $file | cut -c12-)
-    printf "  %s\n" $name
+  for file in "$SCRIPT_DIR"/Dockerfile.*; do
+    local name
+    name=$(basename "$file" | cut -c12-)
+    printf "  %s\n" "$name"
   done
 }
 
@@ -59,7 +60,7 @@ while test "$1" != ""; do
       FORCE=1
       ;;
     -*)
-      printf "ERROR: unknown flag \"$1\"\n"
+      printf "ERROR: unknown flag \"%s\"\n" "$1"
       exit 1
       ;;
     *)
@@ -71,7 +72,7 @@ while test "$1" != ""; do
 done
 
 while test "$1" != ""; do
-  if test -f $SCRIPT_DIR/Dockerfile.$1; then
+  if test -f "$SCRIPT_DIR/Dockerfile.$1"; then
     if test "$PLATFORM" != ""; then
       printf "ERROR: only one platform is needed\n"
       exit 1
@@ -84,11 +85,11 @@ while test "$1" != ""; do
         break
         ;;
       -*)
-        printf "ERROR: unexpected flag \"$1\" after the platform\n"
+        printf "ERROR: unexpected flag \"%s\" after the platform\n" "$1"
         exit 1
         ;;
       *)
-        printf "ERROR: unknown platform \"$1\"\n"
+        printf "ERROR: unknown platform \"%s\"\n" "$1"
         exit 1
         ;;
     esac
@@ -97,10 +98,10 @@ while test "$1" != ""; do
   shift
 done
 
-printf "Testing on $PLATFORM...\n"
+printf "Testing on %s...\n" "$PLATFORM"
 
-VOLUME=$(dirname $SCRIPT_DIR)
-ARGS="$@"
+VOLUME=$(dirname "$SCRIPT_DIR")
+ARGS="$*"
 
 if test $UPGRADE -eq 0; then
   INSTALL_PATH="/root/dots"
@@ -114,8 +115,8 @@ else
   SCRIPT="sh $INSTALL_PATH/install.sh $ARGS"
 fi
 
-if test $RECREATE -eq 1 -o "$(docker images dots:$PLATFORM -q)" = ""; then
-  docker build --no-cache --network=host -t dots:$PLATFORM - <$SCRIPT_DIR/Dockerfile.$PLATFORM
+if test $RECREATE -eq 1 -o "$(docker images "dots:$PLATFORM" -q)" = ""; then
+  docker build --no-cache --network=host -t "dots:$PLATFORM" - <"$SCRIPT_DIR/Dockerfile.$PLATFORM"
 fi
 
 if test "$(git status -s)" != "" -a $FORCE -eq 0 -a $LOCAL -eq 0 -a $UPGRADE -eq 1; then
@@ -125,4 +126,4 @@ if test "$(git status -s)" != "" -a $FORCE -eq 0 -a $LOCAL -eq 0 -a $UPGRADE -eq
   exit 1
 fi
 
-docker run -it $KEEP --network=host -v /var/run/docker.sock:/var/run/docker.sock -v $VOLUME:$INSTALL_PATH dots:$PLATFORM sh -c "$SCRIPT"
+docker run -it "$KEEP" --network=host -v /var/run/docker.sock:/var/run/docker.sock -v "$VOLUME:$INSTALL_PATH" "dots:$PLATFORM" sh -c "$SCRIPT"

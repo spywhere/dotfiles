@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -21,46 +21,44 @@ update() {
 }
 
 install_dpkg_packages() {
-  local package
-  for package in "$@"; do
-    local name="$(parse_field "$package" package)"
-    local url="$(parse_field "$package" url)"
+  for install_dpkg_packages__package in "$@"; do
+    install_dpkg_packages__name="$(parse_field "$install_dpkg_packages__package" package)"
+    install_dpkg_packages__url="$(parse_field "$install_dpkg_packages__package" url)"
 
-    local path=$(deps "$name.deb")
-    step "Downloading $path for installation..."
-    cmd curl -sSL $url -o $path
-    step "Installing $name through dpkg..."
-    sudo_cmd dpkg --install $path
+    install_dpkg_packages__path=$(deps "$install_dpkg_packages__name.deb")
+    step "Downloading $install_dpkg_packages__path for installation..."
+    cmd curl -sSL "$install_dpkg_packages__url" -o "$install_dpkg_packages__path"
+    step "Installing $install_dpkg_packages__name through dpkg..."
+    sudo_cmd dpkg --install "$install_dpkg_packages__path"
   done
 }
 
 install_packages() {
-  local apt_packages=""
-  local dpkg_packages=""
-  local package
-  for package in "$@"; do
-    local manager="$(parse_field "$package" manager)"
-    local name="$(parse_field "$package" package)"
+  install_packages__apt_packages=""
+  install_packages__dpkg_packages=""
+  for install_packages__package in "$@"; do
+    install_packages__manager="$(parse_field "$install_packages__package" manager)"
+    install_packages__name="$(parse_field "$install_packages__package" package)"
 
-    if test "$manager" = "apt"; then
-      apt_packages="$(_add_to_list "$apt_packages" "$name")"
-    elif test "$manager" = "dpkg"; then
-      dpkg_packages="$(_add_to_list "$dpkg_packages" "$package")"
+    if test "$install_packages__manager" = "apt"; then
+      install_packages__apt_packages="$(_add_to_list "$install_packages__apt_packages" "$install_packages__name")"
+    elif test "$install_packages__manager" = "dpkg"; then
+      install_packages__dpkg_packages="$(_add_to_list "$install_packages__dpkg_packages" "$install_packages__package")"
     fi
   done
 
   step "Installing packages..."
-  eval "set -- $apt_packages"
+  eval "set -- $install_packages__apt_packages"
   sudo_cmd apt install --no-install-recommends -y "$@"
-  eval "set -- $dpkg_packages"
+  eval "set -- $install_packages__dpkg_packages"
   install_dpkg_packages "$@"
 }
 
 use_apt() {
-  local package="$1"
+  use_apt__package="$1"
 
   field manager apt
-  field package "$package"
+  field package "$use_apt__package"
   add_package
 }
 
@@ -80,29 +78,29 @@ _get_latest_version() {
 }
 
 use_dpkg() {
-  local name="$1"
-  local url="$2"
-  local format_url="$3"
-  local fallback_version="$4"
+  use_dpkg__name="$1"
+  use_dpkg__url="$2"
+  use_dpkg__format_url="$3"
+  use_dpkg__fallback_version="$4"
 
   if ! has_package curl; then
     require curl
   fi
 
-  if test -n "$format_url"; then
+  if test -n "$use_dpkg__format_url"; then
     _try_git
-    step "Acquiring latest version of $name..."
-    local version="$(_get_latest_version "$url" | sed 's/\//\\\//g')"
-    if test -z "$version" -a -n "$fallback_version"; then
-      warn "Failed to acquire the latest version of $name, will install version $fallback_version instead"
-      version="$fallback_version"
+    step "Acquiring latest version of $use_dpkg__name..."
+    use_dpkg__version="$(_get_latest_version "$use_dpkg__url" | sed 's/\//\\\//g')"
+    if test -z "$use_dpkg__version" -a -n "$use_dpkg__fallback_version"; then
+      warn "Failed to acquire the latest version of $use_dpkg__name, will install version $use_dpkg__fallback_version instead"
+      use_dpkg__version="$use_dpkg__fallback_version"
     fi
-    local safe_url="$(printf "%s" "$url" | sed 's/\//\\\//g')"
-    url="$(printf "%s" "$format_url" | sed "s/%url/$safe_url/g" | sed "s/%version/$version/g" | sed 's/%%/%/g')"
+    use_dpkg__safe_url="$(printf "%s" "$use_dpkg__url" | sed 's/\//\\\//g')"
+    use_dpkg__url="$(printf "%s" "$use_dpkg__format_url" | sed "s/%url/$use_dpkg__safe_url/g" | sed "s/%version/$use_dpkg__version/g" | sed 's/%%/%/g')"
   fi
 
   field manager dpkg
-  field package "$name"
-  field url "$url"
+  field package "$use_dpkg__name"
+  field url "$use_dpkg__url"
   add_package
 }

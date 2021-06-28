@@ -1,7 +1,7 @@
 #!/bin/bash
-cd /sys/kernel/config/usb_gadget/
+cd /sys/kernel/config/usb_gadget/ || exit 1
 mkdir -p pi4
-cd pi4
+cd pi4 || exit 1
 echo 0x1d6b > idVendor # Linux Foundation
 echo 0x0104 > idProduct # Multifunction Composite Gadget
 echo 0x0100 > bcdDevice # v1.0.0

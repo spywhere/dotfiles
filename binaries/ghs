@@ -29,9 +29,12 @@ main() {
   local cursor=""
   local manual=0
   while test "$1" != ""; do
-    local param=$(printf "%s" "$1" | sed 's/=.*//g')
-    local value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
-    local equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
+    local param
+    param=$(printf "%s" "$1" | sed 's/=.*//g')
+    local value
+    value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    local equal_sign
+    equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
     case $param in
       -h | --help)
         usage
@@ -83,33 +86,40 @@ main() {
     shift
   done
 
-  local query="$@"
+  local query="$*"
   if test -z "$query"; then
     query="is:open"
   fi
-  local repo_filter=$(printf "%s" "$query" | sed -n '/repo:[^ ]*/p')
+  local repo_filter
+  repo_filter=$(printf "%s" "$query" | sed -n '/repo:[^ ]*/p')
   if test -n "$repo_filter"; then
     repo=""
     manual=1
   fi
   if test "$repo" = "" -a $manual -eq 0; then
+    # shellcheck disable=SC1091
     source _git_helper
-    local repo_owner=$(get_repo_owner)
-    local repo_name=$(get_repo_name)
+    local repo_owner
+    repo_owner=$(get_repo_owner)
+    local repo_name
+    repo_name=$(get_repo_name)
     repo=" repo:$repo_owner/$repo_name"
   fi
   if test $debug -eq 1; then
     echo "[limit=$limit,cursor=$cursor] $query$repo"
     return
   fi
+  # shellcheck disable=SC2016
   local graph_query='query($q:String!,$limit:Int!,$after:String){search(query:$q,type:ISSUE,first:$limit,after:$after){nodes{...on Issue{type:__typename,title,number,state},...on PullRequest{type:__typename,title,number,state}},issueCount,pageInfo{endCursor,hasNextPage}}}'
   local host_flags=""
   if test -n "$host"; then
     host_flags="--hostname $host"
   fi
   if test "$cursor" != ""; then
+    # shellcheck disable=SC2086
     response=$(gh api $host_flags graphql -F limit="$limit" -F after="$cursor" -F q="$query$repo" -f query="$graph_query")
   else
+    # shellcheck disable=SC2086
     response=$(gh api $host_flags graphql -F limit="$limit" -F q="$query$repo" -f query="$graph_query")
   fi
   if test $? -ne 0; then
@@ -119,4 +129,4 @@ main() {
   echo "$response" | LIMIT="$limit" gomplate -f ~/.dots/binaries/_issue.tmpl -d 'limit=env:///LIMIT' -d 'response=stdin:///in.json'
 }
 
-main $@
+main "$@"

@@ -1,6 +1,7 @@
 #!/bin/sh
 
-. $HOME/.dots/supports/tmux/scripts/cache.sh
+# shellcheck disable=SC1090
+. "$HOME/.dots/supports/tmux/scripts/cache.sh"
 
 MPD_HOST="127.0.0.1"
 MPD_PORT=6600
@@ -12,7 +13,7 @@ PLAYING_UPDATE_INTERVAL=1
 mpd="no"
 music="no"
 
-if $(printf "close\n" | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
+if (printf "close\n" | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
   # mpd is running
   mpd="yes"
 fi
@@ -37,7 +38,10 @@ if test "$mpd" = "yes"; then
     sh -c "(printf \"status\ncurrentsong\nclose\n\"; sleep 0.05) | nc $MPD_HOST $MPD_PORT"
   }
   mpd_info=$(_cache_value mpd_info _mpd_data)
-  if test "$(printf "%s" "$mpd_info" | awk '$1 ~ /^state:/ { print $2 }')" = "play"; then
+  mpd_state="$(printf "%s" "$mpd_info" | awk '$1 ~ /^state:/ { print $2 }')"
+  if test "$mpd_state" = "stop"; then
+    mpd="no"
+  elif test "$mpd_state" = "play"; then
     mpd_status=1
   else
     mpd_status=0
@@ -58,6 +62,10 @@ if test "$mpd" = "yes"; then
   duration="$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f2)"
   title="$(printf "%s" "$mpd_info" | awk '$1 ~ /^Title:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')"
   artist="$(printf "%s" "$mpd_info" | awk '$1 ~ /^Artist:/ { print $0 }' | cut -d':' -f2- | sed 's/^ *//g')"
+
+  if test -z "$position" -a -z "$duration"; then
+    mpd="no"
+  fi
 elif test "$music" = "yes"; then
   # music is running
   status=$music_status
@@ -68,20 +76,20 @@ elif test "$music" = "yes"; then
 fi
 
 _scrolling_text() {
-  local text="$1"
-  local size="$2"
-  local offset="$3"
+  __text="$1"
+  __size="$2"
+  __offset="$3"
   if test $# -ge 4; then
-    local text_length="$4"
+    __text_length="$4"
   else
-    local text_length=$(printf "%s" "$text" | wc -m)
+    __text_length=$(printf "%s" "$__text" | wc -m)
   fi
-  if test "$text_length" -gt $size; then
-    local index=$(( $offset % ($text_length + 3) ))
-    local padded_text="$text   $text"
-    printf "%s" "$padded_text" | cut -c"$(( $index + 1 ))-$(( $index + $size ))"
+  if test "$__text_length" -gt "$__size"; then
+    __index=$(( __offset % __text_length ))
+    __padded_text="$__text$__text"
+    printf "%s" "$__padded_text" | cut -c"$(( __index + 1 ))-$(( __index + __size ))"
   else
-    printf "%s" "$text"
+    printf "%s" "$__text"
   fi
 }
 
@@ -89,7 +97,7 @@ title_length=$(printf "%s" "$title" | wc -m)
 artist_length=$(printf "%s" "$artist" | wc -m)
 
 if test "$title_length" -gt "$TITLE_MAX_LENGTH" -a "$artist_length" -gt "$ARTIST_MAX_LENGTH"; then
-  text=$(_scrolling_text "$artist - $title" "$(( $TITLE_MAX_LENGTH + $ARTIST_MAX_LENGTH + 3 ))" "$position")
+  text=$(_scrolling_text "$artist - $title" "$(( TITLE_MAX_LENGTH + ARTIST_MAX_LENGTH + 3 ))" "$position")
 else
   title=$(_scrolling_text "$title" "$TITLE_MAX_LENGTH" "$position" "$title_length")
   artist=$(_scrolling_text "$artist" "$ARTIST_MAX_LENGTH" "$position" "$artist_length")
@@ -104,4 +112,4 @@ else
   tmux set-option -g status-interval $IDLE_UPDATE_INTERVAL
 fi
 
-printf "%s %s [%02d:%02d/%02d:%02d]" "$symbol" "$text" "$(($position / 60))" "$(($position % 60))" "$(($duration / 60))" "$(($duration % 60))"
+printf "%s %s [%02d:%02d/%02d:%02d]" "$symbol" "$text" "$(( position / 60 ))" "$(( position % 60 ))" "$(( duration / 60 ))" "$(( duration % 60 ))"

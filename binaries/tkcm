@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 usage() {
   echo "USAGE"
@@ -18,47 +18,47 @@ _cat() {
 }
 
 _diff() {
-  local filename="$1"
+  __filename="$1"
   shift
-  printf "%b" "$@" | sed 's/^"//g' | sed 's/"$//g' | bat --file-name $filename --paging never --color always --style changes,header
+  printf "%b" "$@" | sed 's/^"//g' | sed 's/"$//g' | bat --file-name "$__filename" --paging never --color always --style changes,header
   return
 }
 
 main() {
-  local repo=""
-  local debug=0
+  __repo=""
+  __debug=0
   while test "$1" != ""; do
-    local param=$(printf "%s" "$1" | sed 's/=.*//g')
-    local value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
-    local equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
-    case $param in
+    __param=$(printf "%s" "$1" | sed 's/=.*//g')
+    __value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    __equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
+    case $__param in
       -h | --help)
         usage
         return
         ;;
       --internal)
-        if test -z "$equal_sign"; then
+        if test -z "$__equal_sign"; then
           return 1
         fi
         shift
-        if test "$value" = "diff"; then
-          local arg="$1"
+        if test "$__value" = "diff"; then
+          __arg="$1"
           shift
-          "_$value" "$arg" "$(echo $@)"
+          "_$__value" "$__arg" "$@"
         else
-          "_$value" "$(echo $@)"
+          "_$__value" "$@"
         fi
         return
         ;;
       -R | --repo)
-        if test -z "$equal_sign"; then
+        if test -z "$__equal_sign"; then
           echo "ERROR: a repository is required (perhaps missing an equal sign?)"
           return 1
         fi
-        repo="$value"
+        __repo="$__value"
         ;;
       --debug)
-        debug=1
+        __debug=1
         ;;
       -*)
         echo "ERROR: unknown flag \"$1\""
@@ -72,39 +72,39 @@ main() {
     shift
   done
 
-  local number="$@"
-  if test -z "$number"; then
+  __number="$*"
+  if test -z "$__number"; then
     echo 'PR number is required'
     return 1
   fi
 
-  local repo_owner=""
-  local repo_name=""
-  if test "$repo" = ""; then
-    source _git_helper
-    repo_owner=$(get_repo_owner)
-    repo_name=$(get_repo_name)
+  __repo_owner=""
+  __repo_name=""
+  if test "$__repo" = ""; then
+    # shellcheck disable=SC1091
+    . _git_helper
+    __repo_owner=$(get_repo_owner)
+    __repo_name=$(get_repo_name)
   else
-    repo_owner=$(echo $repo | cut -d'/' -f1)
-    repo_name=$(echo $repo | cut -d'/' -f2)
+    __repo_owner=$(echo "$__repo" | cut -d'/' -f1)
+    __repo_name=$(echo "$__repo" | cut -d'/' -f2)
   fi
-  if test "$repo_owner" = "" -o "$repo_name" = ""; then
+  if test "$__repo_owner" = "" -o "$__repo_name" = ""; then
     echo "ERROR: Both repository owner name repository name is required (perhaps it is not in the \"owner/repo\" format?)"
     return 1
   fi
 
-  if test $debug -eq 1; then
-    echo "#$number in $repo_owner/$repo_name"
+  if test $__debug -eq 1; then
+    echo "#$__number in $__repo_owner/$__repo_name"
     return
   fi
-  local graph_query=$(cat ~/.dots/binaries/_ticket_comment.graphql)
-  local response=$(gh api graphql -F limit="50" -F owner="$repo_owner" -F name="$repo_name" -F number="$number" -f query="$graph_query")
-  if [ $? -ne 0 ]; then
+  __graph_query=$(cat ~/.dots/binaries/_ticket_comment.graphql)
+  if ! __response=$(gh api graphql -F limit="50" -F owner="$__repo_owner" -F name="$__repo_name" -F number="$__number" -f query="$__graph_query"); then
     return 1
   fi
 
-  echo "$response" | NUMBER="$number" gomplate -f ~/.dots/binaries/_timeline_item.tmpl --plugin tkcm="$HOME/.dots/binaries/tkcm" -d 'number=env:///NUMBER' -d 'response=stdin:///in.json'
+  echo "$__response" | NUMBER="$__number" gomplate -f ~/.dots/binaries/_timeline_item.tmpl --plugin tkcm="$HOME/.dots/binaries/tkcm" -d 'number=env:///NUMBER' -d 'response=stdin:///in.json'
   return
 }
 
-main $@
+main "$@"

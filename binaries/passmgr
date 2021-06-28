@@ -7,7 +7,7 @@ if test "$1" = ""; then
   fi
 
   echo "Secret directory not found, running the following command to encrypt"
-  echo "  $(basename $0) --encrypt <file>"
+  echo "  $(basename "$0") --encrypt <file>"
   exit
 elif test "$1" = "--help"; then
   echo "usage: passmgr <flags>"
@@ -49,7 +49,7 @@ elif test -f ~/.secret/"$1"; then
   elif test "$2" = "--decrypt"; then
     gpg -dq ~/.secret/"$1"
     exit
-  elif test "${2:0:2}" = "--"; then
+  elif test "$(printf "%s" "$2" | cut -c -2)" = "--"; then
     echo "unknown flags: $2"
     exit 1
   fi

@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -16,9 +16,9 @@ fi
 MIRROR="http://dl-cdn.alpinelinux.org/alpine/{branch}/{repo}"
 
 _get_mirror_repo() {
-  local repo="$1"
-  local branch="$2"
-  printf "%s" "$MIRROR" | sed "s/{repo}/$repo/g" | sed "s/{branch}/$branch/g"
+  get_mirror_repo__repo="$1"
+  get_mirror_repo__branch="$2"
+  printf "%s" "$MIRROR" | sed "s/{repo}/$get_mirror_repo__repo/g" | sed "s/{branch}/$get_mirror_repo__branch/g"
 }
 
 update() {
@@ -30,61 +30,60 @@ update() {
 }
 
 install_packages() {
-  local main_packages=""
-  local community_packages=""
-  local testing_packages=""
-  local edge_packages=""
-  local package
+  install_packages__main_packages=""
+  install_packages__community_packages=""
+  install_packages__testing_packages=""
+  install_packages__edge_packages=""
   step "Collecting packages..."
-  for package in "$@"; do
-    local repo="$(parse_field "$package" repo)"
-    local name="$(parse_field "$package" package)"
-    case $repo in
+  for install_packages__package in "$@"; do
+    install_packages__repo="$(parse_field "$install_packages__package" repo)"
+    install_packages__name="$(parse_field "$install_packages__package" package)"
+    case $install_packages__repo in
       main)
-        main_packages="$(_add_to_list "$main_packages" "$name")"
+        install_packages__main_packages="$(_add_to_list "$install_packages__main_packages" "$install_packages__name")"
         ;;
       community)
-        community_packages="$(_add_to_list "$community_packages" "$name")"
+        install_packages__community_packages="$(_add_to_list "$install_packages__community_packages" "$install_packages__name")"
         ;;
       testing)
-        testing_packages="$(_add_to_list "$testing_packages" "$name")"
+        install_packages__testing_packages="$(_add_to_list "$install_packages__testing_packages" "$install_packages__name")"
         ;;
       edge)
-        edge_packages="$(_add_to_list "$edge_packages" "$name")"
+        install_packages__edge_packages="$(_add_to_list "$install_packages__edge_packages" "$install_packages__name")"
         ;;
       *)
-        warn "unknown repository \"$repo\" for \"$name\""
+        warn "unknown repository \"$install_packages__repo\" for \"$install_packages__name\""
         ;;
     esac
   done
-  if test -n "$main_packages"; then
+  if test -n "$install_packages__main_packages"; then
     step "Installing main packages..."
-    eval "set -- $main_packages"
+    eval "set -- $install_packages__main_packages"
     cmd apk add "$@"
   fi
-  if test -n "$edge_packages"; then
+  if test -n "$install_packages__edge_packages"; then
     step "Installing edge packages..."
-    eval "set -- $edge_packages"
+    eval "set -- $install_packages__edge_packages"
     cmd apk add --repository="$(_get_mirror_repo main edge)" "$@"
   fi
-  if test -n "$community_packages"; then
+  if test -n "$install_packages__community_packages"; then
     step "Installing community packages..."
-    eval "set -- $community_packages"
+    eval "set -- $install_packages__community_packages"
     cmd apk add --repository="$(_get_mirror_repo community edge)" "$@"
   fi
-  if test -n "$testing_packages"; then
+  if test -n "$install_packages__testing_packages"; then
     step "Installing testing packages..."
-    eval "set -- $testing_packages"
+    eval "set -- $install_packages__testing_packages"
     cmd apk add --repository="$(_get_mirror_repo testing edge)" "$@"
   fi
 }
 
 use_apk() {
-  local repo="$1"
-  local package="$2"
+  use_apk__repo="$1"
+  use_apk__package="$2"
 
   field manager apk
-  field repo "$repo"
-  field package "$package"
+  field repo "$use_apk__repo"
+  field package "$use_apk__package"
   add_package
 }
