@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -26,16 +26,16 @@ require 'lib-zlib'
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
-  local plugins="1password-cli deno fzf golang nodejs python rust shellcheck"
+  setup_version_manager__plugins="1password-cli deno fzf golang nodejs python rust shellcheck"
   set +e
   step "Setting up version manager plugins..."
-  for plugin in $plugins; do
-    bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add $plugin"
+  for setup_version_manager__plugin in $setup_version_manager__plugins; do
+    bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add $setup_version_manager__plugin"
   done
   set -e
   bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
-  cd $HOME
+  cmd cd "$HOME"
   step "Installing version manager plugins..."
   bash -c '. $HOME/.asdf/asdf.sh && asdf install'
-  cd $CURRENT_DIR
+  cmd cd "$CURRENT_DIR"
 }

@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -24,39 +24,40 @@ add_font() {
   reset_object
 }
 
+# shellcheck disable=SC2120
 install_fonts() {
-  local font_path="$HOME/.local/share/fonts/NerdFonts"
+  install_fonts__font_path="$HOME/.local/share/fonts/NerdFonts"
 
   if test -d "$HOME/Library/Fonts"; then
-    font_path="$HOME/Library/Fonts/NerdFonts"
+    install_fonts__font_path="$HOME/Library/Fonts/NerdFonts"
   fi
 
-  local missing_fonts=""
+  install_fonts__missing_fonts=""
 
   eval "set -- $fonts"
-  for font_info in "$@"; do
-    local file="$(parse_field "$font_info" file)"
+  for install_fonts__font_info in "$@"; do
+    install_fonts__file="$(parse_field "$install_fonts__font_info" file)"
 
-    if ! test -f "$font_path/$file"; then
-      missing_fonts="$(_add_item "$missing_fonts" ";" "$font_info")"
+    if ! test -f "$install_fonts__font_path/$install_fonts__file"; then
+      install_fonts__missing_fonts="$(_add_item "$install_fonts__missing_fonts" ";" "$install_fonts__font_info")"
     fi
   done
 
-  if test -n "$missing_fonts"; then
-    step "Installing fonts into $font_path..."
-    if ! test -d "$font_path"; then
-      mkdir -p "$font_path"
+  if test -n "$install_fonts__missing_fonts"; then
+    step "Installing fonts into $install_fonts__font_path..."
+    if ! test -d "$install_fonts__font_path"; then
+      cmd mkdir -p "$install_fonts__font_path"
     fi
-    for font_info in "$@"; do
-      local name="$(parse_field "$font_info" name)"
-      local file="$(parse_field "$font_info" file)"
-      local url="$(parse_field "$font_info" url)"
-      if test -z "$name"; then
-        name="$file"
+    for install_fonts__font_info in "$@"; do
+      install_fonts__name="$(parse_field "$install_fonts__font_info" name)"
+      install_fonts__file="$(parse_field "$install_fonts__font_info" file)"
+      install_fonts__url="$(parse_field "$install_fonts__font_info" url)"
+      if test -z "$install_fonts__name"; then
+        install_fonts__name="$install_fonts__file"
       fi
 
-      step "Downloading and installing $name..."
-      cmd curl -sfLo "$font_path/$file" "$url"
+      step "Downloading and installing $install_fonts__name..."
+      cmd curl -sfLo "$install_fonts__font_path/$install_fonts__file" "$install_fonts__url"
     done
   fi
 }
