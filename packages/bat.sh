@@ -3,16 +3,16 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
   exit 1
 fi
 
-local cpu_type="$(uname -m)"
-local libc_type=""
+cpu_type="$(uname -m)"
+libc_type=""
 case "$cpu_type" in
   x86_64)
     cpu_type="amd64"

@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -23,14 +23,14 @@ install_docker() {
   fi
   print "Installing Docker..."
 
-  local path=$(deps "install-docker.sh")
+  install_docker__path=$(deps "install-docker.sh")
   print "Downloading installation script..."
-  cmd curl -sSL get.docker.com -o $path
+  cmd curl -sSL get.docker.com -o "$install_docker__path"
   print "Running installation script..."
-  cmd sh $path
+  cmd sh "$install_docker__path"
   if test "$(whoami)" = "root"; then
     print "run as root: no user group set"
   else
-    sudo_cmd usermod -aG docker $USER
+    sudo_cmd usermod -aG docker "$USER"
   fi
 }

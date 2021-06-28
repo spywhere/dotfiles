@@ -3,8 +3,8 @@
 set -e
 
 if
-  (! command -v force_print >/dev/null 2>&1) ||
-  ! $(force_print 3 a b >/dev/null 2>&1) ||
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
   test "$(force_print 3 a b)" != "a  b";
 then
   printf "Please run this script through \"install.sh\" instead"
@@ -23,13 +23,13 @@ install_alacritty() {
   if test -d /Applications/Alacritty.app; then
     return
   fi
-  local path=$(deps "alacritty")
-  clone https://github.com/alacritty/alacritty $path
-  cmd cd $path
+  install_alacritty__path=$(deps "alacritty")
+  clone https://github.com/alacritty/alacritty "$install_alacritty__path"
+  cmd cd "$install_alacritty__path"
   print "Building Alacritty..."
   cmd make app
-  if test -d "$path/target/release/osx/Alacritty.app"; then
-    cmd cp -r "$path/target/release/osx/Alacritty.app" /Applications/
+  if test -d "$install_alacritty__path/target/release/osx/Alacritty.app"; then
+    cmd cp -r "$install_alacritty__path/target/release/osx/Alacritty.app" /Applications/
   else
     error "Failed: Alacritty is failed to build"
   fi
