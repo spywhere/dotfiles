@@ -21,6 +21,11 @@ install_docker() {
   if has_cmd docker; then
     return
   fi
+
+  # References:
+  #   - https://www.docker.com/blog/happy-pi-day-docker-raspberry-pi/
+  #   - https://howchoo.com/g/nmrlzmq1ymn/how-to-install-docker-on-your-raspberry-pi
+
   print "Installing Docker..."
 
   install_docker__path=$(deps "install-docker.sh")
