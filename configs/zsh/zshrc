@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 alias recovery="if test -f ~/recovery; then rm -f ~/recovery && echo 'Recovery mode disabled'; else touch ~/recovery && echo 'Recovery mode enabled'; fi"
 if test -f ~/recovery; then
   return
