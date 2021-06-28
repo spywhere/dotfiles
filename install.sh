@@ -25,7 +25,7 @@ fi
 #   $0 will produced a shell command if we piped the file
 #   $0 will produced "-" when being evaluated as a script
 REMOTE_INSTALL=0
-if test "$0" = "sh" -o "$0" = "bash" -o "$(echo $0 | sed 's/^--*$/-/g')" = "-"; then
+if test "$0" = "sh" -o "$0" = "bash" -o "$(printf "%s" "$0" | sed 's/^--*$/-/g')" = "-"; then
   REMOTE_INSTALL=1
 fi
 
@@ -338,7 +338,7 @@ PRINT_MODE=""
 
 PKGMGR=""
 OS="unsupported"
-OSKIND="unsupported"
+OSKIND=""
 OSNAME="Unsupported"
 OSARCH=""
 
