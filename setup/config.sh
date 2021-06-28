@@ -46,6 +46,10 @@ setup_config() {
   # github
   link github/ .config/github
 
+  if test "$OSKIND" = "macos"; then
+    link iterm2/ "Library/Application Support/iTerm2"
+  fi
+
   # kitty
   link kitty/ .config/kitty
 
