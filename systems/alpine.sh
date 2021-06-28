@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
+# shellcheck disable=SC1091
 . systems/base.sh
 
 MIRROR="http://dl-cdn.alpinelinux.org/alpine/{branch}/{repo}"
