@@ -3,11 +3,11 @@
 set -e
 
 if
-  (! command -v print >/dev/null 2>&1) ||
-  ! `print 3 a b >/dev/null 2>&1` ||
-  test "`print 3 a b`" != "a  b";
+  ! (command -v force_print >/dev/null 2>&1) ||
+  ! (force_print 3 a b >/dev/null 2>&1) ||
+  test "$(force_print 3 a b)" != "a  b";
 then
-  echo "Please run this script through \"install.sh\" instead"
+  printf "Please run this script through \"install.sh\" instead"
   exit 1
 fi
 
@@ -17,22 +17,22 @@ DEPS_DIR="$HOME/$DOTFILES/deps"
 #  - https://www.docker.com/blog/happy-pi-day-docker-raspberry-pi/
 #  - https://howchoo.com/g/nmrlzmq1ymn/how-to-install-docker-on-your-raspberry-pi
 make_docker() {
-  if test $OS = "Alpine"; then
+  if test "$OS" = "Alpine"; then
     print "Alpine is not supported"
     return
   fi
   do_command curl -sSL get.docker.com | sh
-  if test "`whoami`" = "root"; then
+  if test "$(whoami)" = "root"; then
     print "run as root: no user group set"
   else
-    do_sudo_command usermod -aG docker $USER
+    do_sudo_command usermod -aG docker "$USER"
   fi
 }
 
 # References:
 #  - https://github.com/dvorka/hstr/blob/master/INSTALLATION.md#build-on-any-linux-distro
 make_hstr() {
-  if test $OS = "Alpine"; then
+  if test "$OS" = "Alpine"; then
     print "Available through apk"
     return
   fi
@@ -89,7 +89,7 @@ make_mosh() {
 }
 
 make_sc_im() {
-  if test $OS = "Alpine"; then
+  if test "$OS" = "Alpine"; then
     print "Alpine setup is not yet prepared"
     return
   fi
@@ -110,17 +110,13 @@ try_make() {
     return
   fi
 
-  if (
-    test -n "$4" && test `command -v "$4"`
-  ) || (
-    test `command -v "$3"`
-  ); then
+  if test \( -n "$4" -a -n "$(command -v "$4")" \) -o -n "$(command -v "$3")"; then
     print "$3 is already installed"
     return
   fi
 
   print "Installing $3..."
-  PREVIOUS_DIR=`pwd`
+  PREVIOUS_DIR=$(pwd)
   do_command mkdir -p "$DEPS_DIR"
   do_command cd "$DEPS_DIR"
   case "$3" in
@@ -152,14 +148,14 @@ make_packages() {
   fi
 
   # All packages already available through Homebrew
-  if test $OS = "Mac"; then
+  if test "$OS" = "Mac"; then
     return
   fi
-  try_make $CONFIG_MAKE 0 docker
-  try_make $CONFIG_MAKE 1 hstr
-  try_make $CONFIG_MAKE 2 neovim nvim
-  try_make $CONFIG_MAKE 3 mosh
-  try_make $CONFIG_MAKE 4 sc-im
+  try_make "$CONFIG_MAKE" 0 docker
+  try_make "$CONFIG_MAKE" 1 hstr
+  try_make "$CONFIG_MAKE" 2 neovim nvim
+  try_make "$CONFIG_MAKE" 3 mosh
+  try_make "$CONFIG_MAKE" 4 sc-im
 }
 
 make_packages
