@@ -1,6 +1,5 @@
 -- NOTE: This require 'lspconfig' to be installed
 local bindings = require('lib/bindings')
-local registry = require('lib/registry')
 
 local lsps = {}
 local fns = {
