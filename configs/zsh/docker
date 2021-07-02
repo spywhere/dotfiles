@@ -46,6 +46,10 @@ _node-run() {
   _cli-run $cmd node:lts-alpine $cmd $@
 }
 
+countdown() {
+  _cli-run countdown golang:alpine sh -c "go get github.com/antonmedv/countdown && countdown $@"
+}
+
 node() {
   _node-run node $@
 }
