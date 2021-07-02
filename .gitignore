@@ -18,3 +18,4 @@ configs/w3m/history
 **.log
 Brewfile.lock.json
 Session.vim
+!.tool-versions

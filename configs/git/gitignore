@@ -5,3 +5,4 @@ Session.vim
 .ignore
 .git
 .wakatime-project
+.tool-versions
