@@ -152,20 +152,22 @@ registry.install {
     bindings.cmd('ContextMenu', {
       function ()
         local content = {
-          { "&Help Keyword\t\\ch", 'echo 100'  },
-          { "&Signature\t\\cs", 'echo 101' },
+          { "Re&name\t<leader>rn", 'lua vim.lsp.buf.rename()' },
+          { "&Help Keyword", 'lua vim.cmd("h " .. vim.fn.expand("<cword>"))'  },
+          { "&Signature Help\t<C-k>", 'lua vim.lsp.buf.signature_help()' },
           { '-' },
-          { "Find in &File\t\\cx", 'echo 200'  },
-          { "Find in &Project\t\\cp", 'echo 300'  },
-          { "Find in &Defintion\t\\cd", 'echo 400'  },
-          { "Search &References\t\\cr", 'echo 500' },
+          { "Go to &Defintion\tgd", 'lua vim.lsp.buf.definition()'  },
+          { "Go to De&claration\tgD", 'lua vim.lsp.buf.declaration()'  },
+          { "Go to &Type Defintion\t<leader>td", 'lua vim.lsp.buf.type_definition()'  },
+          { "Search &References\tgr", 'lua vim.lsp.buf.references()' },
           { '-' },
-          { "&Documentation\t\\cm", 'echo 600' },
+          { "Find in &File\t<leader>/", 'execute "normal" . g:mapleader . "/" . expand("<cword>") | sleep 1m | startinsert!'  },
+          { "Find in &Project\t<leader>f", 'execute "normal " . g:mapleader . "f" . expand("<cword>") | sleep 1m | startinsert!'  },
         }
         local cursor = { index = vim.g['quickui#context#cursor'] }
         cursor[true] = vim.types.dictionary
         fn['quickui#context#open'](content, cursor)
-      end,
+      end
     })
   end
 }
