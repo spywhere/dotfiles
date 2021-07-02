@@ -14,7 +14,8 @@ local columns = function ()
   bindings.set('relativenumber')
 
   -- always show sign column, resize as needed
-  bindings.set('signcolumn', 'auto:1-3')
+  bindings.set('signcolumn', 'auto:3')
+  -- bindings.set('signcolumn', 'auto:1-3')
   -- ruler at 79 chars
   bindings.set('colorcolumn', 79)
 end
