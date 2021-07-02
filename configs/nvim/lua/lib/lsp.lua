@@ -3,7 +3,10 @@ local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
 local lsps = {}
-local setups = {}
+local fns = {
+  setup = {},
+  attach = {}
+}
 
 local generate_lsp_setup = function (name)
   if lsps[name] == nil then
@@ -53,17 +56,9 @@ local lsp_on_attach = function (fn)
       fn(client, bufnr)
     end
 
-    if not client.resolved_capabilities.document_highlight then
-      return
+    for _, fn in ipairs(fns.attach) do
+      fn(client, bufnr)
     end
-
-    bindings.highlight.link('LspReferenceRead', 'CursorColumn')
-    bindings.highlight.link('LspReferenceText', 'CursorColumn')
-    bindings.highlight.link('LspReferenceWrite', 'CursorColumn')
-    registry.group(function ()
-      registry.auto('CursorHold', vim.lsp.buf.document_highlight, '<buffer>')
-      registry.auto('CursorMoved', vim.lsp.buf.clear_references, '<buffer>')
-    end)
   end
 end
 
@@ -110,10 +105,10 @@ M.setup = function (name)
       setup_lsp(lsp_name, lsp)
     end
 
-    for _, fn in ipairs(setups) do
+    for _, fn in ipairs(fns.setup) do
       fn()
     end
-    setups = {}
+    fns.setup = {}
     has_been_setup = true
   else
     -- generate a chainable object for setting up LSP
@@ -127,7 +122,11 @@ M.on_setup = function (fn)
     return
   end
 
-  table.insert(setups, fn)
+  table.insert(fns.setup, fn)
+end
+
+M.on_attach = function (fn)
+  table.insert(fns.attach, fn)
 end
 
 return M

@@ -21,6 +21,20 @@ registry.install {
       }
       )
     end)
+
+    lsp.on_attach(function (client)
+      if not client.resolved_capabilities.document_highlight then
+        return
+      end
+
+      bindings.highlight.link('LspReferenceRead', 'CursorColumn')
+      bindings.highlight.link('LspReferenceText', 'CursorColumn')
+      bindings.highlight.link('LspReferenceWrite', 'CursorColumn')
+      registry.group(function ()
+        registry.auto('CursorHold', vim.lsp.buf.document_highlight, '<buffer>')
+        registry.auto('CursorMoved', vim.lsp.buf.clear_references, '<buffer>')
+      end)
+    end)
   end
 }
 
@@ -63,7 +77,8 @@ registry.install {
     bindings.map.normal('K', '<cmd>lua vim.lsp.buf.hover()<cr>')
     bindings.map.normal('gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
     bindings.map.normal('ga', '<cmd>lua vim.lsp.buf.code_action()<cr>')
-    bindings.map.normal('<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
+    -- conflicted with tmux navigator, try using through 'gk' instead
+    -- bindings.map.normal('<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
     bindings.map.normal('<leader>td', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
     bindings.map.normal('<leader>rn', '<cmd>lua vim.lsp.buf.rename()<cr>')
     bindings.map.normal('gr', '<cmd>lua vim.lsp.buf.references()<cr>')
@@ -108,6 +123,17 @@ registry.install {
         }
       })
 
+    end)
+  end
+}
+
+registry.install {
+  'ray-x/lsp_signature.nvim',
+  config = function ()
+    lsp.on_attach(function ()
+      require('lsp_signature').on_attach({
+        hint_enable = false,
+      })
     end)
   end
 }
