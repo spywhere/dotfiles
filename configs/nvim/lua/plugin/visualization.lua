@@ -2,8 +2,6 @@ local registry = require('lib/registry')
 
 registry.install {
   'lukas-reineke/indent-blankline.nvim',
-  -- 'Yggdroot/indentLine'
-  options = { branch = 'lua' },
   config = function ()
     vim.g.indent_blankline_char = '▏'
     vim.g.indent_blankline_use_treesitter = true
