@@ -24,7 +24,7 @@ M.iterate_commands = function (commands, success, index)
   if type(command.command) == 'function' then
     local ok, error = pcall(command.command)
     if ok then
-      M.iterate_commands(commands, index + 1, success)
+      M.iterate_commands(commands, success, index + 1)
     else
       logger.error(command.error ..'\n'..vim.inspect(error))
       return
@@ -45,7 +45,7 @@ M.iterate_commands = function (commands, success, index)
           end
           logger.error(string.gsub(command.error, '<msg>', execute_cmd) ..'\n')
         end
-        M.iterate_commands(commands, index + 1, success)
+        M.iterate_commands(commands, success, index + 1)
       end)
     )
   end
