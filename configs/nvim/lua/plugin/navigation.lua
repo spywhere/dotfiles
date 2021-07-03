@@ -32,7 +32,10 @@ registry.install {
       local snap = require('snap')
       snap.run({
         reverse = true,
-        producer = snap.get('producer.ripgrep.vimgrep'),
+        producer = snap.get('producer.ripgrep.vimgrep').args({
+          '--hidden',
+          '--smart-case'
+        }),
         prompt = 'Rg>',
         steps = {
           {
