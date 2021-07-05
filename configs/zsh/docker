@@ -86,6 +86,10 @@ browsh() {
   _docker-run browsh/browsh $@
 }
 
+convert() {
+  _cli-run imagemagick dpokidov/imagemagick $@
+}
+
 consul() {
   _docker-run --network=host --name consul-cli consul $@
 }
