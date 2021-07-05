@@ -31,27 +31,9 @@ registry.install {
     bindings.map.normal('<leader>f', function ()
       local snap = require('snap')
 
-      -- use a custom producer for now
-      -- until https://github.com/camspiers/snap/pull/66 is merged
-      local general = snap.get('producer.ripgrep.general')
-      local ripgrep = function (request)
-        local args = {
-          '--line-buffered',
-          '-M',
-          100,
-          '--no-heading',
-          '--column',
-          request.filter
-        }
-        return general(request, {
-          args = args,
-          cwd = snap.sync(fn.getcwd)
-        })
-      end
-
       snap.run({
         reverse = true,
-        producer = ripgrep,
+        producer = snap.get('producer.ripgrep.vimgrep').line({}),
         prompt = 'Rg>',
         steps = {
           {
