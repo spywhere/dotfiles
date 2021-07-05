@@ -24,6 +24,7 @@ registry.install {
     bindings.map.normal('<leader>/', function ()
       local snap = require('snap')
       snap.run({
+        reverse = true,
         producer = snap.get('consumer.fzf')(snap.get('producer.vim.currentbuffer')),
         select = snap.get('select.currentbuffer').select
       })
