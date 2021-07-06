@@ -24,6 +24,7 @@ rm -f nvim-ss.html
 
 tmux kill-session -t ss
 
+# shellcheck disable=SC2086
 tmux set -g $DESTROY_UNATTACHED
 
 export TMUX="$OLD_TMUX"
