@@ -137,7 +137,8 @@ _detect_os() {
     add_flag "wsl"
   fi
 
-  case "$(uname -s)" in
+  SYSTEM_NAME="$(uname -s)"
+  case "$SYSTEM_NAME" in
     Linux*)
       OS="Linux"
       if test -f /etc/os-release; then
@@ -171,17 +172,14 @@ _detect_os() {
       fi
       ;;
     *)
-      OSNAME="Unsupported"
-      OS="unsupported"
-      OSARCH=""
+      OSNAME="$SYSTEM_NAME"
+      OS="$SYSTEM_NAME"
       ;;
   esac
   if test -z "$OSKIND"; then
     OSKIND="$OS"
   fi
-  if test "$OSKIND" != "unsupported"; then
-    OSARCH=" ($OSKIND/$(uname -m))"
-  fi
+  OSARCH=" ($OSKIND/$(uname -m))"
   OSNAME="$OSNAME$WSL_SUFFIX"
 }
 
