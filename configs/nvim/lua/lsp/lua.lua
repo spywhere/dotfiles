@@ -108,7 +108,7 @@ local install_lualsp = function (force)
       return
     end
     if not (util.has_bins('ninja')) then
-      logger.inline.error('Need "ninja" to install lua language server.')
+      logger.inline.info('Need "ninja" to install lua language server.')
       return
     end
     local install_word = 'installed'
