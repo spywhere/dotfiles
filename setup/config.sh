@@ -16,8 +16,9 @@ add_setup 'setup_config'
 setup_config() {
   step "Setting up configurations..."
 
-  # alacritty
-  link alacritty/alacritty.yml .alacritty.yml
+  if has_package alacritty; then
+    link alacritty/alacritty.yml .alacritty.yml
+  fi
 
   # asdf
   link asdf/asdf .tool-versions
@@ -46,12 +47,13 @@ setup_config() {
   # github
   link github/ .config/github
 
-  if test "$OSKIND" = "macos"; then
+  if has_package iterm2; then
     link iterm2/ "Library/Application Support/iTerm2"
   fi
 
-  # kitty
-  link kitty/ .config/kitty
+  if has_package kitty; then
+    link kitty/ .config/kitty
+  fi
 
   # mpd
   link mpd/ .mpd
