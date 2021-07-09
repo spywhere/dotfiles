@@ -6,7 +6,7 @@
 4. Clone repo if no local copy found (See git Detection)
 5. Change working directory to local copy
 6. Try updating local copy to the latest version
-  - Unless specified or just did 4.
+    - Unless specified or just did 4.
 7. Execute local copy installation script if running remotely
 8. This should be safe to include core libs here
 9. Print available packages / setup and quit according to the flags in 2.
@@ -36,9 +36,9 @@
 
 1. Test if command `git` is available
 2. Test if running remotely, if so
-  2.1. Test if command `curl` is available
-  2.2. Download and source base system files
-  2.3. Download and source target system files
+    1. Test if command `curl` is available
+    2. Download and source base system files
+    3. Download and source target system files
 3. Run base system files
 4. Run target system files
 5. Install git otherwise error with git required
