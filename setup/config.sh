@@ -17,10 +17,11 @@ setup_config() {
   step "Setting up configurations..."
 
   if has_package alacritty; then
+    step "  - Alacritty"
     link alacritty/alacritty.yml .alacritty.yml
   fi
 
-  # asdf
+  step "  - asdf"
   link asdf/asdf .tool-versions
   link asdf/npm-packages .default-npm-packages
   link asdf/python-packages .default-python-packages
@@ -29,10 +30,10 @@ setup_config() {
     cmd mkdir -p "$HOME/.config"
   fi
 
-  # bat
+  step "  - bat"
   link bat/ .config/bat
 
-  # git
+  step "  - git"
   link git/gitalias .gitalias
   link git/gitconfig .gitconfig
   if test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OS"; then
@@ -44,51 +45,53 @@ setup_config() {
   fi
   link git/gitignore .gitignore_global
 
-  # github
+  step "  - github"
   link github/ .config/github
 
   if has_package iterm2; then
+    step "  - iTerm2"
     link iterm2/ "Library/Application Support/iTerm2"
   fi
 
   if has_package kitty; then
+    step "  - kitty"
     link kitty/ .config/kitty
   fi
 
-  # mpd
+  step "  - mpd"
   link mpd/ .mpd
 
-  # mycli
+  step "  - mycli"
   link mycli/myclirc .myclirc
 
-  # ncmpcpp
+  step "  - ncmpcpp"
   link ncmpcpp/ .ncmpcpp
 
-  # neomutt
+  step "  - neomutt"
   link neomutt/ .config/neomutt
 
-  # nvim
+  step "  - neovim"
   link nvim/ .config/nvim
   add_post_install_message "Run 'nvim' for the first time setup"
 
-  # ssh
+  step "  - ssh"
   link ssh/ .ssh
 
-  # tig
+  step "  - tig"
   link tig/tig.conf .tigrc
 
-  # tmux
+  step "  - tmux"
   link tmux/tmux.conf .tmux.conf
 
-  # wakatime
   if ! test -f "$HOME/.wakatime.cfg"; then
     # copy instead as file can contain a secret
+    step "  - wakatime"
     copy wakatime/wakatime.cfg .wakatime.cfg
   fi
 
-  # w3m
+  step "  - w3m"
   link w3m/ .w3m
 
-  # zsh
+  step "  - zsh"
   link zsh/zshrc .zshrc
 }
