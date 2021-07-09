@@ -35,6 +35,7 @@ if test -d "$HOME/$DOTFILES"; then
   LOCAL_COPY=1
 fi
 
+inline_support=0
 esc_reset="" # reset
 esc_blue="" # indicate process
 esc_green="" # indicate options and information
@@ -42,6 +43,9 @@ esc_yellow="" # indicate warnings
 esc_red="" # indicate errors
 
 if test -n "$TERM" -a -n "$(command -v tput)" && test "$(tput colors)" -ge 8 && test -n "$(command -v tty)" && tty -s; then
+  if test -n "$(command -v wc)"; then
+    inline_support=1
+  fi
   esc_reset="$(tput sgr0)"
   if test "$(tput colors)" -gt 8; then
     esc_blue="$(tput setaf 12)"
@@ -100,11 +104,25 @@ force_print() {
   printf "%-$1s%s\n" "$2" "$3"
 }
 
+_INLINING=0
+print_inline() {
+  if test "$VERBOSE" -eq 0 -o "$inline_support" -eq 0; then
+    return
+  fi
+
+  printf "%s%${_INLINING}s\r" "$1" ""
+  _INLINING="$(printf "%s" "$1" | wc -c)"
+}
+
 print() {
   if test "$VERBOSE" -eq 0; then
     return
   fi
 
+  if test "$_INLINING" -gt 0; then
+    printf "\r"
+    _INLINING=0
+  fi
   force_print "$@"
 }
 
@@ -198,6 +216,19 @@ _add_to_list() {
 
 _make_list() {
   _add_to_list "" "$@"
+}
+
+_has_item_in_list() {
+  has_item_in_list__list="$1"
+  has_item_in_list__item="$2"
+
+  eval "set -- $has_item_in_list__list"
+  for has_item_in_list__found_item in "$@"; do
+    if test "$has_item_in_list__found_item" = "$has_item_in_list__item"; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 _add_item() {
@@ -635,6 +666,8 @@ _try_run_install() {
       try_run_install__package=$(basename "$try_run_install__package_path")
       try_run_install__package=${try_run_install__package%.sh}
 
+      print_inline "$esc_yellow==>$esc_reset Checking package $try_run_install__package..."
+
       # Skip requested packages
       if (_has_skip packages || _has_skip "$try_run_install__package") && ! _has_indicate "$try_run_install__package"; then
         continue
@@ -648,18 +681,19 @@ _try_run_install() {
       _RUNNING="$try_run_install__package"
       _FULFILLED=""
       # Add package to the loaded list (prevent dependency cycle)
-      _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
+      _LOADED=$(_add_to_list "$_LOADED" "$_RUNNING")
       # shellcheck disable=SC1090
       . "$try_run_install__package_path"
 
       # Remove optional packages from the loaded list
       if test "$_FULFILLED" = "optional"; then
         try_run_install__new_loaded=""
-        for try_run_install__loaded_package in $(_split "$_LOADED"); do
+        eval "set -- $_LOADED"
+        for try_run_install__loaded_package in "$@"; do
           if test "$try_run_install__loaded_package" = "$_RUNNING"; then
             continue
           fi
-          try_run_install__new_loaded=$(_add_item "$try_run_install__new_loaded" " " "$try_run_install__loaded_package")
+          try_run_install__new_loaded=$(_add_to_list "$try_run_install__new_loaded" "$try_run_install__loaded_package")
         done
         _LOADED="$try_run_install__new_loaded"
       fi
@@ -672,6 +706,8 @@ _try_run_install() {
     for try_run_install__setup_path in "$HOME/$DOTFILES/setup"/*.sh; do
       try_run_install__setup=$(basename "$try_run_install__setup_path")
       try_run_install__setup=${try_run_install__setup%.sh}
+
+      print_inline "$esc_yellow==>$esc_reset Checking setup $try_run_install__setup..."
 
       # Skip requested setups
       if (_has_skip setup || _has_skip "$try_run_install__setup") && ! _has_indicate "$try_run_install__setup"; then
@@ -822,7 +858,10 @@ _try_run_install() {
   step "Done!"
   if test -n "$_POST_INSTALL_MSGS"; then
     print "NOTE: Don't forget to..."
-    print "  - $_POST_INSTALL_MSGS"
+    eval "set -- $_POST_INSTALL_MSGS"
+    for try_run_install__message in "$@"; do
+      print "  - $try_run_install__message"
+    done
   fi
 }
 
@@ -951,12 +990,11 @@ has_cmd() {
 # has_package <package>
 has_package() {
   has_package__package="$1"
-  _has_item "$_LOADED" "$has_package__package"
+  _has_item_in_list "$_LOADED" "$has_package__package"
 }
 
 add_post_install_message() {
-  add_post_install_message__message="$1"
-  _POST_INSTALL_MSGS=$(_add_item "$_POST_INSTALL_MSGS" "\n  - " "$add_post_install_message__message")
+  _POST_INSTALL_MSGS="$(_add_to_list "$_POST_INSTALL_MSGS" "$1")"
 }
 
 # Mark current script as optional
@@ -1015,7 +1053,7 @@ require() {
   _SKIP_OPTIONAL="1"
   _FULFILLED=""
   # Add package to the loaded list (prevent dependency cycle)
-  _LOADED=$(_add_item "$_LOADED" " " "$_RUNNING")
+  _LOADED=$(_add_to_list "$_LOADED" "$_RUNNING")
 
   # shellcheck disable=SC1090
   . "$HOME/$DOTFILES/packages/$require__package.sh"
