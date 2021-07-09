@@ -61,6 +61,7 @@ sh -c "$(curl -sSL git.io/Jt8w0)"
       no-docker           Skip Docker based installations
       no-custom           Skip custom installations
       no-setup            Skip setups
+     
     Note: 
       - Package name is indicated by the file name under 'packages' or 'setup' directory 
       - If the setup require particular packages, those packages will be automatically installed. 
