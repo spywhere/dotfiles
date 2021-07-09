@@ -10,7 +10,8 @@ configs/ncmpcpp/**
 configs/neomutt/accounts/default
 configs/nvim/autoload
 configs/nvim/plugged
-configs/ssh/*.id_rsa*
+configs/ssh/**
+!configs/ssh/config
 configs/w3m/cookie
 configs/w3m/history
 .deps
