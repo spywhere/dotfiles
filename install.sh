@@ -6,7 +6,12 @@ set -e
 # Internal Information #
 ########################
 
-CLONE_REPO="https://github.com/spywhere/dotfiles"
+REPO_NAME="spywhere/dotfiles"
+CLONE_REPO="https://github.com/$REPO_NAME"
+if test -z "$CLONE_REPO_BRANCH"; then
+  CLONE_REPO_BRANCH="main"
+fi
+SYSTEM_FILES="https://raw.githubusercontent.com/$REPO_NAME/$CLONE_REPO_BRANCH/systems/%s.sh"
 
 CURRENT_DIR=$(pwd)
 FLAGS="$*"
@@ -30,9 +35,9 @@ if test "$0" = "sh" -o "$0" = "bash" -o "$(printf "%s" "$0" | sed 's/^--*$/-/g')
 fi
 
 # Figure out if we already have a local copy
-LOCAL_COPY=0
+HAS_LOCAL_COPY=0
 if test -d "$HOME/$DOTFILES"; then
-  LOCAL_COPY=1
+  HAS_LOCAL_COPY=1
 fi
 
 inline_support=0
@@ -141,6 +146,19 @@ print_bool() {
     print "$1" "$2" "$4No$5"
   else
     print "$1" "$2" "$4Yes$5"
+  fi
+}
+
+# shellcheck disable=SC2120
+deps() {
+  if test -n "$1"; then
+    if ! test -d "$HOME/$DOTFILES/.deps"; then
+      mkdir -p "$HOME/$DOTFILES/.deps"
+    fi
+
+    printf "%s/%s/.deps/%s" "$HOME" "$DOTFILES" "$1"
+  else
+    printf "%s/%s/.deps" "$HOME" "$DOTFILES"
   fi
 }
 
@@ -516,7 +534,7 @@ _info() {
   print      20 "Working Directory" ": $CURRENT_DIR"
   print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES"
   print_bool 20 "Remote Install" "$REMOTE_INSTALL" ": "
-  print_bool 20 "Has Local Copy" "$LOCAL_COPY" ": "
+  print_bool 20 "Has Local Copy" "$HAS_LOCAL_COPY" ": "
 }
 
 #################
@@ -568,20 +586,16 @@ _try_git() {
 # shellcheck disable=SC2120
 _try_run_install() {
   try_run_install__skip_update=0
-  if test "$LOCAL_COPY" -eq 0; then
+  if test "$HAS_LOCAL_COPY" -eq 0; then
     if test "$RUN_LOCAL" -ge 1; then
       error "local copy of dotfiles is not found at $HOME/$DOTFILES"
       quit 1
     fi
 
-    try_run_install__clone_flags=""
-    if test -n "$CLONE_REPO_BRANCH"; then
-      try_run_install__clone_flags="--branch $CLONE_REPO_BRANCH"
-    fi
     if test "$VERBOSE" -le 1; then
-      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" "$try_run_install__clone_flags"
+      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" --branch "$CLONE_REPO_BRANCH"
     else
-      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles" "$try_run_install__clone_flags"
+      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles" --branch "$CLONE_REPO_BRANCH"
     fi
     try_run_install__skip_update=1
   fi
@@ -873,19 +887,6 @@ add_flag() {
 has_flag() {
   has_flag__flag="$1"
   _has_item "$_INTERNAL_STATE" "$has_flag__flag"
-}
-
-# shellcheck disable=SC2120
-deps() {
-  if test -n "$1"; then
-    if ! test -d "$HOME/$DOTFILES/.deps"; then
-      mkdir -p "$HOME/$DOTFILES/.deps"
-    fi
-
-    printf "%s/%s/.deps/%s" "$HOME" "$DOTFILES" "$1"
-  else
-    printf "%s/%s/.deps" "$HOME" "$DOTFILES"
-  fi
 }
 
 quiet_cmd() {
