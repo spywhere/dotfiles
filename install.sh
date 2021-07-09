@@ -144,10 +144,6 @@ print_bool() {
   fi
 }
 
-_split() {
-  printf "%s" "$1" | awk 'BEGIN{RS=";"}{print $0}'
-}
-
 _detect_os() {
   WSL_SUFFIX=""
   if test -n "$(command -v wsl.exe)"; then
