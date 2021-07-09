@@ -475,6 +475,7 @@ _usage() {
   print 22 "  no-docker" "Skip Docker based installations"
   print 22 "  no-custom" "Skip custom installations"
   print 22 "  no-setup" "Skip setups"
+  print
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
   print "  - If the setup require particular packages, those packages will be automatically installed."
