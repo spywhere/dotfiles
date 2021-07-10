@@ -17,3 +17,30 @@ substring() {
   fi
   printf "%s" "$1" | cut -c -$(( __end + 1 )) | cut -c $(( __start + 1 ))-
 }
+
+_escape_special() {
+  printf "%s" "$@" |
+    sed 's/%/%25/g' |
+    sed 's/\\/%5C/g' |
+    sed 's/:/%3A/g' |
+    sed 's/;/%3B/g' |
+    sed 's/|/%7C/g' |
+    sed "s/'/%27/g" |
+    sed 's/"/%22/g' |
+    sed 's/ /%20/g' |
+    awk 'ORS="%0A"' |
+    sed 's/%0A$//g'
+}
+
+_unescape_special() {
+  printf "%s" "$@" |
+    sed 's/%0A/\n/g' |
+    sed 's/%20/ /g' |
+    sed 's/%22/"/g' |
+    sed "s/%27/'/g" |
+    sed 's/%7C/|/g' |
+    sed 's/%3B/;/g' |
+    sed 's/%3A/:/g' |
+    sed 's/%5C/\\/g' |
+    sed 's/%25/%/g'
+}

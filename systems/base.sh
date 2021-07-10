@@ -15,6 +15,10 @@ setup() {
   return 0
 }
 
+install_git() {
+  return 1
+}
+
 # update <mode>
 #  mode:
 #    update

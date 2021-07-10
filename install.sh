@@ -78,22 +78,6 @@ quit() {
   fi
 }
 
-error() {
-  if test -z "$@"; then
-    >&2 printf "\n"
-    return
-  fi
-  printf "$esc_red ==> ERROR$esc_reset: %s\n" "$*" >&2
-}
-
-warn() {
-  if test -z "$@"; then
-    print
-    return
-  fi
-  print "$esc_yellow==> WARN$esc_reset: $*"
-}
-
 # Print a padded string
 #   print [string] [string]
 #   print <pad size> <padded string> <string>
@@ -131,6 +115,22 @@ print() {
   force_print "$@"
 }
 
+error() {
+  if test -z "$@"; then
+    >&2 printf "\n"
+    return
+  fi
+  printf "$esc_red==> ERROR$esc_reset: %s\n" "$*" >&2
+}
+
+warn() {
+  if test -z "$@"; then
+    print
+    return
+  fi
+  print "$esc_yellow==> WARN$esc_reset: $*"
+}
+
 info() {
   print "$esc_green==> INFO:$esc_reset $*"
 }
@@ -146,19 +146,6 @@ print_bool() {
     print "$1" "$2" "$4No$5"
   else
     print "$1" "$2" "$4Yes$5"
-  fi
-}
-
-# shellcheck disable=SC2120
-deps() {
-  if test -n "$1"; then
-    if ! test -d "$HOME/$DOTFILES/.deps"; then
-      mkdir -p "$HOME/$DOTFILES/.deps"
-    fi
-
-    printf "%s/%s/.deps/%s" "$HOME" "$DOTFILES" "$1"
-  else
-    printf "%s/%s/.deps" "$HOME" "$DOTFILES"
   fi
 }
 
@@ -215,36 +202,6 @@ _detect_os() {
   OSNAME="$OSNAME$WSL_SUFFIX"
 }
 
-_add_to_list() {
-  add_to_list__target="$(printf "%s" "$1" | sed 's/^ $//g')"
-  shift
-
-  if test -n "$add_to_list__target"; then
-    printf "%s\n" "$add_to_list__target"
-  fi
-  for i in "$@"; do
-    printf '%s\n' "$i" | sed "s/'/'\\\\''/g" | sed "1s/^/'/" | sed "\$s/\$/' \\\\/"
-  done
-  printf ' '
-}
-
-_make_list() {
-  _add_to_list "" "$@"
-}
-
-_has_item_in_list() {
-  has_item_in_list__list="$1"
-  has_item_in_list__item="$2"
-
-  eval "set -- $has_item_in_list__list"
-  for has_item_in_list__found_item in "$@"; do
-    if test "$has_item_in_list__found_item" = "$has_item_in_list__item"; then
-      return 0
-    fi
-  done
-  return 1
-}
-
 _add_item() {
   add_item__target="$1"
   add_item__separator="$2"
@@ -255,112 +212,6 @@ _add_item() {
   else
     printf "%s%s%s" "$add_item__target" "$add_item__separator" "$add_item__value"
   fi
-}
-
-_has_item() {
-  has_item__list="$1"
-  has_item__item="$2"
-
-  for has_item__found_item  in $has_item__list; do
-    if test "$has_item__found_item" = "$has_item__item"; then
-      return 0
-    fi
-  done
-  return 1
-}
-
-_escape_special() {
-  printf "%s" "$@" |
-    sed 's/%/%25/g' |
-    sed 's/\\/%5C/g' |
-    sed 's/:/%3A/g' |
-    sed 's/;/%3B/g' |
-    sed 's/|/%7C/g' |
-    sed "s/'/%27/g" |
-    sed 's/"/%22/g' |
-    sed 's/ /%20/g' |
-    awk 'ORS="%0A"' |
-    sed 's/%0A$//g'
-}
-
-_unescape_special() {
-  printf "%s" "$@" |
-    sed 's/%0A/\n/g' |
-    sed 's/%20/ /g' |
-    sed 's/%22/"/g' |
-    sed "s/%27/'/g" |
-    sed 's/%7C/|/g' |
-    sed 's/%3B/;/g' |
-    sed 's/%3A/:/g' |
-    sed 's/%5C/\\/g' |
-    sed 's/%25/%/g'
-}
-
-_FIELDS=""
-field () {
-  field__name="$1"
-	shift
-  if test "$#" -eq 0; then
-    printf ""
-    return
-  fi
-  field__output="$field__name"
-	for field__value in "$@"
-	do
-    field__output="$field__output:$(_escape_special "$field__value")"
-	done
-
-  _FIELDS="$(_add_item "$_FIELDS" ";" "$field__output")"
-}
-
-reset_object() {
-  _FIELDS=""
-}
-
-make_object() {
-  printf "%s" "$_FIELDS"
-}
-
-_map_field() {
-	map_field__object="$1"
-  map_field__callback="$2"
-	for map_field__field in $(printf "%s" "$map_field__object" | awk 'BEGIN{RS=";"}{print $0}')
-	do
-    map_field__field_name="$(printf "%s" "$map_field__field" | cut -d':' -f1)"
-    map_field__field_value="$(printf "%s" "$map_field__field" | cut -d':' -f2-)"
-    if ! "$map_field__callback" "$map_field__field_name" "$map_field__field_value"; then
-      return 1
-    fi
-	done
-}
-
-has_field() {
-	has_field__object="$1"
-	has_field__name="$2"
-
-  _has_field() {
-    if test "$1" = "$has_field__name"; then
-      return 1
-    fi
-  }
-  if ! _map_field "$has_field__object" "_has_field"; then
-    return 0
-  else
-    return 1
-  fi
-}
-
-parse_field() {
-	parse_field__object="$1"
-	parse_field__name="$2"
-
-  _parse_field() {
-    if test "$1" = "$parse_field__name"; then
-      printf "%s" "$2"
-      return 1
-    fi
-  }
-  _unescape_special "$(_map_field "$parse_field__object" "_parse_field")"
 }
 
 # All options turned on
@@ -541,45 +392,94 @@ _info() {
 # Main Commands #
 #################
 
-_has_skip() {
-  has_skip__component="$1"
-  _has_item "$_SKIPPED" "$has_skip__component"
+_download_system_file() {
+  if test "$(curl --create-dirs -fsL "$1" -o "$2" -w "%{http_code}")" -eq 200; then
+    return 0
+  fi
+  return 1
 }
 
-_has_indicate() {
-  has_indicate__component="$1"
-  _has_item "$_INDICATED" "$has_indicate__component"
-}
-
-_check_sudo() {
-  if test -n "$(command -v sudo)"; then
-    return
+_system_loaded=0
+_try_load_system() {
+  if test "$_system_loaded" -eq 1; then
+    return 0
+  fi
+  try_load_system__base_system="$HOME/$DOTFILES/systems/base.sh"
+  try_load_system__target_system="$HOME/$DOTFILES/systems/$OS.sh"
+  if ! test -f "$try_load_system__target_system"; then
+    try_load_system__target_system="$HOME/$DOTFILES/systems/$OSKIND.sh"
   fi
 
-  error "insufficient permission, no 'sudo' available"
+  try_load_system__system_deps="$(pwd)/$DOTFILES.deps"
+  if test "$REMOTE_INSTALL" -eq 1; then
+    if ! test -n "$(command -v curl)"; then
+      return 1
+    fi
+
+    system_url="$(printf "$SYSTEM_FILES" "base")"
+
+    if test "$OS" = "$OSKIND"; then
+      step "Downloading system files for $OS..."
+    else
+      step "Downloading system files for $OS/$OSKIND..."
+    fi
+
+    try_load_system__base_system="$try_load_system__system_deps/base"
+    if ! _download_system_file "$system_url" "$try_load_system__base_system"; then
+      error "Failed to download system files"
+      quit 1
+    fi
+
+    system_url="$(printf "$SYSTEM_FILES" "$OS")"
+    try_load_system__target_system="$try_load_system__system_deps/$OS"
+    if ! _download_system_file "$system_url" "$try_load_system__target_system"; then
+      warn "$OS is not natively supported, trying $OSKIND..."
+
+      system_url="$(printf "$SYSTEM_FILES" "$OSKIND")"
+      try_load_system__target_system="$try_load_system__system_deps/$OSKIND"
+      _download_system_file "$system_url" "$try_load_system__target_system"
+    fi
+  fi
+
+  if ! test -f "$try_load_system__target_system"; then
+    error "\"$OS\" is not supported"
+    quit 1
+  fi
+
+  . "$try_load_system__base_system"
+  . "$try_load_system__target_system"
+
+  if test -d "$try_load_system__system_deps"; then
+    rm -rf "$try_load_system__system_deps"
+  fi
+
+  _system_loaded=1
+  return 0
 }
 
 _try_git() {
   if test -n "$(command -v git)"; then
     return
   fi
+
   if test "$DUMB" -eq 1; then
     error "command \"git\" is required"
     quit 1
   fi
 
-  if test "$OSKIND" = "alpine"; then
-    step "Installing git..."
-    cmd apk add git
-  elif test "$OSKIND" = "debian"; then
-    step "Installing git..."
-    sudo_cmd apt install -y git
-  elif test "$OSKIND" = "macos" -a -n "$(command -v "brew")"; then
-    step "Installing git..."
-    cmd brew install git
-  else
-    error "command \"git\" is required"
-    quit 1
+  if ! _try_load_system || ! install_git; then
+    warn "System does not provide a git installation method, trying a builtin method..."
+
+    # builtin fallbacks, however these platforms will not be covered
+    #   - debian might need sudo permission
+    #   - macos need brew / developer tools
+    if test "$OSKIND" = "alpine"; then
+      step "Installing git..."
+      cmd apk add git
+    else
+      error "command \"git\" is required"
+      quit 1
+    fi
   fi
 }
 
@@ -614,6 +514,7 @@ _try_run_install() {
   # Run local script when install remotely
   if test "$REMOTE_INSTALL" -eq 1; then
     step "Executing local script..."
+
     # shellcheck disable=SC2086
     sh "$HOME/$DOTFILES/install.sh" $FLAGS
     quit
@@ -646,15 +547,21 @@ _try_run_install() {
     quit 1
   fi
 
-  step "Ready"
-  try_run_install__system_script="$HOME/$DOTFILES/sytems/$OS.sh"
-  if ! test -f "$try_run_install__system_script"; then
-    try_run_install__system_script="$HOME/$DOTFILES/systems/$OSKIND.sh"
-  fi
-  if ! test -f "$try_run_install__system_script"; then
-    error "\"$OS\" is not supported"
+  if ! _try_load_system; then
+    error "command \"curl\" is required"
     quit 1
   fi
+
+  step "Ready"
+
+  # Load libs
+  for try_run_install__lib_path in "$HOME/$DOTFILES/lib"/*.sh; do
+    . "$try_run_install__lib_path"
+  done
+  # Load processes
+  for try_run_install__lib_path in "$HOME/$DOTFILES/lib/process"/*.sh; do
+    . "$try_run_install__lib_path"
+  done
 
   if has_flag wsl; then
     info "Detected running on WSL..."
@@ -664,72 +571,17 @@ _try_run_install() {
   fi
 
   # shellcheck disable=SC1090
-  . "$try_run_install__system_script"
   step "Setting up installation process..."
   setup
   step "Gathering components..."
 
   # run packages
   _RUNNING_TYPE="package"
-  if ! _has_skip packages || test -n "$_INDICATED"; then
-    for try_run_install__package_path in "$HOME/$DOTFILES/packages"/*.sh; do
-      try_run_install__package=$(basename "$try_run_install__package_path")
-      try_run_install__package=${try_run_install__package%.sh}
-
-      print_inline "$esc_yellow==>$esc_reset Checking package $try_run_install__package..."
-
-      # Skip requested packages
-      if (_has_skip packages || _has_skip "$try_run_install__package") && ! _has_indicate "$try_run_install__package"; then
-        continue
-      fi
-
-      # Package could be loaded from the dependency list
-      if has_package "$try_run_install__package"; then
-        continue
-      fi
-
-      _RUNNING="$try_run_install__package"
-      _FULFILLED=""
-      # Add package to the loaded list (prevent dependency cycle)
-      _LOADED=$(_add_to_list "$_LOADED" "$_RUNNING")
-      # shellcheck disable=SC1090
-      . "$try_run_install__package_path"
-
-      # Remove optional packages from the loaded list
-      if test "$_FULFILLED" = "optional"; then
-        try_run_install__new_loaded=""
-        eval "set -- $_LOADED"
-        for try_run_install__loaded_package in "$@"; do
-          if test "$try_run_install__loaded_package" = "$_RUNNING"; then
-            continue
-          fi
-          try_run_install__new_loaded=$(_add_to_list "$try_run_install__new_loaded" "$try_run_install__loaded_package")
-        done
-        _LOADED="$try_run_install__new_loaded"
-      fi
-    done
-  fi
+  _prepare_packages
 
   # running setup preparation
   _RUNNING_TYPE="setup"
-  if ! _has_skip setup || test -n "$_INDICATED"; then
-    for try_run_install__setup_path in "$HOME/$DOTFILES/setup"/*.sh; do
-      try_run_install__setup=$(basename "$try_run_install__setup_path")
-      try_run_install__setup=${try_run_install__setup%.sh}
-
-      print_inline "$esc_yellow==>$esc_reset Checking setup $try_run_install__setup..."
-
-      # Skip requested setups
-      if (_has_skip setup || _has_skip "$try_run_install__setup") && ! _has_indicate "$try_run_install__setup"; then
-        continue
-      fi
-
-      _RUNNING="$try_run_install__setup"
-      _FULFILLED=""
-      # shellcheck disable=SC1090
-      . "$try_run_install__setup_path"
-    done
-  fi
+  _prepare_setup
 
   if test $_HALT -eq 1; then
     quit 1
@@ -741,74 +593,11 @@ _try_run_install() {
     quit 0
   fi
 
-  if test -n "$_PACKAGES"; then
-    print "$esc_green==>$esc_reset The following packages will be installed:"
-    eval "set -- $_PACKAGES"
-    for try_run_install__package in "$@"; do
-      try_run_install__manager_name="$(parse_field "$try_run_install__package" manager_name)"
-      try_run_install__package_name="$(parse_field "$try_run_install__package" package_name)"
-      if test -z "$try_run_install__manager_name"; then
-        try_run_install__manager_name="$(parse_field "$try_run_install__package" manager)"
-      fi
-
-      if test -z "$try_run_install__package_name"; then
-        try_run_install__package_name="$(parse_field "$try_run_install__package" package)"
-      fi
-
-      if test -n "$try_run_install__manager_name"; then
-        try_run_install__manager_name=" ${esc_blue}via$esc_reset $try_run_install__manager_name"
-      fi
-
-      print "  $esc_blue-$esc_reset $try_run_install__package_name$try_run_install__manager_name"
-    done
-  fi
-  if test -n "$_DOCKER"; then
-    print "$esc_green==>$esc_reset The following Docker buildings will be run:"
-    eval "set -- $_DOCKER"
-    for try_run_install__package in "$@"; do
-      try_run_install__package_name="$(parse_field "$try_run_install__package" package_name)"
-
-      if test -z "$try_run_install__package_name"; then
-        try_run_install__package_name="$(parse_field "$try_run_install__package" package)"
-      fi
-
-      print "  $esc_blue-$esc_reset $try_run_install__package_name"
-    done
-  fi
-  if test -n "$_CUSTOM"; then
-    print "$esc_green==>$esc_reset The following installations will be run:"
-    eval "set -- $_CUSTOM"
-    for try_run_install__fn in "$@"; do
-      try_run_install__package_name="$(parse_field "$try_run_install__fn" package_name)"
-
-      if test -z "$try_run_install__package_name"; then
-        try_run_install__package_name="$(parse_field "$try_run_install__fn" fn)"
-      fi
-
-      print "  $esc_blue-$esc_reset $try_run_install__package_name"
-    done
-  fi
-  if test -n "$_SETUP"; then
-    print "$esc_green==>$esc_reset The following setups will be run:"
-    eval "set -- $_SETUP"
-    for try_run_install__fn in "$@"; do
-      try_run_install__setup_name="$(parse_field "$try_run_install__fn" display_name)"
-
-      if test -z "$try_run_install__setup_name"; then
-        try_run_install__setup_name="$(parse_field "$try_run_install__fn" fn)"
-      fi
-
-      print "  $esc_blue-$esc_reset $try_run_install__setup_name"
-    done
-  fi
-
-  if ! _has_skip update; then
-    if _has_skip upgrade; then
-      print "$esc_green==>$esc_reset System update will be performed"
-    else
-      print "$esc_green==>$esc_reset System update and upgrade will be performed"
-    fi
-  fi
+  _summarize_packages
+  _summarize_docker
+  _summarize_custom
+  _summarize_setup
+  _summarize_system_update
 
   if test "$CONFIRMATION" -eq 1; then
     printf "%s==>%s Perform the installation? [y/N] " "$esc_yellow" "$esc_reset"
@@ -823,42 +612,11 @@ _try_run_install() {
     done
   fi
 
-  # update/upgrade system
-  if ! _has_skip update; then
-    if _has_skip upgrade; then
-      step "Updating system..."
-      update "update"
-    else
-      step "Updating and upgrading system..."
-      update "upgrade"
-    fi
-  fi
-
-  # install packages
-  if test -n "$_PACKAGES"; then
-    eval "set -- $_PACKAGES"
-    install_packages "$@"
-  fi
-
-  # run custom installations
-  if test -n "$_CUSTOM"; then
-    step "Performing custom installations..."
-    eval "set -- $_CUSTOM"
-    for try_run_install__custom in "$@"; do
-      try_run_install__fn="$(parse_field "$try_run_install__custom" fn)"
-      "$try_run_install__fn"
-    done
-  fi
-
-  # run setups
-  if test -n "$_SETUP"; then
-    step "Running setups..."
-    eval "set -- $_SETUP"
-    for try_run_install__setup in "$@"; do
-      try_run_install__fn="$(parse_field "$try_run_install__setup" fn)"
-      "$try_run_install__fn"
-    done
-  fi
+  _run_system_update
+  _run_packages
+  _run_docker
+  _run_custom
+  _run_setup
 
   try_run_install__deps_path="$(deps)"
   if test -d "$try_run_install__deps_path" -a "$KEEP_FILES" -eq 0; then
@@ -884,11 +642,6 @@ add_flag() {
   _INTERNAL_STATE=$(_add_item "$_INTERNAL_STATE" " " "$add_flag__flag")
 }
 
-has_flag() {
-  has_flag__flag="$1"
-  _has_item "$_INTERNAL_STATE" "$has_flag__flag"
-}
-
 quiet_cmd() {
   _QUIET_CMD="$*"
 }
@@ -903,23 +656,6 @@ verbose_cmd() {
 
 verbose_flags() {
   _VERBOSE_FLAGS="$*"
-}
-
-sudo_cmd() {
-  if test "$(whoami)" = "root"; then
-    # shellcheck disable=SC2068
-    cmd $@
-  else
-    _check_sudo
-    if test -n "$_VERBOSE_CMD"; then
-      _VERBOSE_CMD="sudo $_VERBOSE_CMD"
-    fi
-    if test -n "$_QUIET_FLAGS"; then
-      _QUIET_FLAGS="sudo $_QUIET_FLAGS"
-    fi
-    # shellcheck disable=SC2068
-    cmd sudo $@
-  fi
 }
 
 cmd() {
@@ -942,24 +678,6 @@ cmd() {
   _VERBOSE_FLAGS=""
 }
 
-full_clone() {
-  full_clone__repo="$1"
-  full_clone__dir_name="$2"
-  full_clone__name="$3"
-  shift
-  if test -n "$full_clone__dir_name"; then
-    shift
-  fi
-  _try_git
-  if test -n "$full_clone__name"; then
-    shift
-    step "Cloning $full_clone__name..."
-  fi
-
-  # shellcheck disable=SC2068
-  cmd git clone $@ "$full_clone__repo" "$full_clone__dir_name"
-}
-
 clone() {
   clone__repo="$1"
   clone__dir_name="$2"
@@ -976,196 +694,6 @@ clone() {
 
   # shellcheck disable=SC2068
   cmd git clone --shallow-submodules --depth 1 $@ "$clone__repo" "$clone__dir_name"
-}
-
-# has_cmd <command>
-has_cmd() {
-  has_cmd__cmd="$1"
-  test -n "$(command -v "$has_cmd__cmd")"
-}
-
-# has_package <package>
-has_package() {
-  has_package__package="$1"
-  _has_item_in_list "$_LOADED" "$has_package__package"
-}
-
-add_post_install_message() {
-  _POST_INSTALL_MSGS="$(_add_to_list "$_POST_INSTALL_MSGS" "$1")"
-}
-
-# Mark current script as optional
-optional() {
-  if test -n "$_SKIP_OPTIONAL"; then
-    return
-  fi
-  _FULFILLED="optional"
-}
-
-# Skip installation if the package is not being installed
-# depends <package>
-depends() {
-  if test -n "$_FULFILLED"; then
-    return
-  fi
-
-  depends__package="$1"
-  if has_package "$depends__package"; then
-    return
-  fi
-
-  _FULFILLED="fulfilled"
-}
-
-# Install package regardless of skipped components
-# require <package>
-require() {
-  if test -n "$_FULFILLED"; then
-    return
-  fi
-
-  require__package="$1"
-
-  # Depends on itself
-  if test "$_RUNNING" = "$require__package"; then
-    return
-  fi
-
-  if has_package "$require__package"; then
-    return
-  fi
-
-  # Dependency not found
-  if ! test -f "$HOME/$DOTFILES/packages/$require__package.sh"; then
-    error "$_RUNNING_TYPE \"$_RUNNING\" is depends on \"$require__package\""
-    _HALT=1
-    return
-  fi
-
-  require__old_running_type="$_RUNNING_TYPE"
-  require__old_running="$_RUNNING"
-  require__old_fulfilled="$_FULFILLED"
-  _RUNNING_TYPE="package"
-  _RUNNING="$require__package"
-  _SKIP_OPTIONAL="1"
-  _FULFILLED=""
-  # Add package to the loaded list (prevent dependency cycle)
-  _LOADED=$(_add_to_list "$_LOADED" "$_RUNNING")
-
-  # shellcheck disable=SC1090
-  . "$HOME/$DOTFILES/packages/$require__package.sh"
-
-  _RUNNING_TYPE="$require__old_running_type"
-  _RUNNING="$require__old_running"
-  _SKIP_OPTIONAL=""
-  _FULFILLED="$require__old_fulfilled"
-}
-
-# Add package into installation list
-# add_package [display name]
-# Fields:
-#   + manager      : string
-#   - manager_name : string
-#   + package      : string
-#   - package_name : string
-add_package() {
-  if test "$_FULFILLED" = "optional"; then
-    reset_object
-    return
-  fi
-
-  field package_name "$1"
-  _PACKAGES="$(_add_to_list "$_PACKAGES" "$(make_object)")"
-  reset_object
-
-  _FULFILLED="fulfilled"
-}
-
-# Add custom function into installation list if no valid setup available
-# use_custom <function> [display name]
-# Fields:
-#   + fn           : function
-#   - package_name : string
-use_custom() {
-  if _has_skip custom; then
-    return
-  fi
-  if test -n "$_FULFILLED"; then
-    reset_object
-    return
-  fi
-
-  if test "$_FULFILLED" = "optional"; then
-    reset_object
-    return
-  fi
-
-  field fn "$1"
-  if test -n "$2"; then
-    field package_name "$2"
-  else
-    field package_name "$_RUNNING"
-  fi
-  _CUSTOM="$(_add_to_list "$_CUSTOM" "$(make_object)")"
-  reset_object
-  _FULFILLED="fulfilled"
-}
-
-# Add docker build into installation list if no valid setup available
-# use_docker_build [display name]
-# Fields:
-#   - package_name : string
-use_docker_build() {
-  if _has_skip docker; then
-    return
-  fi
-  use_docker_build__package="$_RUNNING"
-  if test -n "$_FULFILLED"; then
-    reset_object
-    return
-  fi
-
-  use_docker_build__dockerfile="$HOME/$DOTFILES/docker/$use_docker_build__package/Dockerfile.$OS"
-  if ! test -f "$use_docker_build__dockerfile"; then
-    use_docker_build__dockerfile="$HOME/$DOTFILES/docker/$use_docker_build__package/Dockerfile.$OSKIND"
-  fi
-  if ! test -f "$use_docker_build__dockerfile"; then
-    warn "Docker build for package \"$use_docker_build__package\" is not available on $OS"
-    reset_object
-    return
-  fi
-
-  if test -z "$_DOCKER"; then
-    require 'docker'
-  fi
-
-  field package "$use_docker_build__package"
-  field package_name "$1"
-  _DOCKER="$(_add_to_list "$_DOCKER" "$(make_object)")"
-  reset_object
-
-  _FULFILLED="fulfilled"
-}
-
-# Add custom function into setup list if no valid setup available
-# add_setup <function> [display name]
-# Fields:
-#   + fn           : function
-#   - display_name : string
-add_setup() {
-  if test -n "$_FULFILLED"; then
-    reset_object
-    return
-  fi
-
-  field fn "$1"
-  if test -n "$2"; then
-    field display_name "$2"
-  else
-    field display_name "$_RUNNING"
-  fi
-  _SETUP="$(_add_to_list "$_SETUP" "$(make_object)")"
-  reset_object
 }
 
 _main "$@"
