@@ -411,7 +411,7 @@ _try_load_system() {
   fi
 
   try_load_system__system_deps="$(pwd)/$DOTFILES.deps"
-  if test "$REMOTE_INSTALL" -eq 1; then
+  if ! test -f "$try_load_system__base_system"; then
     if ! test -n "$(command -v curl)"; then
       return 1
     fi
