@@ -29,8 +29,8 @@ _scrolling_text() {
     __text_length=$(printf "%s" "$__text" | wc -m)
   fi
   if test "$__text_length" -gt "$__size"; then
-    __index=$(( __offset % __text_length ))
-    __padded_text="$__text$__text"
+    __index=$(( __offset % (__text_length + 3) ))
+    __padded_text="$__text   $__text"
     printf "%s" "$__padded_text" | cut -c"$(( __index + 1 ))-$(( __index + __size ))"
   else
     printf "%s" "$__text"
