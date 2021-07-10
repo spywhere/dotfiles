@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _summarize_system_update() {
   if ! _has_skip update; then
     if _has_skip upgrade; then

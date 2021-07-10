@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _has_skip() {
   has_skip__component="$1"
   _has_item "$_SKIPPED" "$has_skip__component"
@@ -118,7 +120,6 @@ require() {
   # Add package to the loaded list (prevent dependency cycle)
   _LOADED=$(_add_to_list "$_LOADED" "$_RUNNING")
 
-  # shellcheck disable=SC1090
   . "$HOME/$DOTFILES/packages/$require__package.sh"
 
   _RUNNING_TYPE="$require__old_running_type"

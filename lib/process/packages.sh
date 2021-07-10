@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _prepare_packages() {
   if ! _has_skip packages || test -n "$_INDICATED"; then
     for try_run_install__package_path in "$HOME/$DOTFILES/packages"/*.sh; do
@@ -20,7 +22,6 @@ _prepare_packages() {
       _FULFILLED=""
       # Add package to the loaded list (prevent dependency cycle)
       _LOADED=$(_add_to_list "$_LOADED" "$_RUNNING")
-      # shellcheck disable=SC1090
       . "$try_run_install__package_path"
 
       # Remove optional packages from the loaded list

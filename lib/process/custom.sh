@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _summarize_custom() {
   if test -n "$_CUSTOM"; then
     print "$esc_green==>$esc_reset The following installations will be run:"

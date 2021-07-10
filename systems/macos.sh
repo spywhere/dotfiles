@@ -93,7 +93,6 @@ has_login_app_store() {
 wait_for_app_store() {
   wait_for_app_store__last_check=""
   while ! has_login_app_store; do
-    # shellcheck disable=SC2154
     printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store..." "$wait_for_app_store__last_check"
     sleep 5
     wait_for_app_store__last_check=" (last check at $(date "+%H:%M:%S"))"

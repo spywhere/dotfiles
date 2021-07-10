@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _has_item() {
   has_item__list="$1"
   has_item__item="$2"

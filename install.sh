@@ -285,8 +285,7 @@ _main() {
         KEEP_FILES=1
         ;;
       -f | --force)
-        # shellcheck disable=SC2034
-        FORCE_INSTALL=1
+        FORCE_INSTALL=1 # TODO: Currently no force install support
         ;;
       -q | --quiet)
         VERBOSE=0
@@ -570,7 +569,6 @@ _try_run_install() {
     info "Detected running on Apple Silicon..."
   fi
 
-  # shellcheck disable=SC1090
   step "Setting up installation process..."
   setup
   step "Gathering components..."

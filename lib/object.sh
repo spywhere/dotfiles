@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . "$HOME/$DOTFILES/lib/list.sh"
 . "$HOME/$DOTFILES/lib/string.sh"
 

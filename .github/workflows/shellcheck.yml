@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ludeeus/action-shellcheck@1.1.0
+        env:
+          SHELLCHECK_OPTS: -e SC1090 -e SC2034 -e SC2154
         with:
           ignore: zsh
       - name: Ban echo

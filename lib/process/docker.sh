@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _summarize_docker() {
   if test -n "$_DOCKER"; then
     print "$esc_green==>$esc_reset The following Docker buildings will be run:"

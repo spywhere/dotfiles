@@ -1,3 +1,5 @@
+#!/bin/sh
+
 _prepare_setup() {
   if ! _has_skip setup || test -n "$_INDICATED"; then
     for try_run_install__setup_path in "$HOME/$DOTFILES/setup"/*.sh; do
@@ -13,7 +15,6 @@ _prepare_setup() {
 
       _RUNNING="$try_run_install__setup"
       _FULFILLED=""
-      # shellcheck disable=SC1090
       . "$try_run_install__setup_path"
     done
   fi
