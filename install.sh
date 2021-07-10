@@ -9,7 +9,7 @@ set -e
 REPO_NAME="spywhere/dotfiles"
 CLONE_REPO="https://github.com/$REPO_NAME"
 if test -z "$CLONE_REPO_BRANCH"; then
-  CLONE_REPO_BRANCH="main"
+  CLONE_REPO_BRANCH="new-installer"
 fi
 SYSTEM_FILES="https://raw.githubusercontent.com/$REPO_NAME/$CLONE_REPO_BRANCH/systems/%s.sh"
 
