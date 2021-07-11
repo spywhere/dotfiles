@@ -11,8 +11,10 @@ then
   exit 1
 fi
 
-# shellcheck disable=SC1091
-. systems/base.sh
+install_git() {
+  sudo_cmd apt update -y
+  sudo_cmd apt install -y git
+}
 
 update() {
   sudo_cmd apt update -y

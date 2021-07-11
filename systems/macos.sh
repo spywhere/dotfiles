@@ -11,8 +11,12 @@ then
   exit 1
 fi
 
-# shellcheck disable=SC1091
-. systems/base.sh
+install_git() {
+  if ! test -n "$(command -v brew)"; then
+    return 1
+  fi
+  cmd brew install git
+}
 
 setup() {
   setup__apple_silicon=""

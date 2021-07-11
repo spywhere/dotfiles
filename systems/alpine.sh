@@ -11,15 +11,16 @@ then
   exit 1
 fi
 
-# shellcheck disable=SC1091
-. systems/base.sh
-
 MIRROR="http://dl-cdn.alpinelinux.org/alpine/{branch}/{repo}"
 
 _get_mirror_repo() {
   get_mirror_repo__repo="$1"
   get_mirror_repo__branch="$2"
   printf "%s" "$MIRROR" | sed "s/{repo}/$get_mirror_repo__repo/g" | sed "s/{branch}/$get_mirror_repo__branch/g"
+}
+
+install_git() {
+  cmd apk add --no-cache git
 }
 
 update() {
