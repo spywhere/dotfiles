@@ -445,7 +445,7 @@ _try_load_system() {
 
     try_load_system__base_system="$try_load_system__system_deps/base"
     if ! _download_system_file "$system_url" "$try_load_system__base_system"; then
-      error "Failed to download system files"
+      error "failed to download system files"
       quit 1
     fi
 
@@ -488,15 +488,16 @@ _try_git() {
     quit 1
   fi
 
+  step "Installing git..."
   if ! _try_load_system || ! install_git; then
     warn "System does not provide a git installation method, trying a builtin method..."
 
-    # builtin fallbacks, however these platforms will not be covered
-    #   - debian might need sudo permission
-    #   - macos need brew / developer tools
     if test "$OSKIND" = "alpine"; then
-      step "Installing git..."
-      cmd apk add git
+      cmd apk add --no-cache git
+    elif test "$OSKIND" = "debian"; then
+      sudo_cmd apt install -y git
+    elif test "$OSKIND" = "macos" -a -n "$(command -v "brew")"; then
+      cmd brew install git
     else
       if test "$_system_loaded" -eq 0; then
         error "command \"git\" or \"curl\" is required"
@@ -657,6 +658,14 @@ _try_run_install() {
   fi
 }
 
+_check_sudo() {
+  if test -n "$(command -v sudo)"; then
+    return
+  fi
+
+  error "insufficient permission, no 'sudo' available"
+}
+
 #############
 # Main APIs #
 #############
@@ -680,6 +689,23 @@ verbose_cmd() {
 
 verbose_flags() {
   _VERBOSE_FLAGS="$*"
+}
+
+sudo_cmd() {
+  if test "$(whoami)" = "root"; then
+    # shellcheck disable=SC2068
+    cmd $@
+  else
+    _check_sudo
+    if test -n "$_VERBOSE_CMD"; then
+      _VERBOSE_CMD="sudo $_VERBOSE_CMD"
+    fi
+    if test -n "$_QUIET_FLAGS"; then
+      _QUIET_FLAGS="sudo $_QUIET_FLAGS"
+    fi
+    # shellcheck disable=SC2068
+    cmd sudo $@
+  fi
 }
 
 cmd() {
