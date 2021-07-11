@@ -479,7 +479,11 @@ _try_git() {
       step "Installing git..."
       cmd apk add git
     else
-      error "command \"git\" is required"
+      if test "$_system_loaded" -eq 0; then
+        error "command \"git\" or \"curl\" is required"
+      else
+        error "command \"git\" is required"
+      fi
       quit 1
     fi
   fi
