@@ -395,6 +395,10 @@ _download_system_file() {
   if test "$(curl --create-dirs -fsL "$1" -o "$2" -w "%{http_code}")" -eq 200; then
     return 0
   fi
+  # cleanup unsuccessful download
+  if test -f "$2"; then
+    rm -f "$2"
+  fi
   return 1
 }
 
