@@ -398,15 +398,30 @@ _download_system_file() {
   return 1
 }
 
+_get_system_file() {
+  # shellcheck disable=SC2059
+  get_system_file__system_file="$(printf "$1" "$OS")"
+
+  if test -f "$get_system_file__system_file" -o "$OS" = "$OSKIND"; then
+    printf "%s" "$get_system_file__system_file";
+    return 0
+  fi
+
+  # shellcheck disable=SC2059
+  printf "$1" "$OSKIND"
+}
+
 _system_loaded=0
 _try_load_system() {
   if test "$_system_loaded" -eq 1; then
     return 0
   fi
   try_load_system__base_system="$HOME/$DOTFILES/systems/base.sh"
-  try_load_system__target_system="$HOME/$DOTFILES/systems/$OS.sh"
-  if ! test -f "$try_load_system__target_system"; then
-    try_load_system__target_system="$HOME/$DOTFILES/systems/$OSKIND.sh"
+  try_load_system__target_system="$(_get_system_file "$HOME/$DOTFILES/systems/%s.sh")"
+
+  if test "$REMOTE_INSTALL" -eq 0 -a -f "$(pwd)/systems/base.sh"; then
+    try_load_system__base_system="$(pwd)/systems/base.sh"
+    try_load_system__target_system="$(_get_system_file "$(pwd)/systems/%s.sh")"
   fi
 
   try_load_system__system_deps="$(pwd)/$DOTFILES.deps"
