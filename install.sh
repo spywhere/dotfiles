@@ -415,6 +415,7 @@ _try_load_system() {
       return 1
     fi
 
+    # shellcheck disable=SC2059
     system_url="$(printf "$SYSTEM_FILES" "base")"
 
     if test "$OS" = "$OSKIND"; then
@@ -429,11 +430,13 @@ _try_load_system() {
       quit 1
     fi
 
+    # shellcheck disable=SC2059
     system_url="$(printf "$SYSTEM_FILES" "$OS")"
     try_load_system__target_system="$try_load_system__system_deps/$OS"
     if ! _download_system_file "$system_url" "$try_load_system__target_system"; then
       warn "$OS is not natively supported, trying $OSKIND..."
 
+      # shellcheck disable=SC2059
       system_url="$(printf "$SYSTEM_FILES" "$OSKIND")"
       try_load_system__target_system="$try_load_system__system_deps/$OSKIND"
       _download_system_file "$system_url" "$try_load_system__target_system"
