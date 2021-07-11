@@ -13,6 +13,12 @@ PLAYING_UPDATE_INTERVAL=1
 mpd="no"
 music="no"
 
+remote_command=""
+
+if test "$1" = "--cmd"; then
+  remote_command="$2"
+fi
+
 if (printf "close\n" | nc $MPD_HOST $MPD_PORT | grep -q "OK MPD"); then
   # mpd is running
   mpd="yes"
@@ -55,7 +61,27 @@ if test "$mpd" = "no" -a "$music" = "no"; then
   exit
 fi
 
+as_try() {
+  printf "try{%s}catch(e){%s}" "$1" "$2"
+}
+
+as_application() {
+  printf "Application(\"%s\")" "$1"
+}
+
+as_is_running() {
+  printf "%s.running()" "$(as_application "$1")"
+}
+
+as_if() {
+  printf "if(%s){%s}" "$1" "$2"
+}
+
 if test "$mpd" = "yes"; then
+  if test -n "$remote_command"; then
+    sh -c "(printf \"$remote_command\nclose\n\"; sleep 0.05) | nc $MPD_HOST $MPD_PORT"
+    exit
+  fi
   # mpd is running
   status=$mpd_status
   position="$(printf "%s" "$mpd_info" | awk '$1 ~ /^time:/ { print $2 }' | cut -d':' -f1)"
@@ -67,12 +93,28 @@ if test "$mpd" = "yes"; then
     mpd="no"
   fi
 elif test "$music" = "yes"; then
+  if test -n "$remote_command"; then
+    music_app="$(printf "%s" "$music_info" | awk 'NR==2')"
+    if test "$remote_command" = "stop"; then
+      action_index="8"
+    elif test "$remote_command" = "previous"; then
+      action_index="9"
+    elif test "$remote_command" = "next"; then
+      action_index="10"
+    else
+      action_index="7"
+    fi
+    music_action="$(printf "%s" "$music_info" | awk "NR==$action_index")"
+    action_command="$(as_try "$(as_if "$(as_is_running "$music_app")" "$(as_application "$music_app").$music_action;")")"
+    osascript -l JavaScript -e "$action_command"
+    exit
+  fi
   # music is running
   status=$music_status
-  position="$(printf "%s" "$music_info" | awk 'NR==2')"
-  duration="$(printf "%s" "$music_info" | awk 'NR==3')"
-  title="$(printf "%s" "$music_info" | awk 'NR==4')"
-  artist="$(printf "%s" "$music_info" | awk 'NR==5')"
+  position="$(printf "%s" "$music_info" | awk 'NR==3')"
+  duration="$(printf "%s" "$music_info" | awk 'NR==4')"
+  title="$(printf "%s" "$music_info" | awk 'NR==5')"
+  artist="$(printf "%s" "$music_info" | awk 'NR==6')"
 fi
 
 _scrolling_text() {
