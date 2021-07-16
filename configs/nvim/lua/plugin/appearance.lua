@@ -79,6 +79,13 @@ registry.install {
       Percent = function ()
         return fn.printf('%3d%%', math.floor(fn.line('.') * 100 / fn.line('$')))
       end,
+      IndentStyle = function ()
+        local tab_style = 'TB'
+        if vim.o.expandtab then
+          tab_style = 'SP'
+        end
+        return fn.printf('%s:%d', tab_style, vim.o.tabstop)
+      end,
       FileFormat = function ()
         return vim.bo.fileformat
       end,
@@ -275,7 +282,7 @@ registry.install {
           Readonly = {
             component = 'Readonly',
             separator = {
-              left = ' | '
+              right = ' '
             }
           }
         },
@@ -332,6 +339,15 @@ registry.install {
           FileFormat = {
             component = 'FileFormat',
             separator = {
+              right = ' '
+            }
+          }
+        },
+        {
+          IndentStyle = {
+            component = 'IndentStyle',
+            separator = {
+              left = '| ',
               right = ' '
             }
           }
