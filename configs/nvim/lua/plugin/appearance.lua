@@ -87,10 +87,15 @@ registry.install {
         return fn.printf('%s:%d', tab_style, vim.o.tabstop)
       end,
       FileFormat = function ()
-        return vim.bo.fileformat
+        local formats = {
+          dos = 'CRLF',
+          unix = 'LF',
+          mac = 'CR'
+        }
+        return formats[vim.bo.fileformat] or vim.bo.fileformat
       end,
       FileEncoding = function ()
-        return vim.bo.fileencoding
+        return string.upper(vim.bo.fileencoding)
       end,
       FileType = function ()
         return vim.bo.filetype
