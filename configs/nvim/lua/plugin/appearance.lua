@@ -57,8 +57,8 @@ registry.install {
         end
 
         local value = fallback_name(fn.winwidth(0), {
-          function () return fn.expand('%:f') end,
-          function () return fn.pathshorten(fn.expand('%:f')) end,
+          function () return fn.fnamemodify(fn.expand('%'), ':.') end,
+          function () return fn.pathshorten(fn.fnamemodify(fn.expand('%'), ':.')) end,
           function () return fn.expand('%:t') end
         })
 
