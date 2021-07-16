@@ -24,11 +24,16 @@ registry.install {
         end
       end,
       RelativePath = function (options)
-        function beautify_name(name)
+        local function beautify_name(name)
+          local is_root = string.find(name, '^[/\\]') == 1
+          if not is_root then
+            name = '.../' .. name
+          end
+
           return string.gsub(string.gsub(name, '^[/\\]', ''), '[/\\]', '  ')
         end
 
-        function fallback_name(winwidth, list)
+        local function fallback_name(winwidth, list)
           local list_count = vim.tbl_count(list)
 
           if list_count < 1 then
