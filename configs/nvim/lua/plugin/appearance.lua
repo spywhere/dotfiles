@@ -24,13 +24,17 @@ registry.install {
         end
       end,
       RelativePath = function (options)
+        function beautify_name(name)
+          return string.gsub(string.gsub(name, '^[/\\]', ''), '[/\\]', '  ')
+        end
+
         function fallback_name(winwidth, list)
           local list_count = vim.tbl_count(list)
 
           if list_count < 1 then
             return ''
           end
-          local name = list[1]()
+          local name = beautify_name(list[1]())
 
           if list_count == 1 then
             if name == '' then
@@ -196,6 +200,14 @@ registry.install {
       return line
     end
 
+    local adjust_limit = function (limit)
+      if fn.exists('g:GuiLoaded') == 0 then
+        return limit - 15
+      end
+
+      return limit
+    end
+
     local sections = {
       left = {
         {
@@ -265,7 +277,7 @@ registry.install {
         {
           RelativePath = {
             component = 'RelativePath',
-            options = { limit = 70 },
+            options = { limit = adjust_limit(70) },
             background = 'black',
             inactive = false
           }
@@ -273,7 +285,7 @@ registry.install {
         {
           RelativePathInactive = {
             component = 'RelativePath',
-            options = { limit = 50 },
+            options = { limit = adjust_limit(50) },
             background = 'black',
             active = false
           }
