@@ -25,6 +25,10 @@ registry.install {
       end,
       RelativePath = function (options)
         local function beautify_name(name)
+          if name == '' then
+            return name
+          end
+
           local is_root = string.find(name, '^[/\\]') == 1 or string.find(name, '^%w+://')
           if not is_root then
             name = '.../' .. name
