@@ -12,6 +12,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
+          brew remove mongodb-community
           sh install.sh -v no-mas
   macos-local-normal:
     name: Local Install - Normal (MacOS)
@@ -23,6 +24,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
+          brew remove mongodb-community
           sh install.sh no-mas
   macos-local-quiet:
     name: Local Install - Quiet (MacOS)
@@ -34,6 +36,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
+          brew remove mongodb-community
           sh install.sh -q no-mas
 
   macos-remote-verbose:
@@ -45,4 +48,5 @@ jobs:
           sh -c "$(curl -sSL git.io/Jt8w0)" - -i
       - name: Perform Installation
         run: |
+          brew remove mongodb-community
           sh -c "$(curl -sSL git.io/Jt8w0)" - -v no-mas
