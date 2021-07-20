@@ -25,12 +25,12 @@ registry.install {
       end,
       RelativePath = function (options)
         local function beautify_name(name)
-          local is_root = string.find(name, '^[/\\]') == 1
+          local is_root = string.find(name, '^[/\\]') == 1 or string.find(name, '^%w+://')
           if not is_root then
             name = '.../' .. name
           end
 
-          return string.gsub(string.gsub(name, '^[/\\]', ''), '[/\\]', '  ')
+          return string.gsub(string.gsub(name, '^[/\\]', ''), '[/\\]+', '  ')
         end
 
         local function fallback_name(winwidth, list)
