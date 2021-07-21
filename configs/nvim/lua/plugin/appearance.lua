@@ -29,7 +29,7 @@ registry.install {
             return name
           end
 
-          local is_root = string.find(name, '^[/\\]') == 1 or string.find(name, '^%w+://')
+          local is_root = string.find(name, '^[/\\[]') == 1 or string.find(name, '^%w+://')
           if not is_root then
             name = '.../' .. name
           end
