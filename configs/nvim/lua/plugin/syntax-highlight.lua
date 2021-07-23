@@ -19,7 +19,6 @@ registry.install {
 }
 
 if fn.has('nvim-0.5') == 1 then
-  -- Experimental until nvim-0.5
   registry.install {
     'nvim-treesitter/nvim-treesitter',
     options = {
