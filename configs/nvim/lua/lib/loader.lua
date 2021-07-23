@@ -17,7 +17,7 @@ M.explore = function (dir, recurse)
 
     if item_type == 'file' then
       require(dir .. '/' .. string.gsub(name, '[.]lua$', ''))
-    elseif item_type == 'dir' and recurse == true then
+    elseif item_type == 'directory' and recurse == true then
       -- load subdirectory as well
       M.explore(dir .. '/' .. name, recurse)
     end
