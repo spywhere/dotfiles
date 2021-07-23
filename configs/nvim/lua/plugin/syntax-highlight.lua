@@ -18,8 +18,6 @@ registry.install {
   end
 }
 
-registry.install('kien/rainbow_parentheses.vim')
-
 if fn.has('nvim-0.5') == 1 then
   -- Experimental until nvim-0.5
   registry.install {
