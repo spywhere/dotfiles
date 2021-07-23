@@ -4,6 +4,6 @@ local loader = require('lib/loader')
 
 loader.explore('editor')
 loader.explore('lsp')
-loader.explore('plugin')
+loader.explore('plugin', true)
 
 registry.startup()
