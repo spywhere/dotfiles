@@ -26,12 +26,3 @@ registry.install {
     registry.auto('TermOpen', disable_indent_guides)
   end
 }
-
-registry.install {
-  'jeffkreeftmeijer/vim-numbertoggle',
-  lazy = true
-}
-registry.install {
-  'AndrewRadev/linediff.vim',
-  lazy = true
-}

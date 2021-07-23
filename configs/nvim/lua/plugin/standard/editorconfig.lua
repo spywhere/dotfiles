@@ -6,4 +6,3 @@ registry.install {
     vim.g.Editorconfig_exclude_patterns = { 'fugitive://.*', 'scp://.*' }
   end
 }
-registry.install('tpope/vim-sensible')

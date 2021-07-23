@@ -1,55 +1,6 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
-registry.install {
-  'camspiers/snap',
-  defer_first = function ()
-    bindings.map.normal('<C-p>', function ()
-      local snap = require('snap')
-      snap.run({
-        reverse = true,
-        producer = snap.get('consumer.fzf')(
-          snap.get('consumer.try')(
-            snap.get('producer.ripgrep.file'),
-            snap.get('producer.git.file'),
-            snap.get('producer.fd.file'),
-            snap.get('producer.luv.file')
-          )
-        ),
-        select = snap.get('select.file').select,
-        multiselect = snap.get('select.file').multiselect,
-        views = { snap.get('preview.file') }
-      })
-    end)
-    bindings.map.normal('<leader>/', function ()
-      local snap = require('snap')
-      snap.run({
-        reverse = true,
-        producer = snap.get('consumer.fzf')(snap.get('producer.vim.currentbuffer')),
-        select = snap.get('select.currentbuffer').select
-      })
-    end)
-    bindings.map.normal('<leader>f', function ()
-      local snap = require('snap')
-
-      snap.run({
-        reverse = true,
-        producer = snap.get('producer.ripgrep.vimgrep').line({}),
-        prompt = 'Rg>',
-        steps = {
-          {
-            consumer = snap.get('consumer.fzf'),
-            config = { prompt = 'FZF>' }
-          }
-        },
-        select = snap.get('select.vimgrep').select,
-        multiselect = snap.get('select.vimgrep').multiselect,
-        views = { snap.get('preview.vimgrep') }
-      })
-    end)
-  end
-}
-
 registry.install('junegunn/fzf')
 registry.install {
   'junegunn/fzf.vim',
@@ -180,31 +131,3 @@ registry.install {
   end
 }
 registry.install('stsewd/fzf-checkout.vim')
-
--- Experimental: a replacement for fzf
--- Currently does not perform well compared to fzf itself
--- registry.install('nvim-lua/popup.nvim')
--- registry.install('nvim-lua/plenary.nvim')
--- registry.install('nvim-lua/telescope.nvim')
-
-registry.install('tpope/vim-rsi')
-registry.install('wellle/targets.vim')
-registry.install {
-  'christoomey/vim-tmux-navigator',
-  lazy = true
-}
-
-registry.install('kevinhwang91/nvim-bqf')
-
--- registry.install('psliwka/vim-smoothie') -- smooth scrolling
-registry.install {
-  'justinmk/vim-sneak',
-  defer = function ()
-    bindings.map.all('f', '<Plug>Sneak_f', { noremap = false })
-    bindings.map.all('F', '<Plug>Sneak_F', { noremap = false })
-    bindings.map.all('t', '<Plug>Sneak_t', { noremap = false })
-    bindings.map.all('T', '<Plug>Sneak_T', { noremap = false })
-    bindings.map.all(';', '<Plug>Sneak_;', { noremap = false })
-    bindings.map.all(',', '<Plug>Sneak_,', { noremap = false })
-  end
-}

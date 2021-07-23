@@ -58,3 +58,9 @@ local highlight_yank = function ()
   require('vim.highlight').on_yank({ timeout = 300 })
 end
 registry.auto('TextYankPost', highlight_yank, nil, 'silent!')
+
+registry.post(function ()
+  if fn.has('termguicolors') == 1 then
+    bindings.set('termguicolors')
+  end
+end)
