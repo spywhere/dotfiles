@@ -12,7 +12,7 @@ fi
 tmux_key="\#{neovim_integration}"
 
 build_script() {
-  printf "%s" "#(sh ~/.dots/supports/tmux/scripts/nvim.sh"
+  printf "%s" "#(~/.dots/supports/tmux/scripts/nvim.sh"
   if test -n "$1"; then
     printf " %s" "$1"
   fi
@@ -20,13 +20,17 @@ build_script() {
 }
 
 process_status() {
-  local raw_status="$(tmux show-option -gqv "status-$1")"
-  local new_status="$(tmux show-option -gqv "@neovim-status-$1")"
-  local status="${raw_status//${tmux_key}/}"
+  local raw_status
+  raw_status="$(tmux show-option -gqv "status-$1")"
+  local new_status
+  new_status="$(tmux show-option -gqv "@neovim-status-$1")"
+  local status
+  status="${raw_status//${tmux_key}/}"
   if test -z "$new_status"; then
     new_status="$status"
   fi
 
+  # shellcheck disable=SC2059
   tmux set-option -gq "status-$1" "#{?#{&&:#{==:#{pane_current_command},nvim},#{pane_at_bottom}},$(printf "$2" "$new_status"),$status}"
 }
 
