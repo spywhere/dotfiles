@@ -320,7 +320,7 @@ registry.install {
       right = {
         {
           ObsessionStatus = {
-            provider = fn.ObsessionStatus,
+            provider = function () fn.ObsessionStatus() end,
             separator = {
               right = ' '
             },
