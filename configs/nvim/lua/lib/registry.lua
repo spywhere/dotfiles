@@ -193,6 +193,9 @@ M.install = function (plugin, options)
   end
 
   plugin_options.name = name
+  if plugin_options.skip then
+    return
+  end
   if type(plugin_options.setup) == 'function' then
     M.pre(plugin_options.setup)
   end
