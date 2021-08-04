@@ -4,7 +4,8 @@ local bindings = require('lib/bindings')
 registry.install {
   'akinsho/nvim-toggleterm.lua',
   defer = function ()
-    local has_wsl = fn.has('win32') == 1 and fn.executable('wsl.exe') == 1
+    local is_win = fn.has('win32') == 1
+    local has_wsl = is_win and fn.executable('wsl.exe') == 1
     local shell = vim.o.shell
 
     if has_wsl then
@@ -18,6 +19,10 @@ registry.install {
         border = 'none'
       }
     })
+
+    if is_win then
+      return
+    end
 
     local Terminal = require('toggleterm.terminal').Terminal
     local fuzzy = function (command)

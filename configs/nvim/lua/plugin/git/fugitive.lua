@@ -3,7 +3,7 @@ local bindings = require('lib/bindings')
 
 registry.install {
   'tpope/vim-fugitive',
-  skip = true,
+  skip = fn.has('win32') == 0,
   -- experimental
   -- 'TimUntersberger/neogit',
   lazy = true,
