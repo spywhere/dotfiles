@@ -17,7 +17,7 @@ if test "$OS" = "raspbian"; then
   add_setup 'setup_usbc'
 fi
 
-copy() {
+copy_as() {
   if ! sudo_cmd test -f "$1"; then
     sudo_cmd cp "$SUPPORT_DIR$1" "$1"
   fi
@@ -46,9 +46,9 @@ setup_usbc() {
   fi
   cmd mkdir -p /etc/dnsmasq.d
   cmd mkdir -p /etc/network/interfaces.d
-  copy /etc/dnsmasq.d/usb
-  copy /etc/network/interfaces.d/usb0
-  copy /root/usb.sh
+  copy_as /etc/dnsmasq.d/usb
+  copy_as /etc/network/interfaces.d/usb0
+  copy_as /root/usb.sh
   sudo_cmd chmod 755 /root/usb.sh
   if ! sudo_cmd grep -q '/root/usb\.sh' /etc/rc.local; then
     sudo_cmd sed -i '$i sh /root/usb.sh\n' /etc/rc.local
