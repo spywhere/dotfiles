@@ -2,6 +2,7 @@
 DOTFILES_NAME=.dots
 
 # increase history size
+export HISTFILE=~/.zsh_history
 export HISTSIZE=1000000
 export SAVEHIST=100000
 
