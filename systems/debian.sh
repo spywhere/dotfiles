@@ -92,12 +92,13 @@ use_dpkg() {
 
   if test -n "$use_dpkg__format_url"; then
     _try_git
-    step "Acquiring latest version of $use_dpkg__name..."
+    print_inline "$esc_yellow==>$esc_reset Acquiring latest version of $use_dpkg__name..."
     use_dpkg__version="$(_get_latest_version "$use_dpkg__url" | sed 's/\//\\\//g')"
     if test -z "$use_dpkg__version" -a -n "$use_dpkg__fallback_version"; then
       warn "Failed to acquire the latest version of $use_dpkg__name, will install version $use_dpkg__fallback_version instead"
       use_dpkg__version="$use_dpkg__fallback_version"
     fi
+    step "Acquired latest version of $use_dpkg__name... $use_dpkg__version"
     use_dpkg__safe_url="$(printf "%s" "$use_dpkg__url" | sed 's/\//\\\//g')"
     use_dpkg__url="$(printf "%s" "$use_dpkg__format_url" | sed "s/%url/$use_dpkg__safe_url/g" | sed "s/%version/$use_dpkg__version/g" | sed 's/%%/%/g')"
   fi
