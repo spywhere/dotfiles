@@ -11,9 +11,17 @@ then
   exit 1
 fi
 
+SUPPORT_DIR="$HOME/$DOTFILES/supports/usbc"
+
 if test "$OS" = "raspbian"; then
   add_setup 'setup_usbc'
 fi
+
+copy() {
+  if ! sudo_cmd test -f "$1"; then
+    sudo_cmd cp "$SUPPORT_DIR$1" "$1"
+  fi
+}
 
 setup_usbc() {
   info "Checking if already enabling access over USB-C..."
@@ -23,16 +31,26 @@ setup_usbc() {
   fi
   step "Enabling access over USB-C..."
 
-  echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt >/dev/null
-  echo "modules-load=dwc2" | sudo tee -a /boot/cmdline.txt >/dev/null
+  if ! sudo_cmd grep -q 'dtoverlay=dwc2' /boot/config.txt; then
+    sudo_cmd tee -a /boot/config.txt <<<'dtoverlay=dwc2' >/dev/null
+  fi
+  if ! sudo_cmd grep -q 'modules-load=dwc2' /boot/cmdline.txt; then
+    sudo_cmd sed -i '$s/$/ modules-load=dwc2/g' /boot/cmdline.txt
+  fi
   sudo_cmd touch /boot/ssh
-  echo "libcomposite" | sudo tee -a /etc/modules >/dev/null
-  echo "denyinterfaces usb0" | sudo tee -a /etc/dhcpcd.conf >/dev/null
+  if ! sudo_cmd grep -q 'modules-load=dwc2' /etc/modules; then
+    sudo_cmd tee -a /etc/modules <<<'libcomposite' >/dev/null
+  fi
+  if ! sudo_cmd grep -q 'denyinterfaces usb0' /etc/dhcpcd.conf; then
+    sudo_cmd tee -a /etc/dhcpcd.conf <<<'denyinterfaces usb0' >/dev/null
+  fi
   cmd mkdir -p /etc/dnsmasq.d
   cmd mkdir -p /etc/network/interfaces.d
-  sudo_cmd cp "$HOME/$DOTFILES_NAME/supports/usbc/etc/dnsmasq.d/usb" /etc/dnsmasq.d/usb
-  sudo_cmd cp "$HOME/$DOTFILES_NAME/supports/usbc/etc/network/interfaces.d/usb0" /etc/network/interfaces.d/usb0
-  sudo_cmd cp "$HOME/$DOTFILES_NAME/supports/usbc/root/usb.sh" /root/usb.sh
+  copy /etc/dnsmasq.d/usb
+  copy /etc/network/interfaces.d/usb0
+  copy /root/usb.sh
   sudo_cmd chmod 755 /root/usb.sh
-  sudo_cmd sed -i 's/exit 0$/sh \/root\/usb.sh\nexit 0/g' /etc/rc.local
+  if ! sudo_cmd grep -q '/root/usb\.sh' /etc/rc.local; then
+    sudo_cmd sed -i '$i sh /root/usb.sh\n' /etc/rc.local
+  fi
 }

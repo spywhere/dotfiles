@@ -695,6 +695,7 @@ sudo_cmd() {
   if test "$(whoami)" = "root"; then
     # shellcheck disable=SC2068
     cmd $@
+    return $?
   else
     _check_sudo
     if test -n "$_VERBOSE_CMD"; then
@@ -705,6 +706,7 @@ sudo_cmd() {
     fi
     # shellcheck disable=SC2068
     cmd sudo $@
+    return $?
   fi
 }
 
@@ -726,6 +728,7 @@ cmd() {
   _QUIET_FLAGS=""
   _VERBOSE_CMD=""
   _VERBOSE_FLAGS=""
+  return $?
 }
 
 clone() {
