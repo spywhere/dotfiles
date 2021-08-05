@@ -724,11 +724,12 @@ cmd() {
   else
     "$@"
   fi
+  cmd__return_code="$?"
   _QUIET_CMD=""
   _QUIET_FLAGS=""
   _VERBOSE_CMD=""
   _VERBOSE_FLAGS=""
-  return $?
+  return $cmd__return_code
 }
 
 clone() {
