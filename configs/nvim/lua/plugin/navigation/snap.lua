@@ -10,9 +10,9 @@ registry.install {
         reverse = true,
         producer = snap.get('consumer.fzf')(
           snap.get('consumer.try')(
-            snap.get('producer.ripgrep.file'),
+            snap.get('producer.ripgrep.file').hidden,
             snap.get('producer.git.file'),
-            snap.get('producer.fd.file'),
+            snap.get('producer.fd.file').hidden,
             snap.get('producer.luv.file')
           )
         ),
@@ -34,7 +34,7 @@ registry.install {
 
       snap.run({
         reverse = true,
-        producer = snap.get('producer.ripgrep.vimgrep').line({}),
+        producer = snap.get('producer.ripgrep.vimgrep').line({ '--hidden' }),
         prompt = 'Rg>',
         steps = {
           {
