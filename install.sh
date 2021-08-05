@@ -693,8 +693,7 @@ verbose_flags() {
 
 sudo_cmd() {
   if test "$(whoami)" = "root"; then
-    # shellcheck disable=SC2068
-    cmd $@
+    cmd "$@"
     return $?
   else
     _check_sudo
@@ -704,8 +703,7 @@ sudo_cmd() {
     if test -n "$_QUIET_FLAGS"; then
       _QUIET_FLAGS="sudo $_QUIET_FLAGS"
     fi
-    # shellcheck disable=SC2068
-    cmd sudo $@
+    cmd sudo "$@"
     return $?
   fi
 }
