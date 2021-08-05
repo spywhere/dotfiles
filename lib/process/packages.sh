@@ -1,7 +1,7 @@
 #!/bin/sh
 
 _prepare_packages() {
-  if ! _has_skip packages || test -n "$_INDICATED"; then
+  if ! _has_skip package || test -n "$_INDICATED"; then
     for try_run_install__package_path in "$HOME/$DOTFILES/packages"/*.sh; do
       try_run_install__package=$(basename "$try_run_install__package_path")
       try_run_install__package=${try_run_install__package%.sh}
@@ -9,7 +9,7 @@ _prepare_packages() {
       print_inline "$esc_yellow==>$esc_reset Checking package $try_run_install__package..."
 
       # Skip requested packages
-      if (_has_skip packages || _has_skip "$try_run_install__package") && ! _has_indicate "$try_run_install__package"; then
+      if (_has_skip package || _has_skip "$try_run_install__package") && ! _has_indicate "$try_run_install__package"; then
         continue
       fi
 

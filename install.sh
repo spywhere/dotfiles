@@ -360,13 +360,13 @@ _usage() {
   print
   print "To include a specific package or setup, simply add a package or setup name after exclusions."
   print
-  print "  Example: $0 no-packages asdf docker"
+  print "  Example: $0 no-package asdf docker"
   print "  Skip package installation, but install ASDF and Docker"
   print
   print "To skip system update/upgrade, package installation or setups, use"
   print 22 "  no-update" "Skip system update and system upgrade"
   print 22 "  no-upgrade" "Only perform a system update but not system upgrade"
-  print 22 "  no-packages" "Skip package installations, including a custom and a Docker one"
+  print 22 "  no-package" "Skip package installations, including a custom and a Docker one"
   print 22 "  no-docker" "Skip Docker based installations"
   print 22 "  no-custom" "Skip custom installations"
   print 22 "  no-setup" "Skip setups"
