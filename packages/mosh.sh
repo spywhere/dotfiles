@@ -11,5 +11,6 @@ then
   exit 1
 fi
 
+use_apt 'mosh'
 use_brew formula 'mosh'
 use_docker_build
