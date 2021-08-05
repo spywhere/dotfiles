@@ -32,17 +32,17 @@ setup_usbc() {
   step "Enabling access over USB-C..."
 
   if ! sudo_cmd grep -q 'dtoverlay=dwc2' /boot/config.txt; then
-    sudo_cmd tee -a /boot/config.txt <<<'dtoverlay=dwc2' >/dev/null
+    sudo_cmd sed -i '$a dtoverlay=dwc2' /boot/config.txt
   fi
   if ! sudo_cmd grep -q 'modules-load=dwc2' /boot/cmdline.txt; then
     sudo_cmd sed -i '$s/$/ modules-load=dwc2/g' /boot/cmdline.txt
   fi
   sudo_cmd touch /boot/ssh
   if ! sudo_cmd grep -q 'modules-load=dwc2' /etc/modules; then
-    sudo_cmd tee -a /etc/modules <<<'libcomposite' >/dev/null
+    sudo_cmd sed -i '$a libcomposite' /etc/modules
   fi
   if ! sudo_cmd grep -q 'denyinterfaces usb0' /etc/dhcpcd.conf; then
-    sudo_cmd tee -a /etc/dhcpcd.conf <<<'denyinterfaces usb0' >/dev/null
+    sudo_cmd sed -i '$a denyinterfaces usb0' /etc/dhcpcd.conf
   fi
   cmd mkdir -p /etc/dnsmasq.d
   cmd mkdir -p /etc/network/interfaces.d
