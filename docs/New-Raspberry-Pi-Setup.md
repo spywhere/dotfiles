@@ -12,3 +12,6 @@ deb http://raspbian.raspberrypi.org/raspbian/ testing main contrib non-free rpi
 deb-src http://mirror.kku.ac.th/raspbian/raspbian/ buster main contrib non-free rpi
 deb-src http://raspbian.raspberrypi.org/raspbian/ testing main contrib non-free rpi
 ```
+- Adjust overclock and voltage in `/boot/config.txt`
+  - `over_voltage=6`
+  - `arm_freq=2000`
