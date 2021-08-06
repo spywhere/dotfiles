@@ -51,13 +51,13 @@ sh -c "$(curl -sSL git.io/Jt8w0)"
      
     To include a specific package or setup, simply add a package or setup name after exclusions. 
      
-      Example: install.sh no-packages asdf docker 
+      Example: install.sh no-package asdf docker 
       Skip package installation, but install ASDF and Docker 
      
     To skip system update/upgrade, package installation or setups, use 
       no-update           Skip system update and system upgrade
       no-upgrade          Only perform a system update but not system upgrade
-      no-packages         Skip package installations, including a custom and a Docker one
+      no-package          Skip package installations, including a custom and a Docker one
       no-docker           Skip Docker based installations
       no-custom           Skip custom installations
       no-setup            Skip setups
