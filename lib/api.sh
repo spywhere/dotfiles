@@ -197,7 +197,11 @@ use_docker_build() {
     use_docker_build__dockerfile="$HOME/$DOTFILES/docker/$use_docker_build__package/Dockerfile.$OSKIND"
   fi
   if ! test -f "$use_docker_build__dockerfile"; then
-    warn "Docker build for package \"$use_docker_build__package\" is not available on $OS"
+    if test "$OS" = "$OSKIND"; then
+      warn "Docker build for package \"$use_docker_build__package\" is not available on $OS"
+    else
+      warn "Docker build for package \"$use_docker_build__package\" is not available on $OS/$OSKIND"
+    fi
     reset_object
     return
   fi
