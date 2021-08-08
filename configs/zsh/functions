@@ -157,6 +157,32 @@ rebuild-neovim() {
   cd "$workdir"
 }
 
+rebuild-mosh() {
+  local workdir="$(pwd)"
+  local clean=""
+  local tmpdir="$(mktemp -d)"
+  if test "$#" -eq 0; then
+    clean="yes"
+    git clone --depth 1 https://github.com/neovim/neovim "$tmpdir"
+  else
+    tmpdir="$1"
+  fi
+  if test ! -d "$tmpdir"; then
+    printf "Directory is not exists: %s\n" "$tmpdir"
+    return 1
+  fi
+  cd "$tmpdir"
+  ./autogen.sh
+  ./configure
+  make
+  sudo make install
+  if test -n "$clean"; then
+    sudo rm -rf "$tmpdir"
+  fi
+
+  cd "$workdir"
+}
+
 _gh_api() {
   local method="$1"
   shift
