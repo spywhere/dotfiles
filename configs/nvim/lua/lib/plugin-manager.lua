@@ -23,7 +23,7 @@ local install_missing_plugins = function ()
 
   local plugins = vim.tbl_values(vim.g.plugs)
   local missing_plugins = vim.tbl_filter(is_plugin_missing, plugins)
-  if vim.tbl_count(missing_plugins) == 0 then
+  if not next(missing_plugins) then
     return
   end
 
@@ -168,7 +168,7 @@ M.post = function (registry)
 
   -- Automatically install missing plugins on startup
   registry.auto('VimEnter', install_missing_plugins)
-  if vim.tbl_count(_lazy) > 0 then
+  if next(_lazy) then
     vim.defer_fn(function () lazy_load() end, 1000)
   end
 end
