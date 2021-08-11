@@ -45,6 +45,9 @@ setopt auto_menu # automatically use menu completion
 setopt always_to_end # move cursor to end if word had one match
 setopt complete_in_word # allow completion from within a word/phrase
 
+setopt ignore_eof # don't trigger logout / exit on C-d
+bindkey '^D' .delete-char-or-list
+
 zstyle ':completion:*' menu select # select completions with arrow keys
 zstyle ':completion:*' group-name '' # group results by category
 zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
