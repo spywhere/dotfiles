@@ -33,6 +33,9 @@ setup_config() {
   step "  - bat"
   link bat/ .config/bat
 
+  step "  - code-server"
+  link code-server/ .config/code-server
+
   step "  - git"
   link git/gitalias .gitalias
   link git/gitconfig .gitconfig
