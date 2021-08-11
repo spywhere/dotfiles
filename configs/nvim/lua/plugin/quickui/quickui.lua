@@ -129,6 +129,9 @@ registry.install {
           else
             vim.g.indent_blankline_space_char=' '
           end
+          if vim.b.__indent_blankline_active then
+            vim.cmd('IndentBlanklineRefresh')
+          end
         end),
         'Toggle render of whitespace characters'
       },
