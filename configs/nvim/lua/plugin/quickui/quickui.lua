@@ -116,13 +116,20 @@ registry.install {
       },
       { '--' },
       {
-        "%{exists('w:indentLine_indentLineId') && ! empty(w:indentLine_indentLineId)?'✓':' '}Render &Indent Guides\t:IndentLinesToggle",
-        'IndentLinesToggle',
+        "%{exists('b:__indent_blankline_active') && b:__indent_blankline_active?'✓':' '}Render &Indent Guides\t:IndentBlanklineToggle",
+        'IndentBlanklineToggle',
         'Toggle indentation guide lines'
       },
       {
         "%{&list?'✓':' '}&Render Whitespace\t:set invlist",
-        'set invlist | LeadingSpaceToggle',
+        'call ' .. registry.call_for_fn(function ()
+          vim.cmd('set invlist')
+          if vim.o.list then
+            vim.g.indent_blankline_space_char = '·'
+          else
+            vim.g.indent_blankline_space_char=' '
+          end
+        end),
         'Toggle render of whitespace characters'
       },
       {

@@ -13,8 +13,8 @@ registry.install {
       '^for', '^object', '^table', 'block', 'arguments'
     }
 
-    vim.g.indentLine_leadingSpaceChar = '·'
-    -- vim.g.indentLine_fileTypeExclude = { 'text', 'startify' }
+    vim.g.indent_blankline_space_char = ' '
+    vim.g.indent_blankline_space_char_blankline = ' '
   end,
   defer = function ()
     local disable_indent_guides = function ()

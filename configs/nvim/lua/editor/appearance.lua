@@ -34,7 +34,7 @@ local indicators = function ()
   -- use lightline, no need for mode
   bindings.set('noshowmode')
 
-  bindings.set('listchars', 'tab:→\\ ,trail:·,nbsp:·')
+  bindings.set('listchars', 'tab:→\\ ,lead:·,trail:·,nbsp:·')
 end
 registry.pre(indicators)
 
