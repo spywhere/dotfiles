@@ -4,8 +4,12 @@ local bindings = require('lib/bindings')
 --[[
 Refactor:
   - Build the whole status line first
+    - Layout the style (as needed) and function map
+  - Separate data and rendering
+    - Better diagnostic styling
+    - Segmented controls
   - active, inactive, filetype have to check at runtime
-  - child component must inherits parent property as well
+  - Child component must inherits parent property as well
     - when parent is hidden, child must be hidden as well
 --]]
 
