@@ -17,6 +17,11 @@ local tab_expansion = function ()
 end
 registry.defer(tab_expansion)
 
+local better_yank = function ()
+  bindings.map.normal('Y', 'yg_')
+end
+registry.defer(better_yank)
+
 local quick_add_line = function ()
   bindings.map.normal('go', 'o<esc>')
   bindings.map.normal('gO', 'O<esc>')
