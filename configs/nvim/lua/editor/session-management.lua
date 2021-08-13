@@ -4,7 +4,7 @@ local logger = require('lib/logger')
 
 local session_commands = function ()
   local load_session = {
-    function(modifiers, path)
+    function(_, path)
       local session_file = path or 'Session.vim'
       if fn.filereadable(session_file) == 1 then
         api.nvim_command(table.concat({ 'source', session_file }, ' '))
