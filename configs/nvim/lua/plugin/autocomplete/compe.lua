@@ -75,7 +75,8 @@ registry.install {
           calc = true,
           nvim_lsp = true,
           nvim_lua = true,
-          nvim_treesitter = true
+          nvim_treesitter = true,
+          luasnip = true
         }
       })
 
