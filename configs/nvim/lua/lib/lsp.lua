@@ -37,6 +37,10 @@ local generate_lsp_setup = function (name)
     lsps[name].options = options
   end)
 
+  LSPM.config = wrap(function (config)
+    lsps[name].config = config
+  end)
+
   LSPM.on = {
     setup = wrap(function (fn)
       lsps[name].on_setup = fn
@@ -89,6 +93,10 @@ local setup_lsp = function (name, lsp)
   end
 
   local nvim_lsp = require('lspconfig')
+  local nvim_lsp_config = require('lspconfig/configs')
+  if not nvim_lsp_config[name] and lsp.config and next(lsp.config) then
+    nvim_lsp_config[name] = lsp.config
+  end
   nvim_lsp[name].setup(lsp_options)
 end
 
@@ -114,6 +122,8 @@ M.setup = function (name)
     return generate_lsp_setup(name)
   end
 end
+
+M.capabilities = vim.lsp.protocol.make_client_capabilities
 
 M.on_setup = function (fn)
   if has_been_setup then
