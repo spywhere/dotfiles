@@ -14,6 +14,6 @@ end
 registry.pre(search_match)
 
 local clear_highlight = function ()
-  bindings.map.normal('<leader>hs', '<cmd>noh<cr>')
+  bindings.map.normal('<leader>hs', '<cmd>noh<bar>dif<cr>')
 end
 registry.defer(clear_highlight)
