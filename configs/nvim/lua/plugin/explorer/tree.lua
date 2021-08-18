@@ -13,10 +13,16 @@ registry.install {
   end,
   defer_first = function ()
     local show_cursorline = function ()
-      vim.wo.cursorline = true
+      if vim.bo.filetype == 'NvimTree' then
+        vim.wo.cursorline = true
+        return
+      end
+
+      vim.wo.cursorline = false
     end
     -- show cursorline when browsing in the tree explorer
     registry.auto({ 'BufEnter', 'CursorHold', 'FileType' }, show_cursorline, 'NvimTree')
+    registry.auto({ 'CursorHold', 'FileType' }, show_cursorline)
 
     bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
     bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
