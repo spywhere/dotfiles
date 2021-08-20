@@ -36,7 +36,6 @@ M.install = function (registry)
   )
 
   registry.auto('VimEnter', install_plugins)
-  registry.require_reload()
 end
 
 M.pre = function ()

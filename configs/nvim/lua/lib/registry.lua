@@ -27,7 +27,6 @@ local _pre = {}
 local _post = {}
 local _defers = {}
 local _callbacks = {}
-local _require_reload = false
 local increment = std.count()
 
 local remove = function (index, group_name)
@@ -250,10 +249,6 @@ local iterate_defer = function ()
   _defers = {}
 end
 
-M.require_reload = function ()
-  _require_reload = true
-end
-
 M.reload = function ()
   if vim.g.init_vim_loaded ~= 1 then
     return
@@ -263,12 +258,6 @@ M.reload = function ()
 end
 
 M.startup = function()
-  -- install plugin managers
-    -- post install
-  -- run pre
-  -- run plugins
-  -- run post / defer
-
   iterate_pre()
   install_plugin_manager(function (installed)
     iterate_plugins()
