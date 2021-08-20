@@ -11,5 +11,4 @@ then
   exit 1
 fi
 
-optional
-use_brew cask '1password'
+use_mas 'bitwarden' '1352778147'

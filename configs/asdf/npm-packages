@@ -1,4 +1,5 @@
 bash-language-server
+@bitwarden/cli
 eslint
 graphql-language-server-cli
 jest
