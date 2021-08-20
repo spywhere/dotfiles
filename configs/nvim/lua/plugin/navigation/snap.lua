@@ -3,7 +3,7 @@ local registry = require('lib/registry')
 
 registry.install {
   'camspiers/snap',
-  skip = true,
+  skip = registry.experiment('telescope').on,
   defer_first = function ()
     bindings.map.normal('<C-p>', function ()
       local snap = require('snap')

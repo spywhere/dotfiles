@@ -27,6 +27,7 @@ local _pre = {}
 local _post = {}
 local _defers = {}
 local _callbacks = {}
+local _experiments = {}
 local increment = std.count()
 
 local remove = function (index, group_name)
@@ -174,6 +175,28 @@ local install_plugin_manager = function (callback)
   callback(false)
 end
 
+M.experiment = function (name, options)
+  if options == nil then
+    local experiment = _experiments[name]
+    local is_on = experiment
+    if type(experiment) == 'table' then
+      is_on = next(experiment)
+    end
+
+    return {
+      on = function ()
+        return is_on
+      end,
+      off = function ()
+        return not is_on
+      end,
+      options = experiment
+    }
+  end
+
+  _experiments[name] = options
+end
+
 M.install = function (plugin, options)
   local name = plugin
   local plugin_options = {}
@@ -192,7 +215,13 @@ M.install = function (plugin, options)
   end
 
   plugin_options.name = name
-  if plugin_options.skip then
+  local skip = false
+  if type(plugin_options.skip) == 'function' then
+    skip = plugin_options.skip()
+  elseif type(plugin_options.skip) == 'boolean' then
+    skip = plugin_options.skip
+  end
+  if skip then
     return
   end
   if type(plugin_options.setup) == 'function' then
