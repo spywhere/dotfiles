@@ -15,10 +15,10 @@ Refactor:
 
 local M = {}
 
-M.fts = {}
+local _fts = {}
 
 M.filetypes = function (filetypes)
-  M.fts = filetypes
+  _fts = filetypes
 end
 
 local function define_highlight(name, highlight)
@@ -55,8 +55,8 @@ local function render_component(active, sep, is_right_component)
     end
 
     local filetype_map = (
-      M.fts[string.lower(vim.bo.filetype)] or
-      M.fts['*'] or
+      _fts[string.lower(vim.bo.filetype)] or
+      _fts['*'] or
       {}
     )
 
