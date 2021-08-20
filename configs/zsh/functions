@@ -163,7 +163,7 @@ rebuild-mosh() {
   local tmpdir="$(mktemp -d)"
   if test "$#" -eq 0; then
     clean="yes"
-    git clone --depth 1 https://github.com/neovim/neovim "$tmpdir"
+    git clone --depth 1 https://github.com/mobile-shell/mosh "$tmpdir"
   else
     tmpdir="$1"
   fi
