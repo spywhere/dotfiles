@@ -2,7 +2,7 @@ bash-language-server
 @bitwarden/cli
 emmet-ls
 eslint
-graphql-language-server-cli
+graphql-language-service-cli
 jest
 neovim
 sql-language-server
