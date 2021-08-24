@@ -263,7 +263,11 @@ plist() {
   config__key="$2"
   config__value="$3"
 
-  cmd /usr/libexec/PlistBuddy -c "Set $config__key $config__value" "$config__name"
+  if (/usr/libexec/PlistBuddy -c "Print $config__key" >/dev/null 2>&1); then
+    cmd /usr/libexec/PlistBuddy -c "Set $config__key $config__value" "$config__name"
+  else
+    warn "Key '$config__key' cannot be found in $config__name"
+  fi
 }
 
 _config() {
