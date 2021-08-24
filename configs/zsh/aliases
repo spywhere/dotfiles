@@ -36,10 +36,12 @@ alias quickbrown="curl -sSL https://www.cl.cam.ac.uk/~mgk25/ucs/examples/quickbr
 alias tb="nc termbin.com 9999"
 
 # show public ip
-if test `command -v curl`; then
+if test -n "$(command -v curl)"; then
   alias myip="curl eth0.me"
-else
+elif test -n "$(command -v nc)"; then
   alias myip="echo GET / | nc eth0.me 80"
+else
+  echo "Error: 'curl' or 'nc' is not installed. Try browsing eth0.me manully."
 fi
 
 # function aliases
