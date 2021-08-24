@@ -258,44 +258,70 @@ install_packages() {
   fi
 }
 
-config() {
-  config__name="$1"
+plist() {
+  config__name="$HOME/Library/Preferences/$1.plist"
   config__key="$2"
+  config__value="$3"
+
+  cmd /usr/libexec/PlistBuddy -c "Set $config__key $config__value" "$config__name"
+}
+
+_config() {
+  _config__callback="$1"
+  _config__name="$2"
+  _config__key="$3"
   shift
   shift
+  shift
+  _config__rest=0
 
   if test "$#" -eq 1; then
-    config__type="-string"
-    config__value="$1"
+    _config__type="-string"
+    _config__value="$1"
   else
-    config__type="-array"
-    config__value="$@"
+    _config__type="-array"
+    _config__rest=1
   fi
 
   case "$1" in
     true | false)
-      config__type="-bool"
+      _config__type="-bool"
       ;;
     [0-9]*.[0-9]*)
-      config__type="-float"
+      _config__type="-float"
       ;;
     [0-9]*)
-      config__type="-int"
+      _config__type="-int"
       ;;
     -*)
-      config__type="$1"
+      _config__type="$1"
       shift
-      config__value="$@"
+      _config__rest=1
       ;;
   esac
 
-  defaults write "$config__name" "$config__key" "$config__type" "$config__value"
+  if test "$_config__rest" -eq 0; then
+    "$_config__callback" "$_config__name" "$_config__key" "$_config__type" "$_config__value"
+  else
+    "$_config__callback" "$_config__name" "$_config__key" "$_config__type" "$@"
+  fi
+}
+
+config() {
+  config__callback() {
+    cmd defaults write "$@"
+  }
+  _config config__callback "$@"
 }
 
 sudo_config() {
   sudo_config__name="$1"
   shift
-  sudo_cmd config "/Library/Preferences/$1" "$@"
+
+  sudo_config__callback() {
+    sudo_cmd defaults write "$@"
+  }
+  _config sudo_config__callback "/Library/Preferences/$1" "$@"
 }
 
 use_brow() {

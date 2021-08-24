@@ -14,11 +14,6 @@ fi
 add_setup 'setup_config'
 
 setup_macos() {
-  # Ask for admin password
-  sudo -v
-  # And keep it until finish
-  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
   ##########
   # System #
   ##########
@@ -83,7 +78,7 @@ setup_macos() {
   # System Setup #
   ################
   sudo_cmd systemsetup -setrestartfreeze on
-  sudo_cmd systemsetup -setrestartpowerfailure on
+  # sudo_cmd systemsetup -setrestartpowerfailure on
   sudo_cmd systemsetup -setcomputersleep off
 
   ############
@@ -158,17 +153,13 @@ setup_macos() {
   ##########
   # Finder #
   ##########
-  config "com.apple.finder" "DesktopViewSettings" -dict \
-    IconViewSettings -dict \
-      arrangeBy -string "name" \
-      showItemInfo -int 1
-  config "com.apple.finder" "ICloudViewSettings" -dict \
-    IconViewSettings -dict \
-      arrangeBy -string "name" \
-      showItemInfo -int 1
-  config "com.apple.finder" "FK_DefaultIconViewSettings" -dict \
-    arrangeBy -string "name" \
-    showItemInfo -int 1
+  plist "com.apple.finder" ":DesktopViewSettings:IconViewSettings:arrangeBy" name
+  plist "com.apple.finder" ":DesktopViewSettings:IconViewSettings:showItemInfo" true
+  plist "com.apple.finder" ":ICloudViewSettings:IconViewSettings:arrangeBy" name
+  plist "com.apple.finder" ":ICloudViewSettings:IconViewSettings:showItemInfo" true
+  plist "com.apple.finder" ":FK_StandardViewSettings:IconViewSettings:arrangeBy" name
+  plist "com.apple.finder" ":FK_StandardViewSettings:IconViewSettings:showItemInfo" true
+
   config "com.apple.finder" "FXArrangeGroupViewBy" "Name"
   config "com.apple.finder" "FXDefaultSearchScope" "SCsp"
   config "com.apple.finder" "FXEnableExtensionChangeWarning" false
