@@ -13,14 +13,12 @@ fi
 
 add_setup 'setup_config'
 
-if test "$OSKIND" = "macos"; then
+setup_macos() {
   # Ask for admin password
   sudo -v
   # And keep it until finish
   while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-fi
 
-setup_macos() {
   ##########
   # System #
   ##########
