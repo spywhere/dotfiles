@@ -13,6 +13,220 @@ fi
 
 add_setup 'setup_config'
 
+if test "$OSKIND" = "macos"; then
+  # Ask for admin password
+  sudo -v
+  # And keep it until finish
+  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+fi
+
+setup_macos() {
+  ##########
+  # System #
+  ##########
+  config "NSGlobalDomain" "AppleInterfaceStyle" "Dark"
+  # config "NSGlobalDomain" "AppleShowScrollBars" "Automatic"
+  config "NSGlobalDomain" "NSQuitAlwaysKeepsWindows" true
+  config "NSGlobalDomain" "AppleShowAllExtensions" true
+  config "NSGlobalDomain" "WebKitDeveloperExtras" true
+
+  #############
+  # Languages #
+  #############
+  config "NSGlobalDomain" "AppleLanguages" "en-TH" "th-TH"
+  config "NSGlobalDomain" "AppleLocale" "en_TH"
+
+  ###########
+  # Dialogs #
+  ###########
+  config "NSGlobalDomain" "NSNavPanelExpandedStateForSaveMode" true
+  config "NSGlobalDomain" "NSNavPanelExpandedStateForSaveMode2" true
+  config "NSGlobalDomain" "PMPrintingExpandedStateForPrint" true
+  config "NSGlobalDomain" "PMPrintingExpandedStateForPrint2" true
+
+  config "NSGlobalDomain" "NSDocumentSaveNewDocumentsToCloud" false
+
+  config "NSGlobalDomain" "NSTextShowsControlCharacters" true
+
+  ############
+  # Trackpad #
+  ############
+  config "NSGlobalDomain" "com.apple.trackpad.forceClick" 0
+  config "NSGlobalDomain" "com.apple.mouse.tapBehavior" 1
+  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "Clicking" 1
+
+  ############
+  # Keyboard #
+  ############
+  config "NSGlobalDomain" "ApplePressAndHoldEnabled" false
+  config "NSGlobalDomain" "InitialKeyRepeat" 25
+  config "NSGlobalDomain" "KeyRepeat" 2
+
+  ################
+  # Text editing #
+  ################
+  config "NSGlobalDomain" "NSAutomaticCapitalizationEnabled" 0
+  config "NSGlobalDomain" "NSAutomaticDashSubstitutionEnabled" 0
+  config "NSGlobalDomain" "NSAutomaticPeriodSubstitutionEnabled" 0
+  config "NSGlobalDomain" "NSAutomaticSpellingCorrectionEnabled" 1
+  config "NSGlobalDomain" "NSAutomaticTextCompletionEnabled" 0
+
+  #########
+  # Power #
+  #########
+  sudo_cmd pmset -a lidwake 1
+  sudo_cmd pmset -a autorestart 1
+  sudo_cmd pmset -b displaysleep 5
+  sudo_cmd pmset -b sleep 10
+  sudo_cmd pmset -c displaysleep 10
+  sudo_cmd pmset -c sleep 0
+
+  ################
+  # System Setup #
+  ################
+  sudo_cmd systemsetup -setrestartfreeze on
+  sudo_cmd systemsetup -setrestartpowerfailure on
+  sudo_cmd systemsetup -setcomputersleep off
+
+  ############
+  # AppStore #
+  ############
+  config "com.apple.AppStore" "AutoPlayVideoSetting" "on"
+  config "com.apple.AppStore" "InAppReviewEnabled" 0
+  config "com.apple.AppStore" "WebKitDeveloperExtras" true
+  config "com.apple.AppStore" "ShowDebugMenu" true
+
+  ################
+  # Disk Utility #
+  ################
+  config "com.apple.DiskUtility" "DUDebugMenuEnabled" true
+  config "com.apple.DiskUtility" "advanced-image-options" true
+
+  #################
+  # Image Capture #
+  #################
+  config "com.apple.ImageCapture" "disableHotPlug" true
+
+  ##########
+  # Safari #
+  ##########
+  config "com.apple.Safari" "AutoFillPasswords" false
+  config "com.apple.Safari" "AutoOpenSafeDownloads" false
+  config "com.apple.Safari" "CanPromptForPushNotifications" false
+  config "com.apple.Safari" "DownloadsClearingPolicy" 2
+  config "com.apple.Safari" "IncludeDevelopMenu" true
+  config "com.apple.Safari" "IncludeInternalDEbugMenu" true
+  config "com.apple.Safari" "SearchProvidersShortName" "DuckDuckGo"
+  config "com.apple.Safari" "SendDoNotTrackHTTPHeader" true
+  config "com.apple.Safari" "InstallExtensionUpdatesAutomatically" true
+  config "com.apple.Safari" "ShowBackgroundImageInFavorites" true
+  config "com.apple.Safari" "ShowFullURLInSmartSearchField" true
+  config "com.apple.Safari" "ShowOverlayStatusBar" true
+  config "com.apple.Safari" "ShowStandaloneTabBar" false
+  config "com.apple.Safari" "TabCreationPolicy" 2
+  config "com.apple.Safari" "WebKitDeveloperExtrasEnabledPreferenceKey" true
+
+  ################
+  # Time Machine #
+  ################
+  config "com.apple.TimeMachine" "DoNotOfferNewDisksForBackup" true
+
+  ############
+  # Touchbar #
+  ############
+  config "com.apple.controlstrip" "FullCustomized" \
+    "com.apple.system.group.brightness" \
+    "com.apple.system.mission-control" \
+    "com.apple.system.launchpad" \
+    "com.apple.system.group.keyboard-brightness" \
+    "com.apple.system.group.media" \
+    "com.apple.system.group.volume" \
+    "com.apple.system.screen-lock"
+  config "com.apple.controlstrip" "MiniCustomized" \
+    "com.apple.system.brightness" \
+    "com.apple.system.volume" \
+    "com.apple.system.mute" \
+    "com.apple.system.input-menu"
+
+  ########
+  # Dock #
+  ########
+  config "com.apple.dock" "expose-group-apps" true
+  config "com.apple.dock" "minimize-to-application" true
+  config "com.apple.dock" "show-process-indicators" true
+  config "com.apple.dock" "mru-spaces" false
+  config "com.apple.dock" "show-recents" false
+
+  ##########
+  # Finder #
+  ##########
+  config "com.apple.finder" "DesktopViewSettings" -dict \
+    IconViewSettings -dict \
+      arrangeBy -string "name" \
+      showItemInfo -int 1
+  config "com.apple.finder" "ICloudViewSettings" -dict \
+    IconViewSettings -dict \
+      arrangeBy -string "name" \
+      showItemInfo -int 1
+  config "com.apple.finder" "FK_DefaultIconViewSettings" -dict \
+    arrangeBy -string "name" \
+    showItemInfo -int 1
+  config "com.apple.finder" "FXArrangeGroupViewBy" "Name"
+  config "com.apple.finder" "FXDefaultSearchScope" "SCsp"
+  config "com.apple.finder" "FXEnableExtensionChangeWarning" false
+  config "com.apple.finder" "FXInfoPanesExpanded" -dict \
+    General -bool true \
+    OpenWith -bool true \
+    Name -bool true \
+    MetaData -bool true
+  config "com.apple.finder" "FXPreferredGroupBy" "Name"
+  config "com.apple.finder" "FXPreferredViewStyle" "icnv"
+  config "com.apple.finder" "FXRemoveOldTrashItems" true
+  config "com.apple.finder" "NewWindowTarget" "PfDo"
+  config "com.apple.finder" "NewWindowTargetPath" "file://$HOME/Documents/"
+  config "com.apple.finder" "ShowExternalHardDrivesOnDesktop" false
+  config "com.apple.finder" "ShowHardDrivesOnDesktop" false
+  config "com.apple.finder" "ShowPathBar" true
+  config "com.apple.finder" "ShowRecentTags" false
+  config "com.apple.finder" "ShowStatusBar" true
+  config "com.apple.finder" "_FXSortFoldersFirst" true
+  config "com.apple.finder" "_FXSortFoldersFirstOnDesktop" true
+
+  ##############
+  # Clock Menu #
+  ##############
+  config "com.apple.menuextra.clock" "DateFormat" "EEE d MMM  HH:mm"
+  config "com.apple.menuextra.clock" "FlashDateSeparators" true
+  config "com.apple.menuextra.clock" "Show24Hour" true
+
+  ###########
+  # Sidecar #
+  ###########
+  config "com.apple.sidecar.display" "showTouchbar" false
+  config "com.apple.sidecar.display" "sidebarShown" false
+
+  ###################
+  # Software Update #
+  ###################
+  config "com.apple.commerce" "AutoUpdate" true
+  config "com.apple.commerce" "AutoUpdateRestartRequired" true
+  sudo_config "com.apple.SoftwareUpdate" "AutomaticCheckEnabled" true
+  sudo_config "com.apple.SoftwareUpdate" "AutomaticDownload" true
+  sudo_config "com.apple.SoftwareUpdate" "AutomaticallyInstallMacOSUpdates" true
+  sudo_config "com.apple.SoftwareUpdate" "ConfigDataInstall" true
+  sudo_config "com.apple.SoftwareUpdate" "CriticalUpdateInstall" true
+
+  ################
+  # Login window #
+  ################
+  # Show IP / Host / OS version / etc. when click the clock in login window
+  sudo_config "com.apple.loginwindow" "AdminHostInfo" "HostName"
+  sudo_config "com.apple.loginwindow" "GuestEnabled" false
+  sudo_config "com.apple.loginwindow" "showInputMenu" true
+
+  add_post_install_message "Be sure to restart the computer once for changes to take effect"
+}
+
 setup_config() {
   step "Setting up configurations..."
 
@@ -97,4 +311,9 @@ setup_config() {
 
   step "  - zsh"
   link zsh/zshrc .zshrc
+
+  if test "$OSKIND" = "macos"; then
+    step "Setting up system configurations..."
+    setup_macos
+  fi
 }
