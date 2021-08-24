@@ -258,6 +258,46 @@ install_packages() {
   fi
 }
 
+config() {
+  config__name="$1"
+  config__key="$2"
+  shift
+  shift
+
+  if test "$#" -eq 1; then
+    config__type="-string"
+    config__value="$1"
+  else
+    config__type="-array"
+    config__value="$@"
+  fi
+
+  case "$1" in
+    true | false)
+      config__type="-bool"
+      ;;
+    [0-9]*.[0-9]*)
+      config__type="-float"
+      ;;
+    [0-9]*)
+      config__type="-int"
+      ;;
+    -*)
+      config__type="$1"
+      shift
+      config__value="$@"
+      ;;
+  esac
+
+  defaults write "$config__name" "$config__key" "$config__type" "$config__value"
+}
+
+sudo_config() {
+  sudo_config__name="$1"
+  shift
+  sudo_cmd config "/Library/Preferences/$1" "$@"
+}
+
 use_brow() {
   use_brow__kind="$1"
   use_brow__package="$2"
