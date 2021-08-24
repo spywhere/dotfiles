@@ -7,6 +7,14 @@ alias resume="fg"
 # git
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
+
+# git worktree
+alias gwt="git worktree"
+alias gwta="git worktree add"
+alias gwtl="git worktree list"
+alias gwtm="git worktree move"
+alias gwtp="git worktree prune"
+alias gwtrm="git worktree remove"
 # kill the annoyance
 alias ga.="ga ."
 
