@@ -26,9 +26,9 @@ alias dw="defaults write"
 
 # exa (ls replacement)
 alias ls="exa"
-alias l="exa -lFh --git"
-alias la="exa -laFh --git"
-alias ll="exa -l --git"
+alias l="exa -lFh"
+alias la="exa -laFh"
+alias ll="exa -l"
 
 # bat (cat replacement)
 alias cat="bat"
