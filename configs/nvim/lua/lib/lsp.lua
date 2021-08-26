@@ -123,7 +123,15 @@ M.setup = function (name)
   end
 end
 
-M.capabilities = vim.lsp.protocol.make_client_capabilities
+M.capabilities = function ()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local cmp_lsp = prequire('cmp_nvim_lsp')
+  if cmp_lsp then
+    return cmp_lsp.update_capabilities(capabilities)
+  else
+    return capabilities
+  end
+end
 
 M.on_setup = function (fn)
   if has_been_setup then

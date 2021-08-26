@@ -3,31 +3,10 @@ local registry = require('lib/registry')
 local lsp = require('lib/lsp')
 
 registry.install {
-  'hrsh7th/nvim-compe',
-  skip = registry.experiment('cmp').on,
+  'hrsh7th/nvim-cmp',
+  skip = registry.experiment('cmp').off,
   config = function ()
     bindings.set('completeopt', 'menuone,noinsert,noselect')
-
-    bindings.map.insert(
-      '<C-Space>',
-      'compe#complete()',
-      { expr = true }
-    )
-    bindings.map.insert(
-      '<tab>',
-      'pumvisible() ? "\\<C-n>" : "\\<tab>"',
-      { expr = true }
-    )
-    bindings.map.insert(
-      '<S-tab>',
-      'pumvisible() ? "\\<C-p>" : "\\<C-h>"',
-      { expr = true }
-    )
-    bindings.map.insert(
-      '<cr>',
-      'pumvisible() ? compe#confirm(\'<cr>\') : "\\<cr>"',
-      { expr = true }
-    )
 
     bindings.map.normal('gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
     bindings.map.normal('gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
@@ -81,6 +60,57 @@ registry.install {
         }
       })
 
+      local cmp = require('cmp')
+      cmp.setup({
+        snippet = {
+          expand = function (args)
+            local luasnip = prequire('luasnip')
+            if luasnip then
+              luasnip.lsp_expand(args.body)
+            end
+          end
+        },
+        mapping = {
+          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<cr>'] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true
+          },
+          ['<tab>'] = cmp.mapping.mode({ 'i', 's' }, function (_, fallback)
+            local luasnip = prequire('luasnip')
+            if fn.pumvisible() then
+              fn.feedkeys(api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
+            elseif luasnip and luasnip.expand_or_jumpable() then
+              fn.feedkeys(api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
+            else
+              fallback()
+            end
+          end),
+          ['<S-tab>'] = cmp.mapping.mode({ 'i', 's' }, function (_, fallback)
+            local luasnip = prequire('luasnip')
+            if fn.pumvisible() then
+              fn.feedkeys(api.nvim_replace_termcodes('<C-p>', true, true, true), 'n')
+            elseif luasnip and luasnip.jumpable(-1) then
+              fn.feedkeys(api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
+            else
+              fallback()
+            end
+          end)
+        },
+        sources = {
+          { name = 'path' },
+          { name = 'buffer' },
+          { name = 'calc' },
+          { name = 'nvim_lsp' },
+          { name = 'nvim_lua' },
+          -- { name = 'nvim_treesitter' },
+          { name = 'luasnip' }
+        }
+      })
     end)
   end
 }

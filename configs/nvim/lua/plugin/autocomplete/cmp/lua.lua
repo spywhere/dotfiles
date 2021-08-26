@@ -1,0 +1,6 @@
+local registry = require('lib/registry')
+
+registry.install {
+  'hrsh7th/cmp-nvim-lua',
+  lazy = true
+}

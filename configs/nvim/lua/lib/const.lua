@@ -10,3 +10,12 @@ config_home = fn.stdpath('config')
 lua_home = config_home .. '/lua'
 vim_plug_path = config_home .. '/autoload/plug.vim'
 plugin_home = config_home .. '/plugged'
+
+prequire = function (...)
+  local status, mod = pcall(require, ...)
+  if status then
+    return mod
+  else
+    return nil
+  end
+end

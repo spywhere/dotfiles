@@ -24,15 +24,6 @@ local split_management = function ()
 end
 registry.defer(split_management)
 
-local prequire = function (...)
-  local status, mod = pcall(require, ...)
-  if status then
-    return mod
-  else
-    return nil
-  end
-end
-
 local buffer_management = function ()
   -- switch buffer
   bindings.map.normal('<A-Left>', '<cmd>bprev<cr>')
