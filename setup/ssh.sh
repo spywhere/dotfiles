@@ -18,7 +18,9 @@ add_setup 'setup_ssh'
 try_generate_keypair__has_generate=0
 try_generate_keypair() {
   try_generate_keypair__path="$HOME/$DOTFILES/configs/ssh/$1.id_rsa"
-  if ! test -f "$try_generate_keypair__path"; then
+  if test -f "$try_generate_keypair__path"; then
+    info "SSH keypair for $1 is already exists"
+  else
     step "Generating SSH keypair for $1..."
     ssh-keygen -b 2048 -t rsa -f "$try_generate_keypair__path" -q -N ""
 

@@ -26,6 +26,10 @@ add_font() {
 
 # shellcheck disable=SC2120
 install_fonts() {
+  if test -z "$fonts"; then
+    return
+  fi
+
   install_fonts__font_path="$HOME/.local/share/fonts/NerdFonts"
 
   if test -d "$HOME/Library/Fonts"; then
