@@ -60,15 +60,6 @@ registry.install {
         }
       })
 
-      local check_backspace = function ()
-        local col = fn.col('.') - 1
-        if col == 0 or fn.getline('.'):sub(col, col):match('%s') then
-          return true
-        else
-          return false
-        end
-      end
-
       local cmp = require('cmp')
       cmp.setup({
         snippet = {
