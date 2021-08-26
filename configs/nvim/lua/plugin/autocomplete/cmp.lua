@@ -60,6 +60,15 @@ registry.install {
         }
       })
 
+      local check_backspace = function ()
+        local col = fn.col('.') - 1
+        if col == 0 or fn.getline('.'):sub(col, col):match('%s') then
+          return true
+        else
+          return false
+        end
+      end
+
       local cmp = require('cmp')
       cmp.setup({
         snippet = {
@@ -82,7 +91,7 @@ registry.install {
           },
           ['<tab>'] = cmp.mapping.mode({ 'i', 's' }, function (_, fallback)
             local luasnip = prequire('luasnip')
-            if fn.pumvisible() then
+            if fn.pumvisible() == 1 then
               fn.feedkeys(api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
             elseif luasnip and luasnip.expand_or_jumpable() then
               fn.feedkeys(api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
@@ -92,7 +101,7 @@ registry.install {
           end),
           ['<S-tab>'] = cmp.mapping.mode({ 'i', 's' }, function (_, fallback)
             local luasnip = prequire('luasnip')
-            if fn.pumvisible() then
+            if fn.pumvisible() == 1 then
               fn.feedkeys(api.nvim_replace_termcodes('<C-p>', true, true, true), 'n')
             elseif luasnip and luasnip.jumpable(-1) then
               fn.feedkeys(api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
