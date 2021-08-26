@@ -77,9 +77,9 @@ setup_macos() {
   ################
   # System Setup #
   ################
-  sudo_cmd systemsetup -setrestartfreeze on
-  # sudo_cmd systemsetup -setrestartpowerfailure on
-  sudo_cmd systemsetup -setcomputersleep off
+  sudo_cmd systemsetup -setrestartfreeze on >/dev/null 2>&1
+  # sudo_cmd systemsetup -setrestartpowerfailure on >/dev/null 2>&1
+  sudo_cmd systemsetup -setcomputersleep off >/dev/null 2>&1
 
   ############
   # AppStore #
@@ -212,6 +212,13 @@ setup_macos() {
   sudo_config "com.apple.loginwindow" "AdminHostInfo" "HostName"
   sudo_config "com.apple.loginwindow" "GuestEnabled" false
   sudo_config "com.apple.loginwindow" "showInputMenu" true
+
+  ###########
+  # Network #
+  ###########
+  setup_macos__computer_name="$(whoami)'s $(sysctl -n hw.model | sed 's/[0-9,]*$//g' | sed 's/Pro$/ Pro/g' | sed 's/Air$/ Air/g')"
+  sudo_cmd scutil --set LocalHostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
+  sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
 
   add_post_install_message "Be sure to restart the computer once for changes to take effect"
 }

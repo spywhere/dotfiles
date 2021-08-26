@@ -32,31 +32,39 @@ update() {
 }
 
 install_packages() {
+  install_packages__bin_packages=""
+
   install_packages__main_packages=""
   install_packages__community_packages=""
   install_packages__testing_packages=""
   install_packages__edge_packages=""
   step "Collecting packages..."
   for install_packages__package in "$@"; do
-    install_packages__repo="$(parse_field "$install_packages__package" repo)"
-    install_packages__name="$(parse_field "$install_packages__package" package)"
-    case $install_packages__repo in
-      main)
-        install_packages__main_packages="$(_add_to_list "$install_packages__main_packages" "$install_packages__name")"
-        ;;
-      community)
-        install_packages__community_packages="$(_add_to_list "$install_packages__community_packages" "$install_packages__name")"
-        ;;
-      testing)
-        install_packages__testing_packages="$(_add_to_list "$install_packages__testing_packages" "$install_packages__name")"
-        ;;
-      edge)
-        install_packages__edge_packages="$(_add_to_list "$install_packages__edge_packages" "$install_packages__name")"
-        ;;
-      *)
-        warn "unknown repository \"$install_packages__repo\" for \"$install_packages__name\""
-        ;;
-    esac
+    install_packages__manager="$(parse_field "$install_packages__package" manager)"
+
+    if test "$install_packages__manager" = "bin"; then
+      install_packages__bin_packages="$(_add_to_list "$install_packages__bin_packages" "$install_packages__package")"
+    else
+      install_packages__repo="$(parse_field "$install_packages__package" repo)"
+      install_packages__name="$(parse_field "$install_packages__package" package)"
+      case $install_packages__repo in
+        main)
+          install_packages__main_packages="$(_add_to_list "$install_packages__main_packages" "$install_packages__name")"
+          ;;
+        community)
+          install_packages__community_packages="$(_add_to_list "$install_packages__community_packages" "$install_packages__name")"
+          ;;
+        testing)
+          install_packages__testing_packages="$(_add_to_list "$install_packages__testing_packages" "$install_packages__name")"
+          ;;
+        edge)
+          install_packages__edge_packages="$(_add_to_list "$install_packages__edge_packages" "$install_packages__name")"
+          ;;
+        *)
+          warn "unknown repository \"$install_packages__repo\" for \"$install_packages__name\""
+          ;;
+      esac
+    fi
   done
   if test -n "$install_packages__main_packages"; then
     step "Installing main packages..."
@@ -77,6 +85,10 @@ install_packages() {
     step "Installing testing packages..."
     eval "set -- $install_packages__testing_packages"
     sudo_cmd apk add --repository="$(_get_mirror_repo testing edge)" "$@"
+  fi
+  if test -n "$install_packages__bin_packages"; then
+    eval "set -- $install_packages__bin_packages"
+    install_bins "$@"
   fi
 }
 

@@ -37,24 +37,36 @@ install_dpkg_packages() {
 }
 
 install_packages() {
+  install_packages__bin_packages=""
+
   install_packages__apt_packages=""
   install_packages__dpkg_packages=""
   for install_packages__package in "$@"; do
     install_packages__manager="$(parse_field "$install_packages__package" manager)"
     install_packages__name="$(parse_field "$install_packages__package" package)"
 
-    if test "$install_packages__manager" = "apt"; then
+    if test "$install_packages__manager" = "bin"; then
+      install_packages__bin_packages="$(_add_to_list "$install_packages__bin_packages" "$install_packages__package")"
+    elif test "$install_packages__manager" = "apt"; then
       install_packages__apt_packages="$(_add_to_list "$install_packages__apt_packages" "$install_packages__name")"
     elif test "$install_packages__manager" = "dpkg"; then
       install_packages__dpkg_packages="$(_add_to_list "$install_packages__dpkg_packages" "$install_packages__package")"
     fi
   done
 
-  step "Installing packages..."
-  eval "set -- $install_packages__apt_packages"
-  sudo_cmd apt install --no-install-recommends -y "$@"
-  eval "set -- $install_packages__dpkg_packages"
-  install_dpkg_packages "$@"
+  if test -n "$install_packages__apt_packages"; then
+    step "Installing packages..."
+    eval "set -- $install_packages__apt_packages"
+    sudo_cmd apt install --no-install-recommends -y "$@"
+  fi
+  if test -n "$install_packages__dpkg_packages"; then
+    eval "set -- $install_packages__dpkg_packages"
+    install_dpkg_packages "$@"
+  fi
+  if test -n "$install_packages__bin_packages"; then
+    eval "set -- $install_packages__bin_packages"
+    install_bins "$@"
+  fi
 }
 
 use_apt() {
@@ -63,21 +75,6 @@ use_apt() {
   field manager apt
   field package "$use_apt__package"
   add_package
-}
-
-_sort_version() {
-  sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' |
-    LC_ALL=C sort -i -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n |
-    awk '{print $2}'
-}
-
-_get_latest_version() {
-  git ls-remote --tags --refs "$1.git" 2>/dev/null |
-    grep -o 'refs/tags/v*[0-9].*' |
-    cut -d/ -f3- |
-    sed 's/^v//' |
-    _sort_version |
-    tail -n 1
 }
 
 use_dpkg() {

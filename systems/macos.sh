@@ -140,6 +140,8 @@ tap_repo() {
 }
 
 install_packages() {
+  install_packages__bin_packages=""
+
   install_packages__tap_repos=""
 
   install_packages__formula_packages=""
@@ -154,7 +156,9 @@ install_packages() {
   for install_packages__package in "$@"; do
     install_packages__manager="$(parse_field "$install_packages__package" manager)"
 
-    if test "$install_packages__manager" = "brew" -o "$install_packages__manager" = "brow"; then
+    if test "$install_packages__manager" = "bin"; then
+      install_packages__bin_packages="$(_add_to_list "$install_packages__bin_packages" "$install_packages__package")"
+    elif test "$install_packages__manager" = "brew" -o "$install_packages__manager" = "brow"; then
       install_packages__name="$(parse_field "$install_packages__package" package)"
       install_packages__kind="$(parse_field "$install_packages__package" kind)"
       install_packages__flags="$(parse_field "$install_packages__package" flags)"
@@ -249,6 +253,11 @@ install_packages() {
     fi
   fi
 
+  if test -n "$install_packages__bin_packages"; then
+    eval "set -- $install_packages__bin_packages"
+    install_bins "$@"
+  fi
+
   if test -n "$install_packages__cask_packages"; then
     step "Installing cask packages..."
     eval "set -- $install_packages__cask_packages"
@@ -274,7 +283,7 @@ plist() {
   if (/usr/libexec/PlistBuddy -c "Print $config__key" >/dev/null 2>&1); then
     cmd /usr/libexec/PlistBuddy -c "Set $config__key $config__value" "$config__name"
   else
-    warn "Key '$config__key' cannot be found in $config__name"
+    warn "Key '$config__key' cannot be found in '$1'"
   fi
 }
 

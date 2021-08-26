@@ -39,6 +39,74 @@ install_packages() {
   return 0
 }
 
+install_bins() {
+  install_bin__base_path="/usr/local/bin"
+  for install_bin_packages__package in "$@"; do
+    install_bin_packages__name="$(parse_field "$install_bin_packages__package" package)"
+    install_bin_packages__url="$(parse_field "$install_bin_packages__package" url)"
+
+    install_bin_packages__path=$(deps "$install_bin_packages__name")
+    step "Downloading $install_bin_packages__path for installation..."
+    cmd curl -sSL "$install_bin_packages__url" -o "$install_bin_packages__path"
+    step "Installing $install_bin_packages__name into $install_bin__base_path..."
+    cmd chmod +x "$install_bin_packages__path"
+    if test -w "$install_bin__base_path"; then
+      cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
+    else
+      sudo_cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
+    fi
+  done
+}
+
+_sort_version() {
+  sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' |
+    LC_ALL=C sort -i -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n |
+    awk '{print $2}'
+}
+
+_get_latest_version() {
+  git ls-remote --tags --refs "$1.git" 2>/dev/null |
+    grep -o 'refs/tags/v*[0-9].*' |
+    cut -d/ -f3- |
+    sed 's/^v//' |
+    _sort_version |
+    tail -n 1
+}
+
+use_bin() {
+  if test -n "$_FULFILLED"; then
+    reset_object
+    return
+  fi
+
+  use_bin__name="$1"
+  use_bin__url="$2"
+  use_bin__format_url="$3"
+  use_bin__fallback_version="$4"
+
+  if ! has_package curl; then
+    require curl
+  fi
+
+  if test -n "$use_bin__format_url"; then
+    _try_git
+    print_inline "$esc_yellow==>$esc_reset Acquiring latest version of $use_bin__name..."
+    use_bin__version="$(_get_latest_version "$use_bin__url" | sed 's/\//\\\//g')"
+    if test -z "$use_bin__version" -a -n "$use_bin__fallback_version"; then
+      warn "Failed to acquire the latest version of $use_bin__name, will install version $use_bin__fallback_version instead"
+      use_bin__version="$use_bin__fallback_version"
+    fi
+    step "Acquired latest version of $use_bin__name... $use_bin__version"
+    use_bin__safe_url="$(printf "%s" "$use_bin__url" | sed 's/\//\\\//g')"
+    use_bin__url="$(printf "%s" "$use_bin__format_url" | sed "s/%url/$use_bin__safe_url/g" | sed "s/%version/$use_bin__version/g" | sed 's/%%/%/g')"
+  fi
+
+  field manager bin
+  field package "$use_bin__name"
+  field url "$use_bin__url"
+  add_package
+}
+
 # _sh_cmd <source> <target> <command>
 _sh_cmd() {
   sh_cmd__source="$HOME/$DOTFILES/configs/$1"

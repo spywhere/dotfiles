@@ -13,10 +13,34 @@ fi
 
 has_executable 'gomplate'
 
-use_brew formula 'gomplate'
-use_custom 'curl_gomplate'
+sys_type="$(uname -s)"
+case "$sys_type" in
+  Linux*)
+    sys_type="linux"
+    ;;
+  Darwin*)
+    sys_type="darwin"
+    ;;
+  *)
+    ;;
+esac
+cpu_type="$(uname -m)"
+case "$cpu_type" in
+  x86_64)
+    cpu_type="amd64"
+    ;;
+  i686)
+    cpu_type="386"
+    ;;
+  aarch64)
+    cpu_type="arm64"
+    ;;
+  armv7l)
+    cpu_type="armv7"
+    ;;
+  *)
+    ;;
+esac
 
-curl_gomplate() {
-  # use_custom 'curl_gomplate' 'https://github.com/hairyhenderson/gomplate/releases/download/v3.8.0/gomplate_linux-armv7-slim'
-  return
-}
+use_brew formula 'gomplate'
+use_bin 'gomplate' "https://github.com/hairyhenderson/gomplate" "%url/releases/download/v%version/gomplate_$sys_type_$cpu_type.deb" "3.9.0"
