@@ -285,7 +285,7 @@ _main() {
         KEEP_FILES=1
         ;;
       -f | --force)
-        FORCE_INSTALL=1 # TODO: Currently no force install support
+        FORCE_INSTALL=1
         ;;
       -q | --quiet)
         VERBOSE=0
