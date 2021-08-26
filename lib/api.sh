@@ -65,6 +65,10 @@ deps() {
 # Skip installation as fulfilled if specific file is exist
 # has_directory <directory>
 has_file() {
+  # If specific in the flag, always try to install
+  if _has_indicate "$_RUNNING"; then
+    return
+  fi
   if test "$FORCE_INSTALL" -eq 1 -o -n "$_FULFILLED"; then
     return
   fi
@@ -76,6 +80,10 @@ has_file() {
 # Skip installation as fulfilled if specific directory is exist
 # has_directory <directory>
 has_directory() {
+  # If specific in the flag, always try to install
+  if _has_indicate "$_RUNNING"; then
+    return
+  fi
   if test "$FORCE_INSTALL" -eq 1 -o -n "$_FULFILLED"; then
     return
   fi
@@ -87,6 +95,10 @@ has_directory() {
 # Skip installation as fulfilled if specific command is exist
 # has_executable <executable>
 has_executable() {
+  # If specific in the flag, always try to install
+  if _has_indicate "$_RUNNING"; then
+    return
+  fi
   if test "$FORCE_INSTALL" -eq 1 -o -n "$_FULFILLED"; then
     return
   fi

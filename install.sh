@@ -340,6 +340,8 @@ _usage() {
   VERBOSE=1
   print "Usage: $0 [flag ...] [package/setup ...]"
   print
+  print "A cross-platform, modular dotfiles installer"
+  print
   print "Flags:"
   print 22 "  -h, --help" "Show this help message"
   print 22 "  -i, --info" "Print out the setup environment information"
@@ -373,7 +375,8 @@ _usage() {
   print
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
-  print "  - If the setup require particular packages, those packages will be automatically installed."
+  print "  - Packages in the inclusion list will be installed regardless of existing installation"
+  print "  - If the setup require particular packages, those packages will be automatically installed"
 }
 
 _info() {
