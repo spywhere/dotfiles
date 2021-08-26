@@ -12,5 +12,5 @@ then
 fi
 
 # neovim rebuild dependencies
-use_apk 'main' 'ninja'
+use_apk 'main' 'samurai'
 use_apt 'ninja-build'
