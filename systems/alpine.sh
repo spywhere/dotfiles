@@ -20,14 +20,14 @@ _get_mirror_repo() {
 }
 
 install_git() {
-  cmd apk add --no-cache git
+  sudo_cmd apk add --no-cache git
 }
 
 update() {
   if test "$1" = "upgrade"; then
-    cmd apk -U upgrade
+    sudo_cmd apk -U upgrade
   else
-    cmd apk update
+    sudo_cmd apk update
   fi
 }
 
@@ -61,22 +61,22 @@ install_packages() {
   if test -n "$install_packages__main_packages"; then
     step "Installing main packages..."
     eval "set -- $install_packages__main_packages"
-    cmd apk add "$@"
+    sudo_cmd apk add "$@"
   fi
   if test -n "$install_packages__edge_packages"; then
     step "Installing edge packages..."
     eval "set -- $install_packages__edge_packages"
-    cmd apk add --repository="$(_get_mirror_repo main edge)" "$@"
+    sudo_cmd apk add --repository="$(_get_mirror_repo main edge)" "$@"
   fi
   if test -n "$install_packages__community_packages"; then
     step "Installing community packages..."
     eval "set -- $install_packages__community_packages"
-    cmd apk add --repository="$(_get_mirror_repo community edge)" "$@"
+    sudo_cmd apk add --repository="$(_get_mirror_repo community edge)" "$@"
   fi
   if test -n "$install_packages__testing_packages"; then
     step "Installing testing packages..."
     eval "set -- $install_packages__testing_packages"
-    cmd apk add --repository="$(_get_mirror_repo testing edge)" "$@"
+    sudo_cmd apk add --repository="$(_get_mirror_repo testing edge)" "$@"
   fi
 }
 
