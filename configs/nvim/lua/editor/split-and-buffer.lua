@@ -24,14 +24,56 @@ local split_management = function ()
 end
 registry.defer(split_management)
 
+local prequire = function (...)
+  local status, mod = pcall(require, ...)
+  if status then
+    return mod
+  else
+    return nil
+  end
+end
+
 local buffer_management = function ()
   -- switch buffer
   bindings.map.normal('<A-Left>', '<cmd>bprev<cr>')
   bindings.map.normal('<A-Right>', '<cmd>bnext<cr>')
 
+  local close_buffer = function (command, on_tree_open)
+    return function ()
+      if string.lower(vim.bo.filetype) == 'nvimtree' then
+        return
+      end
+      local tree_open = false
+      local tree = prequire('nvim-tree')
+      if tree then
+        local tree_view = require('nvim-tree.view')
+        tree_open = tree_view.win_open()
+        if tree_open then
+          tree.close()
+        end
+      end
+      vim.cmd(command)
+      if tree and tree_open then
+        tree.open()
+        if on_tree_open and on_tree_open ~= "" then
+          vim.cmd(on_tree_open)
+        end
+      end
+    end
+  end
+
   -- close current buffer
-  bindings.map.normal('<A-w>', '<cmd>bdelete<cr>')
+  bindings.map.normal(
+    '<A-w>',
+    close_buffer(
+      'bd',
+      'normal' .. api.nvim_replace_termcodes('<C-o>', true, true, true)
+    )
+  )
   -- close all buffers
-  bindings.map.normal('<A-W>', '<cmd>%bd <bar> e# <bar> bd#<cr>')
+  bindings.map.normal(
+    '<A-W>',
+    close_buffer('%bd | e# | bd#')
+  )
 end
 registry.defer(buffer_management)
