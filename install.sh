@@ -47,7 +47,7 @@ esc_green="" # indicate options and information
 esc_yellow="" # indicate warnings
 esc_red="" # indicate errors
 
-if test -n "$TERM" -a -n "$(command -v tput)" && test "$(tput colors)" -ge 8 && test -n "$(command -v tty)" && tty -s; then
+if test -n "$TERM" -a -n "$(command -v tput)" && test "$(tput colors)" -ge 8 && test -n "$(command -v tty)" && tty -s >/dev/null 2>&1; then
   if test -n "$(command -v wc)"; then
     inline_support=1
   fi
