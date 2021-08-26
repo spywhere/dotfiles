@@ -59,6 +59,27 @@ registry.install {
             end
           end
         },
+        formatting = {
+          format = function (entry, item)
+            local lspkind = prequire('lspkind')
+
+            if not lspkind then
+              return item
+            end
+
+            -- fancy icons and a name of kind
+            item.kind = lspkind.presets.default[item.kind]
+            -- set a name for each source
+            item.menu = ({
+              buffer = 'Buffer',
+              nvim_lsp = 'LSP',
+              luasnip = 'LuaSnip',
+              nvim_lua = 'Lua',
+              latex_symbols = 'Latex',
+            })[entry.source.name]
+            return item
+          end
+        },
         mapping = {
           ['<C-p>'] = cmp.mapping.select_prev_item(),
           ['<C-n>'] = cmp.mapping.select_next_item(),
