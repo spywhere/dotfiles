@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-MIRROR="http://dl-cdn.alpinelinux.org/alpine/{branch}/{repo}"
+MIRROR="https://dl-cdn.alpinelinux.org/alpine/{branch}/{repo}"
 
 _get_mirror_repo() {
   get_mirror_repo__repo="$1"
