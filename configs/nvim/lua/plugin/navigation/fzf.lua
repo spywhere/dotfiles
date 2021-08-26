@@ -4,6 +4,7 @@ local registry = require('lib/registry')
 registry.install('junegunn/fzf')
 registry.install {
   'junegunn/fzf.vim',
+  skip = registry.experiment('fzf').off,
   defer_first = function ()
     vim.g.fzf_layout = {
       up = '~90%',
