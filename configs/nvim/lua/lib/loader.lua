@@ -9,6 +9,7 @@ M.explore = function (dir, recurse)
     return
   end
 
+  local dirs = {}
   while true do
     local name, item_type = luv.fs_scandir_next(handle)
     if not name then
@@ -18,9 +19,13 @@ M.explore = function (dir, recurse)
     if item_type == 'file' then
       require(dir .. '/' .. string.gsub(name, '[.]lua$', ''))
     elseif item_type == 'directory' and recurse == true then
-      -- load subdirectory as well
-      M.explore(dir .. '/' .. name, recurse)
+      -- load subdirectory as well, but do it last
+      table.insert(dirs, dir .. '/' .. name)
     end
+  end
+
+  for _, path in ipairs(dirs) do
+    M.explore(path, recurse)
   end
 end
 

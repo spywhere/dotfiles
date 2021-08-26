@@ -46,21 +46,10 @@ registry.install {
     )
 
     lsp.on_setup(function ()
-      -- completion popup
-      require('compe').setup({
-        -- tmux integration?
-        source = {
-          path = true,
-          buffer = true,
-          calc = true,
-          nvim_lsp = true,
-          nvim_lua = true,
-          nvim_treesitter = true,
-          luasnip = true
-        }
-      })
-
       local cmp = require('cmp')
+      local T = function (str)
+        return api.nvim_replace_termcodes(str, true, true, true)
+      end
       cmp.setup({
         snippet = {
           expand = function (args)
@@ -76,30 +65,31 @@ registry.install {
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.close(),
           ['<cr>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true
           },
-          ['<tab>'] = cmp.mapping.mode({ 'i', 's' }, function (_, fallback)
+          ['<tab>'] = function (fallback)
             local luasnip = prequire('luasnip')
             if fn.pumvisible() == 1 then
-              fn.feedkeys(api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
+              fn.feedkeys(T('<C-n>'), 'n')
             elseif luasnip and luasnip.expand_or_jumpable() then
-              fn.feedkeys(api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
+              luasnip.expand_or_jump()
             else
               fallback()
             end
-          end),
-          ['<S-tab>'] = cmp.mapping.mode({ 'i', 's' }, function (_, fallback)
+          end,
+          ['<S-tab>'] = function (fallback)
             local luasnip = prequire('luasnip')
             if fn.pumvisible() == 1 then
-              fn.feedkeys(api.nvim_replace_termcodes('<C-p>', true, true, true), 'n')
+              fn.feedkeys(T('<C-p>'), 'n')
             elseif luasnip and luasnip.jumpable(-1) then
-              fn.feedkeys(api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
+              luasnip.jump(-1)
             else
               fallback()
             end
-          end)
+          end
         },
         sources = {
           { name = 'path' },
