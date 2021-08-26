@@ -1,7 +1,8 @@
 local lsp = require('lib/lsp')
 
-local capabilities = lsp.capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
+local capabilities = lsp.capabilities({
+  snippetSupport = true
+})
 
 lsp.setup('emmet_ls')
   .need_executable('emmet-ls')
