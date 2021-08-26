@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'nvim'
+
 require tree-sitter
 require luajit
 

@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'mpd'
+
 use_apk 'community' 'mpd'
 use_apt 'mpd'
 if has_flag "apple-silicon"; then

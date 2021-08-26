@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Kaleidoscope'
+
 use_brew cask 'kaleidoscope'

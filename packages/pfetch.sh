@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'pfetch'
+
 require 'curl'
 
 if ! has_cmd pfetch; then

@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_executable 'schismtracker'
+
 optional
 use_brew formula 'schismtracker'

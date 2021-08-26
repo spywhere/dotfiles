@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Tooth Fairy'
+
 optional
 use_mas 'toothfairy' '1191449274'

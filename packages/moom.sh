@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Moom'
+
 optional
 use_mas 'moom' '419330170'

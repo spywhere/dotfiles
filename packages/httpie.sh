@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'http'
+
 use_apk 'main' 'httpie'
 use_apt 'httpie'
 use_brew formula 'httpie'

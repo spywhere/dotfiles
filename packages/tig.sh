@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'tig'
+
 use_apk 'main' 'tig'
 use_apt 'tig'
 use_brew formula 'tig'

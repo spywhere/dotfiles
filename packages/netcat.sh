@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'nc'
+
 use_apk 'main' 'netcat-openbsd'
 use_apt 'netcat'
 use_brew formula 'netcat'

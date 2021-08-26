@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_app 'Alacritty'
+
 optional
 
 if has_flag "apple-silicon"; then

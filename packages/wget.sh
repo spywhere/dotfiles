@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'wget'
+
 use_apk 'main' 'wget'
 use_apt 'wget'
 use_brew formula 'wget'

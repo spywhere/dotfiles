@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'git-flow'
+
 use_apk 'community' 'git-flow'
 use_apt 'git-flow'
 use_brew formula 'git-flow'

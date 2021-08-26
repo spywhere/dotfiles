@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Sound Control'
+
 optional
 use_brew cask 'sound-control'

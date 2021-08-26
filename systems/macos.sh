@@ -94,6 +94,14 @@ has_login_app_store() {
   fi
 }
 
+has_app() {
+  has_directory "/Applications/$1.app"
+}
+
+has_screensaver() {
+  has_directory "$HOME/Library/Screen Savers/$1.saver"
+}
+
 wait_for_app_store() {
   wait_for_app_store__last_check=""
   while ! has_login_app_store; do

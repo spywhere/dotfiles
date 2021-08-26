@@ -11,9 +11,9 @@ then
   exit 1
 fi
 
-if ! has_cmd asdf; then
-  use_custom 'install_asdf'
-fi
+has_executable 'asdf'
+
+use_custom 'install_asdf'
 
 install_asdf() {
   if ! test -d "$HOME/.asdf"; then

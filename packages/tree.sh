@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'tree'
+
 use_apk 'main' 'tree'
 use_apt 'tree'
 use_brew formula 'tree'

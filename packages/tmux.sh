@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'tmux'
+
 # tmux on arm is still outdated
 use_apk 'main' 'tmux'
 use_apt 'tmux'

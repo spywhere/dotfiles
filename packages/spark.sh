@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Spark'
+
 use_mas 'spark' '1176895641'

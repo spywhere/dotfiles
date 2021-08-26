@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'xsel'
+
 require 'xsel'
 
 # tmux-yank dependencies

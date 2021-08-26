@@ -11,6 +11,9 @@ then
   exit 1
 fi
 
+##################
+# Base Interface #
+##################
 setup() {
   return 0
 }
@@ -18,6 +21,10 @@ setup() {
 install_git() {
   return 1
 }
+
+####################
+# Common Interface #
+####################
 
 # update <mode>
 #  mode:
@@ -68,13 +75,40 @@ copy() {
   _sh_cmd "$copy__source" "$copy__target" cp -R "$@"
 }
 
+####################
+# Alpine Interface #
+####################
+
 # use_apk <repo> <package>
 use_apk() {
   return 0
 }
 
+####################
+# Debian Interface #
+####################
+
 # use_apt <package>
 use_apt() {
+  return 0
+}
+
+# use_dpkg <name> <url>
+use_dpkg() {
+  return 0
+}
+
+###################
+# MacOS Interface #
+###################
+
+# has_app <name>
+has_app() {
+  return 0
+}
+
+# has_screensaver <name>
+has_screensaver() {
   return 0
 }
 
@@ -95,10 +129,5 @@ use_brew_tap() {
 
 # use_mas <package>
 use_mas() {
-  return 0
-}
-
-# use_dpkg <name> <url>
-use_dpkg() {
   return 0
 }

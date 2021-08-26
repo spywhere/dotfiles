@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Archiver 4'
+
 use_mas 'archiver' '1556026599'

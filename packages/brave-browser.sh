@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Brave Browser'
+
 optional
 use_brew cask 'brave-browser'

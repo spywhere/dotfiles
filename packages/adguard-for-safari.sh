@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'AdGuard for Safari'
+
 use_mas 'adguard-for-safari' '1440147259'

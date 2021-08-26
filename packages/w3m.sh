@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'w3m'
+
 use_apk 'main' 'w3m'
 use_apt 'w3m'
 use_brew formula 'w3m'

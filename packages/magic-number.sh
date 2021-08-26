@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Magic Number 2'
+
 use_mas 'magic-number' '737047715'

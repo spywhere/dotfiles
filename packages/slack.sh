@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Slack'
+
 use_mas 'slack' '1176895641'

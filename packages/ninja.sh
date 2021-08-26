@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'ninja'
+
 # neovim rebuild dependencies
 use_apk 'main' 'samurai'
 use_apt 'ninja-build'

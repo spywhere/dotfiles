@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Visual Studio Code Insiders'
+
 optional
 use_brew cask 'visual-studio-code-insiders'

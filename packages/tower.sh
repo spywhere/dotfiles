@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Tower 2'
+
 optional
 use_brew cask 'tower2'

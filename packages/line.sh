@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'LINE'
+
 use_mas 'line' '539883307'

@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Patterns'
+
 optional
 use_mas 'patterns' '429449079'

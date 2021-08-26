@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app '4K Stogram'
+
 use_brew cask '4k-stogram'

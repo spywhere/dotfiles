@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'iStat Menus'
+
 use_brew cask 'istat-menus'

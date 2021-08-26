@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'mycli'
+
 require 'py3-pyaes'
 require 'py3-pyperclip'
 

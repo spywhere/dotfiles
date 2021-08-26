@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-require 'curl'
+has_executable 'gomplate'
 
 use_brew formula 'gomplate'
 use_custom 'curl_gomplate'

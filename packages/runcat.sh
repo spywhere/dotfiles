@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'RunCat'
+
 use_mas 'runcat' '1429033973'

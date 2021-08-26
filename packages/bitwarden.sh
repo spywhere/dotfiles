@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Bitwarden'
+
 use_mas 'bitwarden' '1352778147'

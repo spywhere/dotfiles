@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Google Chrome'
+
 optional
 use_brew cask 'google-chrome'

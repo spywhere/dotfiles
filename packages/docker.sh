@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'docker'
+
 use_brew cask 'docker'
 use_apk 'community' 'docker'
 

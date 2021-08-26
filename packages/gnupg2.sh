@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'gpg'
+
 optional
 use_brew formula 'gnupg2'
 use_apk 'main' 'gnupg'

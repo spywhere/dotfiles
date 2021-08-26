@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Vimari'
+
 use_mas 'vimari' '1480933944'

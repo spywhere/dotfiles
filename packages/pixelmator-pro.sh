@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Pixelmator Pro'
+
 use_mas 'pixelmator-pro' '1289583905'

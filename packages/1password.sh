@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app '1Password 7'
+
 optional
 use_brew cask '1password'

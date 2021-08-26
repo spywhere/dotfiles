@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_executable 'zsh'
+
 use_apk 'main' 'zsh'
 use_apt 'zsh'

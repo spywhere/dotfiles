@@ -62,6 +62,39 @@ deps() {
   fi
 }
 
+# Skip installation as fulfilled if specific file is exist
+# has_directory <directory>
+has_file() {
+  if test -n "$_FULFILLED"; then
+    return
+  fi
+  if test -f "$1"; then
+    _FULFILLED="fulfilled"
+  fi
+}
+
+# Skip installation as fulfilled if specific directory is exist
+# has_directory <directory>
+has_directory() {
+  if test -n "$_FULFILLED"; then
+    return
+  fi
+  if test -d "$1"; then
+    _FULFILLED="fulfilled"
+  fi
+}
+
+# Skip installation as fulfilled if specific command is exist
+# has_executable <executable>
+has_executable() {
+  if test -n "$_FULFILLED"; then
+    return
+  fi
+  if has_cmd "$1"; then
+    _FULFILLED="fulfilled"
+  fi
+}
+
 # Mark current script as optional
 optional() {
   if test -n "$_SKIP_OPTIONAL"; then
@@ -136,7 +169,7 @@ require() {
 #   + package      : string
 #   - package_name : string
 add_package() {
-  if test "$_FULFILLED" = "optional"; then
+  if test -n "$_FULFILLED"; then
     reset_object
     return
   fi
@@ -157,12 +190,8 @@ use_custom() {
   if _has_skip custom; then
     return
   fi
-  if test -n "$_FULFILLED"; then
-    reset_object
-    return
-  fi
 
-  if test "$_FULFILLED" = "optional"; then
+  if test -n "$_FULFILLED"; then
     reset_object
     return
   fi

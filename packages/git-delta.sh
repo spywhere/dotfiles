@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'delta'
+
 cpu_type="$(uname -m)"
 libc_type=""
 case "$cpu_type" in

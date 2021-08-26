@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'tree-sitter'
+
 optional
 if has_flag "apple-silicon"; then
   use_brew formula 'tree-sitter' '--head' '--build-from-source'

@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'GoodLinks'
+
 use_mas 'goodlinks' '1474335294'

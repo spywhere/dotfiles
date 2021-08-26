@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_executable 'curl'
+
 use_apk 'main' 'curl'
 use_apt 'curl'

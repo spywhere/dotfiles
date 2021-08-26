@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Alfred 4'
+
 use_brew cask 'alfred'

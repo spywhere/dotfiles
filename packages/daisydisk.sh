@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'DaisyDisk'
+
 optional
 use_brew cask 'daisydisk'

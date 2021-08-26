@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Pocket'
+
 optional
 use_mas 'pocket' '568494494'

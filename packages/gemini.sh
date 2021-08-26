@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_app 'Gemini 2'
+
 use_mas 'gemini' '1090488118'

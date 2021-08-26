@@ -11,4 +11,6 @@ then
   exit 1
 fi
 
+has_executable 'ssh-keygen'
+
 use_apk 'main' 'openssh-keygen'
