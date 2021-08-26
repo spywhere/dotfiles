@@ -12,6 +12,7 @@ then
 fi
 
 # tmux on arm is still outdated
+use_apk 'tmux'
 use_apt 'tmux'
 use_brew formula 'tmux'
 use_custom 'make_tmux'
