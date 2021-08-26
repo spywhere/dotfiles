@@ -1,5 +1,7 @@
 # Dotfiles
 
+A cross-platform, modular dotfiles for my personal setup
+
 ## Required Commands
 
 - coreutils
