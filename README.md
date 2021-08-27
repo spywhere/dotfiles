@@ -33,6 +33,8 @@ sh -c "$(curl -sSL git.io/Jt8w0)"
 
     Usage: install.sh [flag ...] [package/setup ...] 
      
+    A cross-platform, modular dotfiles installer 
+     
     Flags: 
       -h, --help          Show this help message
       -i, --info          Print out the setup environment information
@@ -66,7 +68,8 @@ sh -c "$(curl -sSL git.io/Jt8w0)"
      
     Note: 
       - Package name is indicated by the file name under 'packages' or 'setup' directory 
-      - If the setup require particular packages, those packages will be automatically installed. 
+      - Packages in the inclusion list will be installed regardless of existing installation 
+      - If the setup require particular packages, those packages will be automatically installed 
 
 <!--FLAGS:END-->
 
