@@ -247,7 +247,6 @@ setup_config() {
   link code-server/ .config/code-server
 
   step "  - git"
-  link git/gitalias .gitalias
   link git/gitconfig .gitconfig
   if test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OS"; then
     link "git/gitconfig.$OS" .gitconfig.platform
@@ -256,7 +255,6 @@ setup_config() {
   else
     warn "No platform specific git configuration for \"$OSNAME\""
   fi
-  link git/gitignore .gitignore_global
 
   step "  - github"
   link github/ .config/github

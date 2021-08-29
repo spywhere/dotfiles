@@ -1,6 +1,6 @@
 [core]
   editor = nvim
-  excludesfile = ~/.gitignore_global
+  excludesfile = ~/.dots/configs/git/gitignore
   pager = delta
   compression = 9
   preloadIndex = true
@@ -28,5 +28,5 @@
 [color]
   ui = true
 [include]
-  path = .gitalias
+  path = ~/.dots/configs/git/gitalias
   path = .gitconfig.platform
