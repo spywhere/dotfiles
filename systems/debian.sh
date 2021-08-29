@@ -29,7 +29,7 @@ install_dpkg_packages() {
     install_dpkg_packages__url="$(parse_field "$install_dpkg_packages__package" url)"
 
     install_dpkg_packages__path=$(deps "$install_dpkg_packages__name.deb")
-    step "Downloading $install_dpkg_packages__path for installation..."
+    step "Downloading $install_dpkg_packages__url for installation..."
     cmd curl -sSL "$install_dpkg_packages__url" -o "$install_dpkg_packages__path"
     step "Installing $install_dpkg_packages__name through dpkg..."
     sudo_cmd dpkg --install "$install_dpkg_packages__path"
