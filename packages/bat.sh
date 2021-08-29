@@ -22,7 +22,7 @@ case "$cpu_type" in
   i386)
     cpu_type="i686"
     ;;
-  armv7l)
+  armv6l|armv7l)
     cpu_type="armhf"
     ;;
   aarch64)

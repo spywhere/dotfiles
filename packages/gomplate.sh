@@ -35,6 +35,9 @@ case "$cpu_type" in
   aarch64)
     cpu_type="arm64"
     ;;
+  armv6l)
+    cpu_type="armv6"
+    ;;
   armv7l)
     cpu_type="armv7"
     ;;
