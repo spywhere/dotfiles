@@ -22,9 +22,6 @@
 [user "me"]
   name = Sirisak Lueangsaksri
   email = spywhere@me.com
-[user "agoda"]
-  name = Sirisak Lueangsaksri
-  email = sirisak.lueangsaksri@agoda.com
 [color]
   ui = true
 [include]
