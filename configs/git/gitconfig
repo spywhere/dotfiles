@@ -25,5 +25,6 @@
 [color]
   ui = true
 [include]
+  path = ~/.gitidentity
   path = ~/.dots/configs/git/gitalias
   path = .gitconfig.platform
