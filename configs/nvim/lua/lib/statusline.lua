@@ -21,8 +21,14 @@ M.filetypes = function (filetypes)
   _fts = filetypes
 end
 
+local function highlighter(namespace)
+  return function (name, highlight)
+    bindings.highlight.define(namespace .. name, highlight)
+  end
+end
+
 local function define_highlight(name, highlight)
-  bindings.highlight.define(M.ns_name .. name, highlight)
+  return highlighter(M.ns_name)(name, highlight)
 end
 
 local function component_highlight(name, highlight)
@@ -197,5 +203,6 @@ return function (name, components)
   M.ns = api.nvim_create_namespace(name)
   M.components = components
   api.nvim__set_hl_ns(M.ns)
+  M.define_highlight = highlighter(M.ns_name)
   return M
 end

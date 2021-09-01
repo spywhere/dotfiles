@@ -22,6 +22,26 @@ local filetypes = {
   }
 }
 
+local mode_map = {
+  n = { alias='NOM', color='cyan' },
+  i = { alias='INS', color='white' },
+  v = { alias='VIS', color='green' },
+  V = { alias='V-L', color='green' },
+  [''] = { alias='V-B', color='green' },
+  c = { alias='CMD', color='cyan' },
+  t = { alias='TRM', color='white' },
+  s = { alias='SEL', color='brightcyan' },
+  S = { alias='S-L', color='brightcyan' },
+  [''] = { alias='S-B', color='brightcyan' },
+  R = { alias='REP', color='yellow' }
+}
+
+local function highlight_mode(highlighter, color)
+  highlighter('_Mode', colors.group(color, 'brightblack'))
+  highlighter('Mode_', colors.group(color, 'black'))
+  highlighter('Mode', colors.group('black', color))
+end
+
 local function is_lsp_attached()
   return next(vim.lsp.buf_get_clients(0))
 end
@@ -88,28 +108,12 @@ end)
     -- Mode
     inactive = false,
     fn = function (options)
-      local mode_map = {
-        n = { alias='NOM', color='cyan' },
-        i = { alias='INS', color='white' },
-        v = { alias='VIS', color='green' },
-        V = { alias='V-L', color='green' },
-        [''] = { alias='V-B', color='green' },
-        c = { alias='CMD', color='cyan' },
-        t = { alias='TRM', color='white' },
-        s = { alias='SEL', color='brightcyan' },
-        S = { alias='S-L', color='brightcyan' },
-        [''] = { alias='S-B', color='brightcyan' },
-        R = { alias='REP', color='yellow' }
-      }
-
       local mode = mode_map[fn.mode()] or {
         alias=fn.mode(),
         color='red'
       }
 
-      options.define_highlight('_Mode', colors.group(mode.color, 'brightblack'))
-      options.define_highlight('Mode_', colors.group(mode.color, 'black'))
-      options.define_highlight('Mode', colors.group('black', mode.color))
+      highlight_mode(options.define_highlight, mode.color)
 
       return mode.alias
     end
@@ -357,6 +361,7 @@ local setup = function ()
     'ColorScheme', 'FileType', 'BufWinEnter', 'BufReadPost', 'BufWritePost',
     'BufEnter', 'WinEnter', 'FileChangedShellPost', 'VimResized','TermOpen'
   }
+  highlight_mode(stl.define_highlight, mode_map.n.color)
   vim.wo.statusline = active_line
   registry.auto(active_events, function ()
     vim.wo.statusline = active_line
