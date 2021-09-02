@@ -4,3 +4,4 @@ Host *sr.ht
 Host github.com
   IdentityFile ~/.ssh/github.id_rsa
   PreferredAuthentications publickey
+  UpdateHostKeys yes
