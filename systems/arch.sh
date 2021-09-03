@@ -37,10 +37,10 @@ install_packages() {
     else
       install_packages__name="$(parse_field "$install_packages__package" package)"
       install_packages__reinstall="$(parse_field "$install_packages__package" reinstall)"
-      if test "$install_packages__reinstall" -eq 0; then
-        install_packages__install_packages="$(_add_to_list "$install_packages__install_packages" "$install_packages__name")"
-      else
+      if test -n "$install_packages__reinstall"; then
         install_packages__reinstall_packages="$(_add_to_list "$install_packages__reinstall_packages" "$install_packages__name")"
+      else
+        install_packages__install_packages="$(_add_to_list "$install_packages__install_packages" "$install_packages__name")"
       fi
     fi
   done
