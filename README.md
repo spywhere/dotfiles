@@ -15,6 +15,7 @@ A cross-platform, modular dotfiles for my personal setup
     - Raspberry OS
     - Ubuntu
   - Alpine
+  - Arch Linux (including on ARM)
 
 ## Quick Installation
 
