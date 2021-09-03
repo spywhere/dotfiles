@@ -37,5 +37,6 @@ if test "$cpu_type" = "amd64"; then
   libc_type="-musl"
 fi
 
+use_pacman 'git-delta'
 use_brew formula 'git-delta'
 use_dpkg 'git-delta' "https://github.com/dandavison/delta" "%url/releases/download/%version/git-delta${libc_type}_%version_$cpu_type.deb" "0.8.3"

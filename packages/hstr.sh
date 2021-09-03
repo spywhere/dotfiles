@@ -14,5 +14,6 @@ fi
 has_executable 'hstr'
 
 use_apk 'main' 'hstr'
+# use_yay 'hstr'
 use_brew formula 'hstr'
 use_docker_build

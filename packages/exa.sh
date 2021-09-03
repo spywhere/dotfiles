@@ -15,4 +15,5 @@ has_executable 'exa'
 
 use_apk 'main' 'exa'
 use_apt 'exa'
+use_pacman 'exa'
 use_brew formula 'exa'

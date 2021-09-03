@@ -13,4 +13,5 @@ fi
 
 use_apk 'main' 'bash'
 use_apt 'bash'
+use_pacman 'bash' --reinstall
 use_brew formula 'bash'

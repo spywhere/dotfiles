@@ -13,5 +13,7 @@ fi
 
 has_executable 'gh'
 
+use_pacman 'github-cli'
+
 # for linux, see https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 use_brew formula 'gh'

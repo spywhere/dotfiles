@@ -15,3 +15,4 @@ has_executable 'curl'
 
 use_apk 'main' 'curl'
 use_apt 'curl'
+use_pacman 'curl' --reinstall

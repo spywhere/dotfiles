@@ -13,4 +13,5 @@ fi
 
 use_apk 'main' 'rsync'
 use_apt 'rsync'
+use_pacman 'rsync' --reinstall
 use_brew formula 'rsync'

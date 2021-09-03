@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'sysstat'
+has_executable 'ssh'
 
-use_apt 'sysstat'
-use_pacman 'sysstat'
+use_pacman 'openssh'

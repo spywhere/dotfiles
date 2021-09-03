@@ -17,4 +17,5 @@ require 'boost-dev'
 
 use_apk 'community' 'ncmpcpp'
 use_apt 'ncmpcpp'
+use_pacman 'ncmpcpp'
 use_brew formula 'ncmpcpp'

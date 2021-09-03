@@ -13,7 +13,6 @@ fi
 
 has_executable 'xsel'
 
-require 'xsel'
-
 # tmux-yank dependencies
 use_apt 'xsel'
+use_pacman 'xsel'

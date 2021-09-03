@@ -15,4 +15,5 @@ has_executable 'tig'
 
 use_apk 'main' 'tig'
 use_apt 'tig'
+use_pacman 'tig'
 use_brew formula 'tig'

@@ -15,4 +15,5 @@ has_executable 'wget'
 
 use_apk 'main' 'wget'
 use_apt 'wget'
+use_pacman 'wget'
 use_brew formula 'wget'

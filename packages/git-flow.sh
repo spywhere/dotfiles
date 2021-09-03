@@ -13,6 +13,8 @@ fi
 
 has_executable 'git-flow'
 
+optional
 use_apk 'community' 'git-flow'
 use_apt 'git-flow'
+# use_yay 'gitflow-avh'
 use_brew formula 'git-flow'

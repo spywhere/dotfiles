@@ -35,5 +35,6 @@ if test "$OSKIND" = "alpine" && test "$cpu_type" = "amd64" -o "$cpu_type" = "i38
   libc_type="-musl"
 fi
 
+use_pacman 'fd'
 use_brew formula 'fd'
 use_dpkg 'fd' "https://github.com/sharkdp/fd" "%url/releases/download/v%version/fd${libc_type}_%version_$cpu_type.deb" "8.2.1"

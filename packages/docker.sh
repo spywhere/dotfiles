@@ -15,6 +15,7 @@ has_executable 'docker'
 
 use_brew cask 'docker'
 use_apk 'community' 'docker'
+use_pacman 'docker'
 
 require 'curl'
 use_custom 'install_docker'

@@ -13,5 +13,5 @@ fi
 
 has_executable 'watch'
 
-use_apt 'bash'
+use_apt 'watch'
 use_brew formula 'watch'

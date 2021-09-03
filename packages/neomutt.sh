@@ -13,4 +13,5 @@ fi
 
 has_executable 'neomutt'
 
+use_pacman 'neomutt'
 use_brew formula 'neomutt'

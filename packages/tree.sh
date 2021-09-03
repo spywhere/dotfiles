@@ -15,4 +15,5 @@ has_executable 'tree'
 
 use_apk 'main' 'tree'
 use_apt 'tree'
+use_pacman 'tree'
 use_brew formula 'tree'
