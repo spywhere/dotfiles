@@ -166,6 +166,15 @@ use_dpkg() {
   return 0
 }
 
+##################
+# Arch Interface #
+##################
+
+# use_pacman <package>
+use_pacman() {
+  return 0
+}
+
 ###################
 # MacOS Interface #
 ###################

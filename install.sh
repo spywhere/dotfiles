@@ -499,6 +499,8 @@ _try_git() {
       sudo_cmd apk add --no-cache git
     elif test "$OSKIND" = "debian"; then
       sudo_cmd apt install -y git
+    elif test "$OSKIND" = "arch"; then
+      sudo_cmd pacman -Sy --noconfirm --needed git
     elif test "$OSKIND" = "macos" -a -n "$(command -v "brew")"; then
       cmd brew install git
     else
