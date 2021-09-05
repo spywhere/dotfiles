@@ -47,4 +47,4 @@ esac
 
 # use_yay 'gomplate'
 use_brew formula 'gomplate'
-use_bin 'gomplate' "https://github.com/hairyhenderson/gomplate" "%url/releases/download/v%version/gomplate_$sys_type-$cpu_type.deb" "3.9.0"
+use_bin 'gomplate' "https://github.com/hairyhenderson/gomplate" "%url/releases/download/v%version/gomplate_$sys_type-$cpu_type" "3.9.0"
