@@ -37,4 +37,7 @@ setup_ssh() {
 
   # generate GitHub key pair
   try_generate_keypair github
+
+  # generate GitLab key pair
+  try_generate_keypair gitlab
 }

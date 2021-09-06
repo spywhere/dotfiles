@@ -1,3 +1,5 @@
+Include config.d/*
+
 Host *sr.ht
   IdentityFile ~/.ssh/srht.id_rsa
   PreferredAuthentications publickey
@@ -5,3 +7,6 @@ Host github.com
   IdentityFile ~/.ssh/github.id_rsa
   PreferredAuthentications publickey
   UpdateHostKeys yes
+Host gitlab.com
+  IdentityFile ~/.ssh/gitlab.id_rsa
+  PreferredAuthentications publickey
