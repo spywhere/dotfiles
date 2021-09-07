@@ -61,8 +61,10 @@ install_packages() {
     step "Adding repositories..."
     eval "set -- $install_packages__apt_packages"
     for install_packages__repo in "$@"; do
-      echo "deb $install_packages__repo" >> /etc/apt/sources.list.d/repos.list
-      echo "deb-src $install_packages__repo" >> /etc/apt/sources.list.d/repos.list
+      install_packages__add_repo_record="deb $install_packages__repo"
+      sudo_cmd sh -c "echo \"$install_packages__add_repo_record\" >> /etc/apt/sources.list.d/repos.list"
+      install_packages__add_repo_record="deb-src $install_packages__repo"
+      sudo_cmd sh -c "echo \"$install_packages__add_repo_record\" >> /etc/apt/sources.list.d/repos.list"
     done
     step "Updating package index..."
     sudo_cmd apt update
