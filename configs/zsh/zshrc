@@ -1,5 +1,6 @@
 #!/bin/zsh
 alias recovery="if test -f ~/recovery; then rm -f ~/recovery && echo 'Recovery mode disabled'; else touch ~/recovery && echo 'Recovery mode enabled'; fi"
+alias tmux-recovery="if test -f ~/tmux-recovery; then rm -f ~/tmux-recovery && echo 'Tmux recovery mode disabled'; else touch ~/tmux-recovery && echo 'Tmux recovery mode enabled'; fi"
 if test -f ~/recovery; then
   return
 fi
