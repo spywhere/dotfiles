@@ -62,6 +62,7 @@ install_packages() {
     eval "set -- $install_packages__apt_packages"
     for install_packages__repo in "$@"; do
       echo "deb $install_packages__repo" >> /etc/apt/sources.list.d/repos.list
+      echo "deb-src $install_packages__repo" >> /etc/apt/sources.list.d/repos.list
     done
     step "Updating package index..."
     sudo_cmd apt update
