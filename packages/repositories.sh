@@ -11,6 +11,13 @@ then
   exit 1
 fi
 
+# Debian
+if test "$OS" = "raspbian"; then
+  use_apt_repo 'http://mirror.kku.ac.th/raspbian/raspbian/ buster main contrib non-free rpi'
+  use_apt_repo 'http://raspbian.raspberrypi.org/raspbian/ testing main contrib non-free rpi'
+fi
+
+# MacOS
 use_brew_tap 'homebrew/cask'
 use_brew_tap 'homebrew/cask-fonts'
 use_brew_tap 'homebrew/cask-versions'

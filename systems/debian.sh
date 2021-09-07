@@ -39,6 +39,7 @@ install_dpkg_packages() {
 install_packages() {
   install_packages__bin_packages=""
 
+  install_packages__apt_repos=""
   install_packages__apt_packages=""
   install_packages__dpkg_packages=""
   for install_packages__package in "$@"; do
@@ -47,6 +48,8 @@ install_packages() {
 
     if test "$install_packages__manager" = "bin"; then
       install_packages__bin_packages="$(_add_to_list "$install_packages__bin_packages" "$install_packages__package")"
+    elif test "$install_packages__manager" = "apt-repo"; then
+      install_packages__apt_repos="$(_add_to_list "$install_packages__apt_repos" "$install_packages__name")"
     elif test "$install_packages__manager" = "apt"; then
       install_packages__apt_packages="$(_add_to_list "$install_packages__apt_packages" "$install_packages__name")"
     elif test "$install_packages__manager" = "dpkg"; then
@@ -54,6 +57,13 @@ install_packages() {
     fi
   done
 
+  if test -n "$install_packages__apt_repos" -a ! -f /etc/apt/sources.list.d/repos.list; then
+    step "Adding repositories..."
+    eval "set -- $install_packages__apt_packages"
+    for install_packages__repo in "$@"; do
+      echo "deb $install_packages__repo" >> /etc/apt/sources.list.d/repos.list
+    done
+  fi
   if test -n "$install_packages__apt_packages"; then
     step "Installing packages..."
     eval "set -- $install_packages__apt_packages"
@@ -67,6 +77,14 @@ install_packages() {
     eval "set -- $install_packages__bin_packages"
     install_bins "$@"
   fi
+}
+
+use_apt_repo() {
+  use_apt_repo__repo="$1"
+
+  field manager apt-repo
+  field package "$use_apt_repo__repo"
+  add_package
 }
 
 use_apt() {

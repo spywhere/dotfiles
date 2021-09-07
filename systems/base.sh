@@ -156,6 +156,11 @@ use_apk() {
 # Debian Interface #
 ####################
 
+# use_apt_repo <repo>
+use_apt_repo() {
+  return 0
+}
+
 # use_apt <package>
 use_apt() {
   return 0
