@@ -59,7 +59,7 @@ install_packages() {
 
   if test -n "$install_packages__apt_repos" -a ! -f /etc/apt/sources.list.d/repos.list; then
     step "Adding repositories..."
-    eval "set -- $install_packages__apt_packages"
+    eval "set -- $install_packages__apt_repos"
     for install_packages__repo in "$@"; do
       install_packages__add_repo_record="deb $install_packages__repo"
       sudo_cmd sh -c "echo \"$install_packages__add_repo_record\" >> /etc/apt/sources.list.d/repos.list"
