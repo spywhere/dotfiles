@@ -11,10 +11,10 @@ then
   exit 1
 fi
 
-SUPPORT_DIR="$HOME/$DOTFILES/supports/usbc"
+SUPPORT_DIR="$HOME/$DOTFILES/supports/usb"
 
 if test "$OS" = "raspbian"; then
-  add_setup 'setup_usbc'
+  add_setup 'setup_usb_gadget'
 fi
 
 copy_as() {
@@ -23,13 +23,13 @@ copy_as() {
   fi
 }
 
-setup_usbc() {
-  info "Checking if already enabling access over USB-C..."
+setup_usb_gadget() {
+  info "Checking if already enabling access over USB..."
   if sudo_cmd test -f /root/usb.sh; then
     info "Already enabled"
     return
   fi
-  step "Enabling access over USB-C..."
+  step "Enabling access over USB..."
 
   if ! sudo_cmd grep -q 'dtoverlay=dwc2' /boot/config.txt; then
     # shellcheck disable=SC2016
@@ -40,7 +40,7 @@ setup_usbc() {
     sudo_cmd sed -i '$s/$/ modules-load=dwc2/g' /boot/cmdline.txt
   fi
   sudo_cmd touch /boot/ssh
-  if ! sudo_cmd grep -q 'modules-load=dwc2' /etc/modules; then
+  if ! sudo_cmd grep -q 'libcomposite' /etc/modules; then
     # shellcheck disable=SC2016
     sudo_cmd sed -i '$a libcomposite' /etc/modules
   fi
