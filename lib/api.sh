@@ -103,7 +103,7 @@ has_executable() {
     return
   fi
   if has_cmd "$1"; then
-    _FULFILLED="fulfilled"
+    _FULFILLED="installed"
   fi
 }
 
@@ -181,7 +181,7 @@ require() {
 #   + package      : string
 #   - package_name : string
 add_package() {
-  if test -n "$_FULFILLED"; then
+  if test "$_FULFILLED" = "optional" -o "$_FULFILLED" = "installed"; then
     reset_object
     return
   fi
