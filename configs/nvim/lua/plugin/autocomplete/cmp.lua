@@ -87,10 +87,7 @@ registry.install {
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
-          ['<cr>'] = cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = true
-          },
+          ['<cr>'] = cmp.mapping.confirm {},
           ['<tab>'] = function (fallback)
             local luasnip = prequire('luasnip')
             if fn.pumvisible() == 1 then
