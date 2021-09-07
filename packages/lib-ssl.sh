@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
+# neovim rebuild dependencies
 optional
 use_apt 'libssl-dev'
 use_apk 'main' 'libressl-dev'

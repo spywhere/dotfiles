@@ -13,3 +13,4 @@ fi
 
 # neovim rebuild dependencies
 use_apk 'main' 'gettext'
+use_apt 'gettext'
