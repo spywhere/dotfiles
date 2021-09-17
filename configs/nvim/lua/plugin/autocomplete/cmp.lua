@@ -19,7 +19,7 @@ registry.install {
     bindings.map.normal('<leader>rn', '<cmd>lua vim.lsp.buf.rename()<cr>')
     bindings.map.normal('gr', '<cmd>lua vim.lsp.buf.references()<cr>')
     bindings.map.normal('<leader>d', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<cr>')
-    bindings.map.normal('<leader>D', '<cmd>lua vim.lsp.diagnostic.set_loclist()<cr>')
+    bindings.map.normal('<leader>D', '<cmd>lua vim.diagnostic.setloclist()<cr>')
     bindings.map.normal('[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>')
     bindings.map.normal(']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>')
 
@@ -30,9 +30,9 @@ registry.install {
       Hint = '•'
     }
     for severity, symbol in pairs(sign_symbols) do
-      bindings.sign.define(string.format('LspDiagnosticsSign%s', severity), {
+      bindings.sign.define(string.format('DiagnosticSign%s', severity), {
         text = symbol,
-        texthl = string.format('LspDiagnostics%s', severity),
+        texthl = string.format('Diagnostic%s', severity),
         linehl = '',
         numhl = ''
       })

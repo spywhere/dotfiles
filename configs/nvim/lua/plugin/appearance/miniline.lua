@@ -57,10 +57,12 @@ local function get_lsp_diagnostic_count(prefix, diagnostic_type)
       return ''
     end
 
-    local count = vim.lsp.diagnostic.get_count(
+    local count = vim.tbl_count(vim.diagnostic.get(
       api.nvim_get_current_buf(),
-      diagnostic_type
-    )
+      {
+        severity = diagnostic_type
+      }
+    ))
 
     if count ~= 0 then
       return (prefix or '') .. count .. ' '
@@ -82,10 +84,15 @@ local function get_lsp_ok(text)
     end
 
     local types = { 'Error', 'Warning', 'Info', 'Hint' }
-    for _, diag_type in ipairs(types) do
-      if vim.lsp.diagnostic.get_count(api.nvim_get_current_buf(), diag_type) > 0 then
-        return ''
-      end
+    if vim.tbl_count(vim.diagnostic.get(
+      api.nvim_get_current_buf(),
+      {
+        severity = {
+          min = vim.diagnostic.severity.HINT
+        }
+      }
+    )) > 0 then
+      return ''
     end
 
     return text .. ' '
@@ -294,28 +301,28 @@ end)
     hl = colors.group('black', 'cyan'),
     inactive = false,
     active = is_lsp_attached,
-    fn = get_lsp_diagnostic_count(' H: ', 'Hint')
+    fn = get_lsp_diagnostic_count(' H: ', vim.diagnostic.severity.HINT)
   },
   -- Info
   {
     hl = colors.group('black', 'green'),
     inactive = false,
     active = is_lsp_attached,
-    fn = get_lsp_diagnostic_count(' I: ', 'Information')
+    fn = get_lsp_diagnostic_count(' I: ', vim.diagnostic.severity.INFO)
   },
   -- Warn
   {
     hl = colors.group('black', 'orange'),
     inactive = false,
     active = is_lsp_attached,
-    fn = get_lsp_diagnostic_count(' W: ', 'Warning')
+    fn = get_lsp_diagnostic_count(' W: ', vim.diagnostic.severity.WARN)
   },
   -- Error
   {
     hl = colors.group('black', 'red'),
     inactive = false,
     active = is_lsp_attached,
-    fn = get_lsp_diagnostic_count(' E: ', 'Error')
+    fn = get_lsp_diagnostic_count(' E: ', vim.diagnostic.severity.ERROR)
   },
   -- OK
   {
