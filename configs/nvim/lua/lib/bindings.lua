@@ -77,18 +77,6 @@ M.cmd = function (name, command)
   api.nvim_command(table.concat(definition, ' '))
 end
 
-local define_sign = function (name, arguments)
-  local expression = { 'sign', 'define', name }
-  for k, v in pairs(arguments) do
-    if type(k) == 'string' and type(v) == 'string' then
-      table.insert(expression, string.format('%s=%s', k, v))
-    elseif type(k) == 'number' and type(v) == 'string' then
-      table.insert(expression, v)
-    end
-  end
-  api.nvim_command(table.concat(expression, ' '))
-end
-
 local define_highlight = function (name, colors)
   local expression = { 'highlight', name }
   if type(colors) == 'string' then
@@ -117,7 +105,7 @@ local link_highlight = function (name, target, is_default)
 end
 
 M.sign = {
-  define = define_sign
+  define = fn.sign_define
 }
 M.highlight = {
   define = define_highlight,
