@@ -83,7 +83,6 @@ local function get_lsp_ok(text)
       return ''
     end
 
-    local types = { 'Error', 'Warning', 'Info', 'Hint' }
     if vim.tbl_count(vim.diagnostic.get(
       api.nvim_get_current_buf(),
       {
