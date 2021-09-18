@@ -1,7 +1,6 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 
-registry.install('kyazdani42/nvim-web-devicons')
 registry.install {
   'kyazdani42/nvim-tree.lua',
   config = function ()
