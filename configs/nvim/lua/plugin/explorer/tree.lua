@@ -8,7 +8,6 @@ registry.install {
       default = ' '
     }
     vim.g.nvim_tree_ignore = { '.git', '.DS_Store' }
-    vim.g.nvim_tree_follow = 1
   end,
   defer_first = function ()
     local show_cursorline = function ()
@@ -25,5 +24,12 @@ registry.install {
 
     bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
     bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
+  end,
+  defer = function ()
+    require('nvim-tree').setup {
+      update_focused_file = {
+        enable = true
+      }
+    }
   end
 }
