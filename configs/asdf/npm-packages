@@ -1,6 +1,6 @@
 bash-language-server
 @bitwarden/cli
-emmet-ls
+ls_emmet
 eslint
 graphql-language-service-cli
 jest

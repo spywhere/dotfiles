@@ -4,12 +4,12 @@ local capabilities = lsp.capabilities({
   snippetSupport = true
 })
 
-lsp.setup('emmet_ls')
-  .need_executable('emmet-ls')
+lsp.setup('ls_emmet')
+  .need_executable('ls_emmet')
   .config({
     default_config = {
-      cmd = { 'emmet-ls', '--stdio' },
-      filetypes = { 'html', 'css' },
+      cmd = { 'ls_emmet', '--stdio' },
+      filetypes = { 'html', 'jsx', 'xml', 'css', 'scss', 'less' },
       root_dir = function ()
         return luv.cwd()
       end,
