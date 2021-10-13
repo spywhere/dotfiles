@@ -13,4 +13,5 @@ fi
 
 has_app 'Kap'
 
+optional
 use_brew cask 'kap'
