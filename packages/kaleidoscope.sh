@@ -13,4 +13,5 @@ fi
 
 has_app 'Kaleidoscope'
 
+optional
 use_brew cask 'kaleidoscope'
