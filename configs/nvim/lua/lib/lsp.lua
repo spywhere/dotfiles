@@ -59,8 +59,8 @@ local lsp_on_attach = function (fn)
       fn(client, bufnr)
     end
 
-    for _, fn in ipairs(fns.attach) do
-      fn(client, bufnr)
+    for _, cfn in ipairs(fns.attach) do
+      cfn(client, bufnr)
     end
   end
 end
