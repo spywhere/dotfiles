@@ -19,6 +19,7 @@ fi
 
 # MacOS
 use_brew_tap 'homebrew/cask'
+use_brew_tap 'homebrew/cask-drivers'
 use_brew_tap 'homebrew/cask-fonts'
 use_brew_tap 'homebrew/cask-versions'
 use_brew_tap 'homebrew/services'
