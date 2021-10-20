@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Installation Info
         run: |
-          sh -c "$(curl -sSL git.io/Jt8w0)" - -i
+          sh -c "$(curl -sSL dots.spywhere.me)" - -i
       - name: Perform Installation
         run: |
-          sh -c "$(curl -sSL git.io/Jt8w0)" - -v no-mas
+          sh -c "$(curl -sSL dots.spywhere.me)" - -v no-mas
