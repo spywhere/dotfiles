@@ -109,7 +109,7 @@ use_bin() {
 
 # _sh_cmd <source> <target> <command>
 _sh_cmd() {
-  sh_cmd__source="$HOME/$DOTFILES/configs/$1"
+  sh_cmd__source="$HOME/$DOTFILES/$1"
   sh_cmd__target="$HOME/$2"
   shift
   shift
@@ -125,8 +125,8 @@ _sh_cmd() {
   "$@" "$sh_cmd__source" "$sh_cmd__target"
 }
 
-# link <source> <target>
-link() {
+# raw_link <source> <target>
+raw_link() {
   link__source="$1"
   link__target="$2"
   shift
@@ -134,13 +134,27 @@ link() {
   _sh_cmd "$link__source" "$link__target" ln -fs "$@"
 }
 
-# copy <source> <target>
-copy() {
+# raw_copy <source> <target>
+raw_copy() {
   copy__source="$1"
   copy__target="$2"
   shift
   shift
   _sh_cmd "$copy__source" "$copy__target" cp -R "$@"
+}
+
+# link <source> <target>
+link() {
+  link__source="$1"
+  shift
+  raw_link "configs/$link__source" "$@"
+}
+
+# copy <source> <target>
+copy() {
+  copy__source="$1"
+  shift
+  raw_copy "configs/$copy__source" "$@"
 }
 
 ####################

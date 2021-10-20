@@ -246,6 +246,9 @@ setup_config() {
   step "  - code-server"
   link code-server/ .config/code-server
 
+  step "  - editorconfig"
+  raw_link .editorconfig .editorconfig
+
   step "  - git"
   link git/gitconfig .gitconfig
   if test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OS"; then
