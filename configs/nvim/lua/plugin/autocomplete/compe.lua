@@ -40,10 +40,10 @@ registry.install {
     bindings.map.normal('<leader>td', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
     bindings.map.normal('<leader>rn', '<cmd>lua vim.lsp.buf.rename()<cr>')
     bindings.map.normal('gr', '<cmd>lua vim.lsp.buf.references()<cr>')
-    bindings.map.normal('<leader>d', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<cr>')
+    bindings.map.normal('<leader>d', '<cmd>lua vim.diagnostic.open_float(0, { scope = \'line\' })<cr>')
     bindings.map.normal('<leader>D', '<cmd>lua vim.diagnostic.setloclist()<cr>')
-    bindings.map.normal('[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<cr>')
-    bindings.map.normal(']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<cr>')
+    bindings.map.normal('[d', '<cmd>lua vim.diagnostic.goto_prev { float = {} }<cr>')
+    bindings.map.normal(']d', '<cmd>lua vim.diagnostic.goto_next { float = {} }<cr>')
 
     local sign_symbols = {
       Error = '•',
