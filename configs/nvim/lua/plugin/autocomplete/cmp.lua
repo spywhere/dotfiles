@@ -91,8 +91,8 @@ registry.install {
           ['<cr>'] = cmp.mapping.confirm {},
           ['<tab>'] = function (fallback)
             local luasnip = prequire('luasnip')
-            if fn.pumvisible() == 1 then
-              fn.feedkeys(T('<C-n>'), 'n')
+            if cmp.visible() then
+              cmp.select_next_item()
             elseif luasnip and luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
             else
@@ -101,8 +101,8 @@ registry.install {
           end,
           ['<S-tab>'] = function (fallback)
             local luasnip = prequire('luasnip')
-            if fn.pumvisible() == 1 then
-              fn.feedkeys(T('<C-p>'), 'n')
+            if cmp.visible() then
+              cmp.select_prev_item()
             elseif luasnip and luasnip.jumpable(-1) then
               luasnip.jump(-1)
             else
