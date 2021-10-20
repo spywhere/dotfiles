@@ -5,6 +5,7 @@ eslint
 graphql-language-service-cli
 jest
 neovim
+pyright
 sql-language-server
 tree-sitter-cli
 typescript
