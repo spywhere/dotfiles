@@ -33,7 +33,7 @@ setup_version_manager() {
     bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add $setup_version_manager__plugin"
   done
   set -e
-  bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+  bash "$HOME/.asdf/plugins/nodejs/bin/import-release-team-keyring"
   cmd cd "$HOME"
   step "Installing version manager plugins..."
   bash -c '. $HOME/.asdf/asdf.sh && asdf install'
