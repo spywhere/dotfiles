@@ -20,13 +20,7 @@ A cross-platform, modular dotfiles for my personal setup
 ## Quick Installation
 
 ```sh
-sh -c "$(curl -sSL bit.do/spywhere-dots-install)"
-```
-
-or
-
-```sh
-sh -c "$(curl -sSL git.io/Jt8w0)"
+sh -c "$(curl -sSL dots.spywhere.me)"
 ```
 
 ## Available Flags and Options
@@ -76,14 +70,10 @@ sh -c "$(curl -sSL git.io/Jt8w0)"
 
 ## Installation with Additional Flags and Options
 
-To use flags in remote installation, use one of these commands
+To use flags in remote installation, use this command
 
 ```sh
-sh -c "$(curl -sSL bit.do/spywhere-dots-install) - [flags...]"
-```
-
-```sh
-sh -c "$(curl -sSL git.io/Jt8w0) - [flags...]"
+sh -c "$(curl -sSL dots.spywhere.me) - [flags...]"
 ```
 
 ## Development
