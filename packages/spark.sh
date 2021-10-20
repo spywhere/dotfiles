@@ -13,4 +13,5 @@ fi
 
 has_app 'Spark'
 
+optional
 use_mas 'spark' '1176895641'
