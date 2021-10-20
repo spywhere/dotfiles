@@ -73,7 +73,7 @@ sh -c "$(curl -sSL dots.spywhere.me)"
 To use flags in remote installation, use this command
 
 ```sh
-sh -c "$(curl -sSL dots.spywhere.me) - [flags...]"
+sh -c "$(curl -sSL dots.spywhere.me)" - [flags...]
 ```
 
 ## Development
