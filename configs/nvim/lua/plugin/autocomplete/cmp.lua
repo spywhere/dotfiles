@@ -48,9 +48,6 @@ registry.install {
 
     lsp.on_setup(function ()
       local cmp = require('cmp')
-      local T = function (str)
-        return api.nvim_replace_termcodes(str, true, true, true)
-      end
       cmp.setup({
         snippet = {
           expand = function (args)
