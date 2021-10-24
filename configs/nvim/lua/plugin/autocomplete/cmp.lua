@@ -111,13 +111,13 @@ registry.install {
           end
         },
         sources = {
-          { name = 'path' },
-          { name = 'buffer' },
-          { name = 'calc' },
           { name = 'nvim_lsp' },
           { name = 'nvim_lua' },
+          { name = 'luasnip' },
           -- { name = 'nvim_treesitter' },
-          { name = 'luasnip' }
+          { name = 'buffer', keyword_length = 3, max_item_count = 8 },
+          { name = 'path' },
+          { name = 'calc' }
         }
       })
     end)
