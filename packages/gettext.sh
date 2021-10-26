@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'gettext'
+
 # neovim rebuild dependencies
 use_apk 'main' 'gettext'
 use_apt 'gettext'

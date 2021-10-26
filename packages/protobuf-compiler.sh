@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_executable 'protoc'
+
 # mosh rebuild dependencies
 use_apt 'protobuf-compiler'

@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_string 'version 3\.[0-9]*\.[0-9]*' rsync --version
+
 use_apk 'main' 'rsync'
 use_apt 'rsync'
 use_pacman 'rsync' --reinstall

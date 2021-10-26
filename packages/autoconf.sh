@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
+has_executable 'autoconf'
+
 # neovim rebuild dependencies
 use_apk 'main' 'autoconf'

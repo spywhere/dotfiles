@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+has_executable 'libtool'
+
 # neovim rebuild dependencies
 use_apk 'main' 'libtool'
 use_apt 'libtool-bin'

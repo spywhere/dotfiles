@@ -107,6 +107,23 @@ has_executable() {
   fi
 }
 
+# Skip installation as fulfilled if output is matched with the pattern
+# has_string <regexp> <executable> [args]...
+has_string() {
+  # If specific in the flag, always try to install
+  if _has_indicate "$_RUNNING"; then
+    return
+  fi
+  if test "$FORCE_INSTALL" -eq 1 -o -n "$_FULFILLED"; then
+    return
+  fi
+  has_string__pattern="$1"
+  shift
+  if has_cmd "$1" && ("$@" | grep -q "$has_string__pattern"); then
+    _FULFILLED="installed"
+  fi
+}
+
 # Mark current script as optional
 optional() {
   if test -n "$_SKIP_OPTIONAL"; then
