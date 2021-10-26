@@ -38,10 +38,6 @@ M.install = function (registry)
   registry.auto('VimEnter', install_plugins)
 end
 
-M.pre = function ()
-  fn['plug#begin'](plugin_home)
-end
-
 local is_plugin_installed = function (name)
   if not vim.g.plugs or vim.g.plugs[name] == nil then
     return false
@@ -91,54 +87,56 @@ local perform_post = function (plugin, post_fn, defer_fn, defer_first_fn)
   end
 end
 
-M.load = function (plugin, registry)
-  plugin.identifier = fn.fnamemodify(plugin.name, ':t:s?\\.git$??')
+M.load = function (registry)
+  return function (plugin)
+    plugin.identifier = fn.fnamemodify(plugin.name, ':t:s?\\.git$??')
 
-  local options = plugin.options or {}
+    local options = plugin.options or {}
 
-  if plugin.lazy or options.lazy then
-    options.on = {}
-    table.insert(_lazy, plugin)
-    options.lazy = nil
-  else
-    table.insert(_plugins, plugin)
-  end
-
-  if type(plugin.post_install) == 'function' then
-    local original_do = options['do']
-    local has_prefix = function (string, prefix)
-      return string.find(string, prefix, 1, true) == 1
+    if plugin.lazy or options.lazy then
+      options.on = {}
+      table.insert(_lazy, plugin)
+      options.lazy = nil
+    else
+      table.insert(_plugins, plugin)
     end
 
-    options['do'] = vim.funcref(registry.fn(
-      {
-        'info'
-      },
-      function (info)
-        -- post install
-        if info.status == 'installed' then
-          vim.defer_fn(function () perform_post(plugin) end, 0)
-          if plugin.post_install then
-            vim.defer_fn(plugin.post_install, 100)
+    if type(plugin.post_install) == 'function' then
+      local original_do = options['do']
+      local has_prefix = function (string, prefix)
+        return string.find(string, prefix, 1, true) == 1
+      end
+
+      options['do'] = vim.funcref(registry.fn(
+        {
+          'info'
+        },
+        function (info)
+          -- post install
+          if info.status == 'installed' then
+            vim.defer_fn(function () perform_post(plugin) end, 0)
+            if plugin.post_install then
+              vim.defer_fn(plugin.post_install, 100)
+            end
           end
-        end
 
-        -- perform original action
-        if type(original_do) == 'userdata' or type(original_do) == 'function' then
-          original_do(info)
-        elseif type(original_do) == 'string' then
-          assert(
-            has_prefix(original_do, ':'),
-            'passing "do" as command line is not supported here'
-          )
-          vim.cmd(string.sub(original_do, 2))
-        end
-      end)
-    )
+          -- perform original action
+          if type(original_do) == 'userdata' or type(original_do) == 'function' then
+            original_do(info)
+          elseif type(original_do) == 'string' then
+            assert(
+              has_prefix(original_do, ':'),
+              'passing "do" as command line is not supported here'
+            )
+            vim.cmd(string.sub(original_do, 2))
+          end
+        end)
+      )
+    end
+
+    options[true] = vim.types.dictionary
+    fn['plug#'](plugin.name, options)
   end
-
-  options[true] = vim.types.dictionary
-  fn['plug#'](plugin.name, options)
 end
 
 local lazy_load = function ()
@@ -158,7 +156,9 @@ local lazy_load = function ()
   _lazy = nil
 end
 
-M.post = function (registry)
+M.setup = function (registry, setup)
+  fn['plug#begin'](plugin_home)
+  setup(M.load(registry))
   fn['plug#end']()
 
   for _, plugin in ipairs(_plugins) do

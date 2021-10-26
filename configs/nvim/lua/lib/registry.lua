@@ -232,11 +232,11 @@ M.install = function (plugin, options)
 end
 
 local iterate_plugins = function ()
-  pm.pre(M)
-  for _, plugin in ipairs(_plugins) do
-    pm.load(plugin, M)
-  end
-  pm.post(M)
+  pm.setup(M, function (load)
+    for _, plugin in ipairs(_plugins) do
+      load(plugin)
+    end
+  end)
 
   _plugins = {}
 end
