@@ -265,6 +265,10 @@ _main() {
         _usage
         quit
         ;;
+      -hh)
+        _usage all
+        quit
+        ;;
       -i | --info)
         _info
         quit
@@ -377,6 +381,18 @@ _usage() {
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
   print "  - Packages in the inclusion list will be installed regardless of existing installation"
   print "  - If the setup require particular packages, those packages will be automatically installed"
+  print
+
+  if test -z "$1"; then
+    print "Some systems might have additional installation flags, try running with"
+    print 22 "  -hh" "Show this help message with additional flags for this system"
+  elif test "$1" = "all"; then
+    if _try_load_system; then
+      system_usage
+    else
+      warn "System files cannot be downloaded, some options might be available"
+    fi
+  fi
 }
 
 _info() {
@@ -426,9 +442,9 @@ _try_load_system() {
   try_load_system__base_system="$HOME/$DOTFILES/systems/base.sh"
   try_load_system__target_system="$(_get_system_file "$HOME/$DOTFILES/systems/%s.sh")"
 
-  if test "$REMOTE_INSTALL" -eq 0 -a -f "$(pwd)/systems/base.sh"; then
-    try_load_system__base_system="$(pwd)/systems/base.sh"
-    try_load_system__target_system="$(_get_system_file "$(pwd)/systems/%s.sh")"
+  if test "$REMOTE_INSTALL" -eq 0 -a -f "$0" && test -f "$(dirname "$0")/systems/base.sh"; then
+    try_load_system__base_system="$(dirname "$0")/systems/base.sh"
+    try_load_system__target_system="$(_get_system_file "$(dirname "$0")/systems/%s.sh")"
   fi
 
   try_load_system__system_deps="$(pwd)/$DOTFILES.deps"

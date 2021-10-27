@@ -14,6 +14,10 @@ fi
 ##################
 # Base Interface #
 ##################
+system_usage() {
+  return 0
+}
+
 setup() {
   return 0
 }
