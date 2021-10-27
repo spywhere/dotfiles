@@ -190,6 +190,12 @@ require() {
   _FULFILLED="$require__old_fulfilled"
 }
 
+# Mark package as installed
+mark_installed() {
+  reset_object
+  _FULFILLED="installed"
+}
+
 # Add package into installation list
 # add_package [display name]
 # Fields:

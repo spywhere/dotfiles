@@ -11,6 +11,12 @@ then
   exit 1
 fi
 
+system_usage() {
+  print "For macOS, the following options can be used"
+  print 22 "  no-brew" "Skip package installations via Homebrew"
+  print 22 "  no-app-store" "Skip package installations via App Store"
+}
+
 install_git() {
   if ! test -n "$(command -v brew)"; then
     return 1
@@ -346,6 +352,11 @@ sudo_config() {
 }
 
 use_brow() {
+  if _has_skip brew && ! _has_indicate "$2"; then
+    mark_installed
+    return
+  fi
+
   use_brow__kind="$1"
   use_brow__package="$2"
   shift
@@ -361,6 +372,11 @@ use_brow() {
 }
 
 use_brew() {
+  if _has_skip brew && ! _has_indicate "$2"; then
+    mark_installed
+    return
+  fi
+
   use_brew__kind="$1"
   use_brew__package="$2"
   shift
@@ -376,6 +392,11 @@ use_brew() {
 }
 
 use_brew_tap() {
+  if _has_skip brew && ! _has_indicate "$1"; then
+    mark_installed
+    return
+  fi
+
   _use_brew_tap__tap="$1"
 
   field manager tap
@@ -384,7 +405,8 @@ use_brew_tap() {
 }
 
 use_mas() {
-  if _has_skip mas; then
+  if _has_skip app-store && ! _has_indicate "$1"; then
+    mark_installed
     return
   fi
 
