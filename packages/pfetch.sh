@@ -15,18 +15,17 @@ has_executable 'pfetch'
 
 require 'curl'
 
-if ! has_cmd pfetch; then
-  use_custom 'curl_pfetch'
-fi
+use_custom 'curl_pfetch'
 
 curl_pfetch() {
   curl_pfetch__base_path="/usr/local/bin"
   curl_pfetch__path="$(deps pfetch)"
   cmd curl -sSL 'https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch' -o "$curl_pfetch__path"
   cmd chmod +x "$curl_pfetch__path"
+  if test -d "$curl_pfetch__base_path"; then
+    sudo_cmd mkdir -p "$curl_pfetch__base_path"
+  fi
   if test -w "$curl_pfetch__base_path"; then
-    cmd mv "$curl_pfetch__path" "$curl_pfetch__base_path/pfetch"
-  else
     sudo_cmd mv "$curl_pfetch__path" "$curl_pfetch__base_path/pfetch"
   fi
   return
