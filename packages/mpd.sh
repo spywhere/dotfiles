@@ -16,8 +16,4 @@ has_executable 'mpd'
 use_apk 'community' 'mpd'
 use_apt 'mpd'
 use_pacman 'mpd'
-if has_flag "apple-silicon"; then
-  use_brew formula 'mpd' '--build-from-source'
-else
-  use_brew formula 'mpd'
-fi
+use_brew formula 'mpd'
