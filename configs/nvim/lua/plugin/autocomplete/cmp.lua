@@ -86,7 +86,7 @@ registry.install {
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
           ['<cr>'] = cmp.mapping.confirm {},
-          ['<tab>'] = function (fallback)
+          ['<tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
             if cmp.visible() then
               cmp.select_next_item()
@@ -95,8 +95,8 @@ registry.install {
             else
               fallback()
             end
-          end,
-          ['<S-tab>'] = function (fallback)
+          end, { 'i', 's', 'c'}),
+          ['<S-tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
             if cmp.visible() then
               cmp.select_prev_item()
@@ -105,7 +105,7 @@ registry.install {
             else
               fallback()
             end
-          end
+          end, { 'i', 's', 'c' })
         },
         sources = {
           { name = 'nvim_lsp' },
