@@ -117,6 +117,19 @@ registry.install {
           { name = 'calc' }
         }
       })
+
+      cmp.setup.cmdline('/', {
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+
+      cmp.setup.cmdline(':', {
+        sources = {
+          { name = 'path' },
+          { name = 'cmdline' }
+        }
+      })
     end)
   end
 }
