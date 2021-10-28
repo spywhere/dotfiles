@@ -65,6 +65,9 @@ sh -c "$(curl -sSL dots.spywhere.me)"
       - Package name is indicated by the file name under 'packages' or 'setup' directory 
       - Packages in the inclusion list will be installed regardless of existing installation 
       - If the setup require particular packages, those packages will be automatically installed 
+     
+    Some systems might have additional installation flags, try running with 
+      -hh                 Show this help message with additional flags for this system
 
 <!--FLAGS:END-->
 
