@@ -86,7 +86,7 @@ registry.install {
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
           ['<cr>'] = cmp.mapping.confirm {},
-          ['<tab>'] = cmp.mapping(function (fallback)
+          ['<Tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
             if cmp.visible() then
               cmp.select_next_item()
@@ -96,7 +96,7 @@ registry.install {
               fallback()
             end
           end, { 'i', 's', 'c'}),
-          ['<S-tab>'] = cmp.mapping(function (fallback)
+          ['<S-Tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
             if cmp.visible() then
               cmp.select_prev_item()
@@ -120,14 +120,14 @@ registry.install {
 
       cmp.setup.cmdline('/', {
         sources = {
-          { name = 'buffer' }
+          { name = 'buffer', keyword_length = 3 }
         }
       })
 
       cmp.setup.cmdline(':', {
         sources = {
-          { name = 'path' },
-          { name = 'cmdline' }
+          { name = 'path', keyword_length = 3 },
+          { name = 'cmdline', keyword_length = 3 }
         }
       })
     end)
