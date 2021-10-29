@@ -40,4 +40,7 @@ setup_ssh() {
 
   # generate GitLab key pair
   try_generate_keypair gitlab
+
+  # generate Digital Ocean key pair
+  try_generate_keypair digitalocean
 }
