@@ -1,0 +1,72 @@
+let mapleader=","
+
+set NERDTree
+set surround
+set multiple-cursors
+set commentary
+set argtextobj
+set highlightedyank
+set ideajoin
+
+let g:argtextobj_pairs="[:],(:),<:>"
+
+" Keymap conflicts
+sethandler <C-X> n-v:vim i:ide
+sethandler <C-C> n-v:vim i:ide
+sethandler <C-V> n-v:vim i:ide
+sethandler <C-A> n-v:vim i:ide
+sethandler <C-B> n-v:vim i:ide
+sethandler <C-D> n-v:vim i:ide
+sethandler <C-F> n-v:vim i:ide
+sethandler <C-U> n-v:vim i:ide
+sethandler <C-I> n-v:vim i:ide
+sethandler <C-O> n-v:vim i:ide
+sethandler <C-R> n-v:vim i:ide
+sethandler <C-E> n-v:vim i:ide
+sethandler <C-Y> n-v:vim i:ide
+
+" Editor config
+set showmode
+set scrolloff=5
+set incsearch
+set smartcase
+set number
+set relativenumber
+
+" Plugin mapping
+map <leader>e :NERDTreeToggle<CR>
+map <leader>c<space> gcc
+
+" Language action mapping
+map gD <Action>(GotoDeclaration)
+map gi <Action>(GotoImplementation)
+map ga <Action>(ShowIntentionActions)
+map <leader>td <Action>(GotoTypeDeclaration)
+map <leader>rn <Action>(RenameElement)
+map gr <Action>(ShowUsages)
+map <leader>d <Action><ShowErrorDescription>
+map <leader>D <Action><ActivateProblemsViewToolWindow>
+map [d <Action>(GotoPreviousError)
+map ]d <Action>(GotoNextError)
+
+" Editor mapping
+map <A-Left> <Action>(PreviousTab)
+map <A-Right> <Action>(NextTab)
+map <A-W> <Action>(CloseActiveTab)
+map <A-S-W> <Action>(CloseAllEditorsButActive)
+map <A-Up> <Action>(MoveLineUp)
+map <A-Down> <Action>(MoveLineDown)
+map <C-P> <Action>(SearchEverywhere)
+map <leader>f <Action><FindInPath>
+map <leader>w <Action>(SaveAll)
+
+" Handy mapping
+map go o<ESC>
+map gO O<ESC>
+map gh 20zh
+map gl 20zl
+map <leader>hs :noh<CR>
+map gk <Action>()
+
+" Annoyance
+map Q <Nop>

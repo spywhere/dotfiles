@@ -267,6 +267,9 @@ setup_config() {
     link iterm2/ "Library/Application Support/iTerm2"
   fi
 
+  step "  - jetbrains"
+  link jetbrains/ideavimrc .ideavimrc
+
   if has_package kitty; then
     step "  - kitty"
     link kitty/ .config/kitty
