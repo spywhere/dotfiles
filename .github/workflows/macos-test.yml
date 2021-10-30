@@ -12,7 +12,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh -v no-mas
+          sh install.sh -v no-app-store
   macos-local-normal:
     name: Local Install - Normal (MacOS)
     runs-on: macos-latest
@@ -23,7 +23,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh no-mas
+          sh install.sh no-app-store
   macos-local-quiet:
     name: Local Install - Quiet (MacOS)
     runs-on: macos-latest
@@ -34,7 +34,7 @@ jobs:
           sh install.sh -i
       - name: Perform Installation
         run: |
-          sh install.sh -q no-mas
+          sh install.sh -q no-app-store
 
   macos-remote-verbose:
     name: Remote Install - Verbose (MacOS)
@@ -45,4 +45,4 @@ jobs:
           sh -c "$(curl -sSL dots.spywhere.me)" - -i
       - name: Perform Installation
         run: |
-          sh -c "$(curl -sSL dots.spywhere.me)" - -v no-mas
+          sh -c "$(curl -sSL dots.spywhere.me)" - -v no-app-store
