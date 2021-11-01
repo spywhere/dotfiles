@@ -83,10 +83,10 @@ registry.install {
           ['<C-n>'] = cmp.mapping.select_next_item(),
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
           ['<cr>'] = cmp.mapping.confirm {},
-          ['<Tab>'] = cmp.mapping(function (fallback)
+          ['<tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
             if cmp.visible() then
               cmp.select_next_item()
@@ -96,7 +96,7 @@ registry.install {
               fallback()
             end
           end, { 'i', 's', 'c'}),
-          ['<S-Tab>'] = cmp.mapping(function (fallback)
+          ['<S-tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
             if cmp.visible() then
               cmp.select_prev_item()
