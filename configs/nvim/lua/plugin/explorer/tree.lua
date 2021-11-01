@@ -7,7 +7,6 @@ registry.install {
     vim.g.nvim_tree_icons = {
       default = ' '
     }
-    vim.g.nvim_tree_ignore = { '.git', '.DS_Store' }
   end,
   defer_first = function ()
     local show_cursorline = function ()
@@ -29,6 +28,9 @@ registry.install {
     require('nvim-tree').setup {
       update_focused_file = {
         enable = true
+      },
+      filters = {
+        custom = { '.git', '.DS_Store' }
       }
     }
   end
