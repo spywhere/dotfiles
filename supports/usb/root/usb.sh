@@ -12,7 +12,7 @@ echo 0x01 > bDeviceProtocol
 mkdir -p strings/0x409
 echo "fedcba9876543211" > strings/0x409/serialnumber
 echo "Sirisak Lueangsaksri" > strings/0x409/manufacturer
-echo "PI4 USB Device" > strings/0x409/product
+echo "MiniPi Device" > strings/0x409/product
 mkdir -p configs/c.1/strings/0x409
 echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
 echo 250 > configs/c.1/MaxPower
