@@ -16,7 +16,7 @@ fi
 if ! test -f ~/.zinit/bin/zinit.zsh; then
   echo "Installing zinit..."
   mkdir -p ~/.zinit
-  git clone https://github.com/zdharma/zinit ~/.zinit/bin
+  git clone https://github.com/zdharma-continuum/zinit ~/.zinit/bin
 fi
 
 source ~/.zinit/bin/zinit.zsh
@@ -63,7 +63,7 @@ ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOCONNECT=false
 ZSH_TMUX_UNICODE=true
 
-# Workaround for tmux with zinit: https://github.com/zdharma/zinit/issues/503
+# Workaround for tmux with zinit: https://github.com/zdharma-continuum/zinit/issues/503
 ZSH_TMUX_FIXTERM=false
 
 # early set the variables for terminal and tmux to use
@@ -85,7 +85,7 @@ else
   zinit ice lucid depth"1" blockf
   zinit light zsh-users/zsh-completions
   zinit light zsh-users/zsh-history-substring-search
-  zinit light zdharma/fast-syntax-highlighting
+  zinit light zdharma-continuum/fast-syntax-highlighting
   zinit snippet OMZ::plugins/asdf
   zinit snippet OMZ::plugins/brew
   zinit snippet OMZ::plugins/common-aliases
