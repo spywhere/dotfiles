@@ -8,8 +8,29 @@ _docker-run() {
   fi
 }
 
+_try-docker-run() {
+  local imageName="$1"
+  local buildPath="$2"
+  shift
+  shift
+  if test "$(docker images -q "$imageName")" = ""; then
+    docker build -t "$imageName" "$buildPath"
+  fi
+  _docker-run $@
+}
+
 _docker-daemon() {
   docker run --rm -d $@
+}
+
+_try-cmd() {
+  local cmd="$1"
+  shift
+  if test ${+commands[$cmd]} -eq 1; then
+    ${commands[$cmd]} $@
+    return 0
+  fi
+  return 1
 }
 
 _mysql_image_name="mysql:5.7"
@@ -25,10 +46,16 @@ _mysql-run() {
 }
 
 mysql() {
+  if _try-cmd mysql $@; then
+    return
+  fi
   _mysql-run mysql $@
 }
 
 mysqldump() {
+  if _try-cmd mysqldump $@; then
+    return
+  fi
   _mysql-run mysqldump $@
 }
 
@@ -51,51 +78,136 @@ countdown() {
 }
 
 node() {
+  if _try-cmd node $@; then
+    return $?
+  fi
   _node-run node $@
 }
 
 npm() {
+  if _try-cmd npm $@; then
+    return $?
+  fi
   _node-run npm $@
 }
 
 python2() {
+  if _try-cmd python2 $@; then
+    return $?
+  fi
   _cli-run python2 python:2-alpine python $@
 }
 
 python3() {
+  if _try-cmd python3 $@; then
+    return $?
+  fi
   _cli-run python3 python:3-alpine python $@
 }
 
 terraform() {
+  if _try-cmd terraform $@; then
+    return $?
+  fi
   _cli-run terraform hashicorp/terraform $@
 }
 
 sqlite3() {
+  if _try-cmd sqlite3 $@; then
+    return $?
+  fi
   _cli-run sqlite3 nouchka/sqlite3 $@
 }
 
 redis-cli() {
+  if _try-cmd redis-cli $@; then
+    return $?
+  fi
   _cli-run redis redis:alpine redis-cli $@
 }
 
 mongo() {
+  if _try-cmd mongo $@; then
+    return $?
+  fi
   _cli-run mongo webhippie/mongodb mongo $@
 }
 
 browsh() {
+  if _try-cmd browsh $@; then
+    return $?
+  fi
   _docker-run browsh/browsh $@
 }
 
 convert() {
+  if _try-cmd convert $@; then
+    return $?
+  fi
   _cli-run imagemagick dpokidov/imagemagick $@
 }
 
 consul() {
+  if _try-cmd consul $@; then
+    return $?
+  fi
   _docker-run --network=host --name consul-cli consul $@
 }
 
 consul() {
+  if _try-cmd consul $@; then
+    return $?
+  fi
   _docker-run --network=host --name consul-template -v $(pwd):/opt/app -w /opt/app hashicorp/consul-template:alpine consul-template $@
+}
+
+_run-docker-graphviz() {
+  local cmd="$1"
+  shift
+  _try-docker-run graphviz:latest ${HOME}/$DOTFILES_NAME/docker/graphviz --name graphviz -v $(pwd):/data --entrypoint $cmd graphviz $@
+}
+
+dot() {
+  if _try-cmd dot $@; then
+    return $?
+  fi
+  _run-docker-graphviz dot $@
+}
+
+neato() {
+  if _try-cmd neato $@; then
+    return $?
+  fi
+  _run-docker-graphviz neato $@
+}
+
+neomutt() {
+  if _try-cmd neomutt $@; then
+    return $?
+  fi
+  _try-docker-run neomutt:latest ${HOME}/$DOTFILES_NAME/docker/neomutt --name neomutt -v ${HOME}/$DOTFILES_NAME/binaries/passmgr:/usr/bin/passmgr -v ${HOME}/.cache/neomutt:/root/.cache/neomutt -v ${HOME}/.config/neomutt:/root/.config/neomutt -v ${HOME}/.config/neomutt/accounts/default:/root/.config/neomutt/accounts/default -v ${HOME}/.secret:/root/.secret neomutt $@
+}
+
+doctl() {
+  if _try-cmd doctl $@; then
+    return $?
+  fi
+  local dockerConfigPath="$(printf "%s" ~)/.docker/config.json"
+  _docker-run -e "DIGITALOCEAN_ACCESS_TOKEN=$DIGITALOCEAN_ACCESS_TOKEN" -v "$dockerConfigPath":/root/.docker/config.json -v ~/.ssh/digitalocean.id_rsa:/root/.ssh/id_rsa -v ~/.ssh/digitalocean.id_rsa.pub:/root/.ssh/id_rsa.pub digitalocean/doctl $@
+}
+
+mmdc() {
+  if _try-cmd mmdc $@; then
+    return $?
+  fi
+  _docker-run -v $(pwd):/data minlag/mermaid-cli $@
+}
+
+slack-term() {
+  if _try-cmd slack-term $@; then
+    return $?
+  fi
+  _docker-run --name slack-term -v ${HOME}/.config/slack-term/config:/config erroneousboat/slack-term $@
 }
 
 ###########################

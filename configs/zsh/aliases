@@ -49,7 +49,9 @@ if test -n "$(command -v curl)"; then
 elif test -n "$(command -v nc)"; then
   alias myip="echo GET / | nc eth0.me 80"
 else
-  echo "Error: 'curl' or 'nc' is not installed. Try browsing eth0.me manully."
+  myip() {
+    echo "Error: 'curl' or 'nc' is not installed. Try browsing eth0.me manully."
+  }
 fi
 
 # function aliases
@@ -58,76 +60,6 @@ alias search_issues=search_github
 
 # Docker
 alias d="docker"
-
-_test_alias() {
-  test ${+aliases[$1]} -eq 1
-}
-
-_toggle_alias() {
-  if _test_alias $1; then
-    unalias $1
-    echo alias $1 unset
-  else
-    alias $1=$2
-    echo alias $1 set
-  fi
-}
-
-_toggle_pipe_alias() {
-  if _test_alias $1; then
-    unalias $1
-    echo alias $1 unset
-  else
-    alias -g $1=$2
-    echo alias $1 set
-  fi
-}
-
-docker-aliases() {
-  # Test if docker is running or not
-  docker info >/dev/null 2>&1
-  if test $? -ne 0; then
-    # Docker is not running, no alias set
-    echo "Docker is not running, try again"
-    return
-  fi
-
-  # Docker is running, setting aliases to use Docker instead
-  local mysqlImage="mysql:5.7"
-  if test "$(arch)" = "armv7l"; then
-    # Raspberry Pi variant
-    mysqlImage="jsurf/rpi-mariadb"
-  fi
-  _toggle_alias mysql "docker run -it --network=host --rm --name mysql-cli $mysqlImage mysql"
-  _toggle_alias mysqldump "docker run -it --network=host --rm --name mysql-cli $mysqlImage mysqldump"
-  _toggle_pipe_alias @mysql "| docker run -i --network=host --rm $mysqlImage mysql"
-  _toggle_pipe_alias @mysqldump "| docker run -i --network=host --rm $mysqlImage mysqldump"
-  _toggle_alias docker-mysql "docker run -d -p 3306:3306 --rm -e MYSQL_ROOT_PASSWORD=root -v ${HOME}/$DOTFILES_NAME/configs/mysql/data:/var/lib/mysql -v ${HOME}/$DOTFILES_NAME/configs/mysql/config:/etc/mysql/conf.d --name mysql $mysqlImage"
-
-  _toggle_alias node "docker run -it --rm --name node-cli -v \$(pwd):/opt/app:delegated -w /opt/app node:lts-alpine node"
-  _toggle_alias npm "docker run -it --rm --name npm-cli -p 8000:8000 -v \$(pwd):/opt/app:delegated -w /opt/app node:lts-alpine npm"
-  _toggle_alias python2 "docker run -it --rm --name python2-cli -v \$(pwd):/opt/app:delegated -w /opt/app python:2-alpine python"
-  _toggle_alias python3 "docker run -it --rm --name python3-cli -v \$(pwd):/opt/app:delegated -w /opt/app python:3-alpine python"
-  _toggle_alias terraform "docker run -it --rm --name terraform-cli -v \$(pwd):/opt/app:delegated -w /opt/app hashicorp/terraform"
-  _toggle_alias sqlite3 "docker run -it --rm --name sqlite3-cli -v \$(pwd):/opt/app:delegated -w /opt/app nouchka/sqlite3"
-  _toggle_alias redis-cli "docker run -it --rm --name redis-cli redis:alpine redis-cli"
-  _toggle_alias mongo "docker run -it --rm --name mongo-cli webhippie/mongodb mongo"
-  _toggle_alias codeclimate "docker run -it --rm -e CODECLIMATE_CODE=\"\$PWD\" -v \"\$PWD\":/code -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/cc:/tmp/cc codeclimate/codeclimate"
-  _toggle_alias build-wtfutil "curl -sSL https://raw.githubusercontent.com/wtfutil/wtf/master/Dockerfile | docker build --build-arg=version=v0.26.0 -t wtfutil -"
-  _toggle_alias wtfutil "docker run -it --rm --name wtfutil -v ${HOME}/$DOTFILES_NAME/wtfutil/config.yml:/config/config.yml wtfutil --config=/config/config.yml"
-  _toggle_alias browsh "docker run -it --rm browsh/browsh"
-  _toggle_alias consul "docker run --net=host -it --rm --name consul-cli consul"
-  _toggle_alias consul-template "docker run --net=host -it --rm -v \$(pwd):/opt/app -w /opt/app --name consul-template hashicorp/consul-template:alpine consul-template"
-
-  # Docker version of tools
-  _toggle_alias docker-consul "docker run -d -p 8500:8500 --rm --name consul consul"
-  _toggle_alias docker-redis "docker run -d -p 6379:6379 --rm --name redis redis:alpine"
-  _toggle_alias docker-redis-cluster "docker run -d -p 7000-7050:7000-7050 -p 5000-5010:5000-5010 --rm --name redis-cluster grokzen/redis-cluster"
-  _toggle_alias docker-mongo "docker run -d -p 27017:27017 --rm --name mongo webhippie/mongodb"
-
-  # Shortcut
-  _toggle_alias docker-update "(docker images --format \"{{.Repository}}:{{.Tag}}\" | xargs -n1 docker pull) && (docker rmi \$(docker images -f \"dangling=true\" -q))"
-}
 
 # github cli - issues
 alias iscl="gh issue close"

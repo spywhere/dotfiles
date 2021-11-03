@@ -109,6 +109,7 @@ test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/con
 
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
+. $HOME/$DOTFILES_NAME/configs/zsh/docker
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
 
