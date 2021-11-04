@@ -88,10 +88,13 @@ registry.install {
           ['<cr>'] = cmp.mapping.confirm {},
           ['<tab>'] = cmp.mapping(function (fallback)
             local luasnip = prequire('luasnip')
+            local copilot_key = fn['copilot#Accept']()
             if cmp.visible() then
               cmp.select_next_item()
             elseif luasnip and luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
+            elseif copilot_key ~= "" then
+              api.nvim_feedkeys(copilot_key, 'i', true)
             else
               fallback()
             end
