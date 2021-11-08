@@ -1,0 +1,22 @@
+#!/bin/zsh
+
+function install_git_hook() {
+  # No pre-commit command
+  if test -z "$(command -v pre-commit)"; then
+    return
+  fi
+
+  # Not a git directory
+  if test ! -d .git; then
+    return
+  fi
+
+  # Git hook already installed
+  if test -f .git/hooks/pre-commit; then
+    return
+  fi
+
+  pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg
+}
+
+add-zsh-hook -Uz chpwd (){ install_git_hook; }

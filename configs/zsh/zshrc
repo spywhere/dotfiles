@@ -29,6 +29,7 @@ if test $(date +'%j') != $updated_at; then
 else
   compinit -C -i
 fi
+autoload -Uz add-zsh-hook
 
 setopt append_history # append history list to history file, rather than replace it
 setopt hist_ignore_dups # don't record a command that just run
@@ -112,6 +113,7 @@ test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/con
 . $HOME/$DOTFILES_NAME/configs/zsh/docker
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
+. $HOME/$DOTFILES_NAME/configs/zsh/hooks
 
 # Use personalize settings if found as well
 test -f ~/.personal && source ~/.personal
