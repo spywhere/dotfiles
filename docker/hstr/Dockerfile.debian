@@ -1,4 +1,4 @@
-FROM debian:buster-slim AS builder
+FROM debian:bullseye-slim AS builder
 WORKDIR /etc/app
 RUN apt update
 RUN apt install -y ca-certificates git automake gcc make libncursesw5-dev libreadline-dev pkg-config
@@ -10,7 +10,7 @@ RUN ./configure
 RUN make
 RUN make install
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 RUN apt update
 LABEL DEPS="apt install -y libncursesw5 libreadline7"
 RUN apt install -y libncursesw5 libreadline7

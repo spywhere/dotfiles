@@ -40,7 +40,7 @@ base_host=$(hostname)
 set -e
 if ! test -f "raspios_rootfs.tar.gz"; then
   echo "[$base_host] Building raspios_rootfs.tar.gz..."
-  docker run --network=host --hostname=docker --privileged -it --rm -w /raspios -v /dev:/dev -v "$(pwd):/app" debian:buster-slim sh /app/build.sh rootfs
+  docker run --network=host --hostname=docker --privileged -it --rm -w /raspios -v /dev:/dev -v "$(pwd):/app" debian:bullseye-slim sh /app/build.sh rootfs
 fi
 echo "[$base_host] Building Docker image from rootfs..."
 docker build -t raspios:lite . -f- <<EOF
