@@ -105,8 +105,13 @@ if test -d /opt/homebrew/bin; then
   export PATH="/opt/homebrew/bin:$PATH"
 fi
 
-# Setup powerlevel10k
-test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k && source $HOME/$DOTFILES_NAME/configs/zsh/p10k
+if test ! -f ~/.no-starship -a -n "$(command -v starship)"; then
+  # Setup starship
+  . <(starship init zsh)
+elif test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k; then
+  # Setup powerlevel10k
+  source $HOME/$DOTFILES_NAME/configs/zsh/p10k
+fi
 
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions

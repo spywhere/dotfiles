@@ -294,6 +294,9 @@ setup_config() {
   step "  - ssh"
   link ssh/ .ssh
 
+  step "  - starship"
+  link starship/starship.toml .config/starship.toml
+
   step "  - tig"
   link tig/tig.conf .tigrc
 

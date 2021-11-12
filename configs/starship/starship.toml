@@ -1,0 +1,124 @@
+add_newline = false
+
+[character]
+success_symbol = "[➜](bold green) "
+error_symbol = "[➜](bold red) "
+
+# hostname
+
+[line_break]
+disabled = true
+
+[aws]
+disabled =true
+
+[battery]
+disabled = true
+
+[cmake]
+disabled = true
+
+[conda]
+disabled =true
+
+[crystal]
+disabled =true
+
+[dart]
+disabled =true
+
+[docker_context]
+disabled =true
+
+[dotnet]
+disabled =true
+
+[elixir]
+disabled =true
+
+[elm]
+disabled =true
+
+[env_var]
+disabled =true
+
+[erlang]
+disabled =true
+
+[gcloud]
+disabled =true
+
+[golang]
+disabled =true
+
+[helm]
+disabled =true
+
+[java]
+disabled =true
+
+[jobs]
+disabled =true
+
+[julia]
+disabled =true
+
+[kotlin]
+disabled =true
+
+[lua]
+disabled =true
+
+[hg_branch]
+disabled =true
+
+[nim]
+disabled =true
+
+[nix_shell]
+disabled =true
+
+[nodejs]
+disabled =true
+
+[ocaml]
+disabled =true
+
+[openstack]
+disabled =true
+
+[package]
+disabled =true
+
+[perl]
+disabled =true
+
+[php]
+disabled =true
+
+[purescript]
+disabled =true
+
+[python]
+disabled =true
+
+[ruby]
+disabled =true
+
+[rust]
+disabled =true
+
+[shlvl]
+disabled =true
+
+[singularity]
+disabled =true
+
+[swift]
+disabled =true
+
+[terraform]
+disabled =true
+
+[zig]
+disabled =true
