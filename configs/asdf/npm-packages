@@ -7,7 +7,6 @@ jest
 neovim
 pyright
 sql-language-server
-tree-sitter-cli
 typescript
 typescript-language-server
 vim-language-server
