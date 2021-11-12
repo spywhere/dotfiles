@@ -16,7 +16,7 @@ function install_git_hook() {
     return
   fi
 
-  pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg
+  pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg --allow-missing-config
 }
 
 add-zsh-hook -Uz chpwd (){ install_git_hook; }
