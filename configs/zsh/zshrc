@@ -70,23 +70,34 @@ ZSH_TMUX_FIXTERM=false
 # early set the variables for terminal and tmux to use
 . $HOME/$DOTFILES_NAME/configs/zsh/setup
 
+if test ! -f ~/.no-starship -a -n "$(command -v starship)"; then
+  USE_STARSHIP=true
+else
+  USE_STARSHIP=false
+fi
+
 if ! (echo "$PATH" | grep -q vim) && test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
   zinit ice lucid wait"0"
   zinit snippet OMZ::plugins/tmux
 else
-  zinit ice lucid depth"1"
-  zinit light romkatv/powerlevel10k
+  if ! $USE_STARSHIP; then
+    zinit ice lucid depth"1"
+    zinit light romkatv/powerlevel10k
 
-  zinit light romkatv/gitstatus
+    zinit light romkatv/gitstatus
+  fi
+
   zinit light michaelaquilina/zsh-you-should-use
   zinit light aloxaf/fzf-tab
   zinit ice lucid depth"1" as"program" pick"bin/git-fuzzy"
   zinit light bigH/git-fuzzy
+
   zinit light zsh-users/zsh-autosuggestions
   zinit ice lucid depth"1" blockf
   zinit light zsh-users/zsh-completions
   zinit light zsh-users/zsh-history-substring-search
   zinit light zdharma-continuum/fast-syntax-highlighting
+
   zinit snippet OMZ::plugins/asdf
   zinit snippet OMZ::plugins/brew
   zinit snippet OMZ::plugins/common-aliases
@@ -105,7 +116,7 @@ if test -d /opt/homebrew/bin; then
   export PATH="/opt/homebrew/bin:$PATH"
 fi
 
-if test ! -f ~/.no-starship -a -n "$(command -v starship)"; then
+if $USE_STARSHIP; then
   # Setup starship
   . <(starship init zsh)
 elif test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k; then
