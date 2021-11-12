@@ -12,4 +12,4 @@ then
 fi
 
 optional
-use_apk 'edge' 'boost1.76-dev'
+use_apk 'edge' 'boost1.77-dev'
