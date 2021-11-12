@@ -1,6 +1,11 @@
 #!/bin/zsh
 
 function install_git_hook() {
+  # No pre-commit config
+  if test ! -f .pre-commit-config.yaml; then
+    return
+  fi
+
   # No pre-commit command
   if test -z "$(command -v pre-commit)"; then
     return
@@ -16,7 +21,7 @@ function install_git_hook() {
     return
   fi
 
-  pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg --allow-missing-config
+  pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg
 }
 
 add-zsh-hook -Uz chpwd (){ install_git_hook; }
