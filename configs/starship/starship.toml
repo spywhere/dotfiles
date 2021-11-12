@@ -1,10 +1,49 @@
 add_newline = false
 
-[character]
-success_symbol = "[➜](bold green) "
-error_symbol = "[➜](bold red) "
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$status\
+$character
+"""
 
-# hostname
+right_format = """
+$cmd_duration\
+$username\
+$hostname
+"""
+
+[cmd_duration]
+format = "[$duration]($style)"
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[directory]
+truncate_to_repo = false
+
+[hostname]
+format = "[$hostname]($style)"
+
+[username]
+format = "[$user]($style)@"
+
+[git_status]
+conflicted = "[=](red)"
+ahead = "[⇡](purple)"
+behind = "[⇣](purple)"
+diverged = "[⇕](purple)"
+untracked = "[?](blue)"
+stashed = "[\\$](purple)"
+modified = "[!](yellow)"
+staged = "[+](yellow)"
+renamed = "[»](yellow)"
+deleted = "[✘](red)"
 
 [line_break]
 disabled = true
