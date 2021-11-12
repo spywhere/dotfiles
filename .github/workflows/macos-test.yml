@@ -1,10 +1,12 @@
 name: MacOS Test
 on: push
 
+# Available runners
+# https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 jobs:
   macos-local-verbose:
     name: Local Install - Verbose (MacOS)
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -15,7 +17,7 @@ jobs:
           sh install.sh -v no-app-store
   macos-local-normal:
     name: Local Install - Normal (MacOS)
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -26,7 +28,7 @@ jobs:
           sh install.sh no-app-store
   macos-local-quiet:
     name: Local Install - Quiet (MacOS)
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
@@ -38,7 +40,7 @@ jobs:
 
   macos-remote-verbose:
     name: Remote Install - Verbose (MacOS)
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - name: Installation Info
         run: |
