@@ -13,7 +13,7 @@ fi
 
 # Debian
 if test "$OS" = "raspbian"; then
-  use_apt_repo 'http://mirror.kku.ac.th/raspbian/raspbian/ buster main contrib non-free rpi'
+  use_apt_repo 'http://mirror.kku.ac.th/raspbian/raspbian/ bullseye main contrib non-free rpi'
   use_apt_repo 'http://raspbian.raspberrypi.org/raspbian/ testing main contrib non-free rpi'
 fi
 
