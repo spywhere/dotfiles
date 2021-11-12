@@ -4,10 +4,11 @@ if fn.has('nvim-0.5') == 1 then
   registry.install {
     'nvim-treesitter/nvim-treesitter',
     options = {
-      ['do'] = ':TSUpdate'
+      ['do'] = ':TSUpdateSync'
     },
     config = function ()
       require('nvim-treesitter.configs').setup {
+        sync_install = true,
         ensure_installed = 'all',
         ignore_install = {
           'julia', 'haskell', 'kotlin', 'ocamel', 'ocaml_interface',
