@@ -13,5 +13,9 @@ deb-src http://mirror.kku.ac.th/raspbian/raspbian/ bulleyes main contrib non-fre
 deb-src http://raspbian.raspberrypi.org/raspbian/ testing main contrib non-free rpi
 ```
 - Adjust overclock and voltage in `/boot/config.txt`
-  - `over_voltage=6`
-  - `arm_freq=2000`
+  - Voltage adjustment
+    - Raspberry Pi 4: `over_voltage=6`
+    - Raspberry Pi Zero 2: `over_voltage=4`
+  - Frequency adjustment
+    - Raspberry Pi 4: `arm_freq=2000`
+    - Raspberry Pi Zero 2: `arm_freq=1300`
