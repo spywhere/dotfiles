@@ -15,3 +15,4 @@ has_executable 'autoconf'
 
 # neovim rebuild dependencies
 use_apk 'main' 'autoconf'
+use_apt 'autoconf'

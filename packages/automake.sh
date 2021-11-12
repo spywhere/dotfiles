@@ -15,3 +15,4 @@ has_executable 'automake'
 
 # neovim rebuild dependencies
 use_apk 'main' 'automake'
+use_apt 'automake'
