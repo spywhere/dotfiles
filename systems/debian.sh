@@ -66,8 +66,7 @@ install_packages() {
       install_packages__add_repo_record="deb-src $install_packages__repo"
       sudo_cmd sh -c "echo \"$install_packages__add_repo_record\" >> /etc/apt/sources.list.d/repos.list"
     done
-    step "Updating package index..."
-    sudo_cmd apt update
+    _run_system_update
   fi
   if test -n "$install_packages__apt_packages"; then
     step "Installing packages..."
