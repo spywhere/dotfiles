@@ -18,7 +18,7 @@ $hostname
 """
 
 [cmd_duration]
-format = "[$duration]($style)"
+format = "[$duration]($style) "
 
 [character]
 success_symbol = "[➜](bold green)"
@@ -32,6 +32,7 @@ format = "[$hostname]($style)"
 
 [username]
 format = "[$user]($style)@"
+disabled = true
 
 [git_status]
 conflicted = "[=](red)"
