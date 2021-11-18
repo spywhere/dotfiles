@@ -22,7 +22,7 @@ curl_pfetch() {
   curl_pfetch__path="$(deps pfetch)"
   cmd curl -sSL 'https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch' -o "$curl_pfetch__path"
   cmd chmod +x "$curl_pfetch__path"
-  if test -d "$curl_pfetch__base_path"; then
+  if test ! -d "$curl_pfetch__base_path"; then
     sudo_cmd mkdir -p "$curl_pfetch__base_path"
   fi
   if test -w "$curl_pfetch__base_path"; then

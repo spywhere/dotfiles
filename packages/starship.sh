@@ -19,7 +19,7 @@ use_custom 'curl_starship'
 
 curl_starship() {
   curl_starship__base_path="/usr/local/bin"
-  if test -d "$curl_starship__base_path"; then
+  if test ! -d "$curl_starship__base_path"; then
     sudo_cmd mkdir -p "$curl_starship__base_path"
   fi
   cmd sh -c "$(curl -fsSL https://starship.rs/install.sh)" - -y -b "$curl_starship__base_path"
