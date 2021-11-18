@@ -62,8 +62,8 @@ deps() {
   fi
 }
 
-# Skip installation as fulfilled if specific file is exist
-# has_directory <directory>
+# Skip installation as installed if specific file is exist
+# has_file <path>
 has_file() {
   # If specific in the flag, always try to install
   if _has_indicate "$_RUNNING"; then
@@ -73,12 +73,12 @@ has_file() {
     return
   fi
   if test -f "$1"; then
-    _FULFILLED="fulfilled"
+    _FULFILLED="installed"
   fi
 }
 
-# Skip installation as fulfilled if specific directory is exist
-# has_directory <directory>
+# Skip installation as installed if specific directory is exist
+# has_directory <path>
 has_directory() {
   # If specific in the flag, always try to install
   if _has_indicate "$_RUNNING"; then
@@ -88,7 +88,7 @@ has_directory() {
     return
   fi
   if test -d "$1"; then
-    _FULFILLED="fulfilled"
+    _FULFILLED="installed"
   fi
 }
 
