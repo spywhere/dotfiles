@@ -51,13 +51,16 @@ install_bins() {
 
     install_bin_packages__path=$(deps "$install_bin_packages__name")
     step "Downloading $install_bin_packages__url for installation..."
-    cmd curl -sSL "$install_bin_packages__url" -o "$install_bin_packages__path"
-    step "Installing $install_bin_packages__name into $install_bin__base_path..."
-    cmd chmod +x "$install_bin_packages__path"
-    if test -w "$install_bin__base_path"; then
-      cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
+    if download_file "$install_bin_packages__url" "$install_bin_packages__path"; then
+      step "Installing $install_bin_packages__name into $install_bin__base_path..."
+      cmd chmod +x "$install_bin_packages__path"
+      if test -w "$install_bin__base_path"; then
+        cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
+      else
+        sudo_cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
+      fi
     else
-      sudo_cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
+      error "Failed to download $install_bin_packages__url"
     fi
   done
 }

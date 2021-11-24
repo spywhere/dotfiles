@@ -34,6 +34,10 @@ install_docker() {
   install_docker__path=$(deps "install-docker.sh")
   print "Downloading installation script..."
   cmd curl -sSL get.docker.com -o "$install_docker__path"
+  if ! download_file "get.docker.com" "$install_docker__path"; then
+    error "Failed to download installation script"
+    return
+  fi
   print "Running installation script..."
   cmd sh "$install_docker__path"
   if test "$(whoami)" = "root"; then

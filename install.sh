@@ -410,17 +410,6 @@ _info() {
 # Main Commands #
 #################
 
-_download_system_file() {
-  if test "$(curl --create-dirs -fsL "$1" -o "$2" -w "%{http_code}")" -eq 200; then
-    return 0
-  fi
-  # cleanup unsuccessful download
-  if test -f "$2"; then
-    rm -f "$2"
-  fi
-  return 1
-}
-
 _get_system_file() {
   # shellcheck disable=SC2059
   get_system_file__system_file="$(printf "$1" "$OS")"
@@ -463,7 +452,7 @@ _try_load_system() {
     fi
 
     try_load_system__base_system="$try_load_system__system_deps/base"
-    if ! _download_system_file "$system_url" "$try_load_system__base_system"; then
+    if ! download_file "$system_url" "$try_load_system__base_system"; then
       error "failed to download system files"
       quit 1
     fi
@@ -471,13 +460,13 @@ _try_load_system() {
     # shellcheck disable=SC2059
     system_url="$(printf "$SYSTEM_FILES" "$OS")"
     try_load_system__target_system="$try_load_system__system_deps/$OS"
-    if ! _download_system_file "$system_url" "$try_load_system__target_system"; then
+    if ! download_file "$system_url" "$try_load_system__target_system"; then
       warn "$OS is not natively supported, trying $OSKIND..."
 
       # shellcheck disable=SC2059
       system_url="$(printf "$SYSTEM_FILES" "$OSKIND")"
       try_load_system__target_system="$try_load_system__system_deps/$OSKIND"
-      _download_system_file "$system_url" "$try_load_system__target_system"
+      download_file "$system_url" "$try_load_system__target_system"
     fi
   fi
 
@@ -690,6 +679,17 @@ _check_sudo() {
 #############
 # Main APIs #
 #############
+
+download_file() {
+  if test "$(curl --create-dirs -fsL "$1" -o "$2" -w "%{http_code}")" -eq 200; then
+    return 0
+  fi
+  # cleanup unsuccessful download
+  if test -f "$2"; then
+    rm -f "$2"
+  fi
+  return 1
+}
 
 add_flag() {
   add_flag__flag="$1"

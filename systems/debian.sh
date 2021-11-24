@@ -30,9 +30,12 @@ install_dpkg_packages() {
 
     install_dpkg_packages__path=$(deps "$install_dpkg_packages__name.deb")
     step "Downloading $install_dpkg_packages__url for installation..."
-    cmd curl -sSL "$install_dpkg_packages__url" -o "$install_dpkg_packages__path"
-    step "Installing $install_dpkg_packages__name through dpkg..."
-    sudo_cmd dpkg --install "$install_dpkg_packages__path"
+    if download_file "$install_dpkg_packages__url" "$install_dpkg_packages__path"; then
+      step "Installing $install_dpkg_packages__name through dpkg..."
+      sudo_cmd dpkg --install "$install_dpkg_packages__path"
+    else
+      error "Failed to download $install_dpkg_packages__url"
+    fi
   done
 }
 

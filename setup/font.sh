@@ -61,7 +61,9 @@ install_fonts() {
       fi
 
       step "Downloading and installing $install_fonts__name..."
-      cmd curl -sfLo "$install_fonts__font_path/$install_fonts__file" "$install_fonts__url"
+      if ! download_file "$install_fonts__url" "$install_fonts__font_path/$install_fonts__file"; then
+        error "Failed to download $install_fonts__name ($install_fonts__url)"
+      fi
     done
   fi
 }
