@@ -26,7 +26,7 @@ require 'lib-zlib'
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
-  setup_version_manager__plugins="deno fzf golang nodejs python rust shellcheck"
+  setup_version_manager__plugins="deno fzf golang neovim nodejs python rust shellcheck"
   set +e
   step "Setting up version manager plugins..."
   for setup_version_manager__plugin in $setup_version_manager__plugins; do
