@@ -26,6 +26,9 @@ update() {
 install_packages() {
   install_packages__bin_packages=""
 
+  install_packages__profile_packages=""
+  install_packages__reprofile_packages=""
+
   install_packages__install_packages=""
   install_packages__reinstall_packages=""
   step "Collecting packages..."
@@ -37,15 +40,42 @@ install_packages() {
     else
       install_packages__name="$(parse_field "$install_packages__package" package)"
       install_packages__reinstall="$(parse_field "$install_packages__package" reinstall)"
+      install_packages__profile="$(parse_field "$install_packages__package" profile)"
       if test -n "$install_packages__reinstall"; then
-        install_packages__reinstall_packages="$(_add_to_list "$install_packages__reinstall_packages" "$install_packages__name")"
+        if test -n "$install_packages__profile"; then
+          install_packages__reprofile_packages="$(_add_to_list "$install_packages__reprofile_packages" "$install_packages__name")"
+        else
+          install_packages__reinstall_packages="$(_add_to_list "$install_packages__reinstall_packages" "$install_packages__name")"
+        fi
       else
-        install_packages__install_packages="$(_add_to_list "$install_packages__install_packages" "$install_packages__name")"
+        if test -n "$install_packages__profile"; then
+          install_packages__profile_packages="$(_add_to_list "$install_packages__profile_packages" "$install_packages__name")"
+        else
+          install_packages__install_packages="$(_add_to_list "$install_packages__install_packages" "$install_packages__name")"
+        fi
       fi
     fi
   done
+
+  step "Installing packages..."
+
+  if test -n "$install_packages__profile_packages" -o -n "$install_packages__reprofile_packages"; then
+    if test -n "$install_packages__profile_packages"; then
+      eval "set -- $install_packages__profile_packages"
+      sudo_cmd pacman -S --noconfirm --needed "$@"
+    fi
+    if test -n "$install_packages__reprofile_packages"; then
+      eval "set -- $install_packages__reprofile_packages"
+      sudo_cmd pacman -S --noconfirm "$@"
+    fi
+
+    step "Sourcing profile..."
+    sudo_cmd source /etc/profile
+
+    step "Continue installing packages..."
+  fi
+
   if test -n "$install_packages__install_packages"; then
-    step "Installing packages..."
     eval "set -- $install_packages__install_packages"
     sudo_cmd pacman -S --noconfirm --needed "$@"
   fi
@@ -65,6 +95,9 @@ use_pacman() {
 
   while test "$1" != ""; do
     case "$1" in
+      --profile)
+        field profile 1
+        ;;
       --reinstall)
         field reinstall 1
         ;;

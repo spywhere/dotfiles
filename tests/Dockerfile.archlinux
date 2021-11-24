@@ -1,0 +1,6 @@
+FROM archlinux
+
+RUN pacman-key --init
+RUN pacman-key --populate archlinuxarm
+RUN pacman -Sy --noconfirm
+RUN pacman -S --noconfirm docker
