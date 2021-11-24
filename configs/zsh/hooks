@@ -1,6 +1,11 @@
 #!/bin/zsh
 
 function install_git_hook() {
+  # No auto pre-commit hook setup
+  if test -n "$NO_PRE_COMMIT_HOOK"; then
+    return
+  fi
+
   # No pre-commit config
   if test ! -f .pre-commit-config.yaml; then
     return
