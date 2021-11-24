@@ -15,3 +15,4 @@ has_executable 'unzip'
 
 # neovim rebuild dependencies
 use_apk 'main' 'unzip'
+use_apt 'unzip'

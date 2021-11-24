@@ -11,5 +11,6 @@ then
   exit 1
 fi
 
-# https://github.com/driesvints/dotfiles/issues/20
+# neovim rebuild dependencies
+use_apt 'pkg-config'
 use_brew formula 'pkg-config'
