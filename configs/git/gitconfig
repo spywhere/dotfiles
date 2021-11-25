@@ -4,6 +4,9 @@
   pager = delta
   compression = 9
   preloadIndex = true
+  untrackedCache = true
+[feature]
+  manyFiles = true
 [init]
   defaultBranch = main
 [fetch]
