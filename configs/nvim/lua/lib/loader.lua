@@ -4,7 +4,9 @@ local M = {}
 
 M.explore = function (dir, recurse)
   local handle = luv.fs_scandir(lua_home .. '/' .. dir)
-  if type(handle) == 'string' then
+  if handle == nil then
+    return
+  elseif type(handle) == 'string' then
     logger.error(handle)
     return
   end
