@@ -1,5 +1,5 @@
-local registry = require('lib/registry')
-local lsp = require('lib/lsp')
+local registry = require('lib.registry')
+local lsp = require('lib.lsp')
 
 registry.install {
   'onsails/lspkind-nvim',

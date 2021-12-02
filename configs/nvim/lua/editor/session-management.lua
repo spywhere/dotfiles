@@ -1,6 +1,6 @@
-local bindings = require('lib/bindings')
-local registry = require('lib/registry')
-local logger = require('lib/logger')
+local bindings = require('lib.bindings')
+local registry = require('lib.registry')
+local logger = require('lib.logger')
 
 local session_commands = function ()
   local load_session = {

@@ -1,5 +1,5 @@
 -- NOTE: This require 'lspconfig' to be installed
-local bindings = require('lib/bindings')
+local bindings = require('lib.bindings')
 
 local lsps = {}
 local fns = {
@@ -93,7 +93,7 @@ local setup_lsp = function (name, lsp)
   end
 
   local nvim_lsp = require('lspconfig')
-  local nvim_lsp_config = require('lspconfig/configs')
+  local nvim_lsp_config = require('lspconfig.configs')
   if not nvim_lsp_config[name] and lsp.config and next(lsp.config) then
     nvim_lsp_config[name] = lsp.config
   end

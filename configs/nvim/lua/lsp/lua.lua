@@ -1,4 +1,4 @@
-local lsp = require('lib/lsp')
+local lsp = require('lib.lsp')
 
 lsp.setup('sumneko_lua')
   .need_executable('lua-language-server')

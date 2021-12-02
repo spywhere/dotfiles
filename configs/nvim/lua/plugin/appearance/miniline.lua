@@ -1,7 +1,7 @@
-local registry = require('lib/registry')
-local statusline = require('lib/statusline')
-local colors = require('common/colors')
-local i = require('lib/iterator')
+local registry = require('lib.registry')
+local statusline = require('lib.statusline')
+local colors = require('common.colors')
+local i = require('lib.iterator')
 
 local filetypes = {
   nvimtree = {

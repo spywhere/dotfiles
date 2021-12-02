@@ -1,5 +1,5 @@
-local bindings = require('lib/bindings')
-local registry = require('lib/registry')
+local bindings = require('lib.bindings')
+local registry = require('lib.registry')
 
 registry.pre(function ()
   -- improve startup time (https://github.com/neovim/neovim/issues/2437)

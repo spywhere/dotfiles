@@ -1,4 +1,4 @@
-local registry = require('lib/registry')
+local registry = require('lib.registry')
 
 registry.install {
   'rhysd/git-messenger.vim',

@@ -1,5 +1,5 @@
-local registry = require('lib/registry')
-local bindings = require('lib/bindings')
+local registry = require('lib.registry')
+local bindings = require('lib.bindings')
 
 registry.install {
   'folke/trouble.nvim',

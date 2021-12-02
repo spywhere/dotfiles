@@ -1,5 +1,5 @@
-local bindings = require('lib/bindings')
-local registry = require('lib/registry')
+local bindings = require('lib.bindings')
+local registry = require('lib.registry')
 
 local diff = function ()
   bindings.set('diffopt', '+=', 'vertical')

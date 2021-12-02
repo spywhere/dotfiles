@@ -1,6 +1,6 @@
-local bindings = require('lib/bindings')
-local registry = require('lib/registry')
-local colors = require('common/colors')
+local bindings = require('lib.bindings')
+local registry = require('lib.registry')
+local colors = require('common.colors')
 
 local color_setup = function ()
   local base_highlights = {

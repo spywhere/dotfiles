@@ -1,7 +1,7 @@
 -- setup registry
-local logger = require('lib/logger')
-local pm = require('lib/plugin-manager')
-local _registry = 'lib/registry'
+local logger = require('lib.logger')
+local pm = require('lib.plugin-manager')
+local _registry = 'lib.registry'
 local std = {}
 std.count = function ()
   local i = 0

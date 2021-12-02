@@ -1,4 +1,4 @@
-local lsp = require('lib/lsp')
+local lsp = require('lib.lsp')
 
 local capabilities = lsp.capabilities({
   snippetSupport = true

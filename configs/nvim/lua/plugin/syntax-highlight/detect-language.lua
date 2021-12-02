@@ -1,4 +1,4 @@
-local registry = require('lib/registry')
+local registry = require('lib.registry')
 
 if fn.has('nvim-0.5') == 1 then
   registry.install {

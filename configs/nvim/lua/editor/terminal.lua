@@ -1,5 +1,5 @@
-local bindings = require('lib/bindings')
-local registry = require('lib/registry')
+local bindings = require('lib.bindings')
+local registry = require('lib.registry')
 
 if fn.has('win32') == 1 and fn.executable('wsl.exe') == 1 then
   local quick_terminal = function ()

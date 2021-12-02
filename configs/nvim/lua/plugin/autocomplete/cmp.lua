@@ -1,6 +1,6 @@
-local bindings = require('lib/bindings')
-local registry = require('lib/registry')
-local lsp = require('lib/lsp')
+local bindings = require('lib.bindings')
+local registry = require('lib.registry')
+local lsp = require('lib.lsp')
 
 registry.install {
   'hrsh7th/nvim-cmp',

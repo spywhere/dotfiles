@@ -1,5 +1,5 @@
 -- neovim api bindings
-local _bindings = 'lib/bindings'
+local _bindings = 'lib.bindings'
 local std = {}
 std.count = function ()
   local i = 0
