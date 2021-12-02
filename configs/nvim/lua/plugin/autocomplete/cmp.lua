@@ -1,11 +1,9 @@
 local bindings = require('lib/bindings')
 local registry = require('lib/registry')
 local lsp = require('lib/lsp')
-local compat = require('lib/compat')
 
 registry.install {
   'hrsh7th/nvim-cmp',
-  skip = registry.experiment('cmp').off,
   config = function ()
     bindings.set('completeopt', 'menuone,noinsert,noselect')
 
@@ -31,9 +29,9 @@ registry.install {
       Hint = '•'
     }
     for severity, symbol in pairs(sign_symbols) do
-      bindings.sign.define(compat.get_lsp_highlight(severity, 'Sign'), {
+      bindings.sign.define(string.format('DiagnosticSign%s', severity), {
         text = symbol,
-        texthl = compat.get_lsp_highlight(severity),
+        texthl = string.format('Diagnostic%s', severity),
         linehl = '',
         numhl = ''
       })

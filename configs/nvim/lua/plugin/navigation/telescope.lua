@@ -3,7 +3,6 @@ local bindings = require('lib/bindings')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
-  skip = registry.experiment('telescope').off,
   defer_first = function ()
     bindings.map.normal('<C-p>', '<cmd>lua require("telescope.builtin").find_files({ prompt_prefix="Find> ", hidden = true })<cr>')
     bindings.map.normal('<leader>/', '<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find({ prompt_prefix="BLines> " })<cr>')
