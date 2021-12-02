@@ -7,12 +7,6 @@ registry.install {
     vim.g.nvim_tree_icons = {
       default = ' '
     }
-    vim.g.nvim_tree_show_icons = {
-      git = 0,
-      folders = 1, -- or 0,
-      files = 1, -- or 0,
-      folder_arrows = 1 -- or 0
-    }
   end,
   defer_first = function ()
     local show_cursorline = function ()
