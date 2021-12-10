@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Lunar'
+has_app 'MonitorControl'
 
-use_brew cask 'lunar'
+use_brew cask 'monitorcontrol'
