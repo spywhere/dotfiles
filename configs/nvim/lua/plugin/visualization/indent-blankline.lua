@@ -19,7 +19,6 @@ registry.install {
   defer = function ()
     local disable_indent_guides = function ()
       api.nvim_command('IndentBlanklineDisable')
-      -- api.nvim_command('IndentLinesDisable')
     end
 
     -- disable indentation guides on terminal buffers
