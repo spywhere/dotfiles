@@ -28,17 +28,25 @@ M._call = function (index, ...)
 end
 
 M.set = function (option, valueOrOperator, value)
-  local expression = function ()
-    if not valueOrOperator then
-      return 'set ' .. option
-    elseif not value then
-      return 'set ' .. option .. '=' .. valueOrOperator
-    else
-      return 'set ' .. option .. valueOrOperator .. value
-    end
+  local operator = '='
+  if valueOrOperator == nil then
+    value = not vim.startswith(option, 'no')
+    option = value and option or string.sub(option, 3)
+  elseif value == nil then
+    value = valueOrOperator
+  else
+    operator = valueOrOperator
   end
 
-  api.nvim_command(expression())
+  if operator == '=' then
+    vim.o[option] = value
+  elseif operator == '+=' then
+    vim.opt[option]:append(value)
+  elseif operator == '^=' then
+    vim.opt[option]:prepend(value)
+  elseif operator == '-=' then
+    vim.opt[option]:remove(value)
+  end
 end
 
 M.cmd = function (name, command)

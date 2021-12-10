@@ -16,7 +16,7 @@ local columns = function ()
   -- always show sign column, resize as needed
   bindings.set('signcolumn', 'auto:1-3')
   -- ruler at 79 chars
-  bindings.set('colorcolumn', 79)
+  bindings.set('colorcolumn', '79')
 end
 registry.pre(columns)
 
