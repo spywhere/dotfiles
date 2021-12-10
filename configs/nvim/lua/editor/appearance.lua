@@ -35,6 +35,7 @@ local indicators = function ()
   bindings.set('noshowmode')
 
   bindings.set('listchars', 'tab:→\\ ,lead:·,trail:·,nbsp:·')
+  bindings.set('fillchars', '+=', 'eob: ')
 end
 registry.pre(indicators)
 
