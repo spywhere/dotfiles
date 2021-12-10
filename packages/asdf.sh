@@ -18,8 +18,10 @@ use_custom 'install_asdf'
 install_asdf() {
   if ! test -d "$HOME/.asdf"; then
     full_clone https://github.com/asdf-vm/asdf "$HOME/.asdf"
-    cmd cd "$HOME/.asdf"
-    cmd git checkout "$(git describe --abbrev=0 --tags)"
+    # Use master as it currently broken
+    #   Ref: https://github.com/asdf-vm/asdf/pull/1106
+    # cmd cd "$HOME/.asdf"
+    # cmd git checkout "$(git describe --abbrev=0 --tags)"
     cmd cd "$CURRENT_DIR"
   fi
 }
