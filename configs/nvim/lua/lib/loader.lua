@@ -19,7 +19,8 @@ M.explore = function (dir, recurse)
     end
 
     if item_type == 'file' then
-      require(dir .. '/' .. string.gsub(name, '[.]lua$', ''))
+      local path = dir .. '/' .. string.gsub(name, '[.]lua$', '')
+      require('' .. string.gsub(path, '[/\\]', '.'))
     elseif item_type == 'directory' and recurse == true then
       -- load subdirectory as well, but do it last
       table.insert(dirs, dir .. '/' .. name)
