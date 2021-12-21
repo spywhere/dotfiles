@@ -127,7 +127,7 @@ end)
   {
     -- Branch
     active = function ()
-      return fn['gitbranch#name']() ~= ''
+      return fn.exists('*gitbranch#name') == 1 and fn['gitbranch#name']() ~= ''
     end,
     inactive = false,
     fn = function ()
@@ -224,6 +224,9 @@ end)
 [[Obsession]] {
   hl = colors.group('white', 'brightblack'),
   inactive = false,
+  active = function ()
+    return fn.exists('*ObsessionStatus') == 1
+  end,
   fn = function ()
     return fn.ObsessionStatus()
   end

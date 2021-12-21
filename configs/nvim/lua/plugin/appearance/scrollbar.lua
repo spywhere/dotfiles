@@ -20,13 +20,17 @@ registry.install {
 
     local timer = nil
     local show = function ()
-      require('scrollbar').show()
+      local scrollbar = prequire('scrollbar')
+      if not scrollbar then
+        return
+      end
+      scrollbar.show()
 
       if timer then
         luv.timer_stop(timer)
         timer = nil
       end
-      timer = vim.defer_fn(require('scrollbar').clear, visible_duration)
+      timer = vim.defer_fn(scrollbar.clear, visible_duration)
     end
 
     registry.auto(
@@ -40,7 +44,13 @@ registry.install {
       {
         'WinLeave', 'BufLeave', 'BufWinLeave', 'FocusLost', 'QuitPre'
       },
-      require('scrollbar').clear
+      function ()
+        local scrollbar = prequire('scrollbar')
+        if not scrollbar then
+          return
+        end
+        scrollbar.clear()
+      end
     )
   end
 }
