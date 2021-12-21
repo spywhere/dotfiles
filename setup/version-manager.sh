@@ -33,7 +33,6 @@ setup_version_manager() {
     bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add $setup_version_manager__plugin"
   done
   set -e
-  bash "$HOME/.asdf/plugins/nodejs/bin/import-release-team-keyring"
   cmd cd "$HOME"
   step "Installing version manager plugins..."
   # asdf v0.9 will now error if the plugin is missing from .tool-versions
