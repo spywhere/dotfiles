@@ -2,6 +2,7 @@ local registry = require('lib.registry')
 
 registry.install {
   'Xuyuanp/scrollbar.nvim',
+  skip = registry.experiment('scrollview').on,
   lazy = true,
   config = function ()
     vim.g.scrollbar_right_offset = 0
