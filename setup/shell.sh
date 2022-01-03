@@ -16,6 +16,6 @@ depends 'zsh'
 add_setup 'setup_shell'
 
 setup_shell() {
-  # update default shell to a new one
-  print "Updating default shell to zsh..."
+  # TODO: update default shell to a new one
+  step "Updating default shell to zsh..."
 }

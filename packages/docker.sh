@@ -29,19 +29,19 @@ install_docker() {
   #   - https://www.docker.com/blog/happy-pi-day-docker-raspberry-pi/
   #   - https://howchoo.com/g/nmrlzmq1ymn/how-to-install-docker-on-your-raspberry-pi
 
-  print "Installing Docker..."
+  step "Installing Docker..."
 
   install_docker__path=$(deps "install-docker.sh")
-  print "Downloading installation script..."
+  info "Downloading installation script..."
   cmd curl -sSL get.docker.com -o "$install_docker__path"
   if ! download_file "get.docker.com" "$install_docker__path"; then
     error "Failed to download installation script"
     return
   fi
-  print "Running installation script..."
+  info "Running installation script..."
   cmd sh "$install_docker__path"
   if test "$(whoami)" = "root"; then
-    print "run as root: no user group set"
+    info "run as root: no user group set"
   else
     sudo_cmd usermod -aG docker "$USER"
   fi
