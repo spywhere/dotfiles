@@ -4,7 +4,7 @@
 . "$HOME/$DOTFILES/lib/string.sh"
 
 _FIELDS=""
-field () {
+field() {
   field__name="$1"
 	shift
   if test "$#" -eq 0; then
