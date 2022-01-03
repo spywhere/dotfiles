@@ -234,3 +234,8 @@ use_brew_tap() {
 use_mas() {
   return 0
 }
+
+# use_nativefier <package> <url>
+use_nativefier() {
+  return 0
+}

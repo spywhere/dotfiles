@@ -157,6 +157,7 @@ install_packages() {
   install_packages__intel_cask_packages=""
   install_packages__intel_flagged_packages=""
   install_packages__mas_packages=""
+  install_packages__nativefier_packages=""
 
   step "Collecting packages..."
   for install_packages__package in "$@"; do
@@ -195,6 +196,14 @@ install_packages() {
     elif test "$install_packages__manager" = "mas"; then
       install_packages__package_id="$(parse_field "$install_packages__package" package)"
       install_packages__mas_packages="$(_add_to_list "$install_packages__mas_packages" "$install_packages__package_id")"
+    elif test "$install_packages__manager" = "nativefier"; then
+      install_packages__name="$(parse_field "$install_packages__package" package_name)"
+      install_packages__url="$(parse_field "$install_packages__package" package)"
+      install_packages__options="$(parse_field "$install_packages__package" options)"
+      if test -n "$install_packages__options"; then
+        install_packages__options="$(_escape_special "$install_packages__options")"
+      fi
+      install_packages__nativefier_packages="$(_add_to_list "$install_packages__nativefier_packages" "$install_packages__name;$install_packages__url;$install_packages__options")"
     fi
   done
 
@@ -221,6 +230,13 @@ install_packages() {
       run_brew formula mas
     fi
     wait_for_app_store
+  fi
+
+  if test -n "$install_packages__nativefier_packages"; then
+    if ! has_cmd nativefier; then
+      step "Installing nativefier for application building..."
+      run_brew formula nativefier
+    fi
   fi
 
   if test -n "$install_packages__tap_repos"; then
@@ -279,6 +295,29 @@ install_packages() {
     eval "set -- $install_packages__mas_packages"
     run_mas "$@"
   fi
+
+  if test -n "$install_packages__nativefier_packages"; then
+    step "Building applications using Nativefier..."
+    eval "set -- $install_packages__nativefier_packages"
+    for install_packages__package in "$@"; do
+      install_packages__name=$(printf "%s" "$install_packages__package" | cut -d';' -f1)
+      install_packages__url=$(printf "%s" "$install_packages__package" | cut -d';' -f2)
+      install_packages__options=$(printf "%s" "$install_packages__package" | cut -d';' -f3-)
+      install_packages__output_app="$(deps nativefier)"
+      eval "set -- $(_unescape_special "$install_packages__options")"
+      cmd nativefier "$install_packages__url" -n "$install_packages__name" "$@" "$install_packages__output_app"
+      for install_packages__file_path in "$install_packages__output_app/$install_packages__name"-*/*.app; do
+        install_packages__file_name="$(basename "$install_packages__file_path")"
+        install_packages__app_path="/Applications/$install_packages__file_name"
+        info "Installing $install_packages__file_name..."
+        if test -d "$install_packages__app_path"; then
+          cmd rm -rf "$install_packages__app_path"
+        fi
+        cmd cp -r "$install_packages__file_path" "$install_packages__app_path"
+      done
+    done
+  fi
+
 }
 
 plist() {
@@ -417,4 +456,25 @@ use_mas() {
   field manager mas
   field package "$use_mas__package_id"
   add_package "$use_mas__package"
+}
+
+use_nativefier() {
+  if _has_skip nativefier && ! _has_indicate "$1"; then
+    mark_installed
+    return
+  fi
+
+  use_nativefier__name="$1"
+  use_nativefier__url="$2"
+  shift
+  shift
+
+  if test "$#" -gt 0; then
+    field options "$(_make_list "$@")"
+  fi
+
+  field manager_name "Nativefier"
+  field manager nativefier
+  field package "$use_nativefier__url"
+  add_package "$use_nativefier__name"
 }
