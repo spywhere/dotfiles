@@ -13,6 +13,6 @@ fi
 
 has_app 'ProtonMail'
 
-# Use older electron as there is an issue on when logging in
+# Use older electron as there is an issue when logging in
 # Ref: https://github.com/electron/electron/issues/31018
-use_nativefier 'ProtonMail' 'https://mail.protonmail.com' --electron-version 13.6.6 --background-color '#1C213C' --counter --bounce
+use_nativefier 'ProtonMail' 'https://mail.protonmail.com' --electron-version 13.6.6 --background-color '#1C213C' --counter
