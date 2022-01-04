@@ -13,4 +13,4 @@ fi
 
 has_app 'ProtonMail'
 
-use_nativefier 'ProtonMail' 'https://mail.protonmail.com' --background-color '#1C213C'
+use_nativefier 'ProtonMail' 'https://mail.protonmail.com' --background-color '#1C213C' --counter --bounce --single-instance
