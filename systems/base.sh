@@ -54,6 +54,9 @@ install_bins() {
     if download_file "$install_bin_packages__url" "$install_bin_packages__path"; then
       step "Installing $install_bin_packages__name into $install_bin__base_path..."
       cmd chmod +x "$install_bin_packages__path"
+      if test ! -d "$install_bin__base_path"; then
+        sudo_cmd mkdir -p "$install_bin__base_path"
+      fi
       if test -w "$install_bin__base_path"; then
         cmd mv "$install_bin_packages__path" "$install_bin__base_path/$install_bin_packages__name"
       else
