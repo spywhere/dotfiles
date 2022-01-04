@@ -3,5 +3,5 @@ python 3.9.5
 dotnet-core 5.0.102
 java adoptopenjdk-8.0.292+10
 fzf 0.28.0
-neovim ref:0.6.0
+neovim ref:stable
 rust stable
