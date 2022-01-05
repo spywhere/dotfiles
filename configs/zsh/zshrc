@@ -106,7 +106,6 @@ else
   zinit snippet OMZ::lib/git.zsh
   zinit snippet OMZ::plugins/git
   zinit snippet OMZ::plugins/git-auto-fetch
-  zinit snippet OMZ::plugins/git-flow
   zinit snippet OMZ::plugins/gitignore
   zinit snippet OMZ::plugins/httpie
   zinit snippet OMZ::plugins/npm
