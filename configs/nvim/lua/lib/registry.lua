@@ -102,6 +102,12 @@ M.auto = function (_events, func, _filter, _modifiers)
     'lua require(\'' .. _registry ..'\')',
     '_call(' .. table.concat(call_args, ', ') .. ')'
   }
+  if type(func) == 'string' then
+    fn_call = { func }
+  else
+    _callbacks[index] = func
+  end
+
   local expression = {
     'autocmd',
     events,
@@ -110,8 +116,6 @@ M.auto = function (_events, func, _filter, _modifiers)
     table.concat(fn_call, '.')
   }
   table.insert(_group.expression, table.concat(expression, ' '))
-
-  _callbacks[index] = func
 
   return function ()
     remove(index, _group.name)
@@ -122,7 +126,7 @@ M.call_for_fn = function (func, args)
   local call = { 'v:lua' }
   local index = increment()
   _fn['_' .. index] = func
-  local arguments = table.concat(args or {}, ',')
+  local arguments = table.concat(std.wrap(args) or {}, ',')
   table.insert(call, '_fn._' .. index .. '(' .. arguments .. ')')
   return table.concat(call, '.')
 end
