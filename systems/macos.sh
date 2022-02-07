@@ -93,7 +93,17 @@ _run_brew() {
 }
 
 has_login_app_store() {
+  # Disable in macOS 12+ (Monterey)
+  # https://github.com/mas-cli/mas/issues/417
   if mas account >/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+has_app_installed() {
+  if test "$(mas list | wc -l)" -gt 0; then
     return 0
   else
     return 1
@@ -110,13 +120,13 @@ has_screensaver() {
 
 wait_for_app_store() {
   wait_for_app_store__last_check=""
-  while ! has_login_app_store; do
-    printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store..." "$wait_for_app_store__last_check"
+  while ! has_app_installed; do
+    printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store and install some apps..." "$wait_for_app_store__last_check"
     sleep 5
     wait_for_app_store__last_check=" (last check at $(date "+%H:%M:%S"))"
   done
   if test -n "$wait_for_app_store__last_check"; then
-    info "App Store signed in                                                 "
+    info "App Store signed in                                                                          "
   fi
 }
 
