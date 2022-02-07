@@ -15,5 +15,6 @@ has_executable 'jo'
 
 use_apk 'main' 'jo'
 use_apt 'jo'
-use_pacman 'jo'
+# jo is outdated on AUR
+# use_pacman 'jo'
 use_brew formula 'jo'
