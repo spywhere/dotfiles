@@ -13,4 +13,4 @@ fi
 
 has_app 'Slack'
 
-use_mas 'slack' '1176895641'
+use_mas 'slack' '803453959'
