@@ -98,17 +98,19 @@ else
   zinit light zsh-users/zsh-history-substring-search
   zinit light zdharma-continuum/fast-syntax-highlighting
 
-  zinit snippet OMZ::plugins/asdf
-  zinit snippet OMZ::plugins/brew
-  zinit snippet OMZ::plugins/common-aliases
+  zinit snippet OMZP::asdf
+  zinit snippet OMZP::brew
+  zinit snippet OMZP::common-aliases
   zinit ice lucid as"completion"
-  zinit snippet OMZ::plugins/docker/_docker
-  zinit snippet OMZ::lib/git.zsh
-  zinit snippet OMZ::plugins/git
-  zinit snippet OMZ::plugins/git-auto-fetch
-  zinit snippet OMZ::plugins/gitignore
-  zinit snippet OMZ::plugins/httpie
-  zinit snippet OMZ::plugins/npm
+  zinit snippet OMZP::docker/_docker
+  zinit ice lucid as"completion"
+  zinit snippet https://raw.githubusercontent.com/containers/podman/main/completions/zsh/_podman
+  zinit snippet OMZL::git.zsh
+  zinit snippet OMZP::git
+  zinit snippet OMZP::git-auto-fetch
+  zinit snippet OMZP::gitignore
+  zinit snippet OMZP::httpie
+  zinit snippet OMZP::npm
 fi
 
 if test -d /opt/homebrew/bin; then
