@@ -59,7 +59,11 @@ alias search_prs=search_github
 alias search_issues=search_github
 
 # Docker
-alias d="docker"
+alias d="$(command -v docker)"
+
+# Podman
+alias p="podman"
+alias docker="podman"
 
 # github cli - issues
 alias iscl="gh issue close"
