@@ -147,3 +147,8 @@ fi
 if test -n "$(command -v gh)"; then
   . <(gh completion -s zsh)
 fi
+
+# Setup deno
+if test -n "$(command -v deno)" && deno completions bash >/dev/null; then
+  . <(deno completions bash)
+fi
