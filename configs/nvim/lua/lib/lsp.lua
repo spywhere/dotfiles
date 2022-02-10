@@ -41,6 +41,10 @@ local generate_lsp_setup = function (name)
     lsps[name].config = config
   end)
 
+  LSPM.root = wrap(function (root)
+    lsps[name].root = root
+  end)
+
   LSPM.on = {
     setup = wrap(function (fn)
       lsps[name].on_setup = fn
@@ -86,14 +90,24 @@ local setup_lsp = function (name, lsp)
     end
   end
 
+  local nvim_lsp = require('lspconfig')
+  local nvim_lsp_util = require('lspconfig.util')
+  local nvim_lsp_config = require('lspconfig.configs')
+
+  if lsp.root then
+    if type(lsp.root) == 'function' then
+      lsp_options.root_dir = lsp.root
+    else
+      lsp_options.root_dir = nvim_lsp_util.root_pattern(unpack(lsp.root))
+    end
+  end
+
   lsp_options.on_attach = lsp_on_attach(lsp.on_attach)
 
   if type(lsp.on_setup) == 'function' then
     lsp.on_setup()
   end
 
-  local nvim_lsp = require('lspconfig')
-  local nvim_lsp_config = require('lspconfig.configs')
   if not nvim_lsp_config[name] and lsp.config and next(lsp.config) then
     nvim_lsp_config[name] = lsp.config
   end
