@@ -5,3 +5,4 @@ java adoptopenjdk-8.0.292+10
 fzf 0.28.0
 neovim ref:stable
 rust stable
+deno 1.18.2
