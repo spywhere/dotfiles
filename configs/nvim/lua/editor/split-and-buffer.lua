@@ -40,7 +40,7 @@ local buffer_management = function ()
         local tree_view = require('nvim-tree.view')
         tree_open = tree_view.win_open()
         if tree_open then
-          tree.close()
+          tree_view.close()
         end
       end
       vim.cmd(command)
