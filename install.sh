@@ -179,9 +179,12 @@ _detect_os() {
         # Raspberry Pi OS 64bit would not update its /etc/os-release
         #   so we have to resort another way to detect Raspberry Pi OS
         # Ref: https://github.com/raspberrypi/Raspberry-Pi-OS-64bit/issues/6
-        OSKIND="$OS"
         OSNAME="Raspberry Pi OS"
         OS="raspios"
+        # OS kind need to be hard coded
+        #   - 32 bit: OSKIND would be 'debian', OS would be 'raspbian'
+        #   - 64 bit: OSKIND would not set, as OS would be 'debian'
+        OSKIND="debian"
       fi
 
       if test -n "$(command -v apt)"; then
