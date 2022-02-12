@@ -26,7 +26,7 @@ require 'lib-zlib'
 add_setup 'setup_version_manager'
 
 setup_version_manager() {
-  setup_version_manager__plugins="deno fzf golang neovim nodejs python rust shellcheck"
+  setup_version_manager__plugins="deno fzf neovim nodejs python rust shellcheck zig"
   step "Setting up version manager plugins..."
   set +e
   for setup_version_manager__plugin in $setup_version_manager__plugins; do
@@ -39,7 +39,7 @@ setup_version_manager() {
   #   Ref: https://github.com/asdf-vm/asdf/issues/574
   # Possible solutions:
   #   - A new install flag: https://github.com/asdf-vm/asdf/issues/968#issuecomment-991106501
-  setup_version_manager__plugins="nodejs python fzf neovim"
+  setup_version_manager__plugins="fzf nodejs python neovim"
   set +e
   for setup_version_manager__plugin in $setup_version_manager__plugins; do
     bash -c ". $HOME/.asdf/asdf.sh && asdf install $setup_version_manager__plugin"
