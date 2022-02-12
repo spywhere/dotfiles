@@ -13,7 +13,7 @@ fi
 
 SUPPORT_DIR="$HOME/$DOTFILES/supports/usb"
 
-if test "$OS" = "raspbian"; then
+if test "$OS" = "raspios"; then
   add_setup 'setup_usb_gadget'
 fi
 

@@ -175,6 +175,15 @@ _detect_os() {
         OS="linux"
       fi
 
+      if test -n "$(command -v raspi-config)"; then
+        # Raspberry Pi OS 64bit would not update its /etc/os-release
+        #   so we have to resort another way to detect Raspberry Pi OS
+        # Ref: https://github.com/raspberrypi/Raspberry-Pi-OS-64bit/issues/6
+        OSKIND="$OS"
+        OSNAME="Raspberry Pi OS"
+        OS="raspios"
+      fi
+
       if test -n "$(command -v apt)"; then
         PKGMGR=" - Advanced Packaging Tool (apt)"
       elif test -n "$(command -v apk)"; then
