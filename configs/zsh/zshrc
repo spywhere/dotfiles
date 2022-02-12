@@ -149,6 +149,6 @@ if test -n "$(command -v gh)"; then
 fi
 
 # Setup deno
-if test -n "$(command -v deno)" && deno completions bash >/dev/null; then
+if test -n "$(command -v deno)" && deno completions bash >/dev/null 2>&1; then
   . <(deno completions bash)
 fi
