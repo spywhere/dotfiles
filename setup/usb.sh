@@ -28,6 +28,9 @@ setup_usb_gadget() {
   if sudo_cmd test -f /root/usb.sh; then
     info "Already enabled"
     return
+  elif sudo_cmd test ! -f /boot/config.txt; then
+    info "Skipped due to missing boot files"
+    return
   fi
   step "Enabling access over USB..."
 
