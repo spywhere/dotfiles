@@ -17,7 +17,7 @@ export YSU_IGNORED_ALIASES=("g" "ga." "d" "p" "vi" "vim" "search_prs" "search_is
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # export binaries to path
-export PATH=$HOME/$DOTFILES_NAME/binaries:$HOME/.shims:$PATH
+export PATH=$HOME/$DOTFILES_NAME/binaries:$PATH
 
 # setup locales, to fix...
 # - https://github.com/jwilm/alacritty/issues/2566
