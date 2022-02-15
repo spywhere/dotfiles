@@ -226,6 +226,13 @@ setup_macos() {
 setup_config() {
   step "Setting up configurations..."
 
+  if ! test -d "$HOME/.config"; then
+    cmd mkdir -p "$HOME/.config"
+  fi
+  if ! test -d "$HOME/.shrimp"; then
+    cmd mkdir -p "$HOME/.shrimp"
+  fi
+
   if has_package alacritty; then
     step "  - Alacritty"
     link alacritty/alacritty.yml .alacritty.yml
@@ -235,10 +242,6 @@ setup_config() {
   link asdf/asdf .tool-versions
   link asdf/npm-packages .default-npm-packages
   link asdf/python-packages .default-python-packages
-
-  if ! test -d "$HOME/.config"; then
-    cmd mkdir -p "$HOME/.config"
-  fi
 
   step "  - bat"
   link bat/ .config/bat
