@@ -37,4 +37,4 @@ fi
 
 use_pacman 'bat'
 use_brew formula 'bat'
-use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb" "0.18.2"
+use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb" "0.19.0"
