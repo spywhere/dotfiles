@@ -18,6 +18,7 @@ require 'gnupg2'
 # python requirements
 require 'build-base'
 require 'lib-bz'
+require 'lib-ffi'
 require 'lib-readline'
 require 'lib-sqlite'
 require 'lib-ssl'

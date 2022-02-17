@@ -11,5 +11,5 @@ then
   exit 1
 fi
 
-# precommit's python dependencies
+optional
 use_apt 'libffi-dev'
