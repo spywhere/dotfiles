@@ -52,11 +52,15 @@ end
 
 local function render_component(active, sep, is_right_component)
   local styled_value = function (value, component)
+    if value == nil then
+      return ''
+    end
+
     if component.inactive == false and not active then
       return ''
     end
 
-    if component.active and not component.active() then
+    if component.active and not component.active(value) then
       return ''
     end
 

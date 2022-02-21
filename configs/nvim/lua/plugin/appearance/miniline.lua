@@ -126,12 +126,12 @@ end)
   },
   {
     -- Branch
-    active = function ()
-      return fn.exists('*gitbranch#name') == 1 and fn['gitbranch#name']() ~= ''
+    active = function (value)
+      return value ~= nil and value ~= ''
     end,
     inactive = false,
     fn = function ()
-      return fn['gitbranch#name']()
+      return fn.exists('*gitbranch#name') == 1 and fn['gitbranch#name']() or nil
     end
   }
 }
@@ -224,11 +224,11 @@ end)
 [[Obsession]] {
   hl = colors.group('white', 'brightblack'),
   inactive = false,
-  active = function ()
-    return fn.exists('*ObsessionStatus') == 1
+  active = function (value)
+    return value ~= nil
   end,
   fn = function ()
-    return fn.ObsessionStatus()
+    return fn.exists('*ObsessionStatus') == 1 and fn.ObsessionStatus() or nil
   end
 }
 
