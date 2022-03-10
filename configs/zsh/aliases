@@ -31,7 +31,11 @@ alias la="exa -laFh"
 alias ll="exa -l"
 
 # bat (cat replacement)
-alias cat="bat"
+if test -n "$(command -v bat)"; then
+  alias cat="bat"
+elif test -n "$(command -v batcat)"; then
+  alias cat="batcat"
+fi
 
 alias news="curl -sSL hackurls.com/ascii | less"
 alias reddit="ssh redditbox.us"
