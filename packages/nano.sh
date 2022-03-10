@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_string 'version 5\.[0-9]*' nano --version
+has_string 'version 5\.[0-9]*' nano -version
 
 use_apk 'main' 'nano'
 use_apt 'nano'
