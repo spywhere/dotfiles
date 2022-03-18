@@ -6,8 +6,13 @@ local i = require('lib.iterator')
 local filetypes = {
   nvimtree = {
     ['*'] = false,
+    mode = fn.has('nvim-0.7') == 1,
+    mode1 = fn.has('nvim-0.7') == 1,
+    mode2 = fn.has('nvim-0.7') == 1,
     path = true,
-    path1 = 'Explorer'
+    path1 = 'Explorer',
+    clock = true,
+    clock1 = true
   },
   startify = {
     ['*'] = false,
@@ -364,19 +369,29 @@ end)
 local setup = function ()
   local stl = statusline('miniline', components())
   stl.filetypes(filetypes)
+
   local active_line = stl.compile(true)
-  local inactive_line = stl.compile(false)
-  local active_events = {
-    'ColorScheme', 'FileType', 'BufWinEnter', 'BufReadPost', 'BufWritePost',
-    'BufEnter', 'WinEnter', 'FileChangedShellPost', 'VimResized','TermOpen'
-  }
-  highlight_mode(stl.define_highlight, mode_map.n.color)
-  vim.wo.statusline = active_line
-  registry.auto(active_events, function ()
+
+  if fn.has('nvim-0.7') == 1 then
+    -- use unified status line when possible
+    vim.o.statusline = active_line
+  else
     vim.wo.statusline = active_line
-  end)
-  registry.auto('WinLeave', function ()
-    vim.wo.statusline = inactive_line
-  end)
+
+    local inactive_line = stl.compile(false)
+    local active_events = {
+      'ColorScheme', 'FileType', 'BufWinEnter', 'BufReadPost', 'BufWritePost',
+      'BufEnter', 'WinEnter', 'FileChangedShellPost', 'VimResized','TermOpen'
+    }
+
+    registry.auto(active_events, function ()
+      vim.wo.statusline = active_line
+    end)
+    registry.auto('WinLeave', function ()
+      vim.wo.statusline = inactive_line
+    end)
+  end
+
+  highlight_mode(stl.define_highlight, mode_map.n.color)
 end
 registry.defer(setup)

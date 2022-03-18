@@ -42,12 +42,23 @@ registry.pre(indicators)
 local messages = function ()
   -- don't give |ins-completion-menu| messages
   bindings.set('shortmess', '+=', 'c')
-
-  -- always show status line and tab line
-  bindings.set('laststatus', 2)
-  bindings.set('cmdheight', 1)
 end
 registry.pre(messages)
+
+local statusline = function ()
+  -- always show status line and tab line
+  if fn.has('nvim-0.7') == 1 then
+    -- use unified status line when possible
+    bindings.set('laststatus', 3)
+  else
+    bindings.set('laststatus', 2)
+  end
+  bindings.set('cmdheight', 1)
+end
+-- for first time setup
+registry.pre(statusline)
+-- override `laststatus` set by sensible.vim
+registry.defer(statusline)
 
 local netrw = function ()
   vim.g.loaded_netrwPlugin = 1
