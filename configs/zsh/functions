@@ -81,6 +81,70 @@ rebuild-mosh() {
   cd "$workdir"
 }
 
+url_to() {
+  local url=""
+  read url
+
+  local protocol='ssh'
+  local separator=':'
+
+  if printf '%s' "$url" | grep -q '://'; then
+    protocol="$(printf '%s' "$url" | cut -d':' -f1)"
+    # remove protocol
+    url="$(printf '%s' "$url" | cut -d'/' -f3-)"
+    separator='/'
+  fi
+
+  local domain="$(printf '%s' "$url" | cut -d "$separator" -f1)"
+  local url_path="$(printf '%s' "$url" | cut -d "$separator" -f2-)"
+  local git_path="$(printf '%s' "$url_path" | sed 's/.git$//g')"
+  local user=''
+
+  if printf '%s' "$domain" | grep -q '@'; then
+    user="$(printf '%s' "$domain" | cut -d'@' -f1)"
+    domain="$(printf '%s' "$domain" | cut -d'@' -f2)"
+  fi
+
+  local default_output=""
+  if test "$protocol" = 'ssh'; then
+    default_output='https'
+  else
+    default_output='ssh'
+  fi
+
+  while test -n "$1" || test -n "$default_output"; do
+    if test "$1" = "github.com" || test "$1" = "github" || test "$1" = "gh"; then
+      printf 'git@%s' "github.com:$git_path.git"
+    elif test "$1" = "sr.ht" || test "$1" = "srht"; then
+      printf 'git@%s' "git.sr.ht:~$git_path"
+    elif test "$1" = "ssh" || test "$default_output" = "ssh"; then
+      if test -n "$user"; then
+        printf '%s@' "$user"
+      fi
+
+      printf '%s:%s' "$domain" "$url_path"
+    elif test "$1" = "http" || test "$1" = "https" || test "$default_output" = "https"; then
+      if test -n "$1"; then
+        printf '%s://' "$1"
+      else
+        printf '%s://' "$default_output"
+      fi
+      if test -n "$user"; then
+        printf '%s@' "$user"
+      fi
+
+      printf '%s/%s' "$domain" "$url_path"
+    fi
+
+    printf '\n'
+
+    if test -n "$1"; then
+      shift
+    fi
+    default_output=''
+  done
+}
+
 _gh_api() {
   local method="$1"
   shift
