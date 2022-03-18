@@ -95,7 +95,7 @@ _gh_api() {
 
 search_github() {
   local host=""
-  while test "$1" != ""; do
+  while test -n "$1"; do
     local param="$1"
     case $param in
       -H | --hostname)
@@ -145,7 +145,7 @@ _label_operation() {
   local dry=""
   local labels=""
   # process labels
-  while test "$1" != ""; do
+  while test -n "$1"; do
     local label="$1"
     shift
     if test "$label" = "--dry"; then
@@ -188,7 +188,7 @@ _label_operation() {
   fi
 
   # process issue numbers from arguments
-  while test "$1" != ""; do
+  while test -n "$1"; do
     "$operation" "$dry" "$host" "$1" "$labels"
     shift
   done
