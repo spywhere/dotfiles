@@ -1,4 +1,4 @@
-name: Installation Test (native)
+name: Installation Test (via Docker)
 on: push
 
 # Available runners
@@ -6,36 +6,42 @@ on: push
 jobs:
   local:
     name: Local Installation (${{ matrix.os }}) [${{ matrix.flag }}]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [macos-11]
+        os: [alpine, archlinux, debian:bullseye-slim, ubuntu:rolling]
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
+        env:
+          IMAGE: ${{ matrix.os }}
         run: |
-          sh install.sh -i
+          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -i
       - name: Perform Installation
         env:
+          IMAGE: ${{ matrix.os }}
           FLAG: ${{ matrix.flag }}
         run: |
-          sh install.sh $FLAG no-app-store
+          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh $FLAG
 
   remote:
     name: Remote Installation (${{ matrix.os }}) [${{ matrix.flag }}]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [macos-11]
+        os: [alpine, archlinux, debian:bullseye-slim, ubuntu:rolling]
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v2
       - name: Installation Info
+        env:
+          IMAGE: ${{ matrix.os }}
         run: |
-          sh -c "$(curl -sSL dots.spywhere.me)" - -i
+          docker run -v $(pwd):/root/dots $IMAGE sh -c "$(cat install.sh)" - -i
       - name: Perform Installation
         env:
+          IMAGE: ${{ matrix.os }}
           FLAG: ${{ matrix.flag }}
         run: |
-          sh -c "$(curl -sSL dots.spywhere.me)" - $FLAG no-app-store
+          docker run -v $(pwd):/root/dots $IMAGE sh -c "$(cat install.sh)" - $FLAG
