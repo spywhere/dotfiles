@@ -55,30 +55,6 @@ map() {
   fi
 }
 
-rebuild-neovim() {
-  local workdir="$(pwd)"
-  local clean=""
-  local tmpdir="$(mktemp -d)"
-  if test "$#" -eq 0; then
-    clean="yes"
-    git clone --depth 1 https://github.com/neovim/neovim "$tmpdir"
-  else
-    tmpdir="$1"
-  fi
-  if test ! -d "$tmpdir"; then
-    printf "Directory is not exists: %s\n" "$tmpdir"
-    return 1
-  fi
-  cd "$tmpdir"
-  make CMAKE_BUILD_TYPE=Release
-  sudo make install
-  if test -n "$clean"; then
-    sudo rm -rf "$tmpdir"
-  fi
-
-  cd "$workdir"
-}
-
 rebuild-mosh() {
   local workdir="$(pwd)"
   local clean=""
