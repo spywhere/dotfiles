@@ -9,13 +9,16 @@ A cross-platform, modular dotfiles for my personal setup
 
 ## Supported Platform
 
-- [![MacOS Test](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml)
+[![Installation Test (native)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml)
+[![Installation Test (via Docker)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml)
+
+- macOS
 - Linux
-  - [![Debian Test](https://github.com/spywhere/dotfiles/actions/workflows/debian-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/debian-test.yml)
+  - Debian
     - Raspberry Pi OS
-    - [![Ubuntu Test](https://github.com/spywhere/dotfiles/actions/workflows/ubuntu-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/ubuntu-test.yml)
-  - [![Alpine Test](https://github.com/spywhere/dotfiles/actions/workflows/alpine-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/alpine-test.yml)
-  - [![Arch Linux Test](https://github.com/spywhere/dotfiles/actions/workflows/archlinux-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/archlinux-test.yml) -- including on ARM!
+    - Ubuntu
+  - Alpine
+  - Arch Linux -- including on ARM!
 
 ## Quick Installation
 
