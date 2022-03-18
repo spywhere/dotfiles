@@ -515,6 +515,7 @@ _try_git() {
     if test "$OSKIND" = "alpine"; then
       sudo_cmd apk add --no-cache git
     elif test "$OSKIND" = "debian"; then
+      sudo_cmd apt update -y
       sudo_cmd apt install -y git
     elif test "$OSKIND" = "arch"; then
       sudo_cmd pacman -Sy --noconfirm --needed git
