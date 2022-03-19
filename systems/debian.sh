@@ -12,14 +12,14 @@ then
 fi
 
 install_git() {
-  sudo_cmd apt update -y
-  sudo_cmd apt install -y git
+  DEBIAN_FRONTEND=noninteractive sudo_cmd apt update -y
+  DEBIAN_FRONTEND=noninteractive sudo_cmd apt install -y git
 }
 
 update() {
-  sudo_cmd apt update -y
+  DEBIAN_FRONTEND=noninteractive sudo_cmd apt update -y
   if test "$1" = "upgrade"; then
-    sudo_cmd apt full-upgrade -y
+    DEBIAN_FRONTEND=noninteractive sudo_cmd apt full-upgrade -y
   fi
 }
 
@@ -74,7 +74,7 @@ install_packages() {
   if test -n "$install_packages__apt_packages"; then
     step "Installing packages..."
     eval "set -- $install_packages__apt_packages"
-    sudo_cmd apt install --no-install-recommends -y "$@"
+    DEBIAN_FRONTEND=noninteractive sudo_cmd apt install --no-install-recommends -y "$@"
   fi
   if test -n "$install_packages__dpkg_packages"; then
     eval "set -- $install_packages__dpkg_packages"
