@@ -210,7 +210,8 @@ end)
         end
       end
 
-      local value = fallback_name(fn.winwidth(0), {
+      local winwidth = vim.o.laststatus == 3 and math.max(vim.o.columns, fn.winwidth(0)) or fn.winwidth(0)
+      local value = fallback_name(winwidth, {
         function () return fn.fnamemodify(fn.expand('%'), ':.') end,
         function () return fn.pathshorten(fn.fnamemodify(fn.expand('%'), ':.')) end,
         function () return fn.expand('%:t') end

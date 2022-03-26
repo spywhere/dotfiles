@@ -8,6 +8,8 @@ local color_setup = function ()
     Normal = colors.group(nil, 'darkgray', colors),
     -- invisible splits
     SignColumn = colors.group(nil, 'darkgray', colors),
+    WinSeparator = colors.group('brightblack', 'brightblack'),
+    -- deprecated in neovim 0.7.0
     VertSplit = colors.group('darkgray', 'darkgray', colors)
   }
 
