@@ -103,7 +103,7 @@ registry.install {
         'Toggle line comments'
       },
       {
-        "Insert &Block Comment\t<leader>cs>",
+        "Insert &Block Comment\t<leader>cs",
         'call NERDComment("n", "Sexy")',
         'Insert block comments'
       }
@@ -112,6 +112,35 @@ registry.install {
       {
         " Command &Palette\t:Commands",
         'Commands',
+        'Open a command list'
+      },
+      { '--' },
+      {
+        " Editor &Layout...",
+        'call ' .. registry.call_for_fn(function ()
+          local layouts = {
+            {
+              '&Vertical Split',
+              'vsplit',
+              'Split window vertically'
+            },
+            {
+              '&Horizontal Split',
+              'split',
+              'Split window horizontally'
+            },
+            { '--' },
+            {
+              '&Rotate Layout',
+              'wincmd r',
+              'Rotate windows downwards/rightwards'
+            }
+          }
+          fn['quickui#context#open'](
+            layouts,
+            { index = 0 }
+          )
+        end),
         'Open a command list'
       },
       { '--' },
