@@ -18,8 +18,7 @@ registry.install {
       vim.wo.cursorline = false
     end
     -- show cursorline when browsing in the tree explorer
-    registry.auto({ 'BufEnter', 'CursorHold', 'FileType' }, show_cursorline, 'NvimTree')
-    registry.auto({ 'CursorHold', 'FileType' }, show_cursorline)
+    registry.auto({ 'BufEnter', 'FileType' }, show_cursorline)
 
     bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
     bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
@@ -31,6 +30,11 @@ registry.install {
       },
       filters = {
         custom = { '.git', '.DS_Store' }
+      },
+      actions = {
+        change_dir = {
+          global = true
+        }
       }
     }
   end
