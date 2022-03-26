@@ -38,7 +38,7 @@ local buffer_management = function ()
       local tree = prequire('nvim-tree')
       if tree then
         local tree_view = require('nvim-tree.view')
-        tree_open = tree_view.win_open()
+        tree_open = tree_view.is_visible()
         if tree_open then
           tree_view.close()
         end
@@ -56,10 +56,7 @@ local buffer_management = function ()
   -- close current buffer
   bindings.map.normal(
     '<A-w>',
-    close_buffer(
-      'bd',
-      'normal' .. api.nvim_replace_termcodes('<C-o>', true, true, true)
-    )
+    close_buffer('bd')
   )
   -- close all buffers
   bindings.map.normal(
