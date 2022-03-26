@@ -6,7 +6,7 @@ registry.install {
     vim.g.indent_blankline_char = '▏'
     vim.g.indent_blankline_use_treesitter = true
     vim.g.indent_blankline_show_current_context = true
-    vim.g.indent_blankline_filetype_exclude = { 'text', 'help', 'startify' }
+    vim.g.indent_blankline_filetype_exclude = { 'text', 'help', 'startify', 'alpha' }
     -- better context scope highlight (https://github.com/lukas-reineke/indent-blankline.nvim/issues/61#issuecomment-803613439)
     vim.g.indent_blankline_context_patterns = {
       'class', 'function', 'method', '^if', '^while',

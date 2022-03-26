@@ -13,7 +13,8 @@ registry.install {
     }
     vim.g.scrollbar_excluded_filetypes = {
       'nvimtree',
-      'startify'
+      'startify',
+      'alpha'
     }
   end,
   defer = function ()

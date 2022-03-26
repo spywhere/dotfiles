@@ -14,6 +14,17 @@ local filetypes = {
     clock = true,
     clock1 = true
   },
+  alpha = {
+    ['*'] = false,
+    mode = true,
+    mode1 = true,
+    mode2 = true,
+    fileinfo = true,
+    fileinfo1 = true,
+    fileinfo4 = true,
+    clock = true,
+    clock1 = true
+  },
   startify = {
     ['*'] = false,
     mode = true,

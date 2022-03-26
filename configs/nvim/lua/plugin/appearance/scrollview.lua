@@ -9,7 +9,8 @@ registry.install {
     vim.g.scrollview_character = '▎'
     vim.g.scrollview_excluded_filetypes = {
       'nvimtree',
-      'startify'
+      'startify',
+      'alpha'
     }
   end,
   defer = function ()

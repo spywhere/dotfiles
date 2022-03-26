@@ -2,6 +2,7 @@ local registry = require('lib.registry')
 
 registry.install {
   'mhinz/vim-startify',
+  skip = registry.experiment('startify').off,
   post_install = function ()
     vim.cmd('Startify')
     vim.defer_fn(function ()
