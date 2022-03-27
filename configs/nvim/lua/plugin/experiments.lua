@@ -6,3 +6,5 @@ registry.experiment('fzf', true)
 registry.experiment('scrollview', false)
 -- Experiment between vim-startify and alpha-nvim
 registry.experiment('startify', false)
+-- Experiment between vim-doge and neogen
+registry.experiment('doge', false)
