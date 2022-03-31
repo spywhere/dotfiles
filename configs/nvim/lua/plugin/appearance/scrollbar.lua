@@ -38,7 +38,7 @@ registry.install {
     registry.auto(
       {
         'WinEnter', 'BufEnter', 'BufWinEnter', 'FocusGained', 'CursorMoved',
-        'VimResized'
+        'WinScrolled', 'VimResized'
       },
       show
     )
