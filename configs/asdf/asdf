@@ -1,8 +1,9 @@
 nodejs 17.5.0
 python 3.10.2
 dotnet-core 5.0.102
-java adoptopenjdk-8.0.292+10
+java adoptopenjdk-8.0.322+6
 fzf 0.29.0
 neovim ref:stable
 rust stable
 deno ref:latest
+coursier 2.1.0-M5-18-gfebf9838c
