@@ -3,7 +3,7 @@ local registry = require('lib.registry')
 registry.install {
   'nvim-treesitter/nvim-treesitter',
   options = {
-    ['do'] = ':TSUpdateSync'
+    ['do'] = fn.has('linux') == 1 and ':TSUpdateSync' or ':TSUpdate'
   },
   config = function ()
     require('nvim-treesitter.configs').setup {
