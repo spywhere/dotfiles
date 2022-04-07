@@ -34,6 +34,12 @@ local buffer_management = function ()
       if string.lower(vim.bo.filetype) == 'nvimtree' then
         return
       end
+
+      -- only one buffer left
+      if #fn.getbufinfo({ buflisted = 1 }) == 1 then
+        return
+      end
+
       local tree_open = false
       local tree = prequire('nvim-tree')
       if tree then
@@ -56,7 +62,7 @@ local buffer_management = function ()
   -- close current buffer
   bindings.map.normal(
     '<A-w>',
-    close_buffer('bd')
+    close_buffer('silent! bd')
   )
   -- close all buffers
   bindings.map.normal(
