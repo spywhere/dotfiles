@@ -10,22 +10,6 @@ function tbl_reduce(tbl, fn, def)
   return output
 end
 
-function center(generator)
-  return function (max_width, padding)
-    local win_width = fn.winwidth(0) - (padding or 0) * 2
-
-    max_width = max_width or 54
-    return tbl_reduce(generator(max_width), function (lines, line)
-      table.insert(lines, string.format(
-        '%s%s',
-        string.rep(' ', (win_width / 2) - (max_width / 2)),
-        line
-      ))
-      return lines
-    end, {})
-  end
-end
-
 function boxed(generator)
   local utf8 = vim.o.encoding == 'utf-8'
   local top_left = utf8 and '╭' or '*'
@@ -106,12 +90,14 @@ registry.install {
 
     local header = {
       type = 'text',
-      val = center(cowsay(require('alpha.fortune')))(
+      val = cowsay(require('alpha.fortune'))(
         nil, startify.config.opts.margin
       ),
       opts = {
         hl = "Type",
         shrink_margin = false,
+        position = 'center',
+        width = 54
       }
     }
 
