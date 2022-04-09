@@ -29,7 +29,7 @@ registry.install {
         enable = true
       },
       filters = {
-        custom = { '.git', '.DS_Store' }
+        dotfiles = true
       },
       actions = {
         change_dir = {
