@@ -128,7 +128,7 @@ registry.install {
       cmp.setup.cmdline(':', {
         sources = {
           { name = 'path', keyword_length = 3 },
-          { name = 'cmdline', keyword_length = 3 }
+          { name = 'cmdline', keyword_length = 2 }
         }
       })
     end)
