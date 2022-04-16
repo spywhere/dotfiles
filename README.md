@@ -2,6 +2,8 @@
 
 A cross-platform, modular dotfiles for my personal setup
 
+![Screen Shot](https://user-images.githubusercontent.com/1087399/163681933-45116a93-57a3-4a2d-8f34-244362a303f5.png)
+
 ## Required Commands
 
 - coreutils
