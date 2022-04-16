@@ -5,12 +5,12 @@ local split_management = function ()
   -- split resize
   bindings.map.normal('<A-S-Left>', '<cmd>vertical resize -5<cr>')
   bindings.map.normal('<A-S-Right>', '<cmd>vertical resize +5<cr>')
-  bindings.map.normal('<A-S-Up>', '<cmd>resize -5<cr>')
-  bindings.map.normal('<A-S-Down>', '<cmd>resize +5<cr>')
+  bindings.map.normal('<A-S-Up>', '<cmd>resize +5<cr>')
+  bindings.map.normal('<A-S-Down>', '<cmd>resize -5<cr>')
   bindings.map.normal('<Left>', '<cmd>vertical resize -1<cr>')
   bindings.map.normal('<Right>', '<cmd>vertical resize +1<cr>')
-  bindings.map.normal('<Up>', '<cmd>resize -1<cr>')
-  bindings.map.normal('<Down>', '<cmd>resize +1<cr>')
+  bindings.map.normal('<Up>', '<cmd>resize +1<cr>')
+  bindings.map.normal('<Down>', '<cmd>resize -1<cr>')
 
   -- quick split
   bindings.map.normal('<leader><Left>', '<cmd>topleft vnew<cr>')
