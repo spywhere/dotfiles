@@ -127,6 +127,7 @@ registry.install {
       { type = 'padding', val = 1 },
       header,
       { type = 'padding', val = 2 },
+      startify.section.top_buttons,
       mru(1, fn.getcwd()),
       mru(21),
       { type = 'padding', val = 1 },
