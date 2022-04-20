@@ -29,7 +29,7 @@ local buffer_management = function ()
   bindings.map.normal('<A-Left>', '<cmd>bprev<cr>')
   bindings.map.normal('<A-Right>', '<cmd>bnext<cr>')
 
-  local close_buffer = function (command, on_tree_open)
+  local close_buffer = function (command, switch_to_last)
     return function ()
       if string.lower(vim.bo.filetype) == 'nvimtree' then
         return
@@ -40,6 +40,7 @@ local buffer_management = function ()
         return
       end
 
+      local lastwin = fn.winnr('#')
       local tree_open = false
       local tree = prequire('nvim-tree')
       if tree then
@@ -52,8 +53,8 @@ local buffer_management = function ()
       vim.cmd(command)
       if tree and tree_open then
         tree.open()
-        if on_tree_open and on_tree_open ~= "" then
-          vim.cmd(on_tree_open)
+        if switch_to_last then
+          vim.cmd(lastwin..'wincmd w')
         end
       end
     end
@@ -62,7 +63,7 @@ local buffer_management = function ()
   -- close current buffer
   bindings.map.normal(
     '<A-w>',
-    close_buffer('silent! bd')
+    close_buffer('silent! bd', true)
   )
   -- close all buffers
   bindings.map.normal(
