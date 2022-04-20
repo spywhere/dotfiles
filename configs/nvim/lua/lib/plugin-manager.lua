@@ -54,13 +54,27 @@ local is_plugin_loaded = function (name)
   return fn.stridx(vim.o.rtp, plugin_path) >= 0
 end
 
-local perform_post = function (plugin, post_fn, defer_fn, defer_first_fn)
+local function perform_post(plugin, post_fn, defer_fn, defer_first_fn)
   local post = post_fn or function (fn) fn() end
   local defer = defer_fn or function (fn) vim.defer_fn(fn, 10) end
   local defer_first = defer_first_fn or function (fn) vim.defer_fn(fn, 0) end
 
   if not is_plugin_installed(plugin.identifier) then
     return
+  end
+
+  if plugin.needs then
+    local needs_fulfilled = true
+    for _, v in ipairs(plugin.needs) do
+      if vim.g[v] ~= 1 then
+        needs_fulfilled = false
+      end
+    end
+
+    if not needs_fulfilled then
+      defer(function () perform_post(plugin) end)
+      return
+    end
   end
 
   if plugin.config then
@@ -148,10 +162,10 @@ local lazy_load = function ()
         function ()
           perform_post(plugin)
         end,
-        delay + 100
+        delay + 10
       )
     end, delay)
-    delay = delay + 100
+    delay = delay + 10
   end
   _lazy = nil
 end
@@ -168,7 +182,7 @@ M.setup = function (registry, setup)
   -- Automatically install missing plugins on startup
   registry.auto('VimEnter', install_missing_plugins)
   if next(_lazy) then
-    vim.defer_fn(function () lazy_load() end, 1000)
+    vim.defer_fn(function () lazy_load() end, 100)
   end
 end
 
