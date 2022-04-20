@@ -235,7 +235,15 @@ M.install = function (plugin, options)
   table.insert(_plugins, plugin_options)
 end
 
+local priority_sorter = function (plugin_a, plugin_b)
+  local a_priority = plugin_a.priority or 0
+  local b_priority = plugin_b.priority or 0
+  return a_priority < b_priority
+end
+
 local iterate_plugins = function ()
+  table.sort(_plugins, priority_sorter)
+
   pm.setup(M, function (load)
     for _, plugin in ipairs(_plugins) do
       load(plugin)
