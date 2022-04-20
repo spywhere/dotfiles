@@ -18,7 +18,7 @@ registry.install {
             filetype = "NvimTree",
             text = "Explorer",
             highlight = "Directory",
-            text_align = "left"
+            text_align = "center"
           }
         }
       }
