@@ -12,7 +12,6 @@ registry.install {
       }
     })
 
-
     local Terminal = require('toggleterm.terminal').Terminal
     local fuzzy = function (command)
       return Terminal:new({

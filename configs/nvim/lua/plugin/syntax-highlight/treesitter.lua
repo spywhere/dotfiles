@@ -11,7 +11,7 @@ registry.install {
       ensure_installed = 'all',
       ignore_install = {
         'julia', 'haskell', 'kotlin', 'ocamel', 'ocaml_interface',
-        'ocamllex', 'verilog', 'zig'
+        'ocamllex', 'phpdoc', 'verilog', 'zig'
       },
       highlight = {
         enable = true
