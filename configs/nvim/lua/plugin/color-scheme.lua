@@ -80,10 +80,6 @@ registry.auto('ColorScheme', color_setup)
 
 registry.install {
   'arcticicestudio/nord-vim',
-  priority = 999,
-  options = {
-    commit = 'a825678'
-  },
   config = function (plugin)
     function setup_colorscheme()
       if plugin.installed() and plugin.loaded() then

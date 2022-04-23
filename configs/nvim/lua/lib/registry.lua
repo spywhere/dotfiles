@@ -70,7 +70,7 @@ M.group = function (group_name, group_fn)
     'autocmd!'
   }
   group()
-  table.insert(_group.expression, 'augroup END')
+  table.insert(_group.expression, 'augroup end')
   api.nvim_exec(table.concat(_group.expression, '\n'), false)
   _group = nil
 end
