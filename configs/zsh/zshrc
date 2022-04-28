@@ -109,7 +109,8 @@ else
   zinit snippet OMZP::git
   zinit snippet OMZP::git-auto-fetch
   zinit snippet OMZP::gitignore
-  zinit snippet OMZP::httpie
+  zinit ice lucid as"completion"
+  zinit snippet OMZP::httpie/_httpie
   zinit snippet OMZP::npm
 fi
 
