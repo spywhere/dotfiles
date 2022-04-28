@@ -6,6 +6,9 @@ export HISTFILE=~/.zsh_history
 export HISTSIZE=1000000
 export SAVEHIST=100000
 
+# better word separator
+export WORDCHARS='~!#$%^&*(){}[]<>?.+;-'
+
 # use ripgrep by default for fzf
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
