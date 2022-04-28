@@ -28,9 +28,6 @@ registry.install {
       update_focused_file = {
         enable = true
       },
-      filters = {
-        dotfiles = true
-      },
       actions = {
         change_dir = {
           global = true
