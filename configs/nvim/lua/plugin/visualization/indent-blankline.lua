@@ -16,7 +16,7 @@ registry.install {
     vim.g.indent_blankline_space_char = ' '
     vim.g.indent_blankline_space_char_blankline = ' '
   end,
-  defer = function ()
+  delay = function ()
     local disable_indent_guides = function ()
       api.nvim_command('IndentBlanklineDisable')
     end

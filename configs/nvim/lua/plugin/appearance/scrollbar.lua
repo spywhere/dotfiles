@@ -17,7 +17,7 @@ registry.install {
       'alpha'
     }
   end,
-  defer = function ()
+  delay = function ()
     local visible_duration = 3000;
 
     local timer = nil

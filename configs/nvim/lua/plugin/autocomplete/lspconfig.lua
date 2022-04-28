@@ -4,7 +4,7 @@ local lsp = require('lib.lsp')
 
 registry.install {
   'neovim/nvim-lspconfig',
-  defer = lsp.setup,
+  delay = lsp.setup,
   config = function ()
     lsp.on_setup(function ()
       vim.diagnostic.config({

@@ -8,10 +8,10 @@ registry.install {
     vim.g.quickui_border_style = 2
     vim.g.quickui_color_scheme = 'papercol dark'
   end,
-  defer_first = function ()
+  defer = function ()
     bindings.map.normal('<leader>m', '<cmd>call quickui#menu#open()<cr>')
   end,
-  defer = function ()
+  delay = function ()
     fn['quickui#menu#reset']()
 
     fn['quickui#menu#install']('&File', {

@@ -4,7 +4,7 @@ local registry = require('lib.registry')
 registry.install {
   'szw/vim-maximizer',
   lazy = true,
-  defer = function ()
+  delay = function ()
     bindings.map.normal('<leader>z', '<cmd>MaximizerToggle!<cr>')
   end
 }

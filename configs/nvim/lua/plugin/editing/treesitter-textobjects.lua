@@ -2,7 +2,7 @@ local registry = require('lib.registry')
 
 registry.install {
   'nvim-treesitter/nvim-treesitter-textobjects',
-  defer = function ()
+  delay = function ()
     require('nvim-treesitter.configs').setup({
       textobjects = {
         select = {

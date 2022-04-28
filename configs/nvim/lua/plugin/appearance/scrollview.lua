@@ -13,7 +13,7 @@ registry.install {
       'alpha'
     }
   end,
-  defer = function ()
+  delay = function ()
     local scrollview = prequire('scrollview')
     if not scrollview then
       return

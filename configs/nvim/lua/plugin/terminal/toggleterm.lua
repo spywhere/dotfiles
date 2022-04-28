@@ -4,7 +4,7 @@ local bindings = require('lib.bindings')
 registry.install {
   'akinsho/nvim-toggleterm.lua',
   skip = fn.has('win32') == 1,
-  defer = function ()
+  delay = function ()
     require('toggleterm').setup({
       direction = 'float',
       float_opts = {

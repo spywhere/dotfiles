@@ -22,7 +22,6 @@ _fn = {}
 local M = {}
 
 local _group = nil
-local _plugins = {}
 local _pre = {}
 local _post = {}
 local _defers = {}
@@ -171,12 +170,17 @@ end
 
 local install_plugin_manager = function (callback)
   if pm.is_installed() then
-    callback(true)
+    if callback then
+      callback(true)
+    end
     return
   end
 
-  pm.install(M)
-  callback(false)
+  if callback then
+    callback(pm.install())
+  else
+    return pm.install()
+  end
 end
 
 M.experiment = function (name, options)
@@ -201,57 +205,7 @@ M.experiment = function (name, options)
   _experiments[name] = options
 end
 
-M.install = function (plugin, options)
-  local name = plugin
-  local plugin_options = {}
-
-  if type(name) == 'string' then
-    plugin_options.options = options
-  else
-    plugin_options = {}
-    for k, v in pairs(name) do
-      if type(k) == 'string' then
-        plugin_options[k] = v
-      else
-        name = v
-      end
-    end
-  end
-
-  plugin_options.name = name
-  local skip = false
-  if type(plugin_options.skip) == 'function' then
-    skip = plugin_options.skip()
-  elseif type(plugin_options.skip) == 'boolean' then
-    skip = plugin_options.skip
-  end
-  if skip then
-    return
-  end
-  if type(plugin_options.setup) == 'function' then
-    M.pre(plugin_options.setup)
-  end
-
-  table.insert(_plugins, plugin_options)
-end
-
-local priority_sorter = function (plugin_a, plugin_b)
-  local a_priority = plugin_a.priority or 0
-  local b_priority = plugin_b.priority or 0
-  return a_priority < b_priority
-end
-
-local iterate_plugins = function ()
-  table.sort(_plugins, priority_sorter)
-
-  pm.setup(M, function (load)
-    for _, plugin in ipairs(_plugins) do
-      load(plugin)
-    end
-  end)
-
-  _plugins = {}
-end
+M.install = pm.add
 
 M.pre = function (callback)
   table.insert(_pre, callback)
@@ -298,13 +252,22 @@ M.reload = function ()
   M.startup()
 end
 
-M.startup = function()
+M.startup = function(callback)
+  if callback then
+    install_plugin_manager(function (installed)
+      if not installed then
+        return
+      end
+      callback()
+      M.startup()
+    end)
+    return
+  end
+
   iterate_pre()
-  install_plugin_manager(function (installed)
-    iterate_plugins()
-    if installed then
-      iterate_defer()
-    end
+  install_plugin_manager(function ()
+    pm.setup()
+    iterate_defer()
   end)
 end
 

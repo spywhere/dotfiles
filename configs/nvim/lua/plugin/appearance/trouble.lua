@@ -8,7 +8,7 @@ registry.install {
     bindings.map.normal('<leader>DD', '<cmd>TroubleToggle lsp_document_diagnostics<cr>')
     bindings.map.normal('gR', '<cmd>TroubleToggle lsp_references<cr>')
   end,
-  defer = function ()
+  delay = function ()
     require("trouble").setup({})
   end
 }

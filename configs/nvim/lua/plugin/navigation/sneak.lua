@@ -3,7 +3,7 @@ local registry = require('lib.registry')
 
 registry.install {
   'justinmk/vim-sneak',
-  defer = function ()
+  delay = function ()
     bindings.map.all('f', '<Plug>Sneak_f', { noremap = false })
     bindings.map.all('F', '<Plug>Sneak_F', { noremap = false })
     bindings.map.all('t', '<Plug>Sneak_t', { noremap = false })

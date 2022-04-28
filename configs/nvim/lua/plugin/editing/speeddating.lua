@@ -7,7 +7,7 @@ registry.install {
     -- disabled as we will map switch.vim and speeddating ourselves
     vim.g.speeddating_no_mappings = 1
   end,
-  defer = function ()
+  delay = function ()
     -- avoid issues because of remap belows
     bindings.map.normal('<Plug>SpeedDatingFallbackUp', '<c-a>')
     bindings.map.normal('<Plug>SpeedDatingFallbackDown', '<c-x>')

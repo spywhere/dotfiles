@@ -3,7 +3,7 @@ local bindings = require('lib.bindings')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
-  defer_first = function ()
+  defer = function ()
     bindings.map.normal('<C-p>', '<cmd>lua require("telescope.builtin").find_files({ prompt_prefix="Find> ", hidden = true })<cr>')
     bindings.map.normal('<leader>/', '<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find({ prompt_prefix="BLines> " })<cr>')
     -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)

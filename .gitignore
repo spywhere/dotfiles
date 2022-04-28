@@ -9,6 +9,8 @@ configs/ncmpcpp/**
 !configs/ncmpcpp/bindings
 configs/neomutt/accounts/default
 configs/nvim/autoload
+configs/nvim/lua/plug.lua
+configs/nvim/lua/plug.lua.old
 configs/nvim/plugged
 configs/ssh/**
 !configs/ssh/config

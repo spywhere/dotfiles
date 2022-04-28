@@ -8,7 +8,7 @@ registry.install {
       default = ' '
     }
   end,
-  defer_first = function ()
+  defer = function ()
     local show_cursorline = function ()
       if vim.bo.filetype == 'NvimTree' then
         vim.wo.cursorline = true
@@ -23,7 +23,7 @@ registry.install {
     bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
     bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
   end,
-  defer = function ()
+  delay = function ()
     require('nvim-tree').setup {
       update_focused_file = {
         enable = true

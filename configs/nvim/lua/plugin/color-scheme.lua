@@ -88,7 +88,8 @@ registry.install {
         vim.defer_fn(setup_colorscheme, 100)
       end
     end
-    setup_colorscheme()
+    -- setup_colorscheme()
+    api.nvim_command('colorscheme nord')
   end,
   post_install = function ()
     api.nvim_command('colorscheme nord')
