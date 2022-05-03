@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'AdGuard for Safari'
+has_app 'AdGuard'
 
-use_mas 'adguard-for-safari' '1440147259'
+use_brew cask 'adguard'
