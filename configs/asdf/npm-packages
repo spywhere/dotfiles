@@ -6,7 +6,6 @@ graphql-language-service-cli
 jest
 neovim
 pyright
-sql-language-server
 typescript
 typescript-language-server
 vim-language-server
