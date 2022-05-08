@@ -1,9 +1,14 @@
 local registry = require('lib.registry')
 
 registry.install {
-  'mhinz/vim-signify',
+  'lewis6991/gitsigns.nvim',
   lazy = true,
   config = function ()
-    vim.g.signify_sign_show_count = 0
+    require('gitsigns').setup {
+      signs = {
+        add = { hl = 'GitSignsAdd', text = '+', numhl='GitSignsAddNr', linehl='GitSignsAddLn' },
+        change = { hl = 'GitSignsChange', text = '!', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' }
+      }
+    }
   end
 }
