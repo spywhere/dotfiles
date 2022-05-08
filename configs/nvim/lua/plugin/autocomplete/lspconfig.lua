@@ -17,9 +17,6 @@ registry.install {
         return
       end
 
-      bindings.highlight.link('LspReferenceRead', 'CursorColumn')
-      bindings.highlight.link('LspReferenceText', 'CursorColumn')
-      bindings.highlight.link('LspReferenceWrite', 'CursorColumn')
       registry.group(function ()
         registry.auto('CursorHold', vim.lsp.buf.document_highlight, '<buffer>')
         registry.auto('CursorMoved', vim.lsp.buf.clear_references, '<buffer>')
