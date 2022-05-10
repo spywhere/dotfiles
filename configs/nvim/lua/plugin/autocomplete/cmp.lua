@@ -7,20 +7,20 @@ registry.install {
   config = function ()
     bindings.set('completeopt', 'menuone,noinsert,noselect')
 
-    bindings.map.normal('gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
-    bindings.map.normal('gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
-    bindings.map.normal('K', '<cmd>lua vim.lsp.buf.hover()<cr>')
-    bindings.map.normal('gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
-    bindings.map.normal('ga', '<cmd>lua vim.lsp.buf.code_action()<cr>')
+    bindings.map.normal('gD', { 'vim.lsp.buf.declaration()' })
+    bindings.map.normal('gd', { 'vim.lsp.buf.definition()' })
+    bindings.map.normal('K', { 'vim.lsp.buf.hover()' })
+    bindings.map.normal('gi', { 'vim.lsp.buf.implementation()' })
+    bindings.map.normal('ga', { 'vim.lsp.buf.code_action()' })
     -- conflicted with tmux navigator, try using through 'gk' instead
-    -- bindings.map.normal('<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
-    bindings.map.normal('<leader>td', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
-    bindings.map.normal('<leader>rn', '<cmd>lua vim.lsp.buf.rename()<cr>')
-    bindings.map.normal('gr', '<cmd>lua vim.lsp.buf.references()<cr>')
-    bindings.map.normal('<leader>d', '<cmd>lua vim.diagnostic.open_float(0, { scope = \'line\' })<cr>')
-    bindings.map.normal('<leader>D', '<cmd>lua vim.diagnostic.setloclist()<cr>')
-    bindings.map.normal('[d', '<cmd>lua vim.diagnostic.goto_prev { float = {} }<cr>')
-    bindings.map.normal(']d', '<cmd>lua vim.diagnostic.goto_next { float = {} }<cr>')
+    -- bindings.map.normal('<C-k>', { 'vim.lsp.buf.signature_help()' })
+    bindings.map.normal('<leader>td', { 'vim.lsp.buf.type_definition()' })
+    bindings.map.normal('<leader>rn', { 'vim.lsp.buf.rename()' })
+    bindings.map.normal('gr', { 'vim.lsp.buf.references()' })
+    bindings.map.normal('<leader>d', { 'vim.diagnostic.open_float(0, { scope = \'line\' })' })
+    bindings.map.normal('<leader>D', { 'vim.diagnostic.setloclist()' })
+    bindings.map.normal('[d', { 'vim.diagnostic.goto_prev { float = {} }' })
+    bindings.map.normal(']d', { 'vim.diagnostic.goto_next { float = {} }' })
 
     local sign_symbols = {
       Error = '•',

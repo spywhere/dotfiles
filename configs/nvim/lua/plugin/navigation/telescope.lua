@@ -4,10 +4,19 @@ local bindings = require('lib.bindings')
 registry.install {
   'nvim-telescope/telescope.nvim',
   defer = function ()
-    bindings.map.normal('<C-p>', '<cmd>lua require("telescope.builtin").find_files({ prompt_prefix="Find> ", hidden = true })<cr>')
-    bindings.map.normal('<leader>/', '<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find({ prompt_prefix="BLines> " })<cr>')
+    bindings.map.normal('<C-p>', {
+      import = 'telescope.builtin',
+      'find_files({ prompt_prefix="Find> ", hidden = true })'
+    })
+    bindings.map.normal('<leader>/', {
+      import = 'telescope.builtin',
+      'current_buffer_fuzzy_find({ prompt_prefix="BLines> " })'
+    })
     -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
-    bindings.map.normal('<leader>f', '<cmd>lua require("telescope.builtin").live_grep({ prompt_prefix="Rg> " })<cr>')
+    bindings.map.normal('<leader>f', {
+      import = 'telescope.builtin',
+      'live_grep({ prompt_prefix="Rg> " })'
+    })
     -- ripgrep the whole project with rg itself
   end,
   config = function ()
