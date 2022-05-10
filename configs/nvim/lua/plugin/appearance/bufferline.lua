@@ -20,7 +20,10 @@ registry.install {
             highlight = "Directory",
             text_align = "center"
           }
-        }
+        },
+        custom_filter = function (bufno)
+          return vim.bo[bufno].filetype ~= 'help' and vim.bo[bufno].filetype ~= 'qf'
+        end
       }
     })
 
