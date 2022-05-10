@@ -70,7 +70,7 @@ local lsp_on_attach = function (fn)
 end
 
 local setup_lsp = function (name, lsp)
-  if lsp.executable and not bindings.executable(lsp.executable) then
+  if lsp.executable and fn.executable(lsp.executable) == 0 then
     return
   end
 

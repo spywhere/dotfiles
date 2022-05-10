@@ -1,11 +1,11 @@
 local M = {}
 
 M.is_installed = function ()
-  return vim.fn.filereadable(vim.fn.expand(plug_nvim_path)) ~= 0
+  return fn.filereadable(vim.fn.expand(plug_nvim_path)) ~= 0
 end
 
 M.install = function ()
-  if vim.fn.executable('curl') == 0 then
+  if fn.executable('curl') == 0 then
     -- curl not installed, skip the config
     print('cannot install plug.nvim, curl is not installed')
     return false

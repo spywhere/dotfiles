@@ -24,22 +24,16 @@ registry.defer_first(function ()
   bindings.map.ni('<A-S-PageUp>')
   bindings.map.ni('<A-S-PageDown>')
 
-  bindings.cmd('Q', {
-    function(modifiers)
-      api.nvim_command('quit' .. modifiers[1])
-    end,
-    bang = true
-  })
-  bindings.cmd('Qa', {
-    function(modifiers)
-      api.nvim_command('quitall' .. modifiers[1])
-    end,
-    bang = true
-  })
-  bindings.cmd('QA', {
-    function(modifiers)
-      api.nvim_command('quitall' .. modifiers[1])
-    end,
-    bang = true
-  })
+  local bang_cmd = function (cmd)
+    return {
+      function (attrs)
+        api.nvim_command(cmd .. (attrs.bang and '!' or ''))
+      end,
+      bang = true
+    }
+  end
+
+  bindings.cmd('Q', bang_cmd('quit'))
+  bindings.cmd('Qa', bang_cmd('quitall'))
+  bindings.cmd('QA', bang_cmd('quitall'))
 end)
