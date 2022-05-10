@@ -38,39 +38,11 @@ M.cmd = function (name, command)
   api.nvim_create_user_command(name, command[1], attributes)
 end
 
-local define_highlight = function (name, colors)
-  local expression = { 'highlight', name }
-  if type(colors) == 'string' then
-    table.insert(expression, colors)
-  elseif type(colors) == 'table' then
-    for k, v in pairs(colors) do
-      if type(k) == 'string' and type(v) == 'string' then
-        table.insert(expression, string.format('%s=%s', k, v))
-      elseif type(k) == 'number' and type(v) == 'string' then
-        table.insert(expression, v)
-      end
-    end
-  end
-  vim.cmd(table.concat(expression, ' '))
-end
-
-local link_highlight = function (name, target, is_default)
-  local expression = { 'highlight' }
-  if is_default ~= false then
-    table.insert(expression, 'default')
-  end
-  table.insert(expression, 'link')
-  table.insert(expression, name)
-  table.insert(expression, target or 'NONE')
-  vim.cmd(table.concat(expression, ' '))
-end
-
 M.sign = {
   define = fn.sign_define
 }
 M.highlight = {
-  define = define_highlight,
-  link = link_highlight
+  define = api.nvim_set_hl
 }
 
 local build_lua_map_ops = function (tbl)

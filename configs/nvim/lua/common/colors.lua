@@ -1,5 +1,5 @@
 local M = {
-  darkgray = { gui='#1c1c1c', cterm='234' }
+  darkgray = { gui='#1c1c1c', cterm=234 }
 }
 
 -- color palettes (from nord-vim)
@@ -26,26 +26,26 @@ local M = {
 -- #2c323c  23  cursor-gray
 -- #3b4048 238  special-gray
 M.nord = {
-  orange = { gui='#d08770', cterm='173' },
-  lightblue = { gui='#5e81ac', cterm='67' },
+  orange = { gui='#d08770', cterm=173 },
+  lightblue = { gui='#5e81ac', cterm=67 },
 
-  black = { gui='#3b4252', cterm='238' },
-  red = { gui='#bf616a', cterm='131' },
-  green = { gui='#a3be8c', cterm='144' },
-  yellow = { gui='#ebcb8b', cterm='222' },
-  blue = { gui='#81a1c1', cterm='109' },
-  magenta = { gui='#b48ead', cterm='139' },
-  cyan = { gui='#88c0d0', cterm='110' },
-  white = { gui='#e5e9f0', cterm='255' },
+  black = { gui='#3b4252', cterm=238 },
+  red = { gui='#bf616a', cterm=131 },
+  green = { gui='#a3be8c', cterm=144 },
+  yellow = { gui='#ebcb8b', cterm=222 },
+  blue = { gui='#81a1c1', cterm=109 },
+  magenta = { gui='#b48ead', cterm=139 },
+  cyan = { gui='#88c0d0', cterm=110 },
+  white = { gui='#e5e9f0', cterm=255 },
 
-  brightblack = { gui='#4c566a', cterm='240' },
+  brightblack = { gui='#4c566a', cterm=240 },
   brightred = 'red',
   brightgreen = 'green',
   brightyellow = 'yellow',
   brightblue = 'blue',
   brightmagenta = 'magenta',
-  brightcyan = { gui='#8fbcbb', cterm='109' },
-  brightwhite = { gui='#eceff4', cterm='255' },
+  brightcyan = { gui='#8fbcbb', cterm=109 },
+  brightwhite = { gui='#eceff4', cterm=255 },
 
   dimblack = { gui='#373e4d' },
   dimred = { gui='#94545d' },
@@ -75,12 +75,12 @@ M.group = function (fg, bg, palette)
 
   if type(fg) == 'string' and definitions[fg] then
     local color = M.resolve_color(fg, palette)
-    group.guifg=color.gui
+    group.fg=color.gui
     group.ctermfg=color.cterm
   end
   if type(bg) == 'string' and definitions[bg] then
     local color = M.resolve_color(bg, palette)
-    group.guibg=color.gui
+    group.bg=color.gui
     group.ctermbg=color.cterm
   end
   return group

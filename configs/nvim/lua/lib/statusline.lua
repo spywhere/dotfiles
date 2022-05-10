@@ -21,14 +21,14 @@ M.filetypes = function (filetypes)
   _fts = filetypes
 end
 
-local function highlighter(namespace)
+local function highlighter(nsid, namespace)
   return function (name, highlight)
-    bindings.highlight.define(namespace .. name, highlight)
+    bindings.highlight.define(nsid, namespace .. name, highlight)
   end
 end
 
 local function define_highlight(name, highlight)
-  return highlighter(M.ns_name)(name, highlight)
+  return highlighter(M.ns, M.ns_name)(name, highlight)
 end
 
 local function component_highlight(name, highlight)
@@ -38,7 +38,7 @@ local function component_highlight(name, highlight)
   if not highlight then
     return ''
   end
-  api.nvim_set_hl(M.ns, name, {})
+  define_highlight(name, {})
   if type(highlight) == 'table' then
     define_highlight(name, highlight)
   elseif type(highlight) == 'function' then
@@ -207,6 +207,6 @@ return function (name, components)
   M.ns = api.nvim_create_namespace(name)
   M.components = components
   api.nvim__set_hl_ns(M.ns)
-  M.define_highlight = highlighter(M.ns_name)
+  M.define_highlight = highlighter(M.ns, M.ns_name)
   return M
 end
