@@ -51,7 +51,7 @@ local define_highlight = function (name, colors)
       end
     end
   end
-  api.nvim_command(table.concat(expression, ' '))
+  vim.cmd(table.concat(expression, ' '))
 end
 
 local link_highlight = function (name, target, is_default)
@@ -62,7 +62,7 @@ local link_highlight = function (name, target, is_default)
   table.insert(expression, 'link')
   table.insert(expression, name)
   table.insert(expression, target or 'NONE')
-  api.nvim_command(table.concat(expression, ' '))
+  vim.cmd(table.concat(expression, ' '))
 end
 
 M.sign = {

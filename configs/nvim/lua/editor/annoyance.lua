@@ -27,7 +27,7 @@ registry.defer_first(function ()
   local bang_cmd = function (cmd)
     return {
       function (attrs)
-        api.nvim_command(cmd .. (attrs.bang and '!' or ''))
+        vim.cmd(cmd .. (attrs.bang and '!' or ''))
       end,
       bang = true
     }

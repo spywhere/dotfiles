@@ -8,7 +8,7 @@ local session_commands = function ()
       local path = opts.args
       local session_file = path or 'Session.vim'
       if fn.filereadable(session_file) == 1 then
-        api.nvim_command(table.concat({ 'source', session_file }, ' '))
+        vim.cmd(table.concat({ 'source', session_file }, ' '))
       else
         logger.inline.info(string.format('No session file found (%s)', session_file))
       end

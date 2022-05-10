@@ -79,10 +79,10 @@ registry.install {
   skip = registry.experiment('startify').on,
   post_install = function ()
     vim.defer_fn(function ()
-      api.nvim_command('Alpha')
+      vim.cmd('Alpha')
     end, 10)
     vim.defer_fn(function ()
-      api.nvim_command('IndentBlanklineDisable')
+      vim.cmd('IndentBlanklineDisable')
     end, 100)
   end,
   config = function ()

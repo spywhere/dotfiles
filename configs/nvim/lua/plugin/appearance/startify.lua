@@ -6,7 +6,7 @@ registry.install {
   post_install = function ()
     vim.cmd('Startify')
     vim.defer_fn(function ()
-      api.nvim_command('IndentBlanklineDisable')
+      vim.cmd('IndentBlanklineDisable')
     end, 100)
   end,
   config = function ()

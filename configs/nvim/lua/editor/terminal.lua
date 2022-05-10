@@ -5,7 +5,7 @@ if fn.has('win32') == 1 and fn.executable('wsl.exe') == 1 then
   local quick_terminal = function ()
     local wsl_terminal = {
       function()
-        api.nvim_command('terminal wsl.exe')
+        vim.cmd('terminal wsl.exe')
       end
     }
     bindings.cmd('WSLTerminal', wsl_terminal)
