@@ -15,6 +15,7 @@ registry.install {
         LspReferenceText = { bg = onenord.highlight, style = onenord.none },
         LspReferenceRead = { bg = onenord.highlight, style = onenord.none },
         LspReferenceWrite = { bg = onenord.highlight, style = onenord.none },
+        TelescopeSelection = { bg = onenord.highlight },
         IndentBlanklineContextChar = { fg = onenord.blue }
       },
       custom_colors = {
