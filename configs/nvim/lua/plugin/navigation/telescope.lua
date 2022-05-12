@@ -21,6 +21,7 @@ registry.install {
   end,
   config = function ()
     local actions = require('telescope.actions')
+    local layout_actions = require('telescope.actions.layout')
 
     require('telescope').setup {
       defaults = {
@@ -43,7 +44,8 @@ registry.install {
           i = {
             ['<esc>'] = actions.close,
             ['<S-Up>'] = actions.move_to_top,
-            ['<S-Down>'] = actions.move_to_bottom
+            ['<S-Down>'] = actions.move_to_bottom,
+            ['<C-_>'] = layout_actions.toggle_preview
           }
         }
       }
