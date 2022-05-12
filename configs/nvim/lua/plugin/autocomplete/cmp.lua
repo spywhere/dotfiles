@@ -115,11 +115,13 @@ registry.install {
         }
       })
 
-      cmp.setup.cmdline('/', {
-        sources = {
-          { name = 'buffer', keyword_length = 3 }
-        }
-      })
+      for _, cmd_type in ipairs({ '/', '?' }) do
+        cmp.setup.cmdline(cmd_type, {
+          sources = {
+            { name = 'buffer', keyword_length = 3 }
+          }
+        })
+      end
 
       cmp.setup.cmdline(':', {
         sources = {
