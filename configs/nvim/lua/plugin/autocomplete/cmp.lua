@@ -46,6 +46,20 @@ registry.install {
 
     lsp.on_setup(function ()
       local cmp = require('cmp')
+      local lspkind = prequire('lspkind')
+      local entry_format = function (entry, item) return item end
+      if lspkind then
+        entry_format = lspkind.cmp_format({
+          mode = 'symbol',
+          menu = ({
+            buffer = 'Buffer',
+            nvim_lsp = 'LSP',
+            luasnip = 'LuaSnip',
+            nvim_lua = 'Lua',
+            latex_symbols = 'Latex',
+          })
+        })
+      end
       cmp.setup({
         snippet = {
           expand = function (args)
@@ -56,25 +70,7 @@ registry.install {
           end
         },
         formatting = {
-          format = function (entry, item)
-            local lspkind = prequire('lspkind')
-
-            if not lspkind then
-              return item
-            end
-
-            -- fancy icons and a name of kind
-            item.kind = lspkind.presets.default[item.kind]
-            -- set a name for each source
-            item.menu = ({
-              buffer = 'Buffer',
-              nvim_lsp = 'LSP',
-              luasnip = 'LuaSnip',
-              nvim_lua = 'Lua',
-              latex_symbols = 'Latex',
-            })[entry.source.name]
-            return item
-          end
+          format = entry_format
         },
         mapping = {
           ['<C-p>'] = cmp.mapping.select_prev_item(),
