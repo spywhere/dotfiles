@@ -40,7 +40,7 @@ local buffer_management = function ()
         return
       end
 
-      local lastwin = fn.winnr('#')
+      local lastwin = fn.winnr()
       local tree_open = false
       local tree = prequire('nvim-tree')
       if tree then
