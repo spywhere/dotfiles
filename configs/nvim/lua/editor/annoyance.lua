@@ -36,4 +36,7 @@ registry.defer_first(function ()
   bindings.cmd('Q', bang_cmd('quit'))
   bindings.cmd('Qa', bang_cmd('quitall'))
   bindings.cmd('QA', bang_cmd('quitall'))
+
+  bindings.cmd('Vs', bang_cmd('vsplit'))
+  bindings.cmd('Sp', bang_cmd('split'))
 end)
