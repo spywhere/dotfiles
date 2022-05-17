@@ -9,4 +9,4 @@ registry.experiment('doge', false)
 -- Experiment of removing rooter plugin
 registry.experiment('rooter', false)
 -- Experiment between fzf-lua and telescope
-registry.experiment('fzf', true)
+registry.experiment('fzf', fn.has('win32') == 0)
