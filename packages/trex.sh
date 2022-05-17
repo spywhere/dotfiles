@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-optional
-has_app 'TablePlus'
+has_app 'TRex'
 
-use_brew cask 'tableplus'
+use_brew cask 'trex'
