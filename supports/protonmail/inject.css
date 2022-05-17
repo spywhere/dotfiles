@@ -1,0 +1,7 @@
+div.logo-container {
+  margin-top: 15px;
+}
+
+li>button[title="Special offer"] {
+  display: none;
+}
