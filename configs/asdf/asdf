@@ -7,3 +7,4 @@ neovim ref:stable
 rust stable
 deno ref:latest
 coursier 2.1.0-M5-18-gfebf9838c
+zig 0.9.1
