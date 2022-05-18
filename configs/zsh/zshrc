@@ -117,6 +117,9 @@ fi
 if test -d /opt/homebrew/bin; then
   export PATH="/opt/homebrew/bin:$PATH"
 fi
+if test -d /opt/homebrew/sbin; then
+  export PATH="/opt/homebrew/sbin:$PATH"
+fi
 
 if $USE_STARSHIP; then
   # Setup starship
