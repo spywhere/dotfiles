@@ -5,12 +5,15 @@ registry.install {
   skip = registry.experiment('scrollview').off,
   lazy = true,
   config = function ()
-    vim.g.scrollview_column = 1
-    vim.g.scrollview_character = '▎'
-    vim.g.scrollview_excluded_filetypes = {
-      'nvimtree',
-      'startify',
-      'alpha'
+    require('scrollview').setup {
+      column = 1,
+      character = '▎',
+      current_only = true,
+      excluded_filetypes = {
+        'nvimtree',
+        'startify',
+        'alpha'
+      }
     }
   end,
   delay = function ()
