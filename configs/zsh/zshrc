@@ -131,7 +131,6 @@ fi
 
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
-. $HOME/$DOTFILES_NAME/configs/zsh/docker
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
 . $HOME/$DOTFILES_NAME/configs/zsh/hooks
