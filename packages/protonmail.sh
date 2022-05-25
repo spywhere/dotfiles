@@ -15,6 +15,4 @@ has_app 'ProtonMail'
 
 SUPPORT_DIR="$HOME/$DOTFILES/supports/protonmail"
 
-# Use older electron as there is an issue when logging in
-# Ref: https://github.com/electron/electron/issues/31018
-use_nativefier 'ProtonMail' 'https://mail.protonmail.com' --electron-version 13.6.6 --conceal --background-color '#1C213C' --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --counter --title-bar-style hidden --disable-context-menu --darwin-dark-mode-support
+use_nativefier 'ProtonMail' 'https://mail.proton.me' --conceal --background-color '#1C1B23' --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --inject "$SUPPORT_DIR/inject.js" --counter --title-bar-style hidden --disable-context-menu --darwin-dark-mode-support
