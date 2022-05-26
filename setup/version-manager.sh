@@ -45,7 +45,6 @@ setup_version_manager() {
     bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add deno"
   else
     bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add deno https://github.com/spywhere/asdf-deno.git"
-    bash -c ". $HOME/.asdf/asdf.sh && asdf plugin update deno build-from-source"
   fi
   set -e
 
