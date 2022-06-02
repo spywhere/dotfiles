@@ -34,3 +34,8 @@ local quickfix_keymap = function ()
   registry.auto('FileType', map_quickfix, { 'qf', 'help' })
 end
 registry.defer_first(quickfix_keymap)
+
+local fold = function ()
+  bindings.set('nofoldenable')
+end
+registry.defer(fold)

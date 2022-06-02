@@ -1,4 +1,5 @@
 local registry = require('lib.registry')
+local bindings = require('lib.bindings')
 
 registry.install {
   'nvim-treesitter/nvim-treesitter',
@@ -27,5 +28,8 @@ registry.install {
         enable = true
       }
     }
+
+    bindings.set('foldmethod', 'expr')
+    bindings.set('foldexpr', 'nvim_treesitter#foldexpr()')
   end
 }
