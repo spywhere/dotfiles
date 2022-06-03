@@ -4,11 +4,6 @@ local cache = require('lib.cache')
 
 registry.install {
   'kyazdani42/nvim-tree.lua',
-  config = function ()
-    vim.g.nvim_tree_icons = {
-      default = ' '
-    }
-  end,
   defer = function ()
     local show_cursorline = function ()
       if vim.bo.filetype == 'NvimTree' then
@@ -22,7 +17,7 @@ registry.install {
     registry.auto({ 'BufEnter', 'FileType' }, show_cursorline)
 
     bindings.map.all('<leader>e', '<cmd>NvimTreeToggle<cr>')
-    bindings.map.all('<leader>E', '<cmd>NvimTreeFindFile<cr>')
+    bindings.map.all('<leader>E', '<cmd>NvimTreeFocus<cr>')
   end,
   delay = function ()
     local update_filter_folder = function (node)
