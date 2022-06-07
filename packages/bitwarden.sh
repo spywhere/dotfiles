@@ -13,4 +13,4 @@ fi
 
 has_app 'Bitwarden'
 
-use_brew 'cask' 'bitwarden'
+use_mas 'bitwarden' '1352778147'
