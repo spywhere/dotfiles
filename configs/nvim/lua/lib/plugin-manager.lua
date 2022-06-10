@@ -26,8 +26,11 @@ M.setup = function ()
     plugin_dir = plugin_home,
     extensions = {
       plug.extension.auto_install {},
-      plug.extension.priority {},
+      plug.extension.priority {
+        priority = ''
+      },
       plug.extension.skip {},
+      plug.extension.requires {},
       plug.extension.setup {},
       plug.extension.config {},
       plug.extension.defer {}
