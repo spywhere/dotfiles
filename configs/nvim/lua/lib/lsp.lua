@@ -14,44 +14,22 @@ local generate_lsp_setup = function (name)
 
   local LSPM = {}
 
-  local wrap = function (fn)
-    return function (...)
-      fn(...)
+  local set = function (key)
+    return function (value)
+      lsps[name][key] = value
       return LSPM
     end
   end
 
-  LSPM.need_executable = wrap(function (executable)
-    lsps[name].executable = executable
-  end)
-
-  LSPM.prepare = wrap(function (fn)
-    lsps[name].prepare = fn
-  end)
-
-  LSPM.command = wrap(function (command)
-    lsps[name].cmd = command
-  end)
-
-  LSPM.options = wrap(function (options)
-    lsps[name].options = options
-  end)
-
-  LSPM.config = wrap(function (config)
-    lsps[name].config = config
-  end)
-
-  LSPM.root = wrap(function (root)
-    lsps[name].root = root
-  end)
-
+  LSPM.need_executable = set('executable')
+  LSPM.prepare = set('prepare')
+  LSPM.command = set('cmd')
+  LSPM.options = set('options')
+  LSPM.config = set('config')
+  LSPM.root = set('root')
   LSPM.on = {
-    setup = wrap(function (fn)
-      lsps[name].on_setup = fn
-    end),
-    attach = wrap(function (fn)
-      lsps[name].on_attach = fn
-    end)
+    setup = set('on_setup'),
+    attach = set('on_attach')
   }
 
   return LSPM
