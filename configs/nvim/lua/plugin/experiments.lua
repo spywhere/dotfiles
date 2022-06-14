@@ -1,7 +1,7 @@
 local registry = require('lib.registry')
 
 -- Experiment between scrollbar.nvim and nvim-scrollview
-registry.experiment('scrollview', false)
+registry.experiment('scrollview', true)
 -- Experiment between vim-startify and alpha-nvim
 registry.experiment('startify', false)
 -- Experiment between vim-doge and neogen
