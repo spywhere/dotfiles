@@ -4,8 +4,8 @@ local dap = require('lib.dap')
 
 registry.install {
   'mfussenegger/nvim-dap',
-  delay=dap.setup,
-  config=function ()
+  delay = dap.setup,
+  config = function ()
     bindings.map.normal('<leader>b', {
       import='dap',
       'toggle_breakpoint()'

@@ -19,12 +19,10 @@ registry.install {
           enable = true,
           swap_next = {
             ["<leader>a"] = "@parameter.inner",
-            ["<leader>b"] = "@block.inner",
             ["<leader>c"] = "@conditional.inner"
           },
           swap_previous = {
             ["<leader>A"] = "@parameter.inner",
-            ["<leader>B"] = "@block.inner",
             ["<leader>C"] = "@conditional.inner"
           }
         }
