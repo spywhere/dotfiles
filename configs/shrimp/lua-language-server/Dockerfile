@@ -13,4 +13,4 @@ RUN ./compile/install.sh
 WORKDIR /etc/app/lua-language-server
 RUN ./3rd/luamake/luamake
 
-ENTRYPOINT ["/etc/app/lua-language-server/bin/Linux/lua-language-server", "-E", "/etc/app/lua-language-server/main.lua"]
+ENTRYPOINT ["/etc/app/lua-language-server/bin/lua-language-server"]
