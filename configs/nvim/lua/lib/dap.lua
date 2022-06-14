@@ -1,3 +1,4 @@
+-- NOTE: This require 'nvim-dap' to be installed
 local adapters = {}
 local dap_configs = {}
 
