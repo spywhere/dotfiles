@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Binance'
+has_app 'SpaceLauncher'
 
-use_brew cask 'binance'
+use_brew cask 'spacelauncher'
