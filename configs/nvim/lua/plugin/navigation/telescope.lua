@@ -49,9 +49,11 @@ registry.install {
         mappings = {
           i = {
             ['<esc>'] = actions.close,
-            ['<S-Up>'] = actions.move_to_top,
-            ['<S-Down>'] = actions.move_to_bottom,
-            ['<C-q>'] = actions.smart_send_to_qflist,
+            ['<S-Up>'] = actions.preview_scrolling_up,
+            ['<S-Down>'] = actions.preview_scrolling_down,
+            ['<C-u>'] = actions.results_scrolling_up,
+            ['<C-d>'] = actions.results_scrolling_down,
+            ['<C-q>'] = actions.smart_send_to_qflist + actions.open_qflist,
             ['<C-_>'] = layout_actions.toggle_preview
           }
         }
