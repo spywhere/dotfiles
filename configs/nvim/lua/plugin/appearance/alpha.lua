@@ -1,16 +1,16 @@
 local registry = require('lib.registry')
 
-function tbl_reduce(tbl, fn, def)
+local function tbl_reduce(tbl, fn, def)
   local output = def
 
-  for k, v in ipairs(tbl) do
+  for i, v in ipairs(tbl) do
     output = fn(output, v, i, tbl)
   end
 
   return output
 end
 
-function boxed(generator)
+local function boxed(generator)
   local utf8 = vim.o.encoding == 'utf-8'
   local top_left = utf8 and '╭' or '*'
   local top_right = utf8 and '╮' or '*'
@@ -60,7 +60,7 @@ function boxed(generator)
   end
 end
 
-function cowsay(generator)
+local function cowsay(generator)
   return function (max_width)
     max_width = max_width or 54
     return vim.list_extend(boxed(generator)(max_width), {
@@ -76,7 +76,6 @@ end
 
 registry.install {
   'goolord/alpha-nvim',
-  skip = registry.experiment('startify').on,
   post_install = function ()
     vim.defer_fn(function ()
       vim.cmd('Alpha')
@@ -90,9 +89,7 @@ registry.install {
 
     local header = {
       type = 'text',
-      val = cowsay(require('alpha.fortune'))(
-        nil, startify.config.opts.margin
-      ),
+      val = cowsay(require('alpha.fortune'))(),
       opts = {
         hl = "Type",
         shrink_margin = false,
