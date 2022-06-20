@@ -2,7 +2,7 @@ local registry = require('lib.registry')
 
 registry.install {
   'dstein64/nvim-scrollview',
-  skip = registry.experiment('scrollview').off,
+  skip = registry.experiment('scroll').is_not('scrollview'),
   lazy = true,
   config = function ()
     require('scrollview').setup {
