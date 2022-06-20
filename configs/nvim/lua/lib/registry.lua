@@ -150,7 +150,15 @@ M.experiment = function (name, options)
       off = function ()
         return not is_on
       end,
-      options = experiment
+      is = function (value)
+        return experiment == value
+      end,
+      is_not = function (value)
+        return experiment ~= value
+      end,
+      options = function ()
+        return experiment
+      end
     }
   end
 
