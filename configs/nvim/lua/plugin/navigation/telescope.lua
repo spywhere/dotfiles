@@ -3,7 +3,7 @@ local bindings = require('lib.bindings')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
-  skip = registry.experiment('fzf').on,
+  skip = registry.experiment('fuzzy').is_not('telescope'),
   requires = {
     {
       'nvim-lua/plenary.nvim'

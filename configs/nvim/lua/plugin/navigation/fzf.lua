@@ -4,7 +4,7 @@ local cache = require('lib.cache')
 
 registry.install {
   'ibhagwan/fzf-lua',
-  skip = registry.experiment('fzf').off,
+  skip = registry.experiment('fuzzy').is_not('fzf'),
   defer = function ()
     local folder_filter = function (options)
       return function ()
@@ -34,8 +34,6 @@ registry.install {
     end)
   end,
   config = function ()
-    local actions = require('fzf-lua.actions')
-
     require('fzf-lua').setup {
       fzf_opts = {
         ['--layout']='default'
