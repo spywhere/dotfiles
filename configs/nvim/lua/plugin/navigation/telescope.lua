@@ -63,6 +63,8 @@ registry.install {
         layout_config = {
           horizontal = { width = 0.9, height = 0.9 }
         },
+        dynamic_preview_title = true,
+        winblend = 15,
         mappings = {
           i = {
             ['<esc>'] = actions.close,
