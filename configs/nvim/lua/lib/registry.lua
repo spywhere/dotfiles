@@ -41,7 +41,10 @@ M.group = function (group_name, group_fn)
     group = name
     name = nil
   end
-  _group = api.nvim_create_augroup('' .. (name or increment()), {})
+  _group = api.nvim_create_augroup(
+    name or string.format('_lua_%s', increment()),
+    {}
+  )
   group()
   _group = nil
 end
@@ -56,13 +59,12 @@ M.auto = function (_events, func, _filter, _modifiers)
     return
   end
 
-  local evnts = std.wrap(_events)
-  for event in ipairs(evnts) do
+  local events = std.wrap(_events)
+  for event in ipairs(events) do
     assert(fn.exists('##' .. event))
   end
 
-  local events = table.concat(evnts, ',')
-  local filter = table.concat(std.wrap(_filter or '*'), ',')
+  local filter = std.wrap(_filter or '*')
 
   api.nvim_create_autocmd(events, {
     group = _group,
