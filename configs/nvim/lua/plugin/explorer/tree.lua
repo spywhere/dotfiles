@@ -29,8 +29,20 @@ registry.install {
         return
       end
 
-      cache.set('filter_folder', node.absolute_path)
-      print('Filter:', node.absolute_path)
+      local folders = cache.get('filter_folder', {})
+      local item = node.absolute_path
+      if folders[item] then
+        folders[item] = nil
+      else
+        folders[item] = true
+      end
+      cache.set('filter_folder', folders)
+      print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
+    end
+
+    local show_filter_folder = function ()
+      local folders = cache.get('filter_folder', {})
+      print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
     end
 
     require('nvim-tree').setup {
@@ -41,6 +53,11 @@ registry.install {
               key = 'f',
               action = 'update_filter_folder',
               action_cb = update_filter_folder
+            },
+            {
+              key = 'F',
+              action = 'show_filter_folder',
+              action_cb = show_filter_folder
             }
           }
         }

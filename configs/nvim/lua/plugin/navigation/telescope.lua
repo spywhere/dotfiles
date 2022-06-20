@@ -1,5 +1,6 @@
 local registry = require('lib.registry')
 local bindings = require('lib.bindings')
+local cache = require('lib.cache')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
@@ -7,23 +8,39 @@ registry.install {
   requires = {
     {
       'nvim-lua/plenary.nvim'
+    },
+    {
+      'nvim-telescope/telescope-fzf-native.nvim',
+      options = {
+        ['do'] = 'make'
+      }
     }
   },
   defer = function ()
-    bindings.map.normal('<C-p>', {
-      import = 'telescope.builtin',
-      'find_files({ prompt_prefix="Find> ", hidden = true })'
-    })
-    bindings.map.normal('<leader>/', {
-      import = 'telescope.builtin',
-      'current_buffer_fuzzy_find({ prompt_prefix="BLines> " })'
-    })
+    local telescope = function (action, options)
+      return function ()
+        if type(options) == 'function' then
+          options = options()
+        end
+        require('telescope.builtin')[action](options)
+      end
+    end
+
+    bindings.map.normal('<C-p>', telescope('find_files', {
+      prompt_prefix='Find> ',
+      hidden = true
+    }))
+    bindings.map.normal('<leader>/', telescope('current_buffer_fuzzy_find', {
+      prompt_prefix='BLines> '
+    }))
     -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
-    bindings.map.normal('<leader>f', {
-      import = 'telescope.builtin',
-      'live_grep({ prompt_prefix="Rg> " })'
-    })
-    -- ripgrep the whole project with rg itself
+    bindings.map.normal('<leader>f', function ()
+      require('telescope.builtin').live_grep {
+        prompt_prefix='Rg> ',
+        search_dirs=vim.tbl_keys(cache.get('filter_folder', {}))
+      }
+    end)
+    -- TODO: ripgrep the whole project with rg itself
   end,
   config = function ()
     local actions = require('telescope.actions')
@@ -59,5 +76,7 @@ registry.install {
         }
       }
     }
+
+    require('telescope').load_extension('fzf')
   end
 }
