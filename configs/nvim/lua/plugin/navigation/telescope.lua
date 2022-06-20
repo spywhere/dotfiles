@@ -51,6 +51,7 @@ registry.install {
             ['<esc>'] = actions.close,
             ['<S-Up>'] = actions.move_to_top,
             ['<S-Down>'] = actions.move_to_bottom,
+            ['<C-q>'] = actions.smart_send_to_qflist,
             ['<C-_>'] = layout_actions.toggle_preview
           }
         }
