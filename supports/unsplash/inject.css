@@ -1,0 +1,6 @@
+html {
+    filter: brightness(0);
+}
+html[data-darkreader-scheme="dark"] {
+    filter: unset;
+}
