@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_executable 'schismtracker'
+has_app 'Schism Tracker'
 
 optional
-use_brew formula 'schismtracker'
+use_brew cask 'schism-tracker'
