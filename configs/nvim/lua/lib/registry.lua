@@ -1,4 +1,3 @@
-local logger = require('lib.logger')
 -- setup registry
 local pm = require('lib.plugin-manager')
 local std = {}
