@@ -58,6 +58,14 @@ registry.install {
               key = 'F',
               action = 'show_filter_folder',
               action_cb = show_filter_folder
+            },
+            {
+              key = '/',
+              action = 'live_filter',
+            },
+            {
+              key = '<C-c>',
+              action = 'clear_live_filter',
             }
           }
         }
