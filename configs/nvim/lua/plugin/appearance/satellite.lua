@@ -3,6 +3,9 @@ local registry = require('lib.registry')
 registry.install {
   'lewis6991/satellite.nvim',
   skip = registry.experiment('scroll').is_not('satellite'),
+  options = {
+    commit = '14418e4'
+  },
   lazy = true,
   config = function ()
     require('satellite').setup {
