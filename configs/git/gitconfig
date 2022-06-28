@@ -5,6 +5,7 @@
   compression = 9
   preloadIndex = true
   untrackedCache = true
+  fsmonitor = true
 [feature]
   manyFiles = true
 [init]
