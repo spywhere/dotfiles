@@ -3,7 +3,7 @@ python 3.10.4
 dotnet-core 5.0.102
 java adoptopenjdk-8.0.322+6
 fzf 0.30.0
-neovim ref:0.7.0
+neovim ref:0.7.2
 rust 1.61.0
 deno ref:1.22.0
 coursier 2.1.0-M5-18-gfebf9838c
