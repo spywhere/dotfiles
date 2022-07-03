@@ -13,4 +13,5 @@ fi
 
 has_executable 'unar'
 
+use_apt 'unar'
 use_brew formula 'unar'
