@@ -46,6 +46,7 @@ registry.install {
     end
 
     require('nvim-tree').setup {
+      sync_root_with_cwd = true,
       view = {
         mappings = {
           list = {
