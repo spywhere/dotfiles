@@ -38,4 +38,4 @@ registry.defer_first(quickfix_keymap)
 local fold = function ()
   bindings.set('nofoldenable')
 end
-registry.defer(fold)
+registry.defer_first(fold)
