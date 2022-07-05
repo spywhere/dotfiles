@@ -133,5 +133,6 @@ registry.install {
     }
 
     require('alpha').setup(startify.config)
+    registry.auto('DirChanged', require('alpha').redraw, 'alpha')
   end
 }
