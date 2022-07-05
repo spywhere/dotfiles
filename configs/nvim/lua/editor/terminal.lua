@@ -21,6 +21,7 @@ local terminal_setup = function ()
   registry.auto('TermOpen', function ()
     vim.wo.number = false
     vim.wo.relativenumber = false
+    vim.wo.signcolumn='no'
     vim.cmd('startinsert!')
   end)
 end
