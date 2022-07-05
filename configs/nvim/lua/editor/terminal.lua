@@ -16,3 +16,12 @@ if fn.has('win32') == 1 and fn.executable('wsl.exe') == 1 then
   end
   registry.defer_first(quick_terminal)
 end
+
+local terminal_setup = function ()
+  registry.auto('TermOpen', function ()
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+    vim.cmd('startinsert!')
+  end)
+end
+registry.defer_first(terminal_setup)
