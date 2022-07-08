@@ -16,4 +16,4 @@ has_executable 'gpg'
 optional
 use_apk 'main' 'gnupg'
 use_pacman 'gnupg'
-use_brew formula 'gnupg2'
+use_brew formula 'gnupg'
