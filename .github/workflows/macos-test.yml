@@ -20,7 +20,7 @@ jobs:
         env:
           FLAG: ${{ matrix.flag }}
         run: |
-          sh install.sh $FLAG no-app-store
+          sh install.sh $FLAG no-app-store no-brew-api
 
   remote:
     name: Remote Installation (${{ matrix.os }}) [${{ matrix.flag }}]
@@ -38,4 +38,4 @@ jobs:
         env:
           FLAG: ${{ matrix.flag }}
         run: |
-          sh -c "$(curl -sSL dots.spywhere.me)" - $FLAG no-app-store
+          sh -c "$(curl -sSL dots.spywhere.me)" - $FLAG no-app-store no-brew-api

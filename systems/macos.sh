@@ -14,6 +14,7 @@ fi
 system_usage() {
   print "For macOS, the following options can be used"
   print 22 "  no-brew" "Skip package installations via Homebrew"
+  print 22 "  no-brew-api" "Use regular cloned tap for installations"
   print 22 "  no-app-store" "Skip package installations via App Store"
 }
 
@@ -25,7 +26,7 @@ install_git() {
 }
 
 setup() {
-  if ! _has_skip api; then
+  if ! _has_skip brew-api; then
     export HOMEBREW_INSTALL_FROM_API=1
   fi
 
@@ -66,7 +67,7 @@ setup() {
 }
 
 _run_intel_brew() {
-  if ! _has_skip api; then
+  if ! _has_skip brew-api; then
     export HOMEBREW_INSTALL_FROM_API=1
   fi
 
@@ -84,7 +85,7 @@ _run_intel_brew() {
 }
 
 _run_brew() {
-  if ! _has_skip api; then
+  if ! _has_skip brew-api; then
     export HOMEBREW_INSTALL_FROM_API=1
   fi
 
@@ -459,6 +460,11 @@ use_brew_tap() {
   fi
 
   _use_brew_tap__tap="$1"
+  _use_brew_tap__api="$2"
+
+  if test "$_use_brew_tap__api" = "yes" && _has_skip brew-api; then
+    return
+  fi
 
   field manager tap
   field tap "$_use_brew_tap__tap"
