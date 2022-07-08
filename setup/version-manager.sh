@@ -14,7 +14,7 @@ fi
 depends 'asdf'
 depends 'bash'
 # nodejs requirements
-require 'gnupg2'
+require 'gnupg'
 # python requirements
 require 'build-base'
 require 'lib-bz'
