@@ -21,6 +21,9 @@ local split_management = function ()
   bindings.map.normal('<leader><Up><Right>', '<cmd>rightbelow vnew<cr>')
   bindings.map.normal('<leader><Down><Left>', '<cmd>rightbelow new<cr>')
   bindings.map.normal('<leader><Down><Right>', '<cmd>leftabove new<cr>')
+
+  bindings.map.normal('vs', '<cmd>vs<cr>')
+  bindings.map.normal('sp', '<cmd>sp<cr>')
 end
 registry.defer(split_management)
 
