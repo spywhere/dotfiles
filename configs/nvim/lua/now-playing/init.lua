@@ -3,7 +3,8 @@ local S = {}
 local P = {
   enable = false,
   players = {
-    -- 'applescript', 'cscript', 'mpd'
+    'mpd',
+    'applescript',
     'cscript'
   },
   data = nil
@@ -29,25 +30,39 @@ S.cmd = function (command, ...)
   }
 end
 
-S.run = function (command, callback)
+S.run = function (command, sin, callback)
+  if not callback then
+    callback = sin
+    sin = nil
+  end
   local luv = vim.loop
 
+  local stdin = nil
+  if sin then
+    stdin = luv.new_pipe()
+  end
   local stdout = luv.new_pipe()
   local stderr = luv.new_pipe()
   local out = ''
   local err = ''
   local handle
 
-  command.opts.stdio = { nil, stdout, stderr }
+  command.opts.stdio = { stdin, stdout, stderr }
   handle = luv.spawn(command.cmd, command.opts, function (code, signal)
     if code ~= 0 then
       luv.read_stop(stdout)
       luv.read_stop(stderr)
     end
+    if stdin then
+      luv.shutdown(stdin)
+      luv.close(stdin)
+    end
     luv.close(stdout)
     luv.close(stderr)
     luv.close(handle)
-    callback { code = code, signal = signal, stdout = out, stderr = err }
+    vim.defer_fn(function ()
+      callback { code = code, signal = signal, stdout = out, stderr = err }
+    end, 0)
   end)
 
   luv.read_start(stdout, function (e, data)
@@ -60,26 +75,34 @@ S.run = function (command, callback)
       err = err .. data
     end
   end)
+  if stdin then
+    luv.write(stdin, sin)
+  end
 end
 
 P.iterate = function (list, callback)
-  local index = 1
+  local index = 0
 
   local function next()
+    index = index + 1
     if index > #list then
       return
     end
 
-    local ran, code = vim.wait(P.timeout, function ()
-      callback(list[index], next)
-      return true
+    local ok, error = pcall(function ()
+      local ran, code = vim.wait(P.timeout, function ()
+        callback(list[index], next)
+        return true
+      end)
+
+      if code == -1 then
+        -- callback is stuck, skip it
+        next()
+      end
     end)
 
-    index = index + 1
-
-    if code == -1 then
-      -- callback is stuck, skip it
-      next()
+    if not ok then
+      print('error while iterating #'.. index .. ':', error)
     end
   end
 
@@ -132,6 +155,13 @@ M.is_playing = function ()
 end
 
 M.format = function ()
+end
+
+M.debug = function ()
+  if not M.is_running() then
+    return 'not running'
+  end
+  return vim.inspect(P.data, { newline = '', indent='' })
 end
 
 M.enable = function ()
