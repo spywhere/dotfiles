@@ -19,17 +19,7 @@ local filetypes = {
     mode = true,
     mode1 = true,
     mode2 = true,
-    fileinfo = true,
-    fileinfo1 = true,
-    fileinfo4 = true,
-    clock = true,
-    clock1 = true
-  },
-  startify = {
-    ['*'] = false,
-    mode = true,
-    mode1 = true,
-    mode2 = true,
+    music = true,
     fileinfo = true,
     fileinfo1 = true,
     fileinfo4 = true,
@@ -236,6 +226,40 @@ end)
 
 [[-]] {
   hl = colors.group('white', 'brightblack'),
+}
+
+[[Music]] {
+  hl = colors.group('white', 'black'),
+  inactive = false,
+  active = function ()
+    return require('now-playing').is_running()
+  end,
+  fn = function ()
+    return string.format(
+      ' %s ',
+      require('now-playing').format(function (format)
+        return format()
+          .format(
+            '%s ',
+            format()
+              .map('state', {
+                playing = '▶'
+              }, '')
+          )
+          .scrollable(
+            25,
+            '%s - %s',
+            'artist',
+            'title'
+          )
+          .format(
+            ' [%s/%s]',
+            format().duration('position'),
+            format().duration('duration')
+          )
+      end)
+    )
+  end
 }
 
 [[Obsession]] {
