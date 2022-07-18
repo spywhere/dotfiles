@@ -73,6 +73,10 @@ P.fetch = function ()
     end, require('now-playing.shell'))
   end)
 
+  if M.is_running() and M.get('last_update') + 10 < os.time() then
+    P.data = nil
+  end
+
   local interval = P.polling_interval
   if M.is_playing() then
     interval = P.playing_interval
