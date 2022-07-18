@@ -121,6 +121,13 @@ end
 
 M.status = function (format)
   return format()
+    .format(
+      '%s ',
+      format()
+        .map('state', {
+          playing = '▶'
+        }, ' ')
+    )
     .scrollable(
       25,
       '%s - %s',

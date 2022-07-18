@@ -114,6 +114,17 @@ return function ()
 
   F.format = raw_wrap(raw_format)
 
+  F.map = wrap(function (_, getter, key, map, def)
+    local raw_text = ''
+    if type(key) == 'table' and key.build then
+      raw_text = key.build(time, getter, state)
+    elseif getter then
+      raw_text = getter(key) or ''
+    end
+
+    return map[raw_text] or def
+  end)
+
   F.time = wrap(function (_, getter, format, key)
     local number = key
 
