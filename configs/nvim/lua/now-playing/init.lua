@@ -148,7 +148,7 @@ M.status = function (format)
       '%s ',
       format()
         .map('state', {
-          playing = '▶'
+          playing = '>'
         }, ' ')
     )
     .scrollable(
