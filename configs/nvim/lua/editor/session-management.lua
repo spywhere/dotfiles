@@ -6,7 +6,7 @@ local session_commands = function ()
   local load_session = {
     function(opts)
       local path = opts.args
-      local session_file = path or 'Session.vim'
+      local session_file = path ~= '' and path or 'Session.vim'
       if fn.filereadable(session_file) == 1 then
         vim.cmd(table.concat({ 'source', session_file }, ' '))
       else
