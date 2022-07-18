@@ -23,6 +23,11 @@ M.get_data = function (callback, shell)
     end
 
     local parts = vim.split(output, '\n', { plain = true })
+
+    if parts[1] == 'stopped' then
+      return callback()
+    end
+
     callback({
       state = parts[1],
       position = tonumber(parts[2]),
