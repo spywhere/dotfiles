@@ -38,6 +38,24 @@ P.iterate = function (list, callback)
   next()
 end
 
+P.write_shada = function ()
+  if vim.env.NOW_PLAYING_SHADA then
+    if vim.fn.filereadable(vim.env.NOW_PLAYING_SHADA) == 1 then
+      local shada=vim.fn.readfile(vim.env.NOW_PLAYING_SHADA, '', 2)
+
+      if shada[2] and os.time() < tonumber(shada[2]) + 5 then
+        return
+      end
+    end
+
+    vim.fn.writefile(
+      { 'nvim', string.format('%s', os.time()) },
+      vim.env.NOW_PLAYING_SHADA,
+      'b'
+    )
+  end
+end
+
 P.fetch = function ()
   P.iterate(P.players, function (name, next)
     local player = require('now-playing.players.' .. name)
@@ -51,6 +69,7 @@ P.fetch = function ()
       data.last_update = os.time()
 
       P.data = data
+      P.write_shada()
     end, require('now-playing.shell'))
   end)
 
