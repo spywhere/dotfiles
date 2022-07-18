@@ -40,10 +40,10 @@ return function ()
     return string.format(format, unpack(components))
   end
 
-  local scroll = function (text, offset, length)
+  local scroll = function (text, offset, length, separator)
     local text_length = #text
     if text_length < length then
-      return text
+      return text, false
     end
 
     local adjusted_offset = offset % text_length
@@ -55,6 +55,7 @@ return function ()
 
     local remaining = length - #output
     while remaining > 0 do
+      output = output .. (separator or '')
       if text_length <= remaining then
         output = output .. text
       else
@@ -67,7 +68,7 @@ return function ()
       remaining = length - #output
     end
 
-    return output
+    return output, true
   end
 
   F.scrollable = raw_wrap(function (time, getter, state, length, format, ...)
@@ -82,23 +83,32 @@ return function ()
 
     local components = { ... }
     local separator = '   '
-    local max_scrollable = (#components) * length
-    if max_scrollable < #whole then
-      -- scroll each component
-      local text_components = vim.tbl_map(function (key)
-        if type(key) == 'table' and key.build then
-          return scroll(
-            key.build(time, getter, state) .. separator,
-            time,
-            length
-          )
-        end
 
-        return getter and scroll(getter(key), time, length) or ''
-      end, { ... })
+    local scrollable = 0
+    local text_components = {}
+
+    for _, key in ipairs(components) do
+      local raw_text = ''
+      if type(key) == 'table' and key.build then
+        raw_text = key.build(time, getter, state)
+      elseif getter then
+        raw_text = getter(key) or ''
+      end
+
+      local text, is_scroll = scroll(raw_text, time, length, separator)
+
+      table.insert(text_components, text)
+
+      if is_scroll then
+        scrollable = scrollable + 1
+      end
+    end
+
+    if scrollable < #components then
       return string.format(format, unpack(text_components))
     else
-      return scroll(whole .. separator, time, length)
+      local text = scroll(whole, time, length * (#components), separator)
+      return text
     end
   end)
 
