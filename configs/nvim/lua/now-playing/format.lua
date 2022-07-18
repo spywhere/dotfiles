@@ -142,7 +142,7 @@ return function ()
     return string.format('%02d:%02d', minutes, seconds)
   end)
 
-  F.static = wrap(function (_, _, _, text)
+  F.static = wrap(function (_, _, text)
     return text
   end)
 
