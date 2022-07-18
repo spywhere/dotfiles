@@ -154,7 +154,21 @@ M.is_playing = function ()
   return M.is_running() and P.data.state == 'playing'
 end
 
-M.format = function ()
+M.format = function (fn, ...)
+  if type(fn) == 'string' then
+    local args = { ... }
+    return M.format(function (format)
+      return format().format(fn, unpack(args))
+    end)
+  elseif type(fn) == 'function' then
+    local format = require('now-playing.format')
+    return fn(format).build(M.get('position'), M.get)
+  else
+    return string.format(
+      'invalid format: expected \'string\' or \'function\', got \'%s\'',
+      type(fn)
+    )
+  end
 end
 
 M.debug = function ()
@@ -176,20 +190,38 @@ M.disable = function ()
   P.enable = false
 end
 
+M.status = function (format)
+  return format()
+    .scrollable(
+      25,
+      '%s - %s',
+      'artist',
+      'title'
+    )
+    .format(
+      ' [%s/%s]',
+      format().duration('position'),
+      format().duration('duration')
+    )
+end
+
 M.setup = function (options)
   local opts = options or {}
 
   opts = vim.tbl_extend('keep', opts, {
     polling_interval = 5000,
     playing_interval = 1000,
-    timeout = 100
+    timeout = 100,
+    autostart = true
   })
 
   P.polling_interval = opts.polling_interval
   P.playing_interval = opts.playing_interval
   P.timeout = opts.timeout
 
-  M.enable()
+  if opts.autostart then
+    M.enable()
+  end
 end
 
 return M
