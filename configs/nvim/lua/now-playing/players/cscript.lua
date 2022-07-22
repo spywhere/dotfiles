@@ -11,32 +11,54 @@ M.get_data = function (callback, shell)
     return callback()
   end
 
-  local cmd = shell.cmd(
-    'cscript.exe',
-    '//Nologo',
-    shell.file_path('players/cscript.js')
-  )
-  shell.run(cmd, function (result)
-    local output = string.gsub(result.stdout, '\r', '')
-    if output == '' then
-      return callback()
-    end
+  local script_path = shell.file_path('players/cscript.js')
 
-    local parts = vim.split(output, '\n', { plain = true })
+  local get_data = function (script_path)
+    local cmd = shell.cmd(
+      'cscript.exe',
+      '//Nologo',
+      script_path
+    )
+    shell.run(cmd, function (result)
+      local output = string.gsub(result.stdout, '\r', '')
+      if output == '' then
+        return callback()
+      end
 
-    if parts[1] == 'stopped' then
-      return callback()
-    end
+      local parts = vim.split(output, '\n', { plain = true })
 
-    callback({
-      state = parts[1],
-      position = tonumber(parts[2]),
-      duration = tonumber(parts[3]),
-      title = parts[4],
-      artist = parts[5],
-      app = parts[6]
-    })
-  end)
+      if parts[1] == 'stopped' then
+        return callback()
+      end
+
+      callback({
+        state = parts[1],
+        position = tonumber(parts[2]),
+        duration = tonumber(parts[3]),
+        title = parts[4],
+        artist = parts[5],
+        app = parts[6]
+      })
+    end)
+  end
+
+  if vim.fn.has('wsl') == 1 then
+    local cmd = shell.cmd(
+      'wslpath',
+      '-w',
+      script_path
+    )
+    shell.run(cmd, function (result)
+      local output = result.stdout
+      if output and output ~= '' then
+        get_data(string.gsub(output, '\n', ''))
+      else
+        callback()
+      end
+    end)
+  else
+    get_data(script_path)
+  end
 end
 
 return M
