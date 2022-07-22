@@ -234,8 +234,9 @@ end)
   active = function ()
     return require('now-playing').is_running()
   end,
-  fn = function ()
-    return string.format(
+  fn = function (options)
+    local winwidth = vim.o.laststatus == 3 and math.max(vim.o.columns, fn.winwidth(0)) or fn.winwidth(0)
+    local text = string.format(
       ' %s ',
       require('now-playing').format(function (format)
         return format()
@@ -259,6 +260,14 @@ end)
           )
       end)
     )
+
+    if winwidth < 130 + text:len() then
+      return ''
+    end
+
+    require('now-playing').take_over()
+
+    return text
   end
 }
 

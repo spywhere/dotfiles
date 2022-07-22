@@ -38,7 +38,36 @@ P.iterate = function (list, callback)
   next()
 end
 
-P.write_shada = function ()
+P.fetch = function ()
+  P.iterate(P.players, function (name, next)
+    local player = require('now-playing.players.' .. name)
+
+    player.get_data(function (data)
+      if not data or type(data) ~= 'table' then
+        next()
+        return
+      end
+
+      data.last_update = os.time()
+
+      P.data = data
+    end, require('now-playing.shell'))
+  end)
+
+  if M.is_running() and M.get('last_update') + 10 < os.time() then
+    P.data = nil
+  end
+
+  local interval = P.polling_interval
+  if M.is_playing() then
+    interval = P.playing_interval
+  end
+  if P.enable and interval > 0 then
+    vim.defer_fn(P.fetch, interval)
+  end
+end
+
+M.take_over = function ()
   if vim.env.NOW_PLAYING_SHADA then
     if vim.fn.filereadable(vim.env.NOW_PLAYING_SHADA) == 1 then
       local shada=vim.fn.readfile(vim.env.NOW_PLAYING_SHADA, '', 2)
@@ -53,36 +82,6 @@ P.write_shada = function ()
       vim.env.NOW_PLAYING_SHADA,
       'b'
     )
-  end
-end
-
-P.fetch = function ()
-  P.iterate(P.players, function (name, next)
-    local player = require('now-playing.players.' .. name)
-
-    player.get_data(function (data)
-      if not data or type(data) ~= 'table' then
-        next()
-        return
-      end
-
-      data.last_update = os.time()
-
-      P.data = data
-      P.write_shada()
-    end, require('now-playing.shell'))
-  end)
-
-  if M.is_running() and M.get('last_update') + 10 < os.time() then
-    P.data = nil
-  end
-
-  local interval = P.polling_interval
-  if M.is_playing() then
-    interval = P.playing_interval
-  end
-  if P.enable and interval > 0 then
-    vim.defer_fn(P.fetch, interval)
   end
 end
 
