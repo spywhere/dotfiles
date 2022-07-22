@@ -6,10 +6,13 @@ local P = {
     'applescript',
     'cscript'
   },
-  data = nil
+  data = nil,
+  dynamic_interval = 0,
+  interval_samples = 0
 }
 
 P.iterate = function (list, callback)
+  local timer = vim.loop.now()
   local index = 0
 
   local function next()
@@ -20,7 +23,7 @@ P.iterate = function (list, callback)
 
     local ok, error = pcall(function ()
       local ran, code = vim.wait(P.timeout, function ()
-        callback(list[index], next)
+        callback(list[index], next, timer)
         return true
       end)
 
@@ -39,7 +42,14 @@ P.iterate = function (list, callback)
 end
 
 P.fetch = function ()
-  P.iterate(P.players, function (name, next)
+  local floor = function (value)
+    return math.floor(value + 0.5)
+  end
+  local ma = function (average, total, new_value)
+    return ((average * (total - 1)) + new_value) / total
+  end
+
+  P.iterate(P.players, function (name, next, timer)
     local player = require('now-playing.players.' .. name)
 
     player.get_data(function (data)
@@ -49,6 +59,13 @@ P.fetch = function ()
       end
 
       data.last_update = os.time()
+      data.fetch_time = vim.loop.now() - timer
+      if P.interval_samples < 10 then
+        P.interval_samples = P.interval_samples + 1
+      end
+      P.dynamic_interval = floor(ma(
+        P.dynamic_interval, P.interval_samples, data.fetch_time
+      ))
 
       P.data = data
     end, require('now-playing.shell'))
@@ -61,6 +78,9 @@ P.fetch = function ()
   local interval = P.polling_interval
   if M.is_playing() then
     interval = P.playing_interval
+  end
+  if interval < P.dynamic_interval then
+    interval = P.dynamic_interval
   end
   if P.enable and interval > 0 then
     vim.defer_fn(P.fetch, interval)
