@@ -2,6 +2,34 @@ return function ()
   local F = {}
   local text_components = {}
 
+  local prequire = function (...)
+    local status, mod = pcall(require, ...)
+    if status then
+      return mod
+    else
+      return nil
+    end
+  end
+
+  local substr = string.sub
+  local strlen = string.len
+  local utf8 = prequire('utf8')
+  if utf8 then
+    substr = function (text, begin_index, end_index)
+      local length = utf8.len(text)
+      local end_offset = string.len(text)
+
+      if end_index < length then
+        end_offset = utf8.offset(text, end_index + 1) - 1
+      end
+
+      return string.sub(text, utf8.offset(text, begin_index), end_offset)
+    end
+    strlen = function (text)
+      return utf8.len(text)
+    end
+  end
+
   local set = function (tbl, key, val)
     if not tbl then
       return {
@@ -41,31 +69,31 @@ return function ()
   end
 
   local scroll = function (text, offset, length, separator)
-    local text_length = #text
+    local text_length = strlen(text)
     if text_length < length then
       return text, false
     end
 
     local adjusted_offset = offset % text_length
-    local output = string.sub(
+    local output = substr(
       text,
       adjusted_offset + 1,
-      math.min(adjusted_offset + length, text_length)
+      math.min(adjusted_offset + 1 + length, text_length)
     )
 
-    local remaining = length - #output
+    local remaining = length - strlen(output)
     while remaining > 0 do
       output = output .. (separator or '')
       if text_length <= remaining then
         output = output .. text
       else
-        output = output .. string.sub(
+        output = output .. substr(
           text,
           1,
           remaining
         )
       end
-      remaining = length - #output
+      remaining = length - strlen(output)
     end
 
     return output, true

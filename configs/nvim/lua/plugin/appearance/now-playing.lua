@@ -1,5 +1,9 @@
 local registry = require('lib.registry')
 
-registry.defer(function ()
-  require('now-playing').setup {}
-end)
+-- optional utf8 dependencies for better string manipulation
+registry.install {
+  'uga-rosa/utf8.nvim',
+  delay = function ()
+    require('now-playing').setup {}
+  end
+}
