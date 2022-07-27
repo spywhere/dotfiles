@@ -1,0 +1,9 @@
+host="127.0.0.1"
+port=6600
+
+auto-center=yes
+scroll-offset=5
+find-wrap=yes
+scroll=yes
+display-time=yes
+visible-bitrate=yes
