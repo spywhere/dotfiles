@@ -126,7 +126,7 @@ has_string() {
 
 # Mark current script as optional
 optional() {
-  if test -n "$_SKIP_OPTIONAL"; then
+  if test -n "$_SKIP_OPTIONAL" || _has_indicate "$_RUNNING"; then
     return
   fi
   _FULFILLED="optional"
