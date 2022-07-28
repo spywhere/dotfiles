@@ -17,4 +17,4 @@ has_app 'Unsplash'
 
 SUPPORT_DIR="$HOME/$DOTFILES/supports/unsplash"
 
-use_nativefier 'Unsplash' 'https://unsplash.com' --conceal --background-color '#000000' --inject "$SUPPORT_DIR/inject.css" --inject "$SUPPORT_DIR/inject.js" --disable-context-menu --darwin-dark-mode-support
+use_nativefier 'Unsplash' 'https://unsplash.com' --conceal --background-color '#000000' --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --inject "$SUPPORT_DIR/inject.js" --disable-context-menu --darwin-dark-mode-support
