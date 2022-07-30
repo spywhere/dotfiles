@@ -19,6 +19,13 @@ registry.install {
   config = function ()
     require('nvim-treesitter.configs').setup {
       auto_install = true,
+      sync_install = fn.has('linux') == 1,
+      ensure_installed = {
+        'bash', 'c', 'c_sharp', 'cpp', 'dockerfile', 'dot', 'graphql',
+        'help', 'html', 'javascript', 'json', 'json5', 'jsonc', 'lua',
+        'markdown', 'markdown_inline', 'rust', 'sql', 'toml', 'tsx',
+        'typescript', 'vim', 'yaml', 'zig'
+      },
       highlight = {
         enable = true
       }
