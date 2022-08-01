@@ -2,7 +2,7 @@ local registry = require('lib.registry')
 local bindings = require('lib.bindings')
 
 registry.install {
-  'akinsho/nvim-bufferline.lua',
+  'akinsho/bufferline.nvim',
   delay = function ()
     local is_gui = fn.exists('g:GuiLoaded') == 1
     require('bufferline').setup({
