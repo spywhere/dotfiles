@@ -62,7 +62,7 @@ registry.install {
               action_cb = show_filter_folder
             },
             {
-              key = '/',
+              key = '?',
               action = 'live_filter',
             },
             {
