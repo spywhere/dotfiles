@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Docker'
+has_app 'Dropbox'
 
 use_brew cask 'dropbox'
