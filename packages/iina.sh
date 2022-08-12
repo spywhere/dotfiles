@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'VLC'
+has_app 'IINA'
 
-use_brew cask 'vlc'
+use_brew cask 'iina'
