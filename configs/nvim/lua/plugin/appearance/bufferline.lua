@@ -11,7 +11,9 @@ registry.install {
         always_show_bufferline = false,
         show_close_icon = false,
         show_buffer_close_icons = is_gui,
-        indicator_icon = ' ',
+        indicator = {
+          style = 'none'
+        },
         separator_style = { '', '' },
         offsets = {
           {
