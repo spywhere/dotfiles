@@ -45,6 +45,7 @@ modified = "[!](yellow)"
 staged = "[+](yellow)"
 renamed = "[»](yellow)"
 deleted = "[✘](red)"
+ignore_submodules = true
 
 [line_break]
 disabled = true
