@@ -9,6 +9,7 @@ local filetypes = {
     mode = fn.has('nvim-0.7') == 1,
     mode1 = fn.has('nvim-0.7') == 1,
     mode2 = fn.has('nvim-0.7') == 1,
+    music = true,
     path = true,
     path1 = 'Explorer',
     clock = true,
