@@ -125,7 +125,7 @@ local function render_component(active, sep, is_right_component)
     if component.name == '-' then
       is_right_component = true
       return string.format(
-        '%s%%=',
+        '%s%%<%%=',
         component_highlight('_Spacer_', component.hl)
       )
     end
