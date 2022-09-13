@@ -8,6 +8,11 @@ alias resume="fg"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 
+# git revert
+alias grevc="grev --continue"
+alias greva="grev --abort"
+alias grevs="grev --skip"
+
 # git worktree
 alias gwt="git worktree"
 alias gwta="git worktree add"
