@@ -19,7 +19,9 @@ local quick_close = function ()
     -- quick close
     bindings.map.buffer.normal('q', '<cmd>wincmd q<cr>')
   end
-  registry.auto('FileType', map_quick_close, { 'qf', 'help', 'lspinfo' })
+  registry.auto('FileType', map_quick_close, {
+    'qf', 'help', 'lspinfo', 'vim-plug'
+  })
 end
 registry.defer_first(quick_close)
 
