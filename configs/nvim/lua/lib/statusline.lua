@@ -8,7 +8,8 @@ Refactor:
   - Separate data and rendering
     - Better diagnostic styling
     - Segmented controls
-  - active, inactive, filetype have to check at runtime
+  - Active/Inactive using g:statusline_winid
+  - filetype have to check at runtime
   - Child component must inherits parent property as well
     - when parent is hidden, child must be hidden as well
 --]]
@@ -206,7 +207,11 @@ return function (name, components)
   M.ns_name = name
   M.ns = api.nvim_create_namespace(name)
   M.components = components
-  api.nvim__set_hl_ns(M.ns)
+  if fn.has('nvim-0.8') == 1 then
+    api.nvim_set_hl_ns(M.ns)
+  else
+    api.nvim__set_hl_ns(M.ns)
+  end
   M.define_highlight = highlighter(M.ns, M.ns_name)
   return M
 end
