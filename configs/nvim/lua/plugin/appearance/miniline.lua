@@ -1,5 +1,5 @@
 local registry = require('lib.registry')
-local statusline = require('lib.statusline')
+local statusline = require('lib.miniline')
 local colors = require('common.colors')
 local i = require('lib.iterator')
 
@@ -116,10 +116,14 @@ end)
   after = '',
   sep = ' | ',
   hl = true,
-  inactive = false,
+  visible = {
+    inactive = false
+  },
   {
     -- Mode
-    inactive = false,
+    visible = {
+      inactive = false
+    },
     fn = function (options)
       local mode = mode_map[fn.mode()] or {
         alias=fn.mode(),
@@ -133,24 +137,15 @@ end)
   },
   {
     -- Branch
-    active = function (value)
-      return value ~= nil and value ~= ''
-    end,
-    inactive = false,
+    visible = {
+      inactive = false,
+      active = function (value)
+        return value ~= nil and value ~= ''
+      end
+    },
     fn = function ()
       return fn.exists('*gitbranch#name') == 1 and fn['gitbranch#name']() or nil
     end
-  }
-}
-
-[[Readonly]] {
-  hl = colors.group('white', 'black'),
-  after = '',
-  {
-    active = function ()
-      return vim.bo.readonly
-    end,
-    str = '[RO]'
   }
 }
 
@@ -217,24 +212,59 @@ end)
   }
 }
 
-[[Modified]] {
+[[FileStatus]] {
   hl = colors.group('white', 'black'),
-  active = function ()
-    return vim.bo.modified
-  end,
-  str = '[+]'
+  before = '[',
+  after = ']',
+  sep = '',
+  visible = {
+    ['*'] = function ()
+      return vim.bo.modified or vim.bo.readonly
+    end
+  },
+  {
+    visible = {
+      ['*'] = function ()
+        return vim.bo.readonly
+      end
+    },
+    str = 'RO'
+  },
+  {
+    visible = {
+      ['*'] = function ()
+        return vim.bo.modified
+      end
+    },
+    str = '+'
+  }
 }
 
 [[-]] {
   hl = colors.group('white', 'brightblack'),
 }
 
+[[Obsession]] {
+  hl = colors.group('white', 'brightblack'),
+  visible = {
+    inactive = false,
+    active = function (value)
+      return value ~= nil
+    end
+  },
+  fn = function ()
+    return fn.exists('*ObsessionStatus') == 1 and fn.ObsessionStatus() or nil
+  end
+}
+
 [[Music]] {
   hl = colors.group('white', 'black'),
-  inactive = false,
-  active = function ()
-    return require('now-playing').is_running()
-  end,
+  visible = {
+    inactive = false,
+    active = function ()
+      return require('now-playing').is_running()
+    end
+  },
   fn = function (options)
     local winwidth = vim.o.laststatus == 3 and math.max(vim.o.columns, fn.winwidth(0)) or fn.winwidth(0)
     local text = string.format(
@@ -272,34 +302,27 @@ end)
   end
 }
 
-[[Obsession]] {
-  hl = colors.group('white', 'brightblack'),
-  inactive = false,
-  active = function (value)
-    return value ~= nil
-  end,
-  fn = function ()
-    return fn.exists('*ObsessionStatus') == 1 and fn.ObsessionStatus() or nil
-  end
-}
-
 [[FileInfo]] {
   sep = ' | ',
   hl = colors.group('white', 'brightblack'),
   -- FileType
   {
-    active = function ()
-      return vim.bo.filetype ~= ''
-    end,
+    visible = {
+      ['*'] = function ()
+        return vim.bo.filetype ~= ''
+      end
+    },
     fn = function ()
       return vim.bo.filetype
     end
   },
   -- FileEncoding
   {
-    active = function ()
-      return vim.bo.fileencoding ~= ''
-    end,
+    visible = {
+      ['*'] = function ()
+        return vim.bo.fileencoding ~= ''
+      end,
+    },
     fn = function ()
       return string.upper(vim.bo.fileencoding)
     end
@@ -349,8 +372,10 @@ end)
   before = '',
   after = '',
   sep = '',
-  inactive = false,
-  active = is_lsp_attached,
+  visible = {
+    inactive = false,
+    active = is_lsp_attached
+  },
   -- Hint
   {
     hl = colors.group('black', 'cyan'),
@@ -398,16 +423,28 @@ end)
       return colors.group('lightblue', 'black')
     end
   end,
-  inactive = false,
-  active = function ()
-    return fn.exists('g:GuiLoaded') == 1
-  end,
-  -- Clock
-  {
+  -- TODO: combine 'inactive' and 'active' to 'visible'
+  -- default is to show all
+  --
+  -- This will not build for inactive, but conditionally show on active
+  -- visible = {
+    -- active = function () ... end
+    -- inactive = false
+  -- }
+  visible = {
     inactive = false,
     active = function ()
       return fn.exists('g:GuiLoaded') == 1
-    end,
+    end
+  },
+  -- Clock
+  {
+    visible = {
+      inactive = false,
+      active = function ()
+        return fn.exists('g:GuiLoaded') == 1
+      end
+    },
     fn = function ()
       return os.date('%d %b %y %H:%M')
     end
@@ -417,29 +454,7 @@ end)
 local setup = function ()
   local stl = statusline('miniline', components())
   stl.filetypes(filetypes)
-
-  local active_line = stl.compile(true)
-
-  if fn.has('nvim-0.7') == 1 then
-    -- use unified status line when possible
-    vim.o.statusline = active_line
-  else
-    vim.wo.statusline = active_line
-
-    local inactive_line = stl.compile(false)
-    local active_events = {
-      'ColorScheme', 'FileType', 'BufWinEnter', 'BufReadPost', 'BufWritePost',
-      'BufEnter', 'WinEnter', 'FileChangedShellPost', 'VimResized','TermOpen'
-    }
-
-    registry.auto(active_events, function ()
-      vim.wo.statusline = active_line
-    end)
-    registry.auto('WinLeave', function ()
-      vim.wo.statusline = inactive_line
-    end)
-  end
-
+  vim.o.statusline = stl.render()
   highlight_mode(stl.define_highlight, mode_map.n.color)
 end
 registry.defer(setup)
