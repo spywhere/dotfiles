@@ -319,8 +319,10 @@ end)
   {
     fn = function ()
       local tab_style = 'TB'
+      local tab_size = vim.o.tabstop
       if vim.o.expandtab then
         tab_style = 'SP'
+        tab_size = vim.o.shiftwidth
       end
       return fn.printf('%s:%d', tab_style, vim.o.tabstop)
     end
