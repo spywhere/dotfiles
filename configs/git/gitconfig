@@ -15,7 +15,7 @@
 [pull]
   ff = only
 [push]
-  default = current
+  autoSetupRemote = true
 [advice]
   addEmptyPathspec = false
 [delta]
