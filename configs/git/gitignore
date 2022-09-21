@@ -7,3 +7,5 @@ Session.vim
 .wakatime-project
 .tool-versions
 .metals
+.bloop
+project/**/metals.sbt
