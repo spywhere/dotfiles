@@ -1,5 +1,6 @@
 -- NOTE: This require 'lspconfig' to be installed
 local bindings = require('lib.bindings')
+local registry = require('lib.registry')
 
 local lsps = {}
 local fns = {
@@ -14,13 +15,15 @@ local generate_lsp_setup = function (name)
 
   local LSPM = {}
 
-  local set = function (key)
+  local set = function (key, value)
     return function (value)
       lsps[name][key] = value
       return LSPM
     end
   end
 
+  LSPM.filetypes = set('filetypes')
+  LSPM.auto = set('auto')
   LSPM.need_executable = set('executable')
   LSPM.prepare = set('prepare')
   LSPM.command = set('cmd')
@@ -54,6 +57,10 @@ local setup_lsp = function (name, lsp)
 
   local lsp_options = lsp.options or {}
 
+  if type(lsp.options) == 'function' then
+    lsp_options = lsp_options()
+  end
+
   local pre_value = lsp.prepare
 
   if type(pre_value) == 'function' then
@@ -84,6 +91,13 @@ local setup_lsp = function (name, lsp)
 
   if type(lsp.on_setup) == 'function' then
     lsp.on_setup()
+  end
+
+  if lsp.auto then
+    registry.auto('FileType', function ()
+      lsp.auto(lsp_options)
+    end, lsp.filetypes)
+    return
   end
 
   if not nvim_lsp_config[name] and lsp.config and next(lsp.config) then
