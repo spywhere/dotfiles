@@ -324,7 +324,7 @@ end)
         tab_style = 'SP'
         tab_size = vim.o.shiftwidth
       end
-      return fn.printf('%s:%d', tab_style, vim.o.tabstop)
+      return fn.printf('%s:%d', tab_style, tab_size)
     end
   }
 }
