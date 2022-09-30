@@ -5,7 +5,7 @@ local bindings = require('lib.bindings')
 local function highlighter(nsid, namespace)
   return function (name, highlight)
     if fn.has('nvim-0.8') == 1 then
-      api.nvim_set_hl_ns(nsid)
+      api.nvim_set_hl_ns_fast(nsid)
     else
       api.nvim__set_hl_ns(nsid)
     end
