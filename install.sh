@@ -256,7 +256,6 @@ _INDICATED="" # keep a list of specified components (scripts)
 _LOADED="" # keep a list of install components (scripts)
 _PACKAGES="" # keep a list of install packages
 _CUSTOM="" # keep a list of custom function for installing packages
-_DOCKER="" # keep a list of docker build for installing packages
 _SETUP="" # keep a list of custom function for setups
 _INTERNAL_STATE="" # keep a list of internal flags and states
 
@@ -373,19 +372,18 @@ _usage() {
   print
   print "To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself."
   print
-  print "  Example: $0 no-asdf no-docker"
-  print "  Skip Docker and ASDF installation"
+  print "  Example: $0 no-asdf no-zsh"
+  print "  Skip ZSH and ASDF installation"
   print
   print "To include a specific package or setup, simply add a package or setup name after exclusions."
   print
-  print "  Example: $0 no-package asdf docker"
-  print "  Skip package installation, but install ASDF and Docker"
+  print "  Example: $0 no-package asdf zsh"
+  print "  Skip package installation, but install ASDF and ZSH"
   print
   print "To skip system update/upgrade, package installation or setups, use"
   print 22 "  no-update" "Skip system update and system upgrade"
   print 22 "  no-upgrade" "Only perform a system update but not system upgrade"
-  print 22 "  no-package" "Skip package installations, including a custom and a Docker one"
-  print 22 "  no-docker" "Skip Docker based installations"
+  print 22 "  no-package" "Skip package installations, including a custom one"
   print 22 "  no-custom" "Skip custom installations"
   print 22 "  no-setup" "Skip setups"
   print
@@ -636,13 +634,12 @@ _try_run_install() {
   fi
 
   # if nothing is getting done
-  if test -z "$_PACKAGES" -a -z "$_DOCKER" -a -z "$_CUSTOM" -a -z "$_SETUP" && _has_skip update; then
+  if test -z "$_PACKAGES" -a -z "$_CUSTOM" -a -z "$_SETUP" && _has_skip update; then
     info "Nothing to perform, exiting..."
     quit 0
   fi
 
   _summarize_packages
-  _summarize_docker
   _summarize_custom
   _summarize_setup
   _summarize_system_update
@@ -662,7 +659,6 @@ _try_run_install() {
 
   _run_system_update
   _run_packages
-  _run_docker
   _run_custom
   _run_setup
 

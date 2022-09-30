@@ -242,46 +242,6 @@ use_custom() {
   _FULFILLED="fulfilled"
 }
 
-# Add docker build into installation list if no valid setup available
-# use_docker_build [display name]
-# Fields:
-#   - package_name : string
-use_docker_build() {
-  if _has_skip docker; then
-    return
-  fi
-  use_docker_build__package="$_RUNNING"
-  if test -n "$_FULFILLED"; then
-    reset_object
-    return
-  fi
-
-  use_docker_build__dockerfile="$HOME/$DOTFILES/docker/$use_docker_build__package/Dockerfile.$OS"
-  if ! test -f "$use_docker_build__dockerfile"; then
-    use_docker_build__dockerfile="$HOME/$DOTFILES/docker/$use_docker_build__package/Dockerfile.$OSKIND"
-  fi
-  if ! test -f "$use_docker_build__dockerfile"; then
-    if test "$OS" = "$OSKIND"; then
-      warn "Docker build for package \"$use_docker_build__package\" is not available on $OS"
-    else
-      warn "Docker build for package \"$use_docker_build__package\" is not available on $OS/$OSKIND"
-    fi
-    reset_object
-    return
-  fi
-
-  if test -z "$_DOCKER"; then
-    require 'docker'
-  fi
-
-  field package "$use_docker_build__package"
-  field package_name "$1"
-  _DOCKER="$(_add_to_list "$_DOCKER" "$(make_object)")"
-  reset_object
-
-  _FULFILLED="fulfilled"
-}
-
 # Add custom function into setup list if no valid setup available
 # add_setup <function> [display name]
 # Fields:
