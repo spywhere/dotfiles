@@ -1,5 +1,4 @@
 -- NOTE: This require 'lspconfig' to be installed
-local bindings = require('lib.bindings')
 local registry = require('lib.registry')
 
 local lsps = {}
@@ -15,7 +14,7 @@ local generate_lsp_setup = function (name)
 
   local LSPM = {}
 
-  local set = function (key, value)
+  local set = function (key)
     return function (value)
       lsps[name][key] = value
       return LSPM
