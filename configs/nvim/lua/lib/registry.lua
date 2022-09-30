@@ -134,7 +134,8 @@ local install_plugin_manager = function (callback)
   end
 end
 
-M.experiment = function (name, options)
+M.experiment = function (name, options, start)
+  local run_duration = 2592000 -- 30 days
   if options == nil then
     local experiment = _experiments[name]
     local is_on = experiment
@@ -159,6 +160,17 @@ M.experiment = function (name, options)
         return experiment
       end
     }
+  end
+
+  local now = os.time()
+
+  if start and now - start > run_duration then
+    vim.defer_fn(function ()
+      vim.notify(string.format(
+        'Experiment "%s" is running over 30 days, please clean up when possible',
+        name
+      ), vim.log.levels.WARN)
+    end, 10)
   end
 
   _experiments[name] = options
