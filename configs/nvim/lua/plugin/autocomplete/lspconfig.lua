@@ -1,4 +1,3 @@
-local bindings = require('lib.bindings')
 local registry = require('lib.registry')
 local lsp = require('lib.lsp')
 
@@ -13,7 +12,7 @@ registry.install {
     end)
 
     lsp.on_attach(function (client)
-      if not client.resolved_capabilities.document_highlight then
+      if not (fn.has('nvim-0.8') == 1 and client.server_capabilities or client.resolved_capabilities).document_highlight then
         return
       end
 
