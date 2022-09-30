@@ -13,10 +13,5 @@ fi
 
 has_executable 'mycli'
 
-require 'py3-pyaes'
-require 'py3-pyperclip'
-
-use_apk 'testing' 'mycli'
 use_apt 'mycli'
-# use_yay 'mycli'
 use_brew formula 'mycli'

@@ -13,6 +13,4 @@ fi
 
 has_executable 'dnsmasq'
 
-use_apk 'main' 'dnsmasq'
 use_apt 'dnsmasq'
-use_pacman 'dnsmasq'

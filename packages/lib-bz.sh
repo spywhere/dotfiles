@@ -13,4 +13,3 @@ fi
 
 optional
 use_apt 'libbz2-dev'
-use_apk 'main' 'libbz2'

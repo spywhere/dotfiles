@@ -14,7 +14,5 @@ fi
 has_executable 'cmake'
 
 # neovim rebuild dependencies
-use_apk 'main' 'cmake'
 use_apt 'cmake'
-use_pacman 'cmake'
 use_brew formula 'cmake'

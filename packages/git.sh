@@ -13,7 +13,5 @@ fi
 
 has_executable 'git'
 
-use_apk 'main' 'git'
 use_apt 'git'
-use_pacman 'git'
 use_brew formula 'git'

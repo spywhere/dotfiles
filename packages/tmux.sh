@@ -14,9 +14,7 @@ fi
 has_executable 'tmux'
 
 # tmux on arm is still outdated
-use_apk 'main' 'tmux'
 use_apt 'tmux'
-use_pacman 'tmux'
 use_brew formula 'tmux'
 use_custom 'make_tmux'
 

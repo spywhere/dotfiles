@@ -13,7 +13,5 @@ fi
 
 has_executable 'podman'
 
-use_apk 'community' 'podman'
 use_apt 'podman'
-use_pacman 'podman'
 use_brew formula 'podman'

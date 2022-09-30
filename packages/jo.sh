@@ -13,7 +13,6 @@ fi
 
 has_executable 'jo'
 
-use_apk 'main' 'jo'
 use_apt 'jo'
 # jo is outdated on AUR
 # use_pacman 'jo'

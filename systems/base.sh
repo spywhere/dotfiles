@@ -168,15 +168,6 @@ copy() {
 }
 
 ####################
-# Alpine Interface #
-####################
-
-# use_apk <repo> <package>
-use_apk() {
-  return 0
-}
-
-####################
 # Debian Interface #
 ####################
 
@@ -192,15 +183,6 @@ use_apt() {
 
 # use_dpkg <name> <url>
 use_dpkg() {
-  return 0
-}
-
-##################
-# Arch Interface #
-##################
-
-# use_pacman <package>
-use_pacman() {
   return 0
 }
 

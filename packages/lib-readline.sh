@@ -13,4 +13,3 @@ fi
 
 optional
 use_apt 'libreadline-dev'
-use_apk 'main' 'readline-dev'

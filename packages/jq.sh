@@ -13,7 +13,5 @@ fi
 
 has_executable 'jq'
 
-use_apk 'main' 'jq'
 use_apt 'jq'
-use_pacman 'jq'
 use_brew formula 'jq'

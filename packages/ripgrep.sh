@@ -16,7 +16,5 @@ has_executable 'rg'
 require 'lib-jemalloc'
 
 # (a better grep) fzf.vim dependencies
-use_apk 'community' 'ripgrep'
 use_apt 'ripgrep'
-use_pacman 'ripgrep'
 use_brew formula 'ripgrep'

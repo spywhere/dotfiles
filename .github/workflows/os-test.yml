@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [alpine, archlinux, 'debian:bullseye-slim', 'ubuntu:rolling']
+        os: ['debian:bullseye-slim', 'ubuntu:rolling']
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [alpine, archlinux, 'debian:bullseye-slim', 'ubuntu:rolling']
+        os: ['debian:bullseye-slim', 'ubuntu:rolling']
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v2

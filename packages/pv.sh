@@ -13,7 +13,5 @@ fi
 
 has_executable 'pv'
 
-use_apk 'main' 'pv'
 use_apt 'pv'
-use_pacman 'pv'
 use_brew formula 'pv'

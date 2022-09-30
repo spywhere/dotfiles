@@ -13,5 +13,3 @@ fi
 
 optional
 use_apt 'build-essential'
-use_apk 'main' 'build-base'
-use_pacman 'base-devel' --profile

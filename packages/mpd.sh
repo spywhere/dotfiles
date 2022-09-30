@@ -13,7 +13,5 @@ fi
 
 has_executable 'mpd'
 
-use_apk 'community' 'mpd'
 use_apt 'mpd'
-use_pacman 'mpd'
 use_brew formula 'mpd'

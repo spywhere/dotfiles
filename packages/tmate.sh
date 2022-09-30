@@ -13,7 +13,5 @@ fi
 
 has_executable 'tmate'
 
-use_apk 'testing' 'tmate'
 use_apt 'tmate'
-use_pacman 'tmate'
 use_brew formula 'tmate'

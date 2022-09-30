@@ -13,4 +13,3 @@ fi
 
 optional
 use_apt 'libsqlite3-dev'
-use_apk 'main' 'sqlite-dev'

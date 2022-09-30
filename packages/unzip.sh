@@ -12,6 +12,4 @@ then
 fi
 
 # neovim rebuild dependencies
-use_apk 'main' 'unzip'
 use_apt 'unzip'
-use_pacman 'unzip'

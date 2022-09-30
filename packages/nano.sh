@@ -13,7 +13,5 @@ fi
 
 has_string 'version 5\.[0-9]*' nano -version
 
-use_apk 'main' 'nano'
 use_apt 'nano'
-use_pacman 'nano' --reinstall
 use_brew formula 'nano'
