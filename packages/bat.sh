@@ -31,9 +31,6 @@ case "$cpu_type" in
   *)
     ;;
 esac
-if test "$OSKIND" = "alpine" && test "$cpu_type" = "amd64" -o "$cpu_type" = "i686"; then
-  libc_type="-musl"
-fi
 
 use_brew formula 'bat'
 use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb" "0.19.0"

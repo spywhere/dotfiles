@@ -510,13 +510,9 @@ _try_git() {
   if ! _try_load_system || ! install_git; then
     warn "System does not provide a git installation method, trying a builtin method..."
 
-    if test "$OSKIND" = "alpine"; then
-      sudo_cmd apk add --no-cache git
-    elif test "$OSKIND" = "debian"; then
+    if test "$OSKIND" = "debian"; then
       DEBIAN_FRONTEND=noninteractive sudo_cmd apt update -y
       DEBIAN_FRONTEND=noninteractive sudo_cmd apt install -y git
-    elif test "$OSKIND" = "arch"; then
-      sudo_cmd pacman -Sy --noconfirm --needed git
     elif test "$OSKIND" = "macos" -a -n "$(command -v "brew")"; then
       cmd brew install git
     else
