@@ -9,18 +9,18 @@ A cross-platform, modular dotfiles for my personal setup
 - coreutils
   - `uname`
 
-## Supported Platform
+## Supported Platforms
 
 [![Installation Test (native)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml)
 [![Installation Test (via Docker)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml)
+
+[![Build Stats](https://buildstats.info/github/chart/spywhere/dotfiles?branch=main)](https://github.com/spywhere/dotfiles/actions)
 
 - macOS
 - Linux
   - Debian
     - Raspberry Pi OS
     - Ubuntu
-  - Alpine
-  - Arch Linux -- including on ARM!
 
 ## Quick Installation
 
