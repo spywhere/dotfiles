@@ -50,19 +50,18 @@ sh -c "$(curl -sSL dots.spywhere.me)"
      
     To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself. 
      
-      Example: install.sh no-asdf no-docker 
-      Skip Docker and ASDF installation 
+      Example: install.sh no-asdf no-zsh 
+      Skip ZSH and ASDF installation 
      
     To include a specific package or setup, simply add a package or setup name after exclusions. 
      
-      Example: install.sh no-package asdf docker 
-      Skip package installation, but install ASDF and Docker 
+      Example: install.sh no-package asdf zsh 
+      Skip package installation, but install ASDF and ZSH 
      
     To skip system update/upgrade, package installation or setups, use 
       no-update           Skip system update and system upgrade
       no-upgrade          Only perform a system update but not system upgrade
-      no-package          Skip package installations, including a custom and a Docker one
-      no-docker           Skip Docker based installations
+      no-package          Skip package installations, including a custom one
       no-custom           Skip custom installations
       no-setup            Skip setups
      
