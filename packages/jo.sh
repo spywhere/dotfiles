@@ -15,5 +15,4 @@ has_executable 'jo'
 
 use_apt 'jo'
 # jo is outdated on AUR
-# use_pacman 'jo'
 use_brew formula 'jo'

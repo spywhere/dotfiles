@@ -14,4 +14,3 @@ fi
 has_executable 'sysstat'
 
 use_apt 'sysstat'
-use_pacman 'sysstat'

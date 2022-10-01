@@ -35,6 +35,5 @@ if test "$OSKIND" = "alpine" && test "$cpu_type" = "amd64" -o "$cpu_type" = "i68
   libc_type="-musl"
 fi
 
-use_pacman 'bat'
 use_brew formula 'bat'
 use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb" "0.19.0"

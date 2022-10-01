@@ -15,4 +15,3 @@ has_executable 'xsel'
 
 # tmux-yank dependencies
 use_apt 'xsel'
-use_pacman 'xsel'

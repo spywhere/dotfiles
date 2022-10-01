@@ -13,7 +13,5 @@ fi
 
 has_executable 'nc'
 
-use_apk 'main' 'netcat-openbsd'
 use_apt 'netcat'
-use_pacman 'openbsd-netcat'
 use_brew formula 'netcat'

@@ -13,5 +13,4 @@ fi
 
 has_executable 'htop'
 
-use_pacman 'htop'
 use_brew formula 'htop'

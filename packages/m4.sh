@@ -12,5 +12,4 @@ then
 fi
 
 # neovim rebuild dependencies
-use_apk 'main' 'm4'
 use_apt 'm4'

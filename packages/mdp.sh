@@ -14,4 +14,3 @@ fi
 has_executable 'mdp'
 
 use_apt 'mdp'
-use_pacman 'mdp'
