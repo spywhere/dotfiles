@@ -13,8 +13,6 @@ fi
 
 has_executable 'rg'
 
-require 'lib-jemalloc'
-
 # (a better grep) fzf.vim dependencies
 use_apt 'ripgrep'
 use_brew formula 'ripgrep'

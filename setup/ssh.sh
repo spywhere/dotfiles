@@ -11,8 +11,6 @@ then
   exit 1
 fi
 
-require 'ssh-keygen'
-
 add_setup 'setup_ssh'
 
 try_generate_keypair__has_generate=0
