@@ -12,7 +12,9 @@ registry.install {
     end)
 
     lsp.on_attach(function (client)
-      if not (fn.has('nvim-0.8') == 1 and client.server_capabilities or client.resolved_capabilities).document_highlight then
+      if fn.has('nvim-0.8') == 1 and not client.server_capabilities.documentHighlightProvider then
+        return
+      elseif fn.has('nvim-0.8') == 0 and not client.resolved_capabilities.document_highlight then
         return
       end
 

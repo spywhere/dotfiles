@@ -6,7 +6,11 @@ lsp.setup('metals')
     return require('metals').bare_config()
   end)
   .auto(function (config)
-    config.settings = {}
+    config.settings = {
+      showImplicitArguments = true,
+      showImplicitConversionsAndClasses = true,
+      showInferredType = true
+    }
 
     require('metals').initialize_or_attach(config)
   end)
