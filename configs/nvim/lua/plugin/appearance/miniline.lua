@@ -409,37 +409,6 @@ end)
   }
 }
 
-[[Clock]] {
-  before = '',
-  after = '',
-  hl = function (part)
-    if part == 'Clock' then
-      return colors.group('white', 'lightblue')
-    else
-      return colors.group('lightblue', 'black')
-    end
-  end,
-  -- TODO: combine 'inactive' and 'active' to 'visible'
-  -- default is to show all
-  --
-  -- This will not build for inactive, but conditionally show on active
-  -- visible = {
-    -- active = function () ... end
-    -- inactive = false
-  -- }
-  visible = {
-    active = function ()
-      return fn.exists('g:GuiLoaded') == 1
-    end
-  },
-  -- Clock
-  {
-    fn = function ()
-      return os.date('%d %b %y %H:%M')
-    end
-  }
-}
-
 local setup = function ()
   local stl = statusline('miniline', components())
   stl.filetypes(filetypes)
