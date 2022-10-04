@@ -63,10 +63,11 @@ local function expand_basic_component(component, kind, right, sep)
     name = component.name,
     hl = component,
     value = component.str or component.fn,
+    raw = component.raw,
     visible = extract_visible(component, kind)
   }
 
-  if sep then
+  if sep and sep ~= '' then
     if right then
       comp.after = sep
     else
@@ -82,6 +83,7 @@ local function expand_component(kind)
     if component.name == '-' then
       return {
         {
+          cache_name = 'Spacer',
           raw = true,
           value = '%<%=',
           hl = {
@@ -102,6 +104,7 @@ local function expand_component(kind)
       {
         allow_empty = true,
         name = component.name,
+        cache_name = '_' .. component.name,
         value = component.before or ' ',
         hl = {
           name = '_' .. component.name,
@@ -147,6 +150,7 @@ local function expand_component(kind)
     table.insert(parts, {
       allow_empty = true,
       name = component.name,
+      cache_name = component.name .. '_',
       value = component.after or ' ',
       hl = {
         name = component.name .. '_',
@@ -220,7 +224,7 @@ local function render_component(component, context, fts)
       component.after or ''
     )
 
-    if string.find(output, ' ') == 1 then
+    if string.find(output, ' ') == 1 and #output ~= 1 then
       return ' ' .. output
     end
 
@@ -241,17 +245,26 @@ local function component_renderer(M, kind)
       table.insert(parts, create_highlight(M, component.hl))
     end
 
-    if component.value and component.value ~= '' then
+    local value = component.value
+
+    if type(value) == 'function' then
+      value = value(context)
+    end
+
+    if value and value ~= '' then
       if component.raw then
-        table.insert(parts, component.value)
+        table.insert(parts, value)
       else
-        table.insert(
-          parts,
-          string.format(
+        local cache_name = component.cache_name or component.name
+        local component_call = M.component_cache[cache_name]
+        if not component_call then
+          component_call = string.format(
             '%%{%s}',
             registry.call_for_fn(render_component(component, context, M.fts))
           )
-        )
+          M.component_cache[cache_name] = component_call
+        end
+        table.insert(parts, component_call)
       end
     end
 
@@ -290,7 +303,9 @@ end
 
 return function (name, components)
   local M = {
-    cache = {},
+    line_cache = {},
+    call_cache = {},
+    component_cache = {},
     ns_name = name,
     ns = api.nvim_create_namespace(name),
     components = components
@@ -299,7 +314,7 @@ return function (name, components)
   M.filetypes = function (filetypes)
     M.fts = filetypes
   end
-  M.compile = function (kind)
+  M.compile = function (kind, cache)
     if kind == nil then
       local winid = vim.g.statusline_winid
       local cur_winid = api.nvim_get_current_win()
@@ -307,22 +322,24 @@ return function (name, components)
       return M.compile(winid == cur_winid and "active" or "inactive")
     end
 
-    if M.cache[kind] then
-      return M.cache[kind]
+    if cache ~= false and M.line_cache[kind] then
+      return M.line_cache[kind]
     end
 
     local line = compile(M, kind)
-    M.cache[kind] = line
+    M.line_cache[kind] = line
     return line
   end
-  M.render = function (kind)
-    if kind == nil then
-      return string.format('%%!%s', registry.call_for_fn(M.compile))
-    else
-      return string.format('%%!%s', registry.call_for_fn(function ()
-        return M.compile(kind)
-      end))
+  M.render = function (kind, cache)
+    if M.call_cache[kind or '*'] then
+      return M.call_cache[kind or '*']
     end
+
+    local line = string.format('%%!%s', registry.call_for_fn(function ()
+      return M.compile(kind, cache)
+    end))
+    M.call_cache[kind or '*'] = line
+    return line
   end
   M.define_highlight = highlighter(M.ns, M.ns_name)
 
