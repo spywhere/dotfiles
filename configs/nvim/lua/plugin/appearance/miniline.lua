@@ -469,4 +469,4 @@ local setup = function ()
 
   highlight_mode(stl.define_highlight, mode_map.n.color)
 end
-registry.defer(setup)
+registry.post(setup)
