@@ -218,22 +218,23 @@ end)
   after = ']',
   sep = '',
   visible = {
-    ['*'] = function (ctx)
-      return ctx.kind ~= 'winbar' and (vim.bo.modified or vim.bo.readonly)
+    winbar = false,
+    ['*'] = function ()
+      return vim.bo.modified or vim.bo.readonly
     end
   },
   {
     visible = {
-      ['*'] = function (ctx)
-        return ctx.kind ~= 'winbar' and vim.bo.readonly
+      ['*'] = function ()
+        return vim.bo.readonly
       end
     },
     str = 'RO'
   },
   {
     visible = {
-      ['*'] = function (ctx)
-        return ctx.kind ~= 'winbar' and vim.bo.modified
+      ['*'] = function ()
+        return vim.bo.modified
       end
     },
     str = '+'
@@ -242,6 +243,10 @@ end)
 
 [[-]] {
   hl = colors.group('white', 'brightblack'),
+  visible = {
+    winbar = false,
+    ['*'] = true
+  }
 }
 
 [[Obsession]] {
@@ -413,6 +418,46 @@ local setup = function ()
   local stl = statusline('miniline', components())
   stl.filetypes(filetypes)
   vim.o.statusline = stl.render()
+
+  if fn.has('nvim-0.8') == 1 then
+    registry.auto({
+      'WinEnter', 'BufWinEnter', 'BufEnter',
+      'WinLeave', 'BufWinLeave', 'BufLeave',
+      'WinClosed'
+    }, function ()
+      vim.defer_fn(function ()
+        local all_wins = api.nvim_list_wins()
+        local wins = {}
+        local count = 0
+
+        for _, wid in ipairs(all_wins) do
+          local win_cfg = api.nvim_win_get_config(wid)
+          local bufid = api.nvim_win_get_buf(wid)
+          local ft = api.nvim_buf_get_option(bufid, 'filetype')
+          local skip = (
+            ft == 'NvimTree' or ft == 'alpha' or ft == 'vim-plug' or
+            ft == 'qf'
+          )
+
+          wins[wid] = (
+            win_cfg.relative == '' and not win_cfg.external and not skip
+          )
+          if wins[wid] then
+            count = count + 1
+          end
+        end
+
+        for _, wid in ipairs(all_wins) do
+          if wins[wid] and count > 1 then
+            api.nvim_win_set_option(wid, 'winbar', stl.compile('winbar'))
+          else
+            api.nvim_win_set_option(wid, 'winbar', '')
+          end
+        end
+      end, 10)
+    end)
+  end
+
   highlight_mode(stl.define_highlight, mode_map.n.color)
 end
 registry.defer(setup)
