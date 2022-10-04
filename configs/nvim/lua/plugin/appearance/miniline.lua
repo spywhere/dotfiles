@@ -241,12 +241,33 @@ end)
   }
 }
 
-[[-]] {
-  hl = colors.group('white', 'brightblack'),
+[[Context]] {
+  hl = colors.group('white', 'black'),
+  sep = '',
+  after = ' ',
   visible = {
-    winbar = false,
-    ['*'] = true
+    winbar = function ()
+      local mod = prequire('nvim-navic')
+      return mod and mod.is_available()
+    end
+  },
+  {
+    raw = true,
+    fn = function ()
+      return require('nvim-navic').get_location()
+    end
   }
+}
+
+[[-]] {
+  hl = colors.group('white', 'brightblack')
+}
+
+[[FileName]] {
+  visible = {
+    winbar = true
+  },
+  str = function () return fn.expand('%:t') end
 }
 
 [[Obsession]] {
@@ -426,33 +447,21 @@ local setup = function ()
       'WinClosed'
     }, function ()
       vim.defer_fn(function ()
-        local all_wins = api.nvim_list_wins()
-        local wins = {}
-        local count = 0
+        local wid = api.nvim_get_current_win()
 
-        for _, wid in ipairs(all_wins) do
-          local win_cfg = api.nvim_win_get_config(wid)
-          local bufid = api.nvim_win_get_buf(wid)
-          local ft = api.nvim_buf_get_option(bufid, 'filetype')
-          local skip = (
-            ft == 'NvimTree' or ft == 'alpha' or ft == 'vim-plug' or
-            ft == 'qf'
-          )
+        local win_cfg = api.nvim_win_get_config(wid)
+        local bufid = api.nvim_win_get_buf(wid)
+        local ft = api.nvim_buf_get_option(bufid, 'filetype')
+        local skip = (
+          ft == 'NvimTree' or ft == 'alpha' or ft == 'vim-plug' or
+          ft == 'qf'
+        )
 
-          wins[wid] = (
-            win_cfg.relative == '' and not win_cfg.external and not skip
-          )
-          if wins[wid] then
-            count = count + 1
-          end
-        end
-
-        for _, wid in ipairs(all_wins) do
-          if wins[wid] and count > 1 then
-            api.nvim_win_set_option(wid, 'winbar', stl.compile('winbar'))
-          else
-            api.nvim_win_set_option(wid, 'winbar', '')
-          end
+        if
+          win_cfg.relative == '' and not win_cfg.external and not skip and
+          vim.wo.winbar == ''
+        then
+          vim.wo.winbar = stl.render('winbar', false)
         end
       end, 10)
     end)
