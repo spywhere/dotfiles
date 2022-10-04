@@ -138,8 +138,8 @@ end)
   {
     -- Branch
     visible = {
-      active = function (value)
-        return value ~= nil and value ~= ''
+      active = function (ctx)
+        return ctx.value ~= nil and ctx.value ~= ''
       end
     },
     fn = function ()
@@ -246,8 +246,8 @@ end)
 [[Obsession]] {
   hl = colors.group('white', 'brightblack'),
   visible = {
-    active = function (value)
-      return value ~= nil
+    active = function (ctx)
+      return ctx.value ~= nil
     end
   },
   fn = function ()

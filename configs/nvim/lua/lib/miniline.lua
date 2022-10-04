@@ -168,7 +168,10 @@ end
 
 local function is_visible(t, ctx)
   if type(t.visible) == 'function' then
-    return t.visible(t.value, { kind = ctx.kind })
+    return t.visible({
+      value = t.value,
+      kind = ctx.kind
+    })
   end
   return t.visible ~= false
 end
