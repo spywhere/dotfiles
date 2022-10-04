@@ -121,9 +121,6 @@ end)
   },
   {
     -- Mode
-    visible = {
-      active = true
-    },
     fn = function (options)
       local mode = mode_map[fn.mode()] or {
         alias=fn.mode(),
@@ -150,6 +147,10 @@ end)
 
 [[Path]] {
   hl = colors.group('white', 'black'),
+  visible = {
+    active = true,
+    inactive = true
+  },
   {
     fn = function (options)
       local limit = options.kind == 'active' and 70 or 50
@@ -217,22 +218,22 @@ end)
   after = ']',
   sep = '',
   visible = {
-    ['*'] = function ()
-      return vim.bo.modified or vim.bo.readonly
+    ['*'] = function (ctx)
+      return ctx.kind ~= 'winbar' and (vim.bo.modified or vim.bo.readonly)
     end
   },
   {
     visible = {
-      ['*'] = function ()
-        return vim.bo.readonly
+      ['*'] = function (ctx)
+        return ctx.kind ~= 'winbar' and vim.bo.readonly
       end
     },
     str = 'RO'
   },
   {
     visible = {
-      ['*'] = function ()
-        return vim.bo.modified
+      ['*'] = function (ctx)
+        return ctx.kind ~= 'winbar' and vim.bo.modified
       end
     },
     str = '+'
@@ -303,6 +304,10 @@ end)
 [[FileInfo]] {
   sep = ' | ',
   hl = colors.group('white', 'brightblack'),
+  visible = {
+    active = true,
+    inactive = true
+  },
   -- FileType
   {
     visible = {
@@ -352,6 +357,10 @@ end)
 
 [[LineInfo]] {
   hl = colors.group('white', 'black'),
+  visible = {
+    active = true,
+    inactive = true
+  },
   -- LinePercent
   {
     fn = function ()
@@ -376,41 +385,26 @@ end)
   -- Hint
   {
     hl = colors.group('black', 'cyan'),
-    visible = {
-      active = is_lsp_attached
-    },
     fn = get_lsp_diagnostic_count(' H: ', vim.diagnostic.severity.HINT)
   },
   -- Info
   {
     hl = colors.group('black', 'green'),
-    visible = {
-      active = is_lsp_attached
-    },
     fn = get_lsp_diagnostic_count(' I: ', vim.diagnostic.severity.INFO)
   },
   -- Warn
   {
     hl = colors.group('black', 'orange'),
-    visible = {
-      active = is_lsp_attached
-    },
     fn = get_lsp_diagnostic_count(' W: ', vim.diagnostic.severity.WARN)
   },
   -- Error
   {
     hl = colors.group('black', 'red'),
-    visible = {
-      active = is_lsp_attached
-    },
     fn = get_lsp_diagnostic_count(' E: ', vim.diagnostic.severity.ERROR)
   },
   -- OK
   {
     hl = colors.group('black', 'cyan'),
-    visible = {
-      active = is_lsp_attached
-    },
     fn = get_lsp_ok(' OK')
   }
 }
@@ -440,11 +434,6 @@ end)
   },
   -- Clock
   {
-    visible = {
-      active = function ()
-        return fn.exists('g:GuiLoaded') == 1
-      end
-    },
     fn = function ()
       return os.date('%d %b %y %H:%M')
     end
