@@ -262,7 +262,8 @@ end)
   visible = {
     inactive = false,
     active = function ()
-      return require('now-playing').is_running()
+      local mod = prequire('now-playing')
+      return mod and mod.is_running()
     end
   },
   fn = function ()
