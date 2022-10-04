@@ -45,7 +45,7 @@ local function filter_state(kind)
     if visible == nil then
       visible = component.visible['*']
     end
-    return visible ~= false
+    return visible
   end
 end
 
@@ -312,8 +312,14 @@ return function (name, components)
     M.cache[kind] = line
     return line
   end
-  M.render = function ()
-    return string.format('%%!%s', registry.call_for_fn(M.compile))
+  M.render = function (kind)
+    if kind == nil then
+      return string.format('%%!%s', registry.call_for_fn(M.compile))
+    else
+      return string.format('%%!%s', registry.call_for_fn(function ()
+        return M.compile(kind)
+      end))
+    end
   end
   M.define_highlight = highlighter(M.ns, M.ns_name)
 

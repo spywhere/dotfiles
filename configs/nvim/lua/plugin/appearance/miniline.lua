@@ -117,12 +117,12 @@ end)
   sep = ' | ',
   hl = true,
   visible = {
-    inactive = false
+    active = true
   },
   {
     -- Mode
     visible = {
-      inactive = false
+      active = true
     },
     fn = function (options)
       local mode = mode_map[fn.mode()] or {
@@ -138,7 +138,6 @@ end)
   {
     -- Branch
     visible = {
-      inactive = false,
       active = function (value)
         return value ~= nil and value ~= ''
       end
@@ -247,7 +246,6 @@ end)
 [[Obsession]] {
   hl = colors.group('white', 'brightblack'),
   visible = {
-    inactive = false,
     active = function (value)
       return value ~= nil
     end
@@ -260,7 +258,6 @@ end)
 [[Music]] {
   hl = colors.group('white', 'black'),
   visible = {
-    inactive = false,
     active = function ()
       local mod = prequire('now-playing')
       return mod and mod.is_running()
@@ -374,42 +371,46 @@ end)
   after = '',
   sep = '',
   visible = {
-    inactive = false,
     active = is_lsp_attached
   },
   -- Hint
   {
     hl = colors.group('black', 'cyan'),
-    inactive = false,
-    active = is_lsp_attached,
+    visible = {
+      active = is_lsp_attached
+    },
     fn = get_lsp_diagnostic_count(' H: ', vim.diagnostic.severity.HINT)
   },
   -- Info
   {
     hl = colors.group('black', 'green'),
-    inactive = false,
-    active = is_lsp_attached,
+    visible = {
+      active = is_lsp_attached
+    },
     fn = get_lsp_diagnostic_count(' I: ', vim.diagnostic.severity.INFO)
   },
   -- Warn
   {
     hl = colors.group('black', 'orange'),
-    inactive = false,
-    active = is_lsp_attached,
+    visible = {
+      active = is_lsp_attached
+    },
     fn = get_lsp_diagnostic_count(' W: ', vim.diagnostic.severity.WARN)
   },
   -- Error
   {
     hl = colors.group('black', 'red'),
-    inactive = false,
-    active = is_lsp_attached,
+    visible = {
+      active = is_lsp_attached
+    },
     fn = get_lsp_diagnostic_count(' E: ', vim.diagnostic.severity.ERROR)
   },
   -- OK
   {
     hl = colors.group('black', 'cyan'),
-    inactive = false,
-    active = is_lsp_attached,
+    visible = {
+      active = is_lsp_attached
+    },
     fn = get_lsp_ok(' OK')
   }
 }
@@ -433,7 +434,6 @@ end)
     -- inactive = false
   -- }
   visible = {
-    inactive = false,
     active = function ()
       return fn.exists('g:GuiLoaded') == 1
     end
@@ -441,7 +441,6 @@ end)
   -- Clock
   {
     visible = {
-      inactive = false,
       active = function ()
         return fn.exists('g:GuiLoaded') == 1
       end
