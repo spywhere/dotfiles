@@ -6,12 +6,20 @@ registry.install {
   requires = 'neovim/nvim-lspconfig',
   lazy = true,
   config = function ()
+    local navic = require('nvim-navic')
+
+    navic.setup {
+      highlight = true,
+      separator = '  ',
+      depth_limit = 5
+    }
+
     lsp.on_attach(function (client, bufnr)
       if not client.server_capabilities.documentSymbolProvider then
         return
       end
 
-      require('nvim-navic').attach(client, bufnr)
+      navic.attach(client, bufnr)
     end)
   end
 }
