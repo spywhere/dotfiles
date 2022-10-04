@@ -153,7 +153,7 @@ end)
   hl = colors.group('white', 'black'),
   {
     fn = function (options)
-      local limit = options.active and 70 or 50
+      local limit = options.kind == 'active' and 70 or 50
 
       local function beautify_name(name)
         if name == '' then
@@ -265,7 +265,7 @@ end)
       return require('now-playing').is_running()
     end
   },
-  fn = function (options)
+  fn = function ()
     local winwidth = vim.o.laststatus == 3 and math.max(vim.o.columns, fn.winwidth(0)) or fn.winwidth(0)
     local text = string.format(
       ' %s ',
