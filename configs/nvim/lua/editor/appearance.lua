@@ -53,7 +53,11 @@ local statusline = function ()
   else
     bindings.set('laststatus', 2)
   end
-  bindings.set('cmdheight', 1)
+  if fn.has('nvim-0.8') == 1 then
+    bindings.set('cmdheight', 0)
+  else
+    bindings.set('cmdheight', 1)
+  end
 end
 -- for first time setup
 registry.pre(statusline)
