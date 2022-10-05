@@ -253,7 +253,7 @@ local function component_renderer(M, kind)
 
     local value = component.value
 
-    if type(value) == 'function' then
+    if component.raw and type(value) == 'function' then
       value = value(context)
     end
 
