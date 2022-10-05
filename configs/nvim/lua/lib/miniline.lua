@@ -238,7 +238,13 @@ local function component_renderer(M, kind)
     local parts = {}
     local context = {
       kind = kind,
-      define_highlight = highlighter(M.ns, M.ns_name)
+      define_highlight = highlighter(M.ns, M.ns_name),
+      create_highlight = function (name)
+        return create_highlight(M, {
+          name = component.name .. name,
+          hl = (component.hl or {}).hl
+        })
+      end
     }
 
     if component.hl then

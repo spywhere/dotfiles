@@ -243,20 +243,26 @@ end)
 
 [[Context]] {
   hl = colors.group('white', 'black'),
-  sep = '',
-  after = ' ',
   visible = {
     winbar = function ()
       local mod = prequire('nvim-navic')
       return mod and mod.is_available()
     end
   },
-  {
-    raw = true,
-    fn = function ()
-      return require('nvim-navic').get_location()
+  raw = true,
+  fn = function (ctx)
+    local location = require('nvim-navic').get_location()
+
+    if not location or location == '' then
+      return ''
     end
-  }
+
+    return string.format(
+      ' %s%s ',
+      location,
+      ctx.create_highlight('Suffix')
+    )
+  end
 }
 
 [[-]] {
