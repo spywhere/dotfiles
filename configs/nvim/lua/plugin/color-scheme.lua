@@ -61,7 +61,6 @@ registry.install {
     require('onenord').setup {
       custom_highlights = custom_highlights,
       custom_colors = {
-        active = colors.darkgray,
         bg = colors.darkgray,
         diff_change = onenord.yellow,
         status = colors.black

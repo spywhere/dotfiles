@@ -251,15 +251,42 @@ end)
   },
   raw = true,
   fn = function (ctx)
-    local location = require('nvim-navic').get_location()
+    local limit = fn.winwidth(0) / 2
+    local separator = '  '
+    local data = require('nvim-navic').get_data()
+    local location = {}
 
-    if not location or location == '' then
+    if not data or #data == 0 then
       return ''
+    end
+
+    if #data > limit then
+      local remain = #data - limit
+      data = vim.list_slice(data, remain + 1, #data)
+      table.insert(
+        location,
+        string.format(
+          '%%#NavicText#...[%s]%%*',
+          remain
+        )
+      )
+    end
+
+    for _, v in ipairs(data) do
+      local name = string.gsub(string.gsub(v.name, '\n.*$', ''), '%s*->$', '')
+
+      table.insert(
+        location,
+        string.format(
+          '%%#NavicIcons%s#%s%%*%%#NavicText#%s%%*',
+          v.type, v.icon, name
+        )
+      )
     end
 
     return string.format(
       ' %s%s ',
-      location,
+      table.concat(location, '%#NavicSeparator#' .. separator .. '%*'),
       ctx.create_highlight('Suffix')
     )
   end
