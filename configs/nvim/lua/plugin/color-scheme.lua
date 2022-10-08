@@ -19,7 +19,8 @@ registry.install {
       IndentBlanklineContextChar = { fg = onenord.blue },
       NormalFloat = { bg = onenord.highlight },
       NavicText = { bg = colors.black, fg = onenord.fg },
-      NavicSeparator = { bg = colors.black, fg = onenord.cyan }
+      NavicSeparator = { bg = colors.black, fg = onenord.cyan },
+      NvimTreeNormal = { bg = colors.darkgray, fg = onenord.white }
     }
 
     local navic_highlights = {
