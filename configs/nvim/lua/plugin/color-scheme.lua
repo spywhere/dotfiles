@@ -17,7 +17,7 @@ registry.install {
       LspReferenceWrite = { bg = onenord.highlight, style = onenord.none },
       TelescopeSelection = { bg = onenord.highlight },
       IndentBlanklineContextChar = { fg = onenord.blue },
-      NormalFloat = { bg = onenord.darkgray },
+      NormalFloat = { bg = onenord.bg },
       NavicText = { bg = colors.lightgray, fg = onenord.fg },
       NavicSeparator = { bg = colors.lightgray, fg = onenord.cyan },
       NvimTreeNormal = { bg = colors.black, fg = onenord.white }
