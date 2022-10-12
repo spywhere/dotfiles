@@ -4,8 +4,8 @@ registry.install {
   'rmehri01/onenord.nvim',
   config = function ()
     local colors = {
-      darkgray = '#1c1c1c',
-      black = '#3b4252'
+      black = '#1c1c1c',
+      lightgray = '#3b4252'
     }
 
     local onenord = require('onenord.colors').load()
@@ -17,10 +17,10 @@ registry.install {
       LspReferenceWrite = { bg = onenord.highlight, style = onenord.none },
       TelescopeSelection = { bg = onenord.highlight },
       IndentBlanklineContextChar = { fg = onenord.blue },
-      NormalFloat = { bg = onenord.highlight },
-      NavicText = { bg = colors.black, fg = onenord.fg },
-      NavicSeparator = { bg = colors.black, fg = onenord.cyan },
-      NvimTreeNormal = { bg = colors.darkgray, fg = onenord.white }
+      NormalFloat = { bg = onenord.darkgray },
+      NavicText = { bg = colors.lightgray, fg = onenord.fg },
+      NavicSeparator = { bg = colors.lightgray, fg = onenord.cyan },
+      NvimTreeNormal = { bg = colors.black, fg = onenord.white }
     }
 
     local navic_highlights = {
@@ -54,7 +54,7 @@ registry.install {
 
     for key, color in pairs(navic_highlights) do
       custom_highlights['NavicIcons' .. key] = {
-        bg = colors.black,
+        bg = colors.lightgray,
         fg = color
       }
     end
@@ -62,9 +62,9 @@ registry.install {
     require('onenord').setup {
       custom_highlights = custom_highlights,
       custom_colors = {
-        bg = colors.darkgray,
+        bg = colors.black,
         diff_change = onenord.yellow,
-        status = colors.black
+        status = colors.lightgray
       }
     }
   end
