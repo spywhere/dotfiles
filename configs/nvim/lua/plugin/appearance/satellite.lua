@@ -8,7 +8,12 @@ registry.install {
   lazy = true,
   config = function ()
     require('satellite').setup {
-      current_only = true
+      current_only = true,
+      handlers = {
+        marks = {
+          enable = false
+        }
+      }
     }
   end,
   delay = function ()
