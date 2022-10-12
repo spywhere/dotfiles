@@ -196,6 +196,12 @@ local function is_visible(t, ctx)
   return t.visible ~= false
 end
 
+local function filter_visible(ctx)
+  return function (t)
+    return is_visible(t, ctx)
+  end
+end
+
 local function get_filetype_activation(component, fts)
   local filetype_map = (
     fts[string.lower(vim.bo.filetype)] or
@@ -218,6 +224,11 @@ end
 
 local function render_component(component, context, fts)
   return function ()
+    local filetype_activation = get_filetype_activation(component, fts)
+    if not is_visible(component, context) or filetype_activation then
+      return filetype_activation or ''
+    end
+
     local value = component.value
 
     if type(value) == 'function' then
@@ -226,11 +237,6 @@ local function render_component(component, context, fts)
 
     if not value or value == '' then
       return value
-    end
-
-    local filetype_activation = get_filetype_activation(component, fts)
-    if not is_visible(component, context) or filetype_activation then
-      return filetype_activation or ''
     end
 
     local output = string.format(
@@ -304,7 +310,7 @@ end
 
 local function render_pipeline(M, kind)
   return i.lazy()
-    .filter(filter_empty)
+    .filter(filter_empty, filter_visible({ kind = kind }))
     .map(component_renderer(M, kind))
     .get
 end
