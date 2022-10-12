@@ -75,6 +75,8 @@ end
 registry.auto('TextYankPost', highlight_yank, nil, 'silent!')
 
 registry.post(function ()
+  bindings.set('winblend', 10)
+
   if fn.has('termguicolors') == 1 then
     bindings.set('termguicolors')
   end
