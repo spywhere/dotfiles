@@ -81,11 +81,27 @@ end
 local function expand_component(kind)
   return function (right, component)
     if component.name == '-' then
+      local value = string.format('%%%s%%=', component.str or '<')
+
+      if component.fn then
+        value = function (...)
+          local truncate = component.fn(...)
+
+          if truncate then
+            truncate = string.format('%%%s', truncate)
+          else
+            truncate = ''
+          end
+
+          return string.format('%s%%=', truncate)
+        end
+      end
+
       return {
         {
           cache_name = 'Spacer',
           raw = true,
-          value = '%<%=',
+          value = value,
           hl = {
             name = '_Spacer_',
             hl = component.hl
@@ -297,7 +313,7 @@ local function compile(M, kind)
   return table.concat(
     i
       .lazy(M.components)
-      .map(
+      .map( -- .map -> .flatMap
         compilation_pipeline(kind),
         render_pipeline(M, kind),
         function (c) return table.concat(c, '') end

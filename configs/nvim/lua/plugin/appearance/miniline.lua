@@ -293,7 +293,12 @@ end)
 }
 
 [[-]] {
-  hl = colors.group('white', 'brightblack')
+  hl = colors.group('white', 'brightblack'),
+  fn = function (ctx)
+    if ctx.kind ~= 'winbar' then
+      return '<'
+    end
+  end
 }
 
 [[FileName]] {
