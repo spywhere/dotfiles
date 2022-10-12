@@ -2,14 +2,9 @@ local registry = require('lib.registry')
 local i = require('lib.iterator')
 local bindings = require('lib.bindings')
 
-local function highlighter(nsid, namespace)
+local function highlighter(namespace)
   return function (name, highlight)
-    if fn.has('nvim-0.8') == 1 then
-      api.nvim_set_hl_ns_fast(nsid)
-    else
-      api.nvim__set_hl_ns(nsid)
-    end
-    bindings.highlight.define(nsid, namespace .. name, highlight)
+    bindings.highlight.define(0, namespace .. name, highlight)
   end
 end
 
@@ -22,13 +17,13 @@ local function create_highlight(M, name, highlight)
     return ''
   end
 
-  highlighter(M.ns, M.ns_name)(name, {})
+  highlighter(M.ns_name)(name, {})
   if type(highlight) == 'table' then
-    highlighter(M.ns, M.ns_name)(name, highlight)
+    highlighter(M.ns_name)(name, highlight)
   elseif type(highlight) == 'function' then
     local highlight_map = highlight(name)
     if highlight_map then
-      highlighter(M.ns, M.ns_name)(name, highlight_map)
+      highlighter(M.ns_name)(name, highlight_map)
     end
   end
 
@@ -260,7 +255,7 @@ local function component_renderer(M, kind)
     local parts = {}
     local context = {
       kind = kind,
-      define_highlight = highlighter(M.ns, M.ns_name),
+      define_highlight = highlighter(M.ns_name),
       create_highlight = function (name)
         return create_highlight(M, {
           name = component.name .. name,
@@ -335,7 +330,6 @@ return function (name, components)
     call_cache = {},
     component_cache = {},
     ns_name = name,
-    ns = api.nvim_create_namespace(name),
     components = components
   }
 
@@ -369,7 +363,7 @@ return function (name, components)
     M.call_cache[kind or '*'] = line
     return line
   end
-  M.define_highlight = highlighter(M.ns, M.ns_name)
+  M.define_highlight = highlighter(M.ns_name)
 
   return M
 end
