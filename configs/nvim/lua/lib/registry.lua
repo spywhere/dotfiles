@@ -1,5 +1,6 @@
 -- setup registry
 local pm = require('lib.plugin-manager')
+local _registry = 'lib.registry'
 local std = {}
 std.count = function ()
   local i = 0
@@ -16,15 +17,19 @@ std.wrap = function (value)
   end
 end
 
-_fn = {}
 local M = {}
 
+local _fn = {}
 local _group = nil
 local _pre = {}
 local _post = {}
 local _defers = {}
 local _experiments = {}
 local increment = std.count()
+
+M._invoke = function(name, ...)
+  return _fn[name](...)
+end
 
 M.group = function (group_name, group_fn)
   local name = group_name
@@ -76,47 +81,15 @@ M.call_for_fn = function (func, args)
   local call = { 'v:lua' }
   local index = increment()
   _fn['_' .. index] = func
-  local arguments = table.concat(std.wrap(args) or {}, ',')
-  table.insert(call, '_fn._' .. index .. '(' .. arguments .. ')')
+  local arguments = table.concat(
+    vim.list_extend({ '\'_' .. index .. '\'' }, std.wrap(args) or {}),
+    ','
+  )
+  table.insert(
+    call,
+    'require(\'' .. _registry ..'\')._invoke(' .. arguments .. ')'
+  )
   return table.concat(call, '.')
-end
-
-M.fn = function (fn_signature, fn_ref)
-  local func = fn_ref
-  local signature = fn_signature or {}
-  if type(signature) == 'function' then
-    func = signature
-    signature = {}
-  end
-  local name = signature.name or string.format(
-    '_lua_%s',
-    increment()
-  )
-  assert(type(name) == 'string', 'function name must be a string')
-  assert(
-    func,
-    'callback function is required for function \'' .. name .. '\''
-  )
-  assert(
-    type(func) == 'function',
-    'callback function must be a function for function \'' .. name .. '\''
-  )
-
-  local params = {}
-  local args = {}
-  for k, v in pairs(signature) do
-    if type(k) == 'number' and type(v) == 'string' then
-      table.insert(params, v)
-      table.insert(args, 'a:' .. v)
-    end
-  end
-  local definition = {
-    'function! ' .. name .. '(' .. table.concat(params, ',') ..')',
-    'return ' .. M.call_for_fn(func, args),
-    'endfunction'
-  }
-  api.nvim_exec(table.concat(definition, '\n'), false)
-  return name
 end
 
 local install_plugin_manager = function (callback)
