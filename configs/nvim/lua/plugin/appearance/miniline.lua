@@ -323,16 +323,18 @@ end)
 [[Music]] {
   hl = colors.group('white', 'black'),
   visible = {
-    active = function ()
-      local mod = prequire('now-playing')
-      return mod and mod.is_running()
-    end
+    active = true
   },
   fn = function ()
+    local mod = prequire('now-playing')
+    if not mod or not mod.is_running() then
+      return ''
+    end
+
     local winwidth = vim.o.laststatus == 3 and math.max(vim.o.columns, fn.winwidth(0)) or fn.winwidth(0)
     local text = string.format(
       ' %s ',
-      require('now-playing').format(function (format)
+      mod.format(function (format)
         return format()
           .format(
             '%s ',
@@ -359,7 +361,7 @@ end)
       return ''
     end
 
-    require('now-playing').take_over()
+    mod.take_over()
 
     return text
   end
