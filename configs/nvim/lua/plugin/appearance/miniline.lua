@@ -155,26 +155,54 @@ end)
     fn = function (options)
       local limit = options.kind == 'active' and 70 or 50
 
-      local function beautify_name(name)
+      local function split(str, sep)
+        local output = {}
+
+        for s in string.gmatch(str, '([^'..sep..']+)') do
+          table.insert(output, s)
+        end
+
+        return output
+      end
+
+      local function beautify_name(name, shorten)
         if name == '' then
           return name
         end
 
-        local is_root = string.find(name, '^[/\\[]') == 1 or string.find(name, '^%w+://')
-        if not is_root then
-          name = '.../' .. name
+        local output = {}
+        local parts = {}
+
+        if shorten then
+          parts = split(name, '/\\')
+          while #output < 7 and #parts > 0 do
+            table.insert(output, 1, table.remove(parts, #parts))
+          end
         end
 
-        return string.gsub(string.gsub(name, '^[/\\]', ''), '[/\\]+', '  ')
+        local is_root = string.find(name, '^[/\\[]') == 1 or string.find(name, '^%w+://')
+        if not is_root then
+          if shorten then
+            table.insert(output, 1, '.' .. string.rep('.', #parts))
+          else
+            name = '.../' .. name
+          end
+        end
+
+        if shorten then
+          return table.concat(output, '  ')
+        else
+          return string.gsub(string.gsub(name, '^[/\\]', ''), '[/\\]+', '  ')
+        end
       end
 
-      local function fallback_name(winwidth, list)
+      local function fallback_name(winwidth, list, shorten)
         local list_count = vim.tbl_count(list)
 
         if list_count < 1 then
           return ''
         end
-        local name = beautify_name(list[1]())
+        local name = beautify_name(list[1](), shorten)
 
         if list_count == 1 then
           if name == '' then
@@ -185,8 +213,10 @@ end)
         end
 
         if winwidth < limit + name:len() then
-          table.remove(list, 1)
-          return fallback_name(winwidth, list)
+          if shorten then
+            table.remove(list, 1)
+          end
+          return fallback_name(winwidth, list, not shorten)
         end
 
         if name == '' then
