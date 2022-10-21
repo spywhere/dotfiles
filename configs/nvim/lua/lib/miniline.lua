@@ -198,6 +198,10 @@ local function filter_visible(ctx)
 end
 
 local function get_filetype_activation(component, fts)
+  if not component.name then
+    return
+  end
+
   local filetype_map = (
     fts[string.lower(vim.bo.filetype)] or
     fts['*'] or
@@ -231,7 +235,7 @@ local function render_component(component, context, fts)
     end
 
     if not value or value == '' then
-      return value
+      return ''
     end
 
     local output = string.format(
@@ -268,28 +272,19 @@ local function component_renderer(M, kind)
       table.insert(parts, create_highlight(M, component.hl))
     end
 
-    local value = component.value
-
-    if component.raw and type(value) == 'function' then
-      value = value(context)
+    local expression = component.raw and '%' or ''
+    local cache_name = component.cache_name or component.name
+    local component_call = M.component_cache[cache_name]
+    if not component_call then
+      component_call = string.format(
+        '%%{%s%s%s}',
+        expression,
+        registry.call_for_fn(render_component(component, context, M.fts)),
+        expression
+      )
+      M.component_cache[cache_name] = component_call
     end
-
-    if value and value ~= '' then
-      if component.raw then
-        table.insert(parts, value)
-      else
-        local cache_name = component.cache_name or component.name
-        local component_call = M.component_cache[cache_name]
-        if not component_call then
-          component_call = string.format(
-            '%%{%s}',
-            registry.call_for_fn(render_component(component, context, M.fts))
-          )
-          M.component_cache[cache_name] = component_call
-        end
-        table.insert(parts, component_call)
-      end
-    end
+    table.insert(parts, component_call)
 
     return table.concat(parts, '')
   end

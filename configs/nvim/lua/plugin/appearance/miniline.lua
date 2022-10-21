@@ -274,16 +274,18 @@ end)
 [[Context]] {
   hl = colors.group('white', 'black'),
   visible = {
-    winbar = function ()
-      local mod = prequire('nvim-navic')
-      return mod and mod.is_available()
-    end
+    winbar = true
   },
   raw = true,
   fn = function (ctx)
+    local mod = prequire('nvim-navic')
+    if not mod or not mod.is_available() then
+      return ''
+    end
+
     local limit = fn.winwidth(0) / 2
     local separator = '  '
-    local data = require('nvim-navic').get_data()
+    local data = mod.get_data()
     local location = {}
 
     if not data or #data == 0 then
