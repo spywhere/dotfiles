@@ -533,7 +533,7 @@ local setup = function ()
           win_cfg.relative == '' and not win_cfg.external and not skip and
           vim.wo.winbar == ''
         then
-          vim.wo.winbar = stl.render('winbar', false)
+          vim.wo.winbar = stl.render('winbar')
         end
       end, 10)
     end)

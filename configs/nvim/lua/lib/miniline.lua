@@ -331,7 +331,7 @@ return function (name, components)
   M.filetypes = function (filetypes)
     M.fts = filetypes
   end
-  M.compile = function (kind, cache)
+  M.compile = function (kind)
     if kind == nil then
       local winid = vim.g.statusline_winid
       local cur_winid = api.nvim_get_current_win()
@@ -339,7 +339,7 @@ return function (name, components)
       return M.compile(winid == cur_winid and "active" or "inactive")
     end
 
-    if cache ~= false and M.line_cache[kind] then
+    if M.line_cache[kind] then
       return M.line_cache[kind]
     end
 
@@ -347,13 +347,13 @@ return function (name, components)
     M.line_cache[kind] = line
     return line
   end
-  M.render = function (kind, cache)
+  M.render = function (kind)
     if M.call_cache[kind or '*'] then
       return M.call_cache[kind or '*']
     end
 
     local line = string.format('%%!%s', registry.call_for_fn(function ()
-      return M.compile(kind, cache)
+      return M.compile(kind)
     end))
     M.call_cache[kind or '*'] = line
     return line
