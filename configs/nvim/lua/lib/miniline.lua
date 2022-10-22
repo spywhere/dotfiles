@@ -259,7 +259,6 @@ local function component_renderer(M, kind)
     local parts = {}
     local context = {
       kind = kind,
-      define_highlight = highlighter(M.ns_name),
       create_highlight = function (name)
         return create_highlight(M, {
           name = component.name .. name,
@@ -358,7 +357,6 @@ return function (name, components)
     M.call_cache[kind or '*'] = line
     return line
   end
-  M.define_highlight = highlighter(M.ns_name)
 
   return M
 end

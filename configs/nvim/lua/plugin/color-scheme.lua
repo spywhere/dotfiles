@@ -1,13 +1,9 @@
 local registry = require('lib.registry')
+local colors = require('common.colors')
 
 registry.install {
   'rmehri01/onenord.nvim',
   config = function ()
-    local colors = {
-      black = '#1c1c1c',
-      lightgray = '#3b4252'
-    }
-
     local onenord = require('onenord.colors').load()
 
     local custom_highlights = {
@@ -18,10 +14,35 @@ registry.install {
       TelescopeSelection = { bg = onenord.highlight },
       IndentBlanklineContextChar = { fg = onenord.blue },
       NormalFloat = { bg = onenord.bg },
-      NavicText = { bg = colors.lightgray, fg = onenord.fg },
-      NavicSeparator = { bg = colors.lightgray, fg = onenord.cyan },
-      NvimTreeNormal = { bg = colors.black, fg = onenord.white }
+      NavicText = {
+        bg = colors.resolve_color('black').gui,
+        fg = onenord.fg
+      },
+      NavicSeparator = {
+        bg = colors.resolve_color('black').gui,
+        fg = onenord.cyan
+      },
+      NvimTreeNormal = {
+        bg = colors.darkgray.gui,
+        fg = onenord.white
+      }
     }
+
+    local modes = {
+      NormalMode = { fg='cyan', bg='black' },
+      InsertMode = { fg='white', bg='black' },
+      VisualMode = { fg='green', bg='black' },
+      CommandMode = { fg='cyan', bg='black' },
+      TerminalMode = { fg='black', bg='white' },
+      SelectMode = { fg='brightcyan', bg='black' },
+      ReplaceMode = { fg='yellow', bg='black' }
+    }
+
+    for key, color in pairs(modes) do
+      custom_highlights[key] = colors.group(color.fg, color.bg)
+      custom_highlights[key].style = 'reverse'
+      custom_highlights[key .. 'Invert'] = colors.group(color.fg, color.bg)
+    end
 
     local navic_highlights = {
       File = onenord.blue,
@@ -54,7 +75,7 @@ registry.install {
 
     for key, color in pairs(navic_highlights) do
       custom_highlights['NavicIcons' .. key] = {
-        bg = colors.lightgray,
+        bg = colors.resolve_color('black').gui,
         fg = color
       }
     end
@@ -62,9 +83,9 @@ registry.install {
     require('onenord').setup {
       custom_highlights = custom_highlights,
       custom_colors = {
-        bg = colors.black,
+        bg = colors.darkgray.gui,
         diff_change = onenord.yellow,
-        status = colors.lightgray
+        status = colors.resolve_color('black').gui
       }
     }
   end

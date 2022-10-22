@@ -30,24 +30,18 @@ local filetypes = {
 }
 
 local mode_map = {
-  n = { alias='NOM', color='cyan' },
-  i = { alias='INS', color='white' },
-  v = { alias='VIS', color='green' },
-  V = { alias='V-L', color='green' },
-  [''] = { alias='V-B', color='green' },
-  c = { alias='CMD', color='cyan' },
-  t = { alias='TRM', color='white' },
-  s = { alias='SEL', color='brightcyan' },
-  S = { alias='S-L', color='brightcyan' },
-  [''] = { alias='S-B', color='brightcyan' },
-  R = { alias='REP', color='yellow' }
+  n = { alias='NOM', hl='NormalMode' },
+  i = { alias='INS', hl='InsertMode' },
+  v = { alias='VIS', hl='VisualMode' },
+  V = { alias='V-L', hl='VisualMode' },
+  [''] = { alias='V-B', hl='VisualMode' },
+  c = { alias='CMD', hl='CommandMode' },
+  t = { alias='TRM', hl='TerminalMode' },
+  s = { alias='SEL', hl='SelectMode' },
+  S = { alias='S-L', hl='SelectMode' },
+  [''] = { alias='S-B', hl='SelectMode' },
+  R = { alias='REP', hl='ReplaceMode' }
 }
-
-local function highlight_mode(highlighter, color)
-  highlighter('_Mode', colors.group(color, 'brightblack'))
-  highlighter('Mode_', colors.group(color, 'black'))
-  highlighter('Mode', colors.group('black', color))
-end
 
 local function is_lsp_attached()
   return next(vim.lsp.buf_get_clients(0))
@@ -112,37 +106,32 @@ local components = i.make_table({}, function (items, value, key)
 end)
 
 [[Mode]] {
-  before = '',
-  after = '',
-  sep = ' | ',
-  hl = true,
   visible = {
     active = true
   },
-  {
-    -- Mode
-    fn = function (options)
-      local mode = mode_map[fn.mode()] or {
-        alias=fn.mode(),
-        color='red'
-      }
+  raw = true,
+  fn = function ()
+    local mode = mode_map[fn.mode()] or {
+      alias=fn.mode(),
+      hl='UnknownMode'
+    }
 
-      highlight_mode(options.define_highlight, mode.color)
+    local parts = {
+      mode.alias
+    }
 
-      return mode.alias
+    if fn.exists('*gitbranch#name') == 1 then
+      table.insert(parts, fn['gitbranch#name']())
     end
-  },
-  {
-    -- Branch
-    visible = {
-      active = function (ctx)
-        return ctx.value ~= nil and ctx.value ~= ''
-      end
-    },
-    fn = function ()
-      return fn.exists('*gitbranch#name') == 1 and fn['gitbranch#name']() or nil
-    end
-  }
+
+    return string.format(
+      '%%#%sInvert#%%#%s#%s%%#%sInvert#',
+      mode.hl,
+      mode.hl,
+      table.concat(parts, ' | '),
+      mode.hl
+    )
+  end
 }
 
 [[Path]] {
@@ -538,7 +527,5 @@ local setup = function ()
       end, 10)
     end)
   end
-
-  highlight_mode(stl.define_highlight, mode_map.n.color)
 end
 registry.post(setup)
