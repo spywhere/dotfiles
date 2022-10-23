@@ -33,7 +33,7 @@ registry.install {
       InsertMode = { fg='white', bg='black' },
       VisualMode = { fg='green', bg='black' },
       CommandMode = { fg='cyan', bg='black' },
-      TerminalMode = { fg='black', bg='white' },
+      TerminalMode = { fg='white', bg='black' },
       SelectMode = { fg='brightcyan', bg='black' },
       ReplaceMode = { fg='yellow', bg='black' }
     }
