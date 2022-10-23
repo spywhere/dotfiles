@@ -1,3 +1,3 @@
 local registry = require('lib.registry')
 
-registry.install('kyazdani42/nvim-web-devicons')
+registry.install('nvim-tree/nvim-web-devicons')

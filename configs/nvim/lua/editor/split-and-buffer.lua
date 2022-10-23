@@ -45,17 +45,17 @@ local buffer_management = function ()
 
       local lastwin = fn.winnr()
       local tree_open = false
-      local tree = prequire('nvim-tree')
-      if tree then
+      local tree_api = prequire('nvim-tree.api')
+      if tree_api then
         local tree_view = require('nvim-tree.view')
         tree_open = tree_view.is_visible()
         if tree_open then
-          tree_view.close()
+          tree_api.tree.close()
         end
       end
       vim.cmd(command)
-      if tree and tree_open then
-        tree.open()
+      if tree_api and tree_open then
+        tree_api.tree.open()
         if switch_to_last then
           vim.cmd(lastwin..'wincmd w')
         end
