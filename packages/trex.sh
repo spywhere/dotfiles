@@ -13,4 +13,5 @@ fi
 
 has_app 'TRex'
 
+optional
 use_brew cask 'trex'

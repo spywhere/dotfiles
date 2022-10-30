@@ -18,7 +18,6 @@ if test "$OS" = "raspios" -a "$(uname -m)" != "aarch64"; then
 fi
 
 # MacOS
-use_brew_tap 'homebrew/cask' 'yes'
 use_brew_tap 'homebrew/cask-drivers'
 use_brew_tap 'homebrew/cask-fonts'
 use_brew_tap 'homebrew/cask-versions'
@@ -26,6 +25,3 @@ use_brew_tap 'homebrew/services'
 use_brew_tap 'homebrew/autoupdate'
 
 use_brew_tap 'buo/cask-upgrade'
-
-# for sc-im
-use_brew_tap 'nickolasburr/pfa'

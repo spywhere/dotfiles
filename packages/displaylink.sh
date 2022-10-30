@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Alfred 4'
+has_app 'DisplayLink Manager'
 
-optional
-use_brew cask 'alfred'
+use_brew cask 'displaylink'
