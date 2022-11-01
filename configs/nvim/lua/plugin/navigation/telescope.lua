@@ -4,7 +4,6 @@ local cache = require('lib.cache')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
-  skip = registry.experiment('fuzzy').is_not('telescope'),
   requires = {
     {
       'nvim-lua/plenary.nvim'

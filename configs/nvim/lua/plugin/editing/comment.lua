@@ -2,7 +2,6 @@ local registry = require('lib.registry')
 
 registry.install {
   'numToStr/Comment.nvim',
-  skip = registry.experiment('nerdcommenter').on,
   config = function ()
     require('Comment').setup {
       toggler = {
