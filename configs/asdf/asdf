@@ -4,7 +4,7 @@ dotnet-core 6.0.400
 java adoptopenjdk-17.0.4+101
 fzf 0.34.0
 neovim ref:0.8.0
-rust 1.62.1
+rust 1.65.0
 deno ref:1.22.0
 coursier 2.1.0-M6-53-gb4f448130
-zig 0.9.1
+zig 0.10.0
