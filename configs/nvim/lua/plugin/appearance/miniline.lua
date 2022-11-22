@@ -326,7 +326,15 @@ end)
   visible = {
     winbar = true
   },
-  str = function () return fn.expand('%:t') end
+  str = function ()
+    local name = fn.expand('%:t')
+
+    if name == '' then
+      return '[no name]'
+    else
+      return name
+    end
+  end
 }
 
 [[Obsession]] {
