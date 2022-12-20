@@ -1,8 +1,13 @@
 #!/bin/bash
 
-# set dotnet root and its binary to have it running properly with coc.nvim
+# set dotnet root and its binary to have it running properly
 if test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
   export DOTNET_ROOT="$(asdf where dotnet-core)"
+
+  if test -d "$HOME/.dotnet/tools"; then
+    export PATH="$HOME/.dotnet/tools:$PATH"
+  fi
+
   export PATH="$DOTNET_ROOT:$PATH"
 fi
 
