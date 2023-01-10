@@ -60,7 +60,6 @@ registry.install {
 
     require('nvim-tree').setup {
       sync_root_with_cwd = true,
-      create_in_closed_folder = true,
       select_prompts = true,
       view = {
         mappings = {
