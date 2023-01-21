@@ -25,6 +25,7 @@ local _pre = {}
 local _post = {}
 local _defers = {}
 local _experiments = {}
+local _explist = nil
 local increment = std.count()
 
 M._invoke = function(name, ...)
@@ -107,10 +108,53 @@ local install_plugin_manager = function (callback)
   end
 end
 
+local function split(str, sep, fn, default)
+  local output = default
+
+  if fn == nil then
+    output = {}
+    fn = function (acc, item)
+      table.insert(acc, item)
+      return acc
+    end
+  end
+
+  for s in string.gmatch(str, '([^'..sep..']+)') do
+    output = fn(output, s)
+  end
+
+  return output
+end
+
+local get_experiment_options = function (name)
+  if _explist == nil and vim.env.NVIM_EXPLIST then
+    _explist = split(
+      vim.env.NVIM_EXPLIST,
+      ',',
+      function (explist, exp)
+        local experiment = split(exp, '=')
+        local name, value = experiment[1], string.lower(experiment[2])
+        explist[name] = (
+          value == 'b' or value == 'true' or value == 'on' or value == 'yes'
+        )
+        return explist
+      end,
+      {}
+    )
+  end
+
+  if _explist and _explist[name] ~= nil then
+    return _explist[name]
+  end
+
+  return _experiments[name]
+end
+
 M.experiment = function (name, options, start)
   local run_duration = 2592000 -- 30 days
   if options == nil then
-    local experiment = _experiments[name]
+    local experiment = get_experiment_options(name)
+
     local is_on = experiment
     if type(experiment) == 'table' then
       is_on = next(experiment)
