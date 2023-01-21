@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ludeeus/action-shellcheck@1.1.0
+      - uses: ludeeus/action-shellcheck@master
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2034 -e SC2154
         with:
