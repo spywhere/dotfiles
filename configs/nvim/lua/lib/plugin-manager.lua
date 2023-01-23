@@ -23,6 +23,7 @@ end
 M.setup = function ()
   local plug = require('plug')
   plug.setup {
+    update_branch = 'packer',
     plugin_dir = plugin_home,
     extensions = {
       plug.extension.auto_install {},
