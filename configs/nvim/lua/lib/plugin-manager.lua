@@ -13,6 +13,9 @@ M.install = function ()
   vim.cmd(
     'silent !curl -fLo ' .. plug_nvim_path .. ' --create-dirs ' .. plug_nvim_url
   )
+
+  vim.cmd('packadd! plug.nvim')
+
   return true
 end
 
