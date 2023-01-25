@@ -132,7 +132,7 @@ M.capabilities = function (override)
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   local cmp_lsp = prequire('cmp_nvim_lsp')
   if cmp_lsp then
-    return cmp_lsp.update_capabilities(capabilities, override)
+    return (cmp_lsp.default_capabilities or cmp_lsp.update_capabilities)(capabilities, override)
   else
     return capabilities
   end
