@@ -11,7 +11,7 @@ registry.install {
     {
       'nvim-telescope/telescope-fzf-native.nvim',
       options = {
-        ['do'] = 'make'
+        run = 'make'
       }
     }
   },

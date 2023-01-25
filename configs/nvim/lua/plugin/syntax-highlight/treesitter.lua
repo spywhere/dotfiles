@@ -4,8 +4,8 @@ local bindings = require('lib.bindings')
 registry.install {
   'nvim-treesitter/nvim-treesitter',
   options = {
-    ['do'] = function (info)
-      if info.status == 'installed' then
+    run = function ()
+      if fn.exists(':TSUpdate') == 0 then
         return
       end
 

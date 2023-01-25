@@ -27,7 +27,7 @@ M.setup = function ()
   local plug = require('plug')
   plug.setup {
     update_branch = 'packer',
-    plugin_dir = plugin_home,
+    backend = 'packer.nvim',
     extensions = {
       plug.extension.auto_install {},
       plug.extension.priority {
