@@ -28,6 +28,13 @@ M.setup = function ()
   plug.setup {
     update_branch = 'packer',
     backend = 'packer.nvim',
+    options = {
+      display = {
+        open_fn = function ()
+          return require('packer.util').float({ border = 'single' })
+        end
+      }
+    },
     extensions = {
       plug.extension.auto_install {},
       plug.extension.priority {
