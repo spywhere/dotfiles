@@ -7,7 +7,7 @@ registry.install {
       char = '▏',
       use_treesitter = true,
       show_current_context = true,
-      filetype_exclude = { 'text', 'help', 'startify', 'alpha' },
+      filetype_exclude = { 'text', 'help', 'startify', 'alpha', 'packer' },
       buftype_exclude = { 'terminal' },
       -- better context scope highlight (https://github.com/lukas-reineke/indent-blankline.nvim/issues/61#issuecomment-803613439)
       context_patterns = {
