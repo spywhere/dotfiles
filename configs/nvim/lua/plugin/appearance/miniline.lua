@@ -267,6 +267,10 @@ end)
   },
   raw = true,
   fn = function (ctx)
+    if vim.bo.filetype == 'sql' and fn.exists('*db_ui#statusline') == 1 then
+      return fn['db_ui#statusline']()
+    end
+
     local mod = prequire('nvim-navic')
     if not mod or not mod.is_available() then
       return ''
@@ -523,7 +527,7 @@ local setup = function ()
         local ft = api.nvim_buf_get_option(bufid, 'filetype')
         local skip = (
           ft == 'NvimTree' or ft == 'alpha' or ft == 'vim-plug' or
-          ft == 'qf'
+          ft == 'packer' or ft == 'qf' or ft == 'dbui' or ft == 'dbout'
         )
 
         if

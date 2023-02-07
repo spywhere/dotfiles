@@ -17,6 +17,13 @@ local columns = function ()
   bindings.set('signcolumn', 'auto:1-3')
   -- ruler at 79 chars
   bindings.set('colorcolumn', '79')
+
+  local function no_ruler()
+    bindings.set('colorcolumn', '')
+  end
+  registry.auto('FileType', no_ruler, {
+    'dbout', 'dbui'
+  })
 end
 registry.pre(columns)
 
