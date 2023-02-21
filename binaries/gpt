@@ -35,11 +35,6 @@ models() {
 }
 
 main() {
-  if test -z "$OPENAI_KEY"; then
-    echo "ERROR: OPENAI_KEY is required"
-    return 1
-  fi
-
   local use_stdin=1
   if tty -s; then
     use_stdin=0
@@ -107,6 +102,11 @@ main() {
 
     shift
   done
+
+  if test -z "$OPENAI_KEY"; then
+    echo "ERROR: OPENAI_KEY is required"
+    return 1
+  fi
 
   local prompt=""
   if test "$use_stdin" -eq 1; then
