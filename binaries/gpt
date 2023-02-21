@@ -1,0 +1,129 @@
+#!/bin/bash
+
+usage() {
+  echo "USAGE"
+  echo "  gpt [flags] <prompt>..."
+  echo
+  echo "REQUIRES"
+  echo "  OPENAI_KEY"
+  echo
+  echo "FLAGS"
+  echo "  -h, --help                 Show this message"
+  echo "  -T, --temperature=<temp>   Sampling temperature, higher is more random (default 0.7)"
+  echo "  -t, --max-tokens=<number>  Maximum number of tokens to generate in the completion (default to 1024)"
+  echo "  -m, --model=<name>         ID of the model to use (default to gpt2)"
+  echo "  -s, --size=<number>        Image size to be generated (default is 512x512)"
+  echo "  -c, --context              Use chat context (default is false)"
+  echo "  --models                   List all available models"
+  echo
+  echo "QUERY"
+  echo "  If a query is empty, it will default to \"is:open\"."
+  echo
+  echo "  A repo will be auto-detected by default, unless a manual flag is passed."
+  echo
+  echo "  If a repo flag is passed, it will take priority over auto-detect one."
+  echo "  If a query contains a repo filter, it will take priority over the flags."
+}
+
+gpt() {
+  curl -d - -sSL "https://api.openai.com/v1/$1" -H 'Content-Type: application/json' -H "Authorization: Bearer $OPENAI_KEY" | jq -r "$2"
+}
+
+models() {
+  echo "Available models:"
+  gpt models '.data[] | "\(.id) \(.display_name)'
+}
+
+main() {
+  if test -z "$OPENAI_KEY"; then
+    echo "ERROR: OPENAI_KEY is required"
+    return 1
+  fi
+
+  local use_stdin=1
+  if tty -s; then
+    use_stdin=0
+  fi
+  local temp="0.7"
+  local token="1024"
+  local model="text-davinci-003"
+  local size="512x512"
+  local context=0
+  while test "$1" != ""; do
+    local param
+    param=$(printf "%s" "$1" | sed 's/=.*//g')
+    local value
+    value=$(printf "%s" "$1" | sed 's/^[^=]*=//g')
+    local equal_sign
+    equal_sign=$(printf "%s" "$1" | sed 's/[^=]//g')
+    case $param in
+      -h | --help)
+        usage
+        return
+        ;;
+      --models)
+        models
+        return
+        ;;
+      -T | --temperature)
+        if test -z "$equal_sign"; then
+          echo "ERROR: a temperature is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        temp="$value"
+        ;;
+      -t | --max-tokens)
+        if test -z "$equal_sign"; then
+          echo "ERROR: a number of tokens is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        token="$value"
+        ;;
+      -m | --model)
+        if test -z "$equal_sign"; then
+          echo "ERROR: a model ID is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        model="$value"
+        ;;
+      -s | --size)
+        if test -z "$equal_sign"; then
+          echo "ERROR: an image size is required (perhaps missing an equal sign?)"
+          return 1
+        fi
+        size="$value"
+        ;;
+      --debug)
+        debug=1
+        ;;
+      -*)
+        echo "ERROR: unknown flag \"$1\""
+        return 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  local prompt=""
+  if test "$use_stdin" -eq 1; then
+    prompt="$(cat -)"
+  else
+    prompt="$*"
+  fi
+  if test -z "$prompt"; then
+    echo "No prompt given"
+    return
+  fi
+  response=$(gpt completions '.choices[0].text')
+  if test $? -ne 0; then
+    return 1
+  fi
+
+  echo "$response"
+}
+
+main "$@"
