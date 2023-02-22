@@ -6,9 +6,10 @@ timeout=10
 usage() {
   echo "USAGE"
   echo "  gpt [flags] [--] <prompt>..."
+  echo "  cat <filename> | gpt [flags]"
   echo
   echo "REQUIRES"
-  echo "  OPENAI_KEY"
+  echo "  OPENAI_KEY                 API Key for OpenAI"
   echo
   echo "FLAGS"
   echo "  -h, --help                 Show this message"
@@ -23,14 +24,6 @@ usage() {
   echo "PROMPT HELPER"
   echo "  --cmd, --command           Produce only shell command output"
   echo "  --code                     Produce only one-liner code"
-  echo
-  echo "QUERY"
-  echo "  If a query is empty, it will default to \"is:open\"."
-  echo
-  echo "  A repo will be auto-detected by default, unless a manual flag is passed."
-  echo
-  echo "  If a repo flag is passed, it will take priority over auto-detect one."
-  echo "  If a query contains a repo filter, it will take priority over the flags."
 }
 
 prompt_prefix() {
