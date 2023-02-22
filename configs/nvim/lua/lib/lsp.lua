@@ -110,6 +110,9 @@ local has_been_setup = false
 
 M.setup = function (name)
   if name == nil then
+    if has_been_setup then
+      return
+    end
     assert(not has_been_setup, 'LSP setup has already been called')
 
     -- perform a setup for LSPs
