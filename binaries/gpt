@@ -116,7 +116,7 @@ models() {
 
 main() {
   local use_stdin=1
-  if tty -s; then
+  if tty -s >/dev/null 2>&1; then
     use_stdin=0
   fi
   local temp="0.7"
