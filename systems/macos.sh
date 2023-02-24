@@ -26,10 +26,7 @@ install_git() {
 }
 
 setup() {
-  if ! _has_skip brew-api; then
-    export HOMEBREW_INSTALL_FROM_API=1
-  fi
-
+  export HOMEBREW_NO_ANALYTICS=1
   setup__apple_silicon=""
   if has_flag "apple-silicon"; then
     setup__apple_silicon="arm64"
@@ -67,10 +64,7 @@ setup() {
 }
 
 _run_intel_brew() {
-  if ! _has_skip brew-api; then
-    export HOMEBREW_INSTALL_FROM_API=1
-  fi
-
+  export HOMEBREW_NO_ANALYTICS=1
   run_intel_brew__brew_path="/usr/local/Homebrew/bin"
   run_intel_brew__executable=""
 
@@ -85,10 +79,7 @@ _run_intel_brew() {
 }
 
 _run_brew() {
-  if ! _has_skip brew-api; then
-    export HOMEBREW_INSTALL_FROM_API=1
-  fi
-
+  export HOMEBREW_NO_ANALYTICS=1
   run_brew__brew_path="/usr/local/Homebrew/bin"
   run_brew__executable=""
   if has_flag "apple-silicon"; then
