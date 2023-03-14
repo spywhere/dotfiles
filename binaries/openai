@@ -3,38 +3,78 @@
 debug=0
 timeout=10
 
+cmd_name="$(basename "$0")"
+temp=""
+token=""
+model=""
+
+if test "$cmd_name" = "davinci"; then
+  model="text-davinci-003"
+  temp="0.7"
+  token="1024"
+elif test "$cmd_name" = "gpt"; then
+  model="gpt-3.5-turbo"
+fi
+
+fallback_default() {
+  if test -z "$1"; then
+    printf 'OpenAI spec'
+  else
+    printf '%s' "$1"
+  fi
+}
+
 usage() {
   echo "USAGE"
-  echo "  gpt [flags] [--] <prompt>..."
-  echo "  cat <filename> | gpt [flags]"
+
+  if test "$cmd_name" = "openai"; then
+    echo "  Symlink this script to the following command name for a specific completion task:"
+    echo "    - davinci                OpenAI generic completion"
+    echo "    - gpt                    ChatGPT completion"
+    echo
+    echo "COMMAND USAGE"
+  fi
+
+  echo "  $cmd_name [flags] [--] <prompt>..."
+  echo "  cat <filename> | $cmd_name [flags]"
   echo
   echo "REQUIRES"
   echo "  OPENAI_KEY                 API Key for OpenAI"
   echo
   echo "FLAGS"
   echo "  -h, --help                 Show this message"
-  echo "  -T, --temperature=<temp>   Sampling temperature, higher is more random (default 0.7)"
-  echo "  -t, --max-tokens=<number>  Maximum number of tokens to generate in the completion (default to 1024)"
-  echo "  -m, --model=<name>         ID of the model to use (default to gpt2)"
-  echo "  -s, --size=<number>        Image size to be generated (default is 512x512)"
-  echo "  -c, --context              Use chat context (default is false)"
-  echo "  --timeout=<number>         Maximum number of seconds before request timed out (default is 10)"
+  echo "  -T, --temperature=<temp>   Sampling temperature, higher is more random (default to $(fallback_default "$temp"))"
+  echo "  -t, --max-tokens=<number>  Maximum number of tokens to generate in the completion (default to $(fallback_default "$token"))"
+  echo "  -m, --model=<name>         ID of the model to use (default to $(fallback_default "$model"))"
+  echo "  -c, --context              Use chat context (default to false)"
+  echo "  --timeout=<number>         Maximum number of seconds before request timed out (default to 10)"
   echo "  --models                   List all available models"
   echo
   echo "PROMPT HELPER"
   echo "  --cmd, --command           Produce only shell command output"
   echo "  --code                     Produce only one-liner code"
+  echo "  --url                      Produce only URL for the given query"
 }
 
 prompt_prefix() {
+  local prompt
   case "$1" in
     command)
-      printf '%s\nPrompt: ' 'Given the prompt, only produce one-liner shell command.'
+      prompt='a one-liner posix shell command with no prompt or explanation'
       ;;
     code)
-      printf '%s\nPrompt: ' 'Given the prompt, only produce a one-liner code.'
+      prompt='a one-liner code with no prompt or explanation'
+      ;;
+    url)
+      prompt='an URL regarding on the topic given'
       ;;
   esac
+
+  if test "$cmd_name" = "gpt"; then
+    printf 'Given the user request, only produce %s.' "$prompt"
+  else
+    printf 'Given the prompt, only produce %s.\nPrompt: ' "$prompt"
+  fi
 }
 
 handle_gpt_response() {
@@ -106,6 +146,14 @@ tojson() {
   printf '%s' "$*" | jq -sRr 'tojson'
 }
 
+setitem() {
+  printf '{"o":%s,"k":%s,"v":%s}' "$1" "$(tojson "$2")" "$3" | jq -rc '.o[.k] = .v | .o'
+}
+
+additem() {
+  printf '{"o":%s,"i":%s}' "$1" "$2" | jq -rc '.o + [.i]'
+}
+
 models() {
   echo "Available models:"
   gpt models '.data[] | "  - \(.id)\n      by: \(.owned_by)"'
@@ -119,10 +167,6 @@ main() {
   if tty -s >/dev/null 2>&1; then
     use_stdin=0
   fi
-  local temp="0.7"
-  local token="1024"
-  local model="text-davinci-003"
-  local size="512x512"
   local context=0
   local kind=""
   while test "$1" != ""; do
@@ -169,13 +213,6 @@ main() {
         fi
         model="$value"
         ;;
-      -s | --size)
-        if test -z "$equal_sign"; then
-          echo "ERROR: an image size is required (perhaps missing an equal sign?)"
-          return 1
-        fi
-        size="$value"
-        ;;
       -c | --context)
         context=1
         ;;
@@ -184,6 +221,9 @@ main() {
         ;;
       --code)
         kind="code"
+        ;;
+      --url)
+        kind="url"
         ;;
       --debug)
         debug=1
@@ -219,22 +259,60 @@ main() {
     echo "No prompt given"
     return
   fi
-  if test -n "kind"; then
-    prompt="$(prompt_prefix "$kind")$prompt"
+
+  local body="{}"
+
+  if test -n "$model"; then
+    body="$(setitem "$body" "model" "$(tojson "$model")")"
   fi
-  local body
-  body="$(printf '{"model":%s,"prompt":%s,"max_tokens":%s,"temperature":%s}' "$(tojson "$model")" "$(tojson "$prompt")" "$token" "$temp")"
-  response="$(gpt completions "$body" '.')"
-  if ! handle_status "$?"; then
-    return 1
+  if test -n "$token"; then
+    body="$(setitem "$body" "max_tokens" "$token")"
+  fi
+  if test -n "$temp"; then
+    body="$(setitem "$body" "temperature" "$temp")"
   fi
 
-  printf '%s\n' "$response" | jq -r '.choices[] | .text' | sed '1,2d'
-  if test "$debug" -eq 1; then
-    local usage
-    usage="$(printf '%s' "$response" | jq -r '.usage')"
-    printf -- '-- prompt tokens    : %s\n-- completion tokens: %s\n-- total tokens     : %s\n' "$(printf '%s' "$usage" | jq -r '.prompt_tokens')" "$(printf '%s' "$usage" | jq -r '.completion_tokens')" "$(printf '%s' "$usage" | jq -r '.total_tokens')" >&2
+  if test "$cmd_name" = "gpt"; then
+    local prompts="[]"
+    if test -n "$kind"; then
+      prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$(prompt_prefix "$kind")")")")"
+    fi
+
+    prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$prompt")")")"
+    body="$(setitem "$body" "messages" "$prompts")"
+    response="$(gpt chat/completions "$body" '.')"
+    if ! handle_status "$?"; then
+      return 1
+    fi
+    printf '%s\n' "$response" | jq -r '.choices[] | .message.content'
+  else
+    if test -n "$kind"; then
+      prompt="$(prompt_prefix "$kind")$prompt"
+    fi
+    body="$(printf '{"model":%s,"prompt":%s,"max_tokens":%s,"temperature":%s}' "$(tojson "$model")" "$(tojson "$prompt")" "$token" "$temp")"
+    response="$(gpt completions "$body" '.')"
+    if ! handle_status "$?"; then
+      return 1
+    fi
+
+    printf '%s\n' "$response" | jq -r '.choices[] | .text' | sed '1,2d'
+    if test "$debug" -eq 1; then
+      local usage
+      usage="$(printf '%s' "$response" | jq -r '.usage')"
+      printf -- '-- prompt tokens    : %s\n-- completion tokens: %s\n-- total tokens     : %s\n' "$(printf '%s' "$usage" | jq -r '.prompt_tokens')" "$(printf '%s' "$usage" | jq -r '.completion_tokens')" "$(printf '%s' "$usage" | jq -r '.total_tokens')" >&2
+    fi
   fi
 }
 
-main "$@"
+case "$cmd_name" in
+  gpt | davinci)
+    main "$@"
+    ;;
+  openai)
+    usage
+    ;;
+  *)
+    echo "ERROR: command \"$cmd_name\" is not supported for completions"
+    exit 1
+    ;;
+esac
