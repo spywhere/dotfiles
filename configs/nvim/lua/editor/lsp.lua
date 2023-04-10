@@ -35,7 +35,7 @@ registry.defer_first(function ()
     bindings.cmd(
       'Format',
       {
-        vim.lsp.buf.formatting
+        function () return vim.lsp.buf.format { async = true } end
       }
     )
 end)
