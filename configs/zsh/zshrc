@@ -143,7 +143,10 @@ test -f ~/.fzf.zsh && source ~/.fzf.zsh
 
 # Setup hstr
 if test -n "$(command -v hstr)"; then
-  . <(hstr --show-zsh-configuration)
+  setopt histignorespace           # skip cmds w/ leading space from history
+  export HSTR_CONFIG=hicolor       # get more colors
+  bindkey -s "\C-r" "\C-a hstr -- \C-j"     # bind hstr to Ctrl-r (for Vi mode check doc)
+  export HSTR_TIOCSTI=y
 fi
 
 # Setup github cli
