@@ -59,22 +59,49 @@ usage() {
 prompt_prefix() {
   local prompt
   case "$1" in
+    copilot)
+      prompt='a structured and complete explanations of shell commands. We follow the commands piece-by-piece in bullet-point form, with multiple statements being separate bullets. Sub-commands form sub-bullets. All flags are explained as sub-bullets.'
+      ;;
     command)
-      prompt='a one-liner posix shell command with no prompt or explanation'
+      prompt='a one-liner posix shell command with no prompt or explanation.'
       ;;
     code)
-      prompt='a one-liner code with no prompt or explanation'
+      prompt='a one-liner code with no prompt or explanation.'
       ;;
     url)
-      prompt='an URL regarding on the topic given'
+      prompt='an URL regarding on the topic given.'
       ;;
   esac
 
   if test "$cmd_name" = "gpt"; then
-    printf 'Given the user request, only produce %s.' "$prompt"
+    printf 'Given the user request, only produce %s' "$prompt"
   else
     printf 'Given the prompt, only produce %s.\nPrompt: ' "$prompt"
   fi
+}
+
+copilot_examples() {
+  local prompts="$*"
+  prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson 'find -name "*.ts" | grep -v node_modules')")")"
+
+  local command='find -name "*.ts" | grep -v node_modules'
+  local result="$(printf -- '--- Command ---\n\n%s\n\n--- Explanation ---\n\n- %s\n  - %s\n- %s\n  - %s' "$command" '`find` is used to list files.' '`-name "*.ts"` stipulates that we search for files ending in `.ts`.' '`| grep` means we pass that list of files to `grep` which filters the list.' '`-v node_modules` means we exclude all files containing node_modules in its path.')"
+  prompts="$(additem "$prompts" "$(printf '{"role":"assistant","content":%s}' "$(tojson "$result")")")"
+
+  command="$(printf '%s\n  %s\n  %s\n%s' 'for file in $(find -name "*.py"); do' 'echo "$file";' 'wc -l $file;' 'done')"
+  result="$(printf -- '--- Command ---\n\n%s\n\n--- Explanation ---\n\n- %s\n  - %s\n    - %s\n- %s\n  - %s\n  - %s\n    - %s' "$command" 'The for loop iterates over a list of items and executes its body for each, using the loop variable `$file`.' 'The list of items is the output of a sub-call to `find` which is used to list files.' '`-name "*.py"` stipulates that we search for files ending in `.py`.' 'The loop body executes two commands for each file:' '`echo "$file"` will print the name of the current file to the terminal.' '`wc` is used to count the number of lines in the current file.' '`-l` specifies that we only want the line count, not the word or character count.')"
+
+  printf '%s' "$prompts"
+}
+
+additional_prompts() {
+  case "$1" in
+    copilot)
+      copilot_examples "$2"
+      ;;
+    *)
+      printf '%s' "$2"
+  esac
 }
 
 handle_gpt_response() {
@@ -88,7 +115,7 @@ handle_gpt_response() {
   return 0
 }
 
-gpt() {
+openai() {
   local path="$1"
   local body="$2"
   local filter="$3"
@@ -97,8 +124,11 @@ gpt() {
     body=""
     filter="$2"
     method="GET"
-  elif test "$debug" -eq 1; then
+  elif test "$debug" -ge 1; then
     printf 'Req[%s]: %s\n' "$path" "$body" >&2
+  fi
+  if test "$debug" -eq 2; then
+    return 4
   fi
   local response
   response="$(curl -m "$timeout" -X "$method" -d "$body" -sSL "https://api.openai.com/v1/$path" -H 'Content-Type: application/json' -H "Authorization: Bearer $OPENAI_KEY" 2>/dev/null)"
@@ -106,7 +136,7 @@ gpt() {
     return 1
   fi
 
-  if test "$debug" -eq 1; then
+  if test "$debug" -ge 1; then
     printf 'Res[%s]: %s\n' "$path" "$response" >&2
   fi
 
@@ -133,7 +163,7 @@ handle_status() {
     2)
       echo "ERROR: Bad response"
       ;;
-    3)
+    3|4)
       ;;
     *)
       echo "ERROR: Request failed"
@@ -156,7 +186,7 @@ additem() {
 
 models() {
   echo "Available models:"
-  gpt models '.data[] | "  - \(.id)\n      by: \(.owned_by)"'
+  openai models '.data[] | "  - \(.id)\n      by: \(.owned_by)"'
   if ! handle_status "$?"; then
     exit 1
   fi
@@ -216,6 +246,9 @@ main() {
       -c | --context)
         context=1
         ;;
+      --copilot)
+        kind="copilot"
+        ;;
       --cmd | --command)
         kind="command"
         ;;
@@ -227,6 +260,9 @@ main() {
         ;;
       --debug)
         debug=1
+        ;;
+      --debug-dry)
+        debug=2
         ;;
       --)
         shift
@@ -276,11 +312,12 @@ main() {
     local prompts="[]"
     if test -n "$kind"; then
       prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$(prompt_prefix "$kind")")")")"
+      prompts="$(additional_prompts "$kind" "$prompts")"
     fi
 
     prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$prompt")")")"
     body="$(setitem "$body" "messages" "$prompts")"
-    response="$(gpt chat/completions "$body" '.')"
+    response="$(openai chat/completions "$body" '.')"
     if ! handle_status "$?"; then
       return 1
     fi
@@ -290,13 +327,13 @@ main() {
       prompt="$(prompt_prefix "$kind")$prompt"
     fi
     body="$(printf '{"model":%s,"prompt":%s,"max_tokens":%s,"temperature":%s}' "$(tojson "$model")" "$(tojson "$prompt")" "$token" "$temp")"
-    response="$(gpt completions "$body" '.')"
+    response="$(openai completions "$body" '.')"
     if ! handle_status "$?"; then
       return 1
     fi
 
     printf '%s\n' "$response" | jq -r '.choices[] | .text' | sed '1,2d'
-    if test "$debug" -eq 1; then
+    if test "$debug" -ge 1; then
       local usage
       usage="$(printf '%s' "$response" | jq -r '.usage')"
       printf -- '-- prompt tokens    : %s\n-- completion tokens: %s\n-- total tokens     : %s\n' "$(printf '%s' "$usage" | jq -r '.prompt_tokens')" "$(printf '%s' "$usage" | jq -r '.completion_tokens')" "$(printf '%s' "$usage" | jq -r '.total_tokens')" >&2
