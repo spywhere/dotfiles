@@ -7,6 +7,7 @@ cmd_name="$(basename "$0")"
 temp=""
 token=""
 model=""
+# context=0
 
 if test "$cmd_name" = "davinci"; then
   model="text-davinci-003"
@@ -46,7 +47,7 @@ usage() {
   echo "  -T, --temperature=<temp>   Sampling temperature, higher is more random (default to $(fallback_default "$temp"))"
   echo "  -t, --max-tokens=<number>  Maximum number of tokens to generate in the completion (default to $(fallback_default "$token"))"
   echo "  -m, --model=<name>         ID of the model to use (default to $(fallback_default "$model"))"
-  echo "  -c, --context              Use chat context (default to false)"
+  # echo "  -c, --context              Use chat context (default to false)"
   echo "  --timeout=<number>         Maximum number of seconds before request timed out (default to 10)"
   echo "  --models                   List all available models"
   echo
@@ -82,14 +83,20 @@ prompt_prefix() {
 
 copilot_examples() {
   local prompts="$*"
-  prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson 'find -name "*.ts" | grep -v node_modules')")")"
+  local result
 
   local command='find -name "*.ts" | grep -v node_modules'
-  local result="$(printf -- '--- Command ---\n\n%s\n\n--- Explanation ---\n\n- %s\n  - %s\n- %s\n  - %s' "$command" '`find` is used to list files.' '`-name "*.ts"` stipulates that we search for files ending in `.ts`.' '`| grep` means we pass that list of files to `grep` which filters the list.' '`-v node_modules` means we exclude all files containing node_modules in its path.')"
+  prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$command")")")"
+  # shellcheck disable=SC2016
+  result="$(printf -- '--- Command ---\n\n%s\n\n--- Explanation ---\n\n- %s\n  - %s\n- %s\n  - %s' "$command" '`find` is used to list files.' '`-name "*.ts"` stipulates that we search for files ending in `.ts`.' '`| grep` means we pass that list of files to `grep` which filters the list.' '`-v node_modules` means we exclude all files containing node_modules in its path.')"
   prompts="$(additem "$prompts" "$(printf '{"role":"assistant","content":%s}' "$(tojson "$result")")")"
 
+  # shellcheck disable=SC2016
   command="$(printf '%s\n  %s\n  %s\n%s' 'for file in $(find -name "*.py"); do' 'echo "$file";' 'wc -l $file;' 'done')"
+  prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$command")")")"
+  # shellcheck disable=SC2016
   result="$(printf -- '--- Command ---\n\n%s\n\n--- Explanation ---\n\n- %s\n  - %s\n    - %s\n- %s\n  - %s\n  - %s\n    - %s' "$command" 'The for loop iterates over a list of items and executes its body for each, using the loop variable `$file`.' 'The list of items is the output of a sub-call to `find` which is used to list files.' '`-name "*.py"` stipulates that we search for files ending in `.py`.' 'The loop body executes two commands for each file:' '`echo "$file"` will print the name of the current file to the terminal.' '`wc` is used to count the number of lines in the current file.' '`-l` specifies that we only want the line count, not the word or character count.')"
+  prompts="$(additem "$prompts" "$(printf '{"role":"assistant","content":%s}' "$(tojson "$result")")")"
 
   printf '%s' "$prompts"
 }
@@ -197,7 +204,6 @@ main() {
   if tty -s >/dev/null 2>&1; then
     use_stdin=0
   fi
-  local context=0
   local kind=""
   while test "$1" != ""; do
     local param
@@ -243,9 +249,9 @@ main() {
         fi
         model="$value"
         ;;
-      -c | --context)
-        context=1
-        ;;
+      # -c | --context)
+      #   context=1
+      #   ;;
       --copilot)
         kind="copilot"
         ;;
