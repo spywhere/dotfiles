@@ -21,6 +21,9 @@ registry.install {
 
     local timer = nil
     local show = function ()
+      if vim.bo.buftype ~= '' and vim.bo.buftype ~= 'terminal' and vim.fn.win_gettype() ~= '' then
+        return
+      end
       vim.cmd('SatelliteEnable')
 
       if timer then
