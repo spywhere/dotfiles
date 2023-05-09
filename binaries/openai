@@ -9,6 +9,10 @@ token=""
 model=""
 # context=0
 
+if test -z "$OPENAI_API_BASE"; then
+  OPENAI_API_BASE="https://api.openai.com/v1"
+fi
+
 if test "$cmd_name" = "davinci"; then
   model="text-davinci-003"
   temp="0.7"
@@ -39,8 +43,9 @@ usage() {
   echo "  $cmd_name [flags] [--] <prompt>..."
   echo "  cat <filename> | $cmd_name [flags]"
   echo
-  echo "REQUIRES"
-  echo "  OPENAI_KEY                 API Key for OpenAI"
+  echo "ENVIRONMENT VARIABLES"
+  echo "  OPENAI_API_BASE                Host for OpenAI API (default to $(fallback_default "$OPENAI_API_BASE"))"
+  echo "  OPENAI_API_KEY                 API key for the given OpenAI base"
   echo
   echo "FLAGS"
   echo "  -h, --help                 Show this message"
@@ -138,7 +143,7 @@ openai() {
     return 4
   fi
   local response
-  response="$(curl -m "$timeout" -X "$method" -d "$body" -sSL "https://api.openai.com/v1/$path" -H 'Content-Type: application/json' -H "Authorization: Bearer $OPENAI_KEY" 2>/dev/null)"
+  response="$(curl -m "$timeout" -X "$method" -d "$body" -sSL "$OPENAI_API_BASE/$path" -H 'Content-Type: application/json' -H "Authorization: Bearer $OPENAI_API_KEY" 2>/dev/null)"
   if test $? -ne 0; then
     return 1
   fi
@@ -286,8 +291,8 @@ main() {
     shift
   done
 
-  if test -z "$OPENAI_KEY"; then
-    echo "ERROR: OPENAI_KEY is required"
+  if test -z "$OPENAI_API_KEY"; then
+    echo "ERROR: OPENAI_API_KEY is required"
     return 1
   fi
 
