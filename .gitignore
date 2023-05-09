@@ -1,5 +1,3 @@
-binaries/gpt
-binaries/davinci
 configs/github/hosts.yml
 configs/mpd/**
 !configs/mpd/mpd.conf
