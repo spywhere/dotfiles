@@ -7,7 +7,7 @@ cmd_name="$(basename "$0")"
 temp=""
 token=""
 model="gpt-3.5-turbo"
-# context=0
+context=""
 
 if test -z "$OPENAI_API_BASE"; then
   OPENAI_API_BASE="https://api.openai.com/v1"
@@ -27,22 +27,22 @@ usage() {
   echo "  cat <filename> | $cmd_name [flags]"
   echo
   echo "ENVIRONMENT VARIABLES"
-  echo "  OPENAI_API_BASE                Host for OpenAI API (default to $(fallback_default "$OPENAI_API_BASE"))"
-  echo "  OPENAI_API_KEY                 API key for the given OpenAI base"
+  echo "  OPENAI_API_BASE                  Host for OpenAI API (default to $(fallback_default "$OPENAI_API_BASE"))"
+  echo "  OPENAI_API_KEY                   API key for the given OpenAI base"
   echo
   echo "FLAGS"
-  echo "  -h, --help                 Show this message"
-  echo "  -T, --temperature=<temp>   Sampling temperature, higher is more random (default to $(fallback_default "$temp"))"
-  echo "  -t, --max-tokens=<number>  Maximum number of tokens to generate in the completion (default to $(fallback_default "$token"))"
-  echo "  -m, --model=<name>         ID of the model to use (default to $(fallback_default "$model"))"
-  # echo "  -c, --context              Use chat context (default to false)"
-  echo "  --timeout=<number>         Maximum number of seconds before request timed out (default to 10)"
-  echo "  --models                   List all available models"
+  echo "  -h, --help                       Show this message"
+  echo "  -T, --temperature=<temp>         Sampling temperature, higher is more random (default to $(fallback_default "$temp"))"
+  echo "  -t, --max-tokens=<number>        Maximum number of tokens to generate in the completion (default to $(fallback_default "$token"))"
+  echo "  -m, --model=<name>               ID of the model to use (default to $(fallback_default "$model"))"
+  echo "  -c, --context, --context=<file>  Use chat context (default to false), optionally use and store the context in the given file. The prompt from command line will be passed as a system message to the assistant, cannot be used in a pipe"
+  echo "  --timeout=<number>               Maximum number of seconds before request timed out (default to 10)"
+  echo "  --models                         List all available models"
   echo
-  echo "PROMPT HELPER"
-  echo "  --cmd, --command           Produce only shell command output"
-  echo "  --code                     Produce only one-liner code"
-  echo "  --url                      Produce only URL for the given query"
+  echo "PROMPT HELPER -- cannot used with context"
+  echo "  --cmd, --command                 Produce only shell command output"
+  echo "  --code                           Produce only one-liner code"
+  echo "  --url                            Produce only URL for the given query"
 }
 
 prompt_prefix() {
@@ -233,9 +233,13 @@ main() {
         fi
         model="$value"
         ;;
-      # -c | --context)
-      #   context=1
-      #   ;;
+      -c | --context)
+        if test -z "$equal_sign"; then
+          context='-'
+        else
+          context="$value"
+        fi
+        ;;
       --copilot)
         kind="copilot"
         ;;
@@ -277,11 +281,15 @@ main() {
 
   local prompt=""
   if test "$use_stdin" -eq 1; then
+    if test -n "$context"; then
+      echo "ERROR: context cannot be used in the pipe"
+      return 1
+    fi
     prompt="$(cat -)"
   else
     prompt="$*"
   fi
-  if test -z "$prompt"; then
+  if test -z "$context" && test -z "$prompt"; then
     echo "No prompt given"
     echo "Use --help for usage"
     return
@@ -300,18 +308,58 @@ main() {
   fi
 
   local prompts="[]"
-  if test -n "$kind"; then
-    prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$(prompt_prefix "$kind")")")")"
-    prompts="$(additional_prompts "$kind" "$prompts")"
+  if test -n "$context"; then
+    if test "$context" != '-'; then
+      printf -- "==== Context will be stored in '%s' ====\n" "$context"
+    fi
+    if test "$context" != '-' && test -f "$context"; then
+      prompts="$(jq -c . "$context" 2>/dev/null)"
+      if test $? -ne 0; then
+        echo "ERROR: a given context '$context' is not in a correct structure"
+        return 1
+      fi
+      jq -r '.[] | "[\(.role / "" | .[:1] |= map(ascii_upcase) | add)] \(.content)"' "$context"
+    elif test -n "$prompt"; then
+      printf '[System] %s\n' "$prompt"
+      prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$prompt")")")"
+    fi
   fi
 
-  prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$prompt")")")"
-  body="$(setitem "$body" "messages" "$prompts")"
-  response="$(openai chat/completions "$body" '.')"
-  if ! handle_status "$?"; then
-    return 1
-  fi
-  printf '%s\n' "$response" | jq -r '.choices[] | .message.content'
+  while true; do
+    if test -n "$context"; then
+      printf '[User] '
+      if read line && test -n "$line"; then
+        prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$line")")")"
+      else
+        break
+      fi
+    else
+      if test -n "$kind"; then
+        prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$(prompt_prefix "$kind")")")")"
+        prompts="$(additional_prompts "$kind" "$prompts")"
+      fi
+      prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$prompt")")")"
+    fi
+
+    body="$(setitem "$body" "messages" "$prompts")"
+    response="$(openai chat/completions "$body" '.')"
+    if ! handle_status "$?"; then
+      return 1
+    fi
+    content="$(printf '%s' "$response" | jq -r '.choices[] | .message.content')"
+    prompts="$(additem "$prompts" "$(printf '{"role":"assistant","content":%s}' "$(tojson "$content")")")"
+    if test -n "$context"; then
+      printf '[Assistant] %s\n' "$content"
+    else
+      printf '%s\n' "$content"
+    fi
+
+    if test -z "$context"; then
+      break
+    elif test "$context" != '-'; then
+      printf '%s' "$prompts" > "$context"
+    fi
+  done
 }
 
 main "$@"
