@@ -6,19 +6,11 @@ timeout=30
 cmd_name="$(basename "$0")"
 temp=""
 token=""
-model=""
+model="gpt-3.5-turbo"
 # context=0
 
 if test -z "$OPENAI_API_BASE"; then
   OPENAI_API_BASE="https://api.openai.com/v1"
-fi
-
-if test "$cmd_name" = "davinci"; then
-  model="text-davinci-003"
-  temp="0.7"
-  token="1024"
-elif test "$cmd_name" = "gpt"; then
-  model="gpt-3.5-turbo"
 fi
 
 fallback_default() {
@@ -31,15 +23,6 @@ fallback_default() {
 
 usage() {
   echo "USAGE"
-
-  if test "$cmd_name" = "openai"; then
-    echo "  Symlink this script as a following command name for a specific completion task:"
-    echo "    - davinci                OpenAI generic completion"
-    echo "    - gpt                    ChatGPT completion (default behavior of $cmd_name)"
-    echo
-    echo "COMMAND USAGE"
-  fi
-
   echo "  $cmd_name [flags] [--] <prompt>..."
   echo "  cat <filename> | $cmd_name [flags]"
   echo
@@ -79,11 +62,7 @@ prompt_prefix() {
       ;;
   esac
 
-  if test "$cmd_name" = "gpt"; then
-    printf 'Given the user request, only produce %s' "$prompt"
-  else
-    printf 'Given the prompt, only produce %s.\nPrompt: ' "$prompt"
-  fi
+  printf 'Given the user request, only produce %s' "$prompt"
 }
 
 copilot_examples() {
@@ -320,48 +299,19 @@ main() {
     body="$(setitem "$body" "temperature" "$temp")"
   fi
 
-  if test "$cmd_name" = "gpt"; then
-    local prompts="[]"
-    if test -n "$kind"; then
-      prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$(prompt_prefix "$kind")")")")"
-      prompts="$(additional_prompts "$kind" "$prompts")"
-    fi
-
-    prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$prompt")")")"
-    body="$(setitem "$body" "messages" "$prompts")"
-    response="$(openai chat/completions "$body" '.')"
-    if ! handle_status "$?"; then
-      return 1
-    fi
-    printf '%s\n' "$response" | jq -r '.choices[] | .message.content'
-  else
-    if test -n "$kind"; then
-      prompt="$(prompt_prefix "$kind")$prompt"
-    fi
-    body="$(printf '{"model":%s,"prompt":%s,"max_tokens":%s,"temperature":%s}' "$(tojson "$model")" "$(tojson "$prompt")" "$token" "$temp")"
-    response="$(openai completions "$body" '.')"
-    if ! handle_status "$?"; then
-      return 1
-    fi
-
-    printf '%s\n' "$response" | jq -r '.choices[] | .text' | sed '1,2d'
-    if test "$debug" -ge 1; then
-      local usage
-      usage="$(printf '%s' "$response" | jq -r '.usage')"
-      printf -- '-- prompt tokens    : %s\n-- completion tokens: %s\n-- total tokens     : %s\n' "$(printf '%s' "$usage" | jq -r '.prompt_tokens')" "$(printf '%s' "$usage" | jq -r '.completion_tokens')" "$(printf '%s' "$usage" | jq -r '.total_tokens')" >&2
-    fi
+  local prompts="[]"
+  if test -n "$kind"; then
+    prompts="$(additem "$prompts" "$(printf '{"role":"system","content":%s}' "$(tojson "$(prompt_prefix "$kind")")")")"
+    prompts="$(additional_prompts "$kind" "$prompts")"
   fi
+
+  prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$prompt")")")"
+  body="$(setitem "$body" "messages" "$prompts")"
+  response="$(openai chat/completions "$body" '.')"
+  if ! handle_status "$?"; then
+    return 1
+  fi
+  printf '%s\n' "$response" | jq -r '.choices[] | .message.content'
 }
 
-case "$cmd_name" in
-  gpt | davinci)
-    main "$@"
-    ;;
-  openai)
-    usage
-    ;;
-  *)
-    echo "ERROR: command \"$cmd_name\" is not supported for completions"
-    exit 1
-    ;;
-esac
+main "$@"
