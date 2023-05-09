@@ -1,7 +1,7 @@
 #!/bin/bash
 
 debug=0
-timeout=10
+timeout=30
 
 cmd_name="$(basename "$0")"
 temp=""
@@ -33,9 +33,9 @@ usage() {
   echo "USAGE"
 
   if test "$cmd_name" = "openai"; then
-    echo "  Symlink this script to the following command name for a specific completion task:"
+    echo "  Symlink this script as a following command name for a specific completion task:"
     echo "    - davinci                OpenAI generic completion"
-    echo "    - gpt                    ChatGPT completion"
+    echo "    - gpt                    ChatGPT completion (default behavior of $cmd_name)"
     echo
     echo "COMMAND USAGE"
   fi
@@ -304,6 +304,7 @@ main() {
   fi
   if test -z "$prompt"; then
     echo "No prompt given"
+    echo "Use --help for usage"
     return
   fi
 
