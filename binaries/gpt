@@ -328,7 +328,7 @@ main() {
   while true; do
     if test -n "$context"; then
       printf '[User] '
-      if read line && test -n "$line"; then
+      if read -r line && test -n "$line"; then
         prompts="$(additem "$prompts" "$(printf '{"role":"user","content":%s}' "$(tojson "$line")")")"
       else
         break
