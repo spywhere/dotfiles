@@ -11,7 +11,7 @@ jobs:
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2034 -e SC2154 -e SC2317
         with:
-          ignore: zsh
+          ignore_paths: zsh
       - name: Ban echo
         run: |
           ! grep 'echo' install.sh
