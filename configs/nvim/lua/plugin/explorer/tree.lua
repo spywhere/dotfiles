@@ -2,6 +2,46 @@ local bindings = require('lib.bindings')
 local registry = require('lib.registry')
 local cache = require('lib.cache')
 
+local update_filter_folder = function ()
+  local api = require('nvim-tree.api')
+  local node = api.tree.get_node_under_cursor()
+  if node.name == '..' then
+    print('Filter cleared')
+    cache.del('filter_folder')
+    return
+  elseif not node.fs_stat or node.fs_stat.type ~= 'directory' then
+    return
+  end
+
+  local folders = cache.get('filter_folder', {})
+  local item = node.absolute_path
+  if folders[item] then
+    folders[item] = nil
+  else
+    folders[item] = true
+  end
+  cache.set('filter_folder', folders)
+  print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
+end
+
+local show_filter_folder = function ()
+  local folders = cache.get('filter_folder', {})
+  print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
+end
+
+local function on_attach(bufnr)
+  local api = require('nvim-tree.api')
+
+  local function opts(desc)
+    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  vim.keymap.set('n', 'f', update_filter_folder, opts('update_filter_folder'))
+  vim.keymap.set('n', 'F', show_filter_folder, opts('show_filter_folder'))
+  vim.keymap.set('n', '?', api.live_filter.start, opts('Filter'))
+  vim.keymap.set('n', '<C-c>', api.live_filter.clear, opts('Clean Filter'))
+end
+
 registry.install {
   'nvim-tree/nvim-tree.lua',
   defer = function ()
@@ -33,58 +73,10 @@ registry.install {
     end)
   end,
   delay = function ()
-    local update_filter_folder = function (node)
-      if node.name == '..' then
-        print('Filter cleared')
-        cache.del('filter_folder')
-        return
-      elseif not node.fs_stat or node.fs_stat.type ~= 'directory' then
-        return
-      end
-
-      local folders = cache.get('filter_folder', {})
-      local item = node.absolute_path
-      if folders[item] then
-        folders[item] = nil
-      else
-        folders[item] = true
-      end
-      cache.set('filter_folder', folders)
-      print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
-    end
-
-    local show_filter_folder = function ()
-      local folders = cache.get('filter_folder', {})
-      print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
-    end
-
     require('nvim-tree').setup {
       sync_root_with_cwd = true,
       select_prompts = true,
-      view = {
-        mappings = {
-          list = {
-            {
-              key = 'f',
-              action = 'update_filter_folder',
-              action_cb = update_filter_folder
-            },
-            {
-              key = 'F',
-              action = 'show_filter_folder',
-              action_cb = show_filter_folder
-            },
-            {
-              key = '?',
-              action = 'live_filter',
-            },
-            {
-              key = '<C-c>',
-              action = 'clear_live_filter',
-            }
-          }
-        }
-      },
+      on_attach = on_attach,
       update_focused_file = {
         enable = true
       },
