@@ -58,13 +58,13 @@ prompt_prefix() {
       prompt='a structured and complete explanations of shell commands. We follow the commands piece-by-piece in bullet-point form, with multiple statements being separate bullets. Sub-commands form sub-bullets. All flags are explained as sub-bullets.'
       ;;
     command)
-      prompt='a one-liner posix shell command with no prompt or explanation.'
+      prompt='a one-liner posix shell command with no prompt or explanation. Only produce the shell command and nothing else, the command will use for execution as-is.'
       ;;
     code)
-      prompt='a one-liner code with no prompt or explanation.'
+      prompt='a one-liner code with no prompt or explanation. Only produce the code and nothing else, the code will use for execution as-is.'
       ;;
     url)
-      prompt='an URL regarding on the topic given.'
+      prompt='an URL regarding on the topic given. Only produce the URL and nothing else, the URL will be open in the browser directly.'
       ;;
   esac
 
