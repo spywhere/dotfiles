@@ -43,6 +43,12 @@ usage() {
   echo "  --cmd, --command                 Produce only shell command output"
   echo "  --code                           Produce only one-liner code"
   echo "  --url                            Produce only URL for the given query"
+  if test "$cmd_name" = "gpt"; then
+    echo
+    echo "ADDITIONAL USAGE"
+    echo "  Symlink (or copy) this script as your 'prepare-commit-msg' hook on your git repository to have GPT suggested a commit message"
+    echo "    ln -fs $0 /path/to/repo/.git/hooks/prepare-commit-msg"
+  fi
 }
 
 prompt_prefix() {
@@ -362,4 +368,41 @@ main() {
   done
 }
 
-main "$@"
+hook() {
+  COMMIT_MSG_FILE="$1"
+  COMMIT_SOURCE="$2"
+
+  if test -n "$COMMIT_SOURCE"; then
+    exit 0
+  fi
+  if test -z "$GPT_COMMIT_PROMPT"; then
+    GPT_COMMIT_PROMPT="Write a one-line commit message not exceeding 79 characters following a conventional commit describing the following changes"
+  fi
+
+  GIT_CHANGES="$(git diff --staged)"
+
+  if test "$GIT_CHANGES" = ""; then
+      printf 'No changes to commit.\n'
+      exit 0
+  fi
+
+  printf 'Generating commit message...\n'
+
+  GPT_MSG="$(printf '%s\n\n%s' "$GPT_COMMIT_PROMPT" "$GIT_CHANGES" | main)"
+  if test $? -ne 0; then
+      printf '%s\n' "$GPT_MSG"
+      exit $?
+  fi
+  COMMIT_MSG="$(cat "$COMMIT_MSG_FILE")"
+
+  printf '# %s\n%s' "$GPT_MSG" "$COMMIT_MSG" > "$COMMIT_MSG_FILE"
+}
+
+case "$cmd_name" in
+  prepare-commit-msg)
+    hook "$@"
+    ;;
+  *)
+    main "$@"
+    ;;
+esac
