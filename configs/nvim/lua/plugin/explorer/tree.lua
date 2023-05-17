@@ -35,7 +35,7 @@ local function on_attach(bufnr)
   local function opts(desc)
     return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
-
+  api.config.mappings.default_on_attach(bufnr)
   vim.keymap.set('n', 'f', update_filter_folder, opts('update_filter_folder'))
   vim.keymap.set('n', 'F', show_filter_folder, opts('show_filter_folder'))
   vim.keymap.set('n', '?', api.live_filter.start, opts('Filter'))
