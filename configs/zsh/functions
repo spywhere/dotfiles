@@ -1,10 +1,59 @@
 #!/bin/bash
 flashlight() {
-  local duration=10
+  local color="7"
+  local duration="10"
+
+  while test "$1" != ""; do
+    case "$1" in
+      -c|--color)
+        shift
+        if test -z "$1"; then
+          echo "ERROR: color is required"
+          return 1
+        fi
+
+        case "$1" in
+          red)
+            color="1"
+            ;;
+          green)
+            color="2"
+            ;;
+          yellow)
+            color="3"
+            ;;
+          blue)
+            color="4"
+            ;;
+          pink|purple)
+            color="5"
+            ;;
+          cyan)
+            color="6"
+            ;;
+          white)
+            color="7"
+            ;;
+          black)
+            color="8"
+            ;;
+          *)
+            color="$1"
+        esac
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
   if test $# -gt 0; then
     duration="$1"
   fi
-  printf "$(tput setab 7)$(tput clear)" && sleep $duration
+
+  printf "%s" "$(tput setab "$color")$(tput clear)" && sleep "$duration"
 }
 
 keep() {
