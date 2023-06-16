@@ -213,6 +213,16 @@ setup_macos() {
   sudo_config "com.apple.loginwindow" "GuestEnabled" false
   sudo_config "com.apple.loginwindow" "showInputMenu" true
 
+  if has_cmd bw; then
+    while true; do
+      session_id="$(bw unlock --raw)"
+      if test $? -eq 0; then
+        break
+      fi
+    done
+    sudo_config "com.apple.loginwindow" "LoginwindowText" "$(bw --response get notes 52184c08-c21c-4bad-9280-b01c00bc71d3 --session "$session_id" | jq '.data.data')"
+  fi
+
   ###########
   # Network #
   ###########
