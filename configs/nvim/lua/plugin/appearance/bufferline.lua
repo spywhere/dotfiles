@@ -3,9 +3,7 @@ local bindings = require('lib.bindings')
 
 registry.install {
   'akinsho/bufferline.nvim',
-  options = {
-    tag = 'v4.*'
-  },
+  tag = 'v4.*',
   delay = function ()
     local is_gui = fn.exists('g:GuiLoaded') == 1
     require('bufferline').setup({

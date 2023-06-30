@@ -13,6 +13,7 @@ configs/nvim/lua/plug.lua
 configs/nvim/lua/plug.lua.old
 configs/nvim/plugged
 configs/nvim/plugin/packer_compiled.lua
+configs/nvim/lazy-lock.json
 configs/ssh/**
 !configs/ssh/config
 configs/w3m/cookie

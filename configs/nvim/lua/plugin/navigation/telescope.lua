@@ -4,16 +4,14 @@ local cache = require('lib.cache')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
-  options = {
-    tag = '0.1.2'
-  },
+  tag = '0.1.2',
   requires = {
     {
       'nvim-lua/plenary.nvim'
     },
     {
       'nvim-telescope/telescope-fzf-native.nvim',
-      run = 'make'
+      build = 'make'
     }
   },
   defer = function ()

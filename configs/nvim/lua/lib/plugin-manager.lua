@@ -23,18 +23,77 @@ M.add = function (...)
   require('plug').install(...)
 end
 
+local proxy = function (_)
+  local function proxy_to_options(from, to)
+    return function (_, options, _, plugin)
+      if not plugin[from] then
+        return
+      end
+
+      local value = plugin[from]
+      local to_key = to
+      if type(to_key) == 'function' then
+        to_key = to_key(value)
+      end
+      options[to_key] = value
+    end
+  end
+
+  return function (hook, ctx)
+    local map = {}
+    if ctx.backend == 'vim-plug' then
+      map = {
+        branch = 'branch',
+        tag = 'tag',
+        commit = 'commit',
+        run = 'do',
+        cmd = 'on',
+        ft = 'for'
+      }
+    elseif ctx.backend == 'packer.nvim' then
+      map = {
+        branch = 'branch',
+        tag = 'tag',
+        commit = 'commit',
+        run = 'run',
+        cmd = 'cmd',
+        ft = 'ft'
+      }
+    elseif ctx.backend == 'lazy.nvim' then
+      map = {
+        branch = 'branch',
+        tag = function (value)
+          if string.match(value, '*') then
+            return 'version'
+          else
+            return 'tag'
+          end
+        end,
+        commit = 'commit',
+        run = 'build',
+        cmd = 'cmd',
+        ft = 'ft'
+      }
+    end
+
+    hook('plugin_options', proxy_to_options(map))
+  end
+end
+
 M.setup = function ()
   local plug = require('plug')
   plug.setup {
-    backend = 'packer.nvim',
-    options = {
-      display = {
-        open_fn = function ()
-          return require('packer.util').float({ border = 'single' })
-        end
-      }
-    },
+    backend = 'lazy.nvim',
+    update_branch = 'develop',
+    -- options = {
+    --   display = {
+    --     open_fn = function ()
+    --       return require('packer.util').float({ border = 'single' })
+    --     end
+    --   }
+    -- },
     extensions = {
+      proxy {},
       plug.extension.auto_install {},
       plug.extension.priority {
         priority = ''
