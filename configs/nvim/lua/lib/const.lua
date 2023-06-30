@@ -4,7 +4,7 @@ env = vim.env
 fn = vim.fn
 luv = vim.loop
 
-plug_nvim_url = 'https://raw.githubusercontent.com/spywhere/plug.nvim/packer/plug.lua'
+plug_nvim_url = 'https://raw.githubusercontent.com/spywhere/plug.nvim/main/plug.lua'
 config_home = fn.stdpath('config')
 pack_site = fn.stdpath('data') .. '/site/pack'
 

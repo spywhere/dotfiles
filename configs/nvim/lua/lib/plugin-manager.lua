@@ -26,7 +26,6 @@ end
 M.setup = function ()
   local plug = require('plug')
   plug.setup {
-    update_branch = 'packer',
     backend = 'packer.nvim',
     options = {
       display = {
