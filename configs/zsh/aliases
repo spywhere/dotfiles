@@ -102,7 +102,7 @@ alias iscm="tkcm"
 unalias vol >/dev/null 2>/dev/null
 if test "$(uname)" = "Darwin"; then
   vol() {
-    osascript -e "set Volume $((($1 + 5) / 10))"
+    osascript -e "set Volume $(( ($1 + 5) / 10 ))"
   }
 else
   alias vol="amixer set Master"
