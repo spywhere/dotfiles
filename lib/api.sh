@@ -119,7 +119,7 @@ has_string() {
   fi
   has_string__pattern="$1"
   shift
-  if has_cmd "$1" && ("$@" | grep -q "$has_string__pattern"); then
+  if has_cmd "$1" && ("$@" 2>/dev/null | grep -q "$has_string__pattern"); then
     _FULFILLED="installed"
   fi
 }

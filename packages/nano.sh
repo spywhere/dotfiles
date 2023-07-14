@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_string 'version 5\.[0-9]*' nano -version
+has_string 'nano' nano -h
 
 use_apt 'nano'
 use_brew formula 'nano'
