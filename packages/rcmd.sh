@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_screensaver 'Aerial'
+has_app 'rcmd'
 
-optional
-use_brew cask 'aerial'
+use_mas 'rcmd' 1596283165

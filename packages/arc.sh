@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_screensaver 'Aerial'
+has_app 'Arc'
 
-optional
-use_brew cask 'aerial'
+use_brew cask 'arc'

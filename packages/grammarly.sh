@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_screensaver 'Aerial'
+has_app 'Grammarly for Safari'
 
-optional
-use_brew cask 'aerial'
+profile work
+use_mas 'grammarly-for-safari' 1462114288

@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_screensaver 'Aerial'
+has_app 'duet'
 
-optional
-use_brew cask 'aerial'
+profile work
+use_brew cask 'duet'
