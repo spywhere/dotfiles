@@ -334,7 +334,7 @@ setup_config() {
   step "  - zsh"
   link zsh/zshrc .zshrc
 
-  if test "$OSKIND" = "macos"; then
+  if test "$OSKIND" = "macos" && has_profile -work; then
     step "Setting up system configurations..."
     setup_macos
   fi
