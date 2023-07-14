@@ -13,4 +13,5 @@ fi
 
 has_app '4K Stogram'
 
+profile -work
 use_brew cask '4k-stogram'

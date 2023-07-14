@@ -13,4 +13,5 @@ fi
 
 has_app 'Slack'
 
+profile work
 use_mas 'slack' '803453959'

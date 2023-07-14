@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
+optional
 has_executable 'neomutt'
 
 use_brew formula 'neomutt'

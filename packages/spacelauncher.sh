@@ -13,4 +13,5 @@ fi
 
 has_app 'SpaceLauncher'
 
+optional
 use_brew cask 'spacelauncher'

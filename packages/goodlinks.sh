@@ -13,4 +13,5 @@ fi
 
 has_app 'GoodLinks'
 
+profile -work
 use_mas 'goodlinks' '1474335294'

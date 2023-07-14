@@ -13,4 +13,5 @@ fi
 
 has_app 'LINE'
 
+optional
 use_mas 'line' '539883307'

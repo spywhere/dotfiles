@@ -13,4 +13,5 @@ fi
 
 has_app 'Momentum'
 
+optional
 use_mas 'momentum' '1564329434'

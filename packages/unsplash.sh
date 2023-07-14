@@ -11,9 +11,9 @@ then
   exit 1
 fi
 
-optional
-
 has_app 'Unsplash'
+
+profile -work
 
 SUPPORT_DIR="$HOME/$DOTFILES/supports/unsplash"
 

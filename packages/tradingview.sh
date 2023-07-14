@@ -13,4 +13,5 @@ fi
 
 has_app 'TradingView'
 
+optional
 use_brew cask 'tradingview'

@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-optional
 has_app 'TablePlus'
 
+optional
 use_brew cask 'tableplus'

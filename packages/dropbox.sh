@@ -13,4 +13,5 @@ fi
 
 has_app 'Dropbox'
 
+optional
 use_brew cask 'dropbox'

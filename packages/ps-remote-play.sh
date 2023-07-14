@@ -13,4 +13,5 @@ fi
 
 has_app 'PS Remote Play'
 
+profile -work
 use_brew cask 'sony-ps-remote-play'

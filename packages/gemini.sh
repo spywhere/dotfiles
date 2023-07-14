@@ -13,4 +13,5 @@ fi
 
 has_app 'Gemini 2'
 
+profile -work
 use_mas 'gemini' '1090488118'

@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
+optional
 has_string 'nano' nano -h
 
 use_apt 'nano'
