@@ -23,8 +23,8 @@ jobs:
           if test -f /usr/local/bin/go; then
             rm -f /usr/local/bin/go
           fi
-          if test -f /usr/local/bin/2to3; then
-            rm -f /usr/local/bin/2to3
+          if test -f /usr/local/bin/2to3*; then
+            rm -f /usr/local/bin/2to3*
           fi
           sh install.sh $FLAG no-app-store
 
@@ -47,7 +47,7 @@ jobs:
           if test -f /usr/local/bin/go; then
             rm -f /usr/local/bin/go
           fi
-          if test -f /usr/local/bin/2to3; then
-            rm -f /usr/local/bin/2to3
+          if test -f /usr/local/bin/2to3*; then
+            rm -f /usr/local/bin/2to3*
           fi
           sh -c "$(curl -sSL dots.spywhere.me)" - $FLAG no-app-store
