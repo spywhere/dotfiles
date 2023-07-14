@@ -275,6 +275,9 @@ setup_config() {
   step "  - github"
   link github/ .config/github
 
+  step "  - htop"
+  link htop/ .config/htop
+
   if has_package iterm2; then
     step "  - iTerm2"
     link iterm2/ "Library/Application Support/iTerm2"
