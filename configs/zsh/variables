@@ -23,3 +23,7 @@ fi
 if test -d "$HOME/Library/Application Support/Coursier/bin"; then
   export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"
 fi
+
+if test -d "/opt/homebrew/opt/ruby/bin"; then
+  export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+fi
