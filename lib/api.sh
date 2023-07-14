@@ -132,6 +132,35 @@ optional() {
   _FULFILLED="optional"
 }
 
+has_profile() {
+  if test "$#" -eq 0; then
+    if test -n "$PROFILE"; then
+      return 0
+    fi
+    return 1
+  fi
+  skip_profile="yes"
+  for prof in "$@"; do
+    case "$prof" in
+      -*)
+        skip_profile=""
+        if test "-$PROFILE" = "$prof"; then
+          return 1
+        fi
+        ;;
+      *)
+        if test "$PROFILE" = "$prof"; then
+          return 0
+        fi
+        ;;
+    esac
+  done
+  if test -n "$skip_profile"; then
+    return 1
+  fi
+  return 0
+}
+
 # Mark current script as optional based on profile
 profile() {
   if test "$#" -eq 0; then
@@ -141,24 +170,8 @@ profile() {
     fi
     return
   fi
-  do_optional="yes"
-  for prof in "$@"; do
-    case "$prof" in
-      -*)
-        do_optional=""
-        if test "-$PROFILE" = "$prof"; then
-          optional
-          return
-        fi
-        ;;
-      *)
-        if test "$PROFILE" = "$prof"; then
-          return
-        fi
-        ;;
-    esac
-  done
-  if test -n "$do_optional"; then
+
+  if ! has_profile "$@"; then
     optional
   fi
 }
