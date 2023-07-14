@@ -132,6 +132,37 @@ optional() {
   _FULFILLED="optional"
 }
 
+# Mark current script as optional based on profile
+profile() {
+  if test "$#" -eq 0; then
+    # No profile specified, mark as optional when profile is specified
+    if test -n "$PROFILE"; then
+      optional
+    fi
+    return
+  fi
+  do_optional="yes"
+  for prof in "$@"; do
+    case "$prof" in
+      -*)
+        do_optional=""
+        if test "-$PROFILE" = "$prof"; then
+          optional
+          return
+        fi
+        ;;
+      *)
+        if test "$PROFILE" = "$prof"; then
+          return
+        fi
+        ;;
+    esac
+  done
+  if test -n "$do_optional"; then
+    optional
+  fi
+}
+
 # Skip installation if the package is not being installed
 # depends <package>
 depends() {

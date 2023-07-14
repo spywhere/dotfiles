@@ -245,6 +245,7 @@ OS="unsupported"
 OSKIND=""
 OSNAME="Unsupported"
 OSARCH=""
+PROFILE=""
 
 _HALT=0 # flag to indicate if the installation should be stopped
 _FULFILLED="" # a flag indicate if the task has been fulfilled
@@ -271,6 +272,8 @@ _main() {
   # Read flags
   while test "$1" != ""; do
     PARAM="$(printf "%s" "$1" | sed 's/=.*//g')"
+    VALUE="$(printf "%s" "$1" | sed 's/^[^=]*=//g')"
+    EQUAL_SIGN="$(printf "%s" "$1" | sed 's/[^=]//g')"
     case $PARAM in
       -h | --help)
         _usage
@@ -316,6 +319,13 @@ _main() {
         ;;
       -s | --setup)
         PRINT_MODE="setup"
+        ;;
+      --profile)
+        if test -z "$EQUAL_SIGN" || test -z "$VALUE"; then
+          error "missing profile name"
+          quit 1
+        fi
+        PROFILE="$VALUE"
         ;;
       -*)
         error "unknown flag \"$1\""
@@ -605,6 +615,10 @@ _try_run_install() {
   for try_run_install__lib_path in "$HOME/$DOTFILES/lib/process"/*.sh; do
     . "$try_run_install__lib_path"
   done
+
+  if test -n "$PROFILE"; then
+    info "Using profile: $PROFILE"
+  fi
 
   if has_flag wsl; then
     info "Detected running on WSL..."
