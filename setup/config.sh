@@ -213,7 +213,7 @@ setup_macos() {
   sudo_config "com.apple.loginwindow" "GuestEnabled" false
   sudo_config "com.apple.loginwindow" "showInputMenu" true
 
-  if has_cmd bw; then
+  if has_cmd bw && has_profile -ci; then
     while true; do
       session_id="$(bw unlock --raw)"
       if test $? -eq 0; then
