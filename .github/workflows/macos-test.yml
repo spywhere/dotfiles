@@ -13,6 +13,11 @@ jobs:
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v3
+      - name: Clean Up Environment
+        run: |
+          if test -n "$(command -v brew)"; then
+            brew uninstall --force --ignore-dependencies $(brew list)
+          fi
       - name: Installation Info
         run: |
           sh install.sh -i
@@ -20,9 +25,6 @@ jobs:
         env:
           FLAG: ${{ matrix.flag }}
         run: |
-          if test -n "$(command -v brew)"; then
-            brew uninstall go python
-          fi
           sh install.sh $FLAG no-app-store
 
   remote:
@@ -34,6 +36,11 @@ jobs:
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v3
+      - name: Clean Up Environment
+        run: |
+          if test -n "$(command -v brew)"; then
+            brew uninstall --force --ignore-dependencies $(brew list)
+          fi
       - name: Installation Info
         run: |
           sh -c "$(curl -sSL dots.spywhere.me)" - -i
@@ -41,7 +48,4 @@ jobs:
         env:
           FLAG: ${{ matrix.flag }}
         run: |
-          if test -n "$(command -v brew)"; then
-            brew uninstall go python
-          fi
           sh -c "$(curl -sSL dots.spywhere.me)" - $FLAG no-app-store
