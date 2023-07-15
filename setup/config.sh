@@ -215,8 +215,13 @@ setup_macos() {
 
   if has_cmd bw && has_profile -ci; then
     while true; do
-      session_id="$(bw unlock --raw)"
-      if test $? -eq 0; then
+      if test "$(bw status --raw | jq -r .status)" = "unauthenticated"; then
+        session_id="$(bw login --raw)"
+      fi
+      if test "$(bw status --raw | jq -r .status)" = "locked"; then
+        session_id="$(bw unlock --raw)"
+      fi
+      if test "$(bw status --raw | jq -r .status)" = "unlocked"; then
         break
       fi
     done
