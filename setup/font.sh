@@ -70,8 +70,8 @@ install_fonts() {
 
 # install fonts
 setup_font() {
-  field file "JetBrains Mono Regular Nerd Font Complete.ttf"
-  field url "https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/Ligatures/Regular/complete/JetBrains%20Mono%20Regular%20Nerd%20Font%20Complete.ttf?raw=true"
+  field file "JetBrainsMonoNerdFont-Regular.ttf"
+  field url "https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFont-Regular.ttf?raw=true"
   add_font "JetBrains Mono Nerd Font"
 
   install_fonts
