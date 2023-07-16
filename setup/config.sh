@@ -100,25 +100,6 @@ setup_macos() {
   #################
   config "com.apple.ImageCapture" "disableHotPlug" true
 
-  ##########
-  # Safari #
-  ##########
-  config "com.apple.Safari" "AutoFillPasswords" false
-  config "com.apple.Safari" "AutoOpenSafeDownloads" false
-  config "com.apple.Safari" "CanPromptForPushNotifications" false
-  config "com.apple.Safari" "DownloadsClearingPolicy" 2
-  config "com.apple.Safari" "IncludeDevelopMenu" true
-  config "com.apple.Safari" "IncludeInternalDEbugMenu" true
-  config "com.apple.Safari" "SearchProvidersShortName" "DuckDuckGo"
-  config "com.apple.Safari" "SendDoNotTrackHTTPHeader" true
-  config "com.apple.Safari" "InstallExtensionUpdatesAutomatically" true
-  config "com.apple.Safari" "ShowBackgroundImageInFavorites" true
-  config "com.apple.Safari" "ShowFullURLInSmartSearchField" true
-  config "com.apple.Safari" "ShowOverlayStatusBar" true
-  config "com.apple.Safari" "ShowStandaloneTabBar" false
-  config "com.apple.Safari" "TabCreationPolicy" 2
-  config "com.apple.Safari" "WebKitDeveloperExtrasEnabledPreferenceKey" true
-
   ################
   # Time Machine #
   ################
