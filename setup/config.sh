@@ -218,10 +218,10 @@ setup_macos() {
       if test "$(bw status --raw | jq -r .status)" = "unauthenticated"; then
         session_id="$(bw login --raw)"
       fi
-      if test "$(bw status --raw | jq -r .status)" = "locked"; then
+      if test "$(bw status --session "$session_id" --raw | jq -r .status)" = "locked"; then
         session_id="$(bw unlock --raw)"
       fi
-      if test "$(bw status --raw | jq -r .status)" = "unlocked"; then
+      if test "$(bw status --session "$session_id" --raw | jq -r .status)" = "unlocked"; then
         break
       fi
     done
