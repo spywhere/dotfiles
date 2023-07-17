@@ -36,17 +36,18 @@ sh -c "$(curl -sSL dots.spywhere.me)"
     A cross-platform, modular dotfiles installer 
      
     Flags: 
-      -h, --help          Show this help message
-      -i, --info          Print out the setup environment information
-      -l, --local         Run install script locally without update (use -ll for force running local script even through remote install)
-      -c, --confirmation  Ask for confirmation before performing installation
-      -d, --dumb          Do not attempt to install dependencies automatically
-      -k, --keep          Keep downloaded dependencies
-      -f, --force         Force reinstall any installed packages when possible
-      -q, --quiet         Suppress output messages when possible
-      -v, --verbose       Produce command output messages when possible (use -vv for more verbosity)
-      -p, --packages      Print out available packages
-      -s, --setup         Print out available setup
+      -h, --help           Show this help message
+      -i, --info           Print out the setup environment information
+      -l, --local          Run install script locally without update (use -ll for force running local script even through remote install)
+      -c, --confirmation   Ask for confirmation before performing installation
+      -d, --dumb           Do not attempt to install dependencies automatically
+      -k, --keep           Keep downloaded dependencies
+      -f, --force          Force reinstall any installed packages when possible
+      -q, --quiet          Suppress output messages when possible
+      -v, --verbose        Produce command output messages when possible (use -vv for more verbosity)
+      -p, --packages       Print out available packages
+      -s, --setup          Print out available setup
+      --profile=<profile>  Specify the setup profile
      
     To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself. 
      
@@ -59,11 +60,11 @@ sh -c "$(curl -sSL dots.spywhere.me)"
       Skip package installation, but install ASDF and ZSH 
      
     To skip system update/upgrade, package installation or setups, use 
-      no-update           Skip system update and system upgrade
-      no-upgrade          Only perform a system update but not system upgrade
-      no-package          Skip package installations, including a custom one
-      no-custom           Skip custom installations
-      no-setup            Skip setups
+      no-update            Skip system update and system upgrade
+      no-upgrade           Only perform a system update but not system upgrade
+      no-package           Skip package installations, including a custom one
+      no-custom            Skip custom installations
+      no-setup             Skip setups
      
     Note: 
       - Package name is indicated by the file name under 'packages' or 'setup' directory 
@@ -71,7 +72,7 @@ sh -c "$(curl -sSL dots.spywhere.me)"
       - If the setup require particular packages, those packages will be automatically installed 
      
     Some systems might have additional installation flags, try running with 
-      -hh                 Show this help message with additional flags for this system
+      -hh                  Show this help message with additional flags for this system
 
 <!--FLAGS:END-->
 
