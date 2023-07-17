@@ -13,9 +13,9 @@ fi
 
 system_usage() {
   print "For macOS, the following options can be used"
-  print 22 "  no-brew" "Skip package installations via Homebrew"
-  print 22 "  no-brew-api" "Use regular cloned tap for installations"
-  print 22 "  no-app-store" "Skip package installations via App Store"
+  print 23 "  no-brew" "Skip package installations via Homebrew"
+  print 23 "  no-brew-api" "Use regular cloned tap for installations"
+  print 23 "  no-app-store" "Skip package installations via App Store"
 }
 
 install_git() {

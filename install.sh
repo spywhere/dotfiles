@@ -368,17 +368,18 @@ _usage() {
   print "A cross-platform, modular dotfiles installer"
   print
   print "Flags:"
-  print 22 "  -h, --help" "Show this help message"
-  print 22 "  -i, --info" "Print out the setup environment information"
-  print 22 "  -l, --local" "Run install script locally without update (use -ll for force running local script even through remote install)"
-  print 22 "  -c, --confirmation" "Ask for confirmation before performing installation"
-  print 22 "  -d, --dumb" "Do not attempt to install dependencies automatically"
-  print 22 "  -k, --keep" "Keep downloaded dependencies"
-  print 22 "  -f, --force" "Force reinstall any installed packages when possible"
-  print 22 "  -q, --quiet" "Suppress output messages when possible"
-  print 22 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
-  print 22 "  -p, --packages" "Print out available packages"
-  print 22 "  -s, --setup" "Print out available setup"
+  print 23 "  -h, --help" "Show this help message"
+  print 23 "  -i, --info" "Print out the setup environment information"
+  print 23 "  -l, --local" "Run install script locally without update (use -ll for force running local script even through remote install)"
+  print 23 "  -c, --confirmation" "Ask for confirmation before performing installation"
+  print 23 "  -d, --dumb" "Do not attempt to install dependencies automatically"
+  print 23 "  -k, --keep" "Keep downloaded dependencies"
+  print 23 "  -f, --force" "Force reinstall any installed packages when possible"
+  print 23 "  -q, --quiet" "Suppress output messages when possible"
+  print 23 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
+  print 23 "  -p, --packages" "Print out available packages"
+  print 23 "  -s, --setup" "Print out available setup"
+  print 23 "  --profile=<profile>" "Specify the setup profile"
   print
   print "To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself."
   print
@@ -391,11 +392,11 @@ _usage() {
   print "  Skip package installation, but install ASDF and ZSH"
   print
   print "To skip system update/upgrade, package installation or setups, use"
-  print 22 "  no-update" "Skip system update and system upgrade"
-  print 22 "  no-upgrade" "Only perform a system update but not system upgrade"
-  print 22 "  no-package" "Skip package installations, including a custom one"
-  print 22 "  no-custom" "Skip custom installations"
-  print 22 "  no-setup" "Skip setups"
+  print 23 "  no-update" "Skip system update and system upgrade"
+  print 23 "  no-upgrade" "Only perform a system update but not system upgrade"
+  print 23 "  no-package" "Skip package installations, including a custom one"
+  print 23 "  no-custom" "Skip custom installations"
+  print 23 "  no-setup" "Skip setups"
   print
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
@@ -405,7 +406,7 @@ _usage() {
 
   if test -z "$1"; then
     print "Some systems might have additional installation flags, try running with"
-    print 22 "  -hh" "Show this help message with additional flags for this system"
+    print 23 "  -hh" "Show this help message with additional flags for this system"
   elif test "$1" = "all"; then
     if _try_load_system; then
       system_usage
