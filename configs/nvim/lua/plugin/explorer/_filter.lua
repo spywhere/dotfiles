@@ -5,8 +5,40 @@ local P = {
   cache_key = 'filter_folder',
   bufid = nil,
   winid = nil,
-  manual = false
+  manual = false,
+  rewind = 0,
+  undos = {},
+  redos = {}
 }
+
+P.undo = function (rewind)
+  if type(rewind) == 'function' then
+    if P.rewind > 0 then
+      table.insert(P.redos, rewind)
+    else
+      table.insert(P.undos, rewind)
+
+      if P.rewind == 0 and #P.redos > 0 then
+        P.redos = {}
+      end
+    end
+    return false
+  end
+
+  if rewind and #P.undos > 0 then
+    P.rewind = 1
+    table.remove(P.undos, #P.undos)()
+    P.rewind = 0
+  elseif not rewind and #P.redos > 0 then
+    P.rewind = -1
+    table.remove(P.redos, #P.redos)()
+    P.rewind = 0
+  else
+    return false
+  end
+
+  return true
+end
 
 P.set_lines = function (line, data)
   if P.bufid == nil then
@@ -35,6 +67,7 @@ P.new = function (value, index)
     table.insert(records, index, value)
   end
   cache.set(P.cache_key, records)
+  P.undo(function () P.remove(#records) end)
 end
 
 P.new_ui = function (index, direction)
@@ -54,17 +87,27 @@ P.new_ui = function (index, direction)
   end)
 end
 
+P.update = function (index, value)
+  local records = cache.get(P.cache_key, {})
+  if index < 1 or index > #records then
+    return
+  end
+  local old_value = records[index]
+  records[index] = value
+  cache.set(P.cache_key, records)
+  P.undo(function () P.update(index, old_value) end)
+end
+
 P.update_ui = function (index)
   local records = cache.get(P.cache_key, {})
   vim.ui.input({
-    prompt = 'New Filter: ',
+    prompt = 'Update Filter: ',
     default = records[index]
   }, function (input)
     if input == nil then
       return
     end
-    records[index] = input
-    cache.set(P.cache_key, records)
+    P.update(index, input)
     M.refresh()
   end)
 end
@@ -74,8 +117,10 @@ P.remove = function (index)
   if index < 1 or index > #records then
     return
   end
+  local value = records[index]
   table.remove(records, index)
   cache.set(P.cache_key, records)
+  P.undo(function () P.new(value, index) end)
 end
 
 P.reorder = function (index, direction)
@@ -87,6 +132,7 @@ P.reorder = function (index, direction)
   records[new_index], records[index] = records[index], records[new_index]
   vim.api.nvim_win_set_cursor(P.winid, { new_index + 1, 0 })
   cache.set(P.cache_key, records)
+  P.undo(function () P.new(index, -direction) end)
 end
 
 P.cycle = function (index, cycle_remove)
@@ -95,6 +141,7 @@ P.cycle = function (index, cycle_remove)
     return
   end
   local record = records[index]
+  local old_value = record
   if string.sub(record, 1, 1) == '!' then
     if cycle_remove then
       return P.remove(index)
@@ -105,6 +152,7 @@ P.cycle = function (index, cycle_remove)
   end
   records[index] = record
   cache.set(P.cache_key, records)
+  P.undo(function () P.update(index, old_value) end)
 end
 
 P.keymap = function (mode, key, edit, action)
@@ -189,10 +237,14 @@ M.open = function (auto)
 
   P.keymap('n', 'q', false, M.close)
   P.keymap('n', 'F', false, M.close)
+  P.keymap('n', 'u', false, function () return P.undo(true) and M.refresh() end)
+  P.keymap('n', '<C-r>', false, function () return P.undo(false) and M.refresh() end)
   P.keymap('n', 'f', true, P.cycle)
   P.keymap('n', '<A-Up>', true, function (index) return P.reorder(index, -1) end)
   P.keymap('n', '<A-Down>', true, function (index) return P.reorder(index, 1) end)
   P.keymap('n', 'dd', true, P.remove)
+  P.keymap('n', 'C', true, function (index) return P.update_ui(index) end)
+  P.keymap('n', 'cc', true, function (index) return P.update_ui(index) end)
   P.keymap('n', 'O', 0, function (index) return P.new_ui(index, 0) end)
   P.keymap('n', 'i', 0, function (index) return P.new_ui(index, 0) end)
   P.keymap('n', 'I', 0, function (index) return P.new_ui(index, 0) end)
