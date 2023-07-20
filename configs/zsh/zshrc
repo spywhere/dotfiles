@@ -102,7 +102,7 @@ else
   zinit snippet OMZP::brew
   zinit snippet OMZP::common-aliases
   zinit ice lucid as"completion"
-  zinit snippet OMZP::docker/_docker
+  zinit snippet OMZP::docker/completions/_docker
   zinit ice lucid as"completion"
   zinit snippet https://raw.githubusercontent.com/containers/podman/main/completions/zsh/_podman
   zinit snippet OMZL::git.zsh
