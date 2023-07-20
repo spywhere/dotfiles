@@ -1,32 +1,30 @@
 local bindings = require('lib.bindings')
 local registry = require('lib.registry')
-local cache = require('lib.cache')
+local filter = require('plugin.explorer.filter')
 
 local update_filter_folder = function ()
   local api = require('nvim-tree.api')
   local node = api.tree.get_node_under_cursor()
   if node.name == '..' then
-    print('Filter cleared')
-    cache.del('filter_folder')
-    return
-  elseif not node.fs_stat or node.fs_stat.type ~= 'directory' then
+    filter.clear()
+    return not filter.refresh() and filter.close(true)
+  elseif not node.fs_stat then
     return
   end
 
-  local folders = cache.get('filter_folder', {})
   local item = node.absolute_path
-  if folders[item] then
-    folders[item] = nil
-  else
-    folders[item] = true
-  end
-  cache.set('filter_folder', folders)
-  print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
-end
+  local rel_item = vim.fn.fnamemodify(item, ':.')
+  local type = node.fs_stat.type
 
-local show_filter_folder = function ()
-  local folders = cache.get('filter_folder', {})
-  print('Filters:', table.concat(vim.tbl_keys(folders), ', '))
+  if type == 'directory' then
+    filter.cycle_item(item .. '/**', rel_item .. '/**')
+  elseif type == 'file' then
+    filter.cycle_item(item, rel_item)
+  else
+    return
+  end
+
+  return filter.refresh() and filter.open(true) or filter.close(true)
 end
 
 local function on_attach(bufnr)
@@ -37,7 +35,7 @@ local function on_attach(bufnr)
   end
   api.config.mappings.default_on_attach(bufnr)
   vim.keymap.set('n', 'f', update_filter_folder, opts('update_filter_folder'))
-  vim.keymap.set('n', 'F', show_filter_folder, opts('show_filter_folder'))
+  vim.keymap.set('n', 'F', function () filter.toggle() end, opts('show_filter_folder'))
   vim.keymap.set('n', '?', api.live_filter.start, opts('Filter'))
   vim.keymap.set('n', '<C-c>', api.live_filter.clear, opts('Clean Filter'))
 end
@@ -45,27 +43,12 @@ end
 registry.install {
   'nvim-tree/nvim-tree.lua',
   defer = function ()
-    local show_cursorline = function ()
-      if vim.bo.filetype == 'NvimTree' then
-        vim.wo.cursorline = true
-        return
-      end
-
-      vim.wo.cursorline = false
-    end
-    -- show cursorline when browsing in the tree explorer
-    registry.auto({ 'BufEnter', 'FileType' }, show_cursorline)
-
     bindings.map.all('<leader>E', '<cmd>NvimTreeFocus<cr>')
 
     bindings.map.all('<leader>e', function ()
       local tree = require('nvim-tree.api').tree
-      local view = require('nvim-tree.view')
 
-      if
-        view.is_visible() and
-        api.nvim_get_current_win() ~= view.get_winnr()
-      then
+      if tree.is_visible() and not tree.is_tree_buf(0) then
         tree.focus()
       else
         tree.toggle()
@@ -86,5 +69,17 @@ registry.install {
         }
       }
     }
+
+    filter.setup {}
+
+    local api = require('nvim-tree.api')
+    local Event = api.events.Event
+
+    api.events.subscribe(Event.TreeOpen, function ()
+      return filter.refresh() and filter.open(true)
+    end)
+    api.events.subscribe(Event.TreeClose, function ()
+      return filter.reset()
+    end)
   end
 }
