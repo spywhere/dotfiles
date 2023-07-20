@@ -20,24 +20,53 @@ end
 P.find_item = function (item)
   local records = cache.get(P.cache_key, {})
   for i, v in ipairs(records) do
-    if v.value == item then
+    if v == item then
       return i
     end
   end
   return nil
 end
 
-P.values = function ()
-  return vim.tbl_map(
-    function (v) return v.display_name end,
-    cache.get(P.cache_key, {})
-  )
+P.new = function (value, index)
+  local records = cache.get(P.cache_key, {})
+  if index == nil then
+    table.insert(records, value)
+  else
+    table.insert(records, index, value)
+  end
+  cache.set(P.cache_key, records)
 end
 
-P.new = function (value, display_name)
+P.new_ui = function (index, direction)
+  if index < 1 and direction < 1 then
+    return
+  end
+
+  vim.ui.input({
+    prompt = 'New Filter: '
+  }, function (input)
+    if input == nil then
+      return
+    end
+    P.new(input, index + direction)
+    M.refresh()
+    vim.api.nvim_win_set_cursor(P.winid, { index + direction + 1, 0 })
+  end)
+end
+
+P.update_ui = function (index)
   local records = cache.get(P.cache_key, {})
-  table.insert(records, { value = value, display_name = display_name })
-  cache.set(P.cache_key, records)
+  vim.ui.input({
+    prompt = 'New Filter: ',
+    default = records[index]
+  }, function (input)
+    if input == nil then
+      return
+    end
+    records[index] = input
+    cache.set(P.cache_key, records)
+    M.refresh()
+  end)
 end
 
 P.remove = function (index)
@@ -66,19 +95,13 @@ P.cycle = function (index, cycle_remove)
     return
   end
   local record = records[index]
-  if string.sub(record.value, 1, 1) == '!' then
+  if string.sub(record, 1, 1) == '!' then
     if cycle_remove then
       return P.remove(index)
     end
-    record = {
-      value = string.sub(record.value, 2),
-      display_name = string.sub(record.display_name, 2)
-    }
+    record = string.sub(record, 2)
   else
-    record = {
-      value = '!' .. record.value,
-      display_name = '!' .. record.display_name
-    }
+    record = '!' .. record
   end
   records[index] = record
   cache.set(P.cache_key, records)
@@ -86,23 +109,26 @@ end
 
 P.keymap = function (mode, key, edit, action)
   if not action then
-    vim.api.nvim_buf_del_keymap(P.bufid, mode, key, '')
+    vim.api.nvim_buf_set_keymap(P.bufid, mode, key, '', {
+      noremap = true,
+      silent = true
+    })
     return
   end
 
   vim.api.nvim_buf_set_keymap(
     P.bufid, mode, key, '', {
       callback = function ()
-        if edit then
+        if edit == nil or edit == false then
+          action()
+        else
           local row = vim.api.nvim_win_get_cursor(P.winid)[1]
-          if row < 2 then
+          if row < 2 and type(edit) == 'boolean' then
             return
           end
           local index = row - 1
           action(index)
           M.refresh()
-        else
-          action()
         end
       end,
       noremap = true,
@@ -112,10 +138,7 @@ P.keymap = function (mode, key, edit, action)
 end
 
 M.get = function ()
-  return vim.tbl_map(
-    function (v) return v.value end,
-    cache.get(P.cache_key, {})
-  )
+  return cache.get(P.cache_key, {})
 end
 
 M.refresh = function ()
@@ -123,7 +146,7 @@ M.refresh = function ()
     return false
   end
 
-  local filters = P.values()
+  local filters = M.get()
   P.set_lines(1, vim.tbl_map(
     function (v) return '  ' .. v end, filters
   ))
@@ -164,7 +187,12 @@ M.open = function (auto)
   P.keymap('n', '<A-Up>', true, function (index) return P.reorder(index, -1) end)
   P.keymap('n', '<A-Down>', true, function (index) return P.reorder(index, 1) end)
   P.keymap('n', 'dd', true, P.remove)
-
+  P.keymap('n', 'O', 0, function (index) return P.new_ui(index, 0) end)
+  P.keymap('n', 'i', 0, function (index) return P.new_ui(index, 0) end)
+  P.keymap('n', 'I', 0, function (index) return P.new_ui(index, 0) end)
+  P.keymap('n', 'o', 0, function (index) return P.new_ui(index, 1) end)
+  P.keymap('n', 'a', 0, function (index) return P.new_ui(index, 1) end)
+  P.keymap('n', 'A', 0, function (index) return P.new_ui(index, 1) end)
   return true
 end
 
@@ -209,7 +237,7 @@ M.clear = function ()
   cache.del(P.cache_key)
 end
 
-M.cycle_item = function (item, display_name)
+M.cycle_item = function (item)
   local not_idx = P.find_item('!' .. item)
   local idx = P.find_item(item)
   if not_idx ~= nil then
@@ -217,7 +245,7 @@ M.cycle_item = function (item, display_name)
   elseif idx ~= nil then
     P.cycle(idx, true)
   else
-    P.new(item, display_name)
+    P.new(item)
   end
   M.refresh()
 end

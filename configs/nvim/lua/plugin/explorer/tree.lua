@@ -12,14 +12,13 @@ local update_filter_folder = function ()
     return
   end
 
-  local item = node.absolute_path
-  local rel_item = vim.fn.fnamemodify(item, ':.')
+  local item = vim.fn.fnamemodify(node.absolute_path, ':.')
   local type = node.fs_stat.type
 
   if type == 'directory' then
-    filter.cycle_item(rel_item .. '/**', rel_item .. '/**')
+    filter.cycle_item(item .. '/**')
   elseif type == 'file' then
-    filter.cycle_item(rel_item, rel_item)
+    filter.cycle_item(item)
   else
     return
   end
