@@ -17,9 +17,9 @@ local update_filter_folder = function ()
   local type = node.fs_stat.type
 
   if type == 'directory' then
-    filter.cycle_item(item .. '/**', rel_item .. '/**')
+    filter.cycle_item(rel_item .. '/**', rel_item .. '/**')
   elseif type == 'file' then
-    filter.cycle_item(item, rel_item)
+    filter.cycle_item(rel_item, rel_item)
   else
     return
   end
@@ -34,10 +34,11 @@ local function on_attach(bufnr)
     return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
   api.config.mappings.default_on_attach(bufnr)
-  vim.keymap.set('n', 'f', update_filter_folder, opts('update_filter_folder'))
-  vim.keymap.set('n', 'F', function () filter.toggle() end, opts('show_filter_folder'))
-  vim.keymap.set('n', '?', api.live_filter.start, opts('Filter'))
-  vim.keymap.set('n', '<C-c>', api.live_filter.clear, opts('Clean Filter'))
+  vim.keymap.set('n', 'f', update_filter_folder, opts('Update filters'))
+  vim.keymap.set('n', 'F', function () filter.toggle_focus() end, opts('Toggle filters'))
+  vim.keymap.set('n', '<C-j>', function () filter.toggle_focus() end, opts('Toggle filters'))
+  vim.keymap.set('n', '?', api.live_filter.start, opts('Start live filter'))
+  vim.keymap.set('n', '<C-c>', api.live_filter.clear, opts('Stop live filter'))
 end
 
 registry.install {

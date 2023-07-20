@@ -1,6 +1,6 @@
 local registry = require('lib.registry')
 local bindings = require('lib.bindings')
-local cache = require('lib.cache')
+local filter = require('plugin.explorer.filter')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
@@ -35,7 +35,7 @@ registry.install {
     bindings.map.normal('<leader>f', function ()
       require('telescope.builtin').live_grep {
         prompt_prefix='Rg> ',
-        search_dirs=vim.tbl_keys(cache.get('filter_folder', {}))
+        glob_pattern=filter.get()
       }
     end)
     -- TODO: ripgrep the whole project with rg itself
