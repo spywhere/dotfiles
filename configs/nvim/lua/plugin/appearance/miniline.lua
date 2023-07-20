@@ -15,6 +15,17 @@ local filetypes = {
     clock = true,
     clock1 = true
   },
+  treefilter = {
+    ['*'] = false,
+    mode = fn.has('nvim-0.7') == 1,
+    mode1 = fn.has('nvim-0.7') == 1,
+    mode2 = fn.has('nvim-0.7') == 1,
+    music = true,
+    path = true,
+    path1 = 'Explorer - Filters',
+    clock = true,
+    clock1 = true
+  },
   alpha = {
     ['*'] = false,
     mode = true,
@@ -526,8 +537,9 @@ local setup = function ()
         local bufid = api.nvim_win_get_buf(wid)
         local ft = api.nvim_buf_get_option(bufid, 'filetype')
         local skip = (
-          ft == 'NvimTree' or ft == 'alpha' or ft == 'vim-plug' or
-          ft == 'packer' or ft == 'qf' or ft == 'dbui' or ft == 'dbout'
+          ft == 'NvimTree' or ft == 'TreeFilter' or ft == 'alpha' or
+          ft == 'vim-plug' or ft == 'packer' or ft == 'qf' or ft == 'dbui' or
+          ft == 'dbout'
         )
 
         if

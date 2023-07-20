@@ -168,18 +168,24 @@ M.open = function (auto)
   end
 
   local treewin = vim.api.nvim_get_current_win()
-  P.winid = vim.api.nvim_open_win(P.bufid, false, {
-    relative = 'win',
-    height = 20,
-    width = vim.api.nvim_win_get_width(treewin),
-    col = 0,
-    row = vim.api.nvim_win_get_height(treewin) - 20,
-    style = 'minimal',
-    focusable = true
-  })
+
+  vim.cmd('20split')
+  P.winid = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(P.winid, P.bufid)
+  vim.api.nvim_set_current_win(treewin)
+
   vim.api.nvim_buf_set_option(P.bufid, 'modifiable', false)
   vim.api.nvim_buf_set_option(P.bufid, 'filetype', 'TreeFilter')
   vim.api.nvim_win_set_option(P.winid, 'cursorline', true)
+  vim.api.nvim_win_set_option(P.winid, 'cursorcolumn', false)
+  vim.api.nvim_win_set_option(P.winid, 'number', false)
+  vim.api.nvim_win_set_option(P.winid, 'relativenumber', false)
+  vim.api.nvim_win_set_option(P.winid, 'foldcolumn', '0')
+  vim.api.nvim_win_set_option(P.winid, 'spell', false)
+  vim.api.nvim_win_set_option(P.winid, 'list', false)
+  vim.api.nvim_win_set_option(P.winid, 'signcolumn', 'no')
+  vim.api.nvim_win_set_option(P.winid, 'colorcolumn', '')
+  vim.api.nvim_win_set_option(P.winid, 'statuscolumn', '')
 
   P.keymap('n', 'q', false, M.close)
   P.keymap('n', 'F', false, M.close)
