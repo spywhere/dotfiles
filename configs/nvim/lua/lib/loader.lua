@@ -18,7 +18,7 @@ M.explore = function (dir, recurse)
       break
     end
 
-    if item_type == 'file' then
+    if item_type == 'file' and string.sub(name, 1, 1) ~= '_' then
       local path = dir .. '/' .. string.gsub(name, '[.]lua$', '')
       require('' .. string.gsub(path, '[/\\]', '.'))
     elseif item_type == 'directory' and recurse == true then

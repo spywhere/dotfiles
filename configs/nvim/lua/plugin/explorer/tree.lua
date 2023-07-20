@@ -1,6 +1,6 @@
 local bindings = require('lib.bindings')
 local registry = require('lib.registry')
-local filter = require('plugin.explorer.filter')
+local filter = require('plugin.explorer._filter')
 
 local update_filter_folder = function ()
   local api = require('nvim-tree.api')

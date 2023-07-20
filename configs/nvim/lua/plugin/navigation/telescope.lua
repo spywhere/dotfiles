@@ -1,6 +1,6 @@
 local registry = require('lib.registry')
 local bindings = require('lib.bindings')
-local filter = require('plugin.explorer.filter')
+local filter = require('plugin.explorer._filter')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
