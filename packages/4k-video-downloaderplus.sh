@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_app '4K Video Downloader'
+has_app '4K Video Downloader+'
 
 profile -work
-use_brew cask '4k-video-downloader'
+use_brew cask '4k-video-downloaderplus'
