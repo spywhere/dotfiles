@@ -4,6 +4,9 @@ DOTFILES_NAME=.dots
 # Ctrl+Z will send the process to background, use "resume" to bring it back
 alias resume="fg"
 
+# quick project switching
+alias w="work"
+
 # git
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
