@@ -2,6 +2,11 @@ local bindings = require('lib.bindings')
 local registry = require('lib.registry')
 local logger = require('lib.logger')
 
+local session_opts = function ()
+  vim.opt.sessionoptions:remove { 'folds' }
+end
+registry.pre(session_opts)
+
 local session_commands = function ()
   local load_session = {
     function(opts)
