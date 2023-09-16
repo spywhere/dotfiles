@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Notion'
+has_app 'Keka'
 
-use_brew cask 'notion'
+use_mas 'keka' '470158793'

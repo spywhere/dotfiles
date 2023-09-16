@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Archiver 4'
+has_app 'Obsidian'
 
-use_mas 'archiver' '1556026599'
+use_brew cask 'obsidian'
