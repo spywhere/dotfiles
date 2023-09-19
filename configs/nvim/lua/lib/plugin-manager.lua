@@ -24,18 +24,24 @@ M.add = function (...)
 end
 
 local proxy = function (_)
-  local function proxy_to_options(from, to)
+  local function proxy_to_options(map)
     return function (_, options, _, plugin)
-      if not plugin[from] then
-        return
+      local function proxy_key(from, to)
+        if not plugin[from] then
+          return
+        end
+
+        local value = plugin[from]
+        local to_key = to
+        if type(to_key) == 'function' then
+          to_key = to_key(value)
+        end
+        options[to_key] = value
       end
 
-      local value = plugin[from]
-      local to_key = to
-      if type(to_key) == 'function' then
-        to_key = to_key(value)
+      for from, to in pairs(map) do
+        proxy_key(from, to)
       end
-      options[to_key] = value
     end
   end
 
