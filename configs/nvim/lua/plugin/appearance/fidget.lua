@@ -2,9 +2,7 @@ local registry = require('lib.registry')
 
 registry.install {
   'j-hui/fidget.nvim',
-  options = {
-    tag = "legacy"
-  },
+  tag = "legacy",
   lazy = true,
   config = function ()
     require('fidget').setup {
