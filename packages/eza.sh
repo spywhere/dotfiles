@@ -11,7 +11,8 @@ then
   exit 1
 fi
 
-has_executable 'exa'
+has_executable 'eza'
 
-use_apt 'exa'
-use_brew formula 'exa'
+# TODO: https://github.com/eza-community/eza#debian-and-ubuntu
+# use_apt 'eza'
+use_brew formula 'eza'
