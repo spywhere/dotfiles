@@ -2,7 +2,7 @@
 
 A cross-platform, modular dotfiles for my personal setup
 
-![Screen Shot](https://user-images.githubusercontent.com/1087399/163681933-45116a93-57a3-4a2d-8f34-244362a303f5.png)
+![Screen Shot](https://user-images.githubusercontent.com/1087399/270018021-aa94a7c6-4e38-4e30-994f-7281ca92f3e2.png)
 
 ## Required Commands
 
