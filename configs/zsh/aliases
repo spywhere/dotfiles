@@ -33,10 +33,17 @@ alias dr="defaults read"
 alias dw="defaults write"
 
 # exa (ls replacement)
-alias ls="exa"
-alias l="exa -lFh"
-alias la="exa -laFh"
-alias ll="exa -l"
+if test -n "$(command -v eza)"; then
+  alias ls="eza"
+  alias l="eza -lFh"
+  alias la="eza -laFh"
+  alias ll="eza -l"
+elif test -n "$(command -v exa)"; then
+  alias ls="exa"
+  alias l="exa -lFh"
+  alias la="exa -laFh"
+  alias ll="exa -l"
+fi
 
 # bat (cat replacement)
 if test -n "$(command -v bat)"; then
