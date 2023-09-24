@@ -51,7 +51,7 @@ ignore_submodules = true
 disabled = true
 
 [aws]
-disabled =true
+disabled = true
 
 [battery]
 disabled = true
@@ -60,106 +60,106 @@ disabled = true
 disabled = true
 
 [conda]
-disabled =true
+disabled = true
 
 [crystal]
-disabled =true
+disabled = true
 
 [dart]
-disabled =true
+disabled = true
 
 [docker_context]
-disabled =true
+disabled = true
 
 [dotnet]
-disabled =true
+disabled = true
 
 [elixir]
-disabled =true
+disabled = true
 
 [elm]
-disabled =true
+disabled = true
 
 [env_var]
-disabled =true
+disabled = true
 
 [erlang]
-disabled =true
+disabled = true
 
 [gcloud]
-disabled =true
+disabled = true
 
 [golang]
-disabled =true
+disabled = true
 
 [helm]
-disabled =true
+disabled = true
 
 [java]
-disabled =true
+disabled = true
 
 [jobs]
-disabled =true
+disabled = true
 
 [julia]
-disabled =true
+disabled = true
 
 [kotlin]
-disabled =true
+disabled = true
 
 [lua]
-disabled =true
+disabled = true
 
 [hg_branch]
-disabled =true
+disabled = true
 
 [nim]
-disabled =true
+disabled = true
 
 [nix_shell]
-disabled =true
+disabled = true
 
 [nodejs]
-disabled =true
+disabled = true
 
 [ocaml]
-disabled =true
+disabled = true
 
 [openstack]
-disabled =true
+disabled = true
 
 [package]
-disabled =true
+disabled = true
 
 [perl]
-disabled =true
+disabled = true
 
 [php]
-disabled =true
+disabled = true
 
 [purescript]
-disabled =true
+disabled = true
 
 [python]
-disabled =true
+disabled = true
 
 [ruby]
-disabled =true
+disabled = true
 
 [rust]
-disabled =true
+disabled = true
 
 [shlvl]
-disabled =true
+disabled = true
 
 [singularity]
-disabled =true
+disabled = true
 
 [swift]
-disabled =true
+disabled = true
 
 [terraform]
-disabled =true
+disabled = true
 
 [zig]
-disabled =true
+disabled = true
