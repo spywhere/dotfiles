@@ -376,30 +376,7 @@ end)
     end
 
     local winwidth = vim.o.laststatus == 3 and math.max(vim.o.columns, fn.winwidth(0)) or fn.winwidth(0)
-    local text = string.format(
-      ' %s ',
-      mod.format(function (format)
-        return format()
-          .format(
-            '%s ',
-            format()
-              .map('state', {
-                playing = '▶'
-              }, '')
-          )
-          .scrollable(
-            25,
-            '%s - %s',
-            'artist',
-            'title'
-          )
-          .format(
-            ' [%s/%s]',
-            format().duration('position'),
-            format().duration('duration')
-          )
-      end)
-    )
+    local text = string.format(' %s ', mod.format(mod.status))
 
     if winwidth < 130 + text:len() then
       return ''

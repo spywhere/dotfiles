@@ -4,7 +4,11 @@ registry.install {
   'spywhere/now-playing.nvim',
   delay = function ()
     require('now-playing').setup {
-      redraw = true
+      redraw = true,
+      icon = {
+        default = '󰏤',
+        playing = '▶'
+      }
     }
   end
 }
