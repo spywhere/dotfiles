@@ -1,11 +1,3 @@
-bash-language-server
-ls_emmet
 eslint
-graphql-language-service-cli
 jest
 neovim
-pyright
-typescript
-typescript-language-server
-vim-language-server
-yaml-language-server
