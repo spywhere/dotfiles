@@ -10,7 +10,7 @@ registry.install {
   delay = lsp.setup(function (handler)
     require('mason-lspconfig').setup {
       ensure_installed = {
-        'bashls', 'graphql', 'lua_ls', 'pyright', 'tsserver', 'vimls', 'yamlls'
+        'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'tsserver', 'vimls', 'yamlls'
       },
       handlers = { handler }
     }
