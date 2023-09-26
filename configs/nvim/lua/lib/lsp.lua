@@ -108,23 +108,41 @@ end
 local M = {}
 local has_been_setup = false
 
+local function setup (setup_fn)
+  if has_been_setup then
+    return
+  end
+  assert(not has_been_setup, 'LSP setup has already been called')
+
+  setup_fn()
+
+  for _, fn in ipairs(fns.setup) do
+    fn()
+  end
+  fns.setup = {}
+  has_been_setup = true
+end
+
 M.setup = function (name)
-  if name == nil then
-    if has_been_setup then
-      return
+  if type(name) == 'function' then
+    -- return a setup function with a handler
+    return function ()
+      return setup(function ()
+        local function handler (server)
+          if lsps[server] then
+            setup_lsp(server, lsps[server])
+          end
+        end
+        name(handler)
+      end)
     end
-    assert(not has_been_setup, 'LSP setup has already been called')
-
-    -- perform a setup for LSPs
-    for lsp_name, lsp in pairs(lsps) do
-      setup_lsp(lsp_name, lsp)
-    end
-
-    for _, fn in ipairs(fns.setup) do
-      fn()
-    end
-    fns.setup = {}
-    has_been_setup = true
+  elseif name == nil then
+    return setup(function ()
+      -- perform a setup for LSPs
+      for lsp_name, lsp in pairs(lsps) do
+        setup_lsp(lsp_name, lsp)
+      end
+    end)
   else
     -- generate a chainable object for setting up LSP
     return generate_lsp_setup(name)
