@@ -14,7 +14,9 @@ registry.install {
       },
       handlers = { handler }
     }
-  end),
+  end, {
+    skip_check = true
+  }),
   config = function ()
     require('mason').setup()
     lsp.on_setup(function ()

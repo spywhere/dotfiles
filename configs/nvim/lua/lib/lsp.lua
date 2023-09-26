@@ -49,8 +49,11 @@ local lsp_on_attach = function (fn)
   end
 end
 
-local setup_lsp = function (name, lsp)
-  if lsp.executable and fn.executable(lsp.executable) == 0 then
+local setup_lsp = function (name, lsp, options)
+  if
+    (not options or not options.skip_check) and
+    (lsp.executable and fn.executable(lsp.executable) == 0)
+  then
     return
   end
 
@@ -123,14 +126,14 @@ local function setup (setup_fn)
   has_been_setup = true
 end
 
-M.setup = function (name)
+M.setup = function (name, options)
   if type(name) == 'function' then
     -- return a setup function with a handler
     return function ()
       return setup(function ()
         local function handler (server)
           if lsps[server] then
-            setup_lsp(server, lsps[server])
+            setup_lsp(server, lsps[server], options)
           end
         end
         name(handler)
