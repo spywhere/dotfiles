@@ -91,13 +91,6 @@ M.setup = function ()
   plug.setup {
     backend = 'lazy.nvim',
     update_branch = 'develop',
-    -- options = {
-    --   display = {
-    --     open_fn = function ()
-    --       return require('packer.util').float({ border = 'single' })
-    --     end
-    --   }
-    -- },
     extensions = {
       proxy {},
       plug.extension.auto_install {},

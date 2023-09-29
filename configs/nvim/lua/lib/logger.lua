@@ -1,5 +1,3 @@
-local M = {}
-
 local log = function (severity, trailing)
   return function (message)
     if trailing == nil then
