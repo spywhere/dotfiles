@@ -93,8 +93,7 @@ end
 M.setup = function ()
   local plug = require('plug')
   plug.setup {
-    backend = 'lazy.nvim',
-    update_branch = 'develop',
+    backend = plug.backend.lazy {},
     extensions = {
       proxy {},
       plug.extension.auto_install {},
