@@ -1,7 +1,11 @@
 local M = {}
 
 M.is_installed = function ()
-  return fn.filereadable(vim.fn.expand(plug_nvim_path)) ~= 0
+  local is_installed = fn.filereadable(vim.fn.expand(plug_nvim_path)) ~= 0
+  if is_installed then
+    vim.cmd('packadd! plug.nvim')
+  end
+  return is_installed
 end
 
 M.install = function ()
