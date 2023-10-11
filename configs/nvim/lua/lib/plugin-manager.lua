@@ -97,9 +97,6 @@ M.setup = function ()
     extensions = {
       proxy {},
       plug.extension.auto_install {},
-      plug.extension.priority {
-        priority = ''
-      },
       plug.extension.skip {},
       plug.extension.requires {},
       plug.extension.setup {},
