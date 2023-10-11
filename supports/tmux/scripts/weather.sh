@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# shellcheck disable=SC1091
 . "$HOME/.dots/binaries/_cache"
 
 _weather() {
