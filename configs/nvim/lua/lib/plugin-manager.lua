@@ -27,75 +27,50 @@ M.add = function (...)
   require('plug').install(...)
 end
 
-local proxy = function (_)
-  local function proxy_to_options(map)
-    return function (_, options, _, plugin)
-      local function proxy_key(from, to)
-        if not plugin[from] then
-          return
+local proxy_map = function (backend)
+  if backend == 'vim-plug' then
+    return {
+      branch = 'branch',
+      tag = 'tag',
+      commit = 'commit',
+      run = 'do',
+      cmd = 'on',
+      ft = 'for'
+    }
+  elseif backend == 'packer.nvim' then
+    return {
+      branch = 'branch',
+      tag = 'tag',
+      commit = 'commit',
+      run = 'run',
+      cmd = 'cmd',
+      ft = 'ft'
+    }
+  elseif backend == 'lazy.nvim' then
+    return {
+      branch = 'branch',
+      tag = function (value)
+        if string.match(value, '*') then
+          return 'version'
+        else
+          return 'tag'
         end
-
-        local value = plugin[from]
-        local to_key = to
-        if type(to_key) == 'function' then
-          to_key = to_key(value)
-        end
-        options[to_key] = value
-      end
-
-      for from, to in pairs(map) do
-        proxy_key(from, to)
-      end
-    end
-  end
-
-  return function (hook, ctx)
-    local map = {}
-    if ctx.backend == 'vim-plug' then
-      map = {
-        branch = 'branch',
-        tag = 'tag',
-        commit = 'commit',
-        run = 'do',
-        cmd = 'on',
-        ft = 'for'
-      }
-    elseif ctx.backend == 'packer.nvim' then
-      map = {
-        branch = 'branch',
-        tag = 'tag',
-        commit = 'commit',
-        run = 'run',
-        cmd = 'cmd',
-        ft = 'ft'
-      }
-    elseif ctx.backend == 'lazy.nvim' then
-      map = {
-        branch = 'branch',
-        tag = function (value)
-          if string.match(value, '*') then
-            return 'version'
-          else
-            return 'tag'
-          end
-        end,
-        commit = 'commit',
-        run = 'build',
-        cmd = 'cmd',
-        ft = 'ft'
-      }
-    end
-
-    hook('plugin_options', proxy_to_options(map))
+      end,
+      commit = 'commit',
+      run = 'build',
+      cmd = 'cmd',
+      ft = 'ft'
+    }
   end
 end
 
 M.setup = function ()
   local plug = require('plug')
   plug.setup {
+    update_branch = 'develop',
     backend = plug.backend.lazy {},
     extensions = {
-      proxy {},
+      plug.extension.proxy(proxy_map),
       plug.extension.auto_install {},
       plug.extension.skip {},
       plug.extension.requires {},
