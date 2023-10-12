@@ -58,8 +58,12 @@ flashlight() {
 
 work() {
   if test -z "$WORKSPACE"; then
-    echo "ERROR: WORKSPACE is not set"
-    return 1
+    if test -d "$HOME/Documents"; then
+      WORKSPACE="$HOME/Documents"
+    else
+      echo "ERROR: WORKSPACE is not set"
+      return 1
+    fi
   fi
   query=""
   if test -n "$@"; then
