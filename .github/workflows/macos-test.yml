@@ -22,7 +22,7 @@ jobs:
             brew uninstall --ignore-dependencies $REMOVE_PACKAGES
           fi
           if test -n "$REMOVE_FILES"; then
-            rm -f $REMOVE_PACKAGES
+            rm -f $REMOVE_FILES
           fi
       - name: Installation Info
         run: |
@@ -51,7 +51,7 @@ jobs:
             brew uninstall --ignore-dependencies $REMOVE_PACKAGES
           fi
           if test -n "$REMOVE_FILES"; then
-            rm -f $REMOVE_PACKAGES
+            rm -f $REMOVE_FILES
           fi
       - name: Installation Info
         run: |
