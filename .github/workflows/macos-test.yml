@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clean Up Environment
-        if: ${{ env.REMOVE_PACKAGES != '' }}
+        if: ${{ vars.REMOVE_PACKAGES != '' }}
         env:
           REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
         run: |
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clean Up Environment
-        if: ${{ env.REMOVE_PACKAGES != '' }}
+        if: ${{ vars.REMOVE_PACKAGES != '' }}
         env:
           REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
         run: |
