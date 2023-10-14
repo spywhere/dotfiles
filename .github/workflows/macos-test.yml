@@ -14,21 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clean Up Environment
+        if: ${{ env.REMOVE_PACKAGES != '' }}
+        env:
+          REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
         run: |
-          if test -f /usr/local/bin/go; then
-            rm -f /usr/local/bin/go*
-          fi
-          if test -f /usr/local/bin/node; then
-            rm -f /usr/local/bin/node /usr/local/bin/npm /usr/local/bin/npx
-          fi
-          if test -f /usr/local/bin/2to3; then
-            rm -f /usr/local/bin/2to3*
-            rm -f /usr/local/bin/py*
-            rm -f /usr/local/bin/idle3*
-          fi
-          if test -d /usr/local/lib/node_modules; then
-            rm -rf /usr/local/lib/node_modules
-          fi
+          brew uninstall $REMOVE_PACKAGES
       - name: Installation Info
         run: |
           sh install.sh -i
@@ -48,21 +38,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clean Up Environment
+        if: ${{ env.REMOVE_PACKAGES != '' }}
+        env:
+          REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
         run: |
-          if test -f /usr/local/bin/go; then
-            rm -f /usr/local/bin/go*
-          fi
-          if test -f /usr/local/bin/node; then
-            rm -f /usr/local/bin/node /usr/local/bin/npm /usr/local/bin/npx
-          fi
-          if test -f /usr/local/bin/2to3; then
-            rm -f /usr/local/bin/2to3*
-            rm -f /usr/local/bin/py*
-            rm -f /usr/local/bin/idle3*
-          fi
-          if test -d /usr/local/lib/node_modules; then
-            rm -rf /usr/local/lib/node_modules
-          fi
+          brew uninstall $REMOVE_PACKAGES
       - name: Installation Info
         run: |
           sh -c "$(curl -sSL dots.spywhere.me)" - -i
