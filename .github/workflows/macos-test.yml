@@ -52,6 +52,9 @@ jobs:
           if test -f /usr/local/bin/go; then
             rm -f /usr/local/bin/go*
           fi
+          if test -f /usr/local/bin/node; then
+            rm -f /usr/local/bin/node /usr/local/bin/npm /usr/local/bin/npx
+          fi
           if test -f /usr/local/bin/2to3; then
             rm -f /usr/local/bin/2to3*
             rm -f /usr/local/bin/py*
