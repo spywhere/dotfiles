@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Grammarly for Safari'
+has_app 'Agenda'
 
-profile work
-use_mas 'grammarly-for-safari' 1462114288
+use_mas 'agenda' '1287445660'
