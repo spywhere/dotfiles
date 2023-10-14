@@ -14,11 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clean Up Environment
-        if: ${{ vars.REMOVE_PACKAGES != '' }}
         env:
           REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
+          REMOVE_FILES: ${{ vars.REMOVE_FILES }}
         run: |
-          brew uninstall $REMOVE_PACKAGES
+          if test -n "$REMOVE_PACKAGES"; then
+            brew uninstall --ignore-dependencies $REMOVE_PACKAGES
+          fi
+          if test -n "$REMOVE_FILES"; then
+            rm -f $REMOVE_PACKAGES
+          fi
       - name: Installation Info
         run: |
           sh install.sh -i
@@ -38,11 +43,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clean Up Environment
-        if: ${{ vars.REMOVE_PACKAGES != '' }}
         env:
           REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
+          REMOVE_FILES: ${{ vars.REMOVE_FILES }}
         run: |
-          brew uninstall $REMOVE_PACKAGES
+          if test -n "$REMOVE_PACKAGES"; then
+            brew uninstall --ignore-dependencies $REMOVE_PACKAGES
+          fi
+          if test -n "$REMOVE_FILES"; then
+            rm -f $REMOVE_PACKAGES
+          fi
       - name: Installation Info
         run: |
           sh -c "$(curl -sSL dots.spywhere.me)" - -i
