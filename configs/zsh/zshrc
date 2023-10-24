@@ -76,6 +76,24 @@ else
   USE_STARSHIP=false
 fi
 
+# ZSH_AUTOSUGGEST_STRATEGY=(openai)
+#
+# _zsh_autosuggest_strategy_openai() {
+# 	# Reset options to defaults and enable LOCAL_OPTIONS
+# 	emulate -L zsh
+#
+# 	# Escape backslashes and all of the glob operators so we can use
+# 	# this string as a pattern to search the $history associative array.
+# 	# - (#m) globbing flag enables setting references for match data
+# 	# TODO: Use (b) flag when we can drop support for zsh older than v5.0.8
+# 	local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
+#
+# 	# Get the history items that match the prefix, excluding those that match
+# 	# the ignore pattern
+# 	local pattern="$prefix"
+# 	typeset -g suggestion="$pattern from openai"
+# }
+
 if ! (echo "$PATH" | grep -q vim) && test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
   zinit ice lucid wait"0"
   zinit snippet OMZ::plugins/tmux
