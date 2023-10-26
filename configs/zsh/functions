@@ -66,7 +66,7 @@ work() {
     fi
   fi
   query=""
-  if test "$@" = "-"; then
+  if test "$1" = "-"; then
     cd "$WORKSPACE" || return
     return
   elif test -n "$@"; then
