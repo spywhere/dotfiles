@@ -7,8 +7,18 @@ registry.install {
     'williamboman/mason.nvim',
     'neovim/nvim-lspconfig'
   },
-  delay = lsp.setup(function (handler)
-    require('mason-lspconfig').setup {
+  delay = lsp.setup(function (handler, required_servers)
+    local mason_lsp = require('mason-lspconfig')
+
+    local available_servers = mason_lsp.get_available_servers()
+    for _, server in ipairs(required_servers) do
+      -- setup lsp manually for unsupported servers
+      if not available_servers[server] then
+        handler(server)
+      end
+    end
+
+    mason_lsp.setup {
       ensure_installed = {
         'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'tsserver', 'vimls', 'yamlls'
       },

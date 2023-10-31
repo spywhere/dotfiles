@@ -136,7 +136,7 @@ M.setup = function (name, options)
             setup_lsp(server, lsps[server], options)
           end
         end
-        name(handler)
+        name(handler, vim.tbl_keys(lsps))
       end)
     end
   elseif name == nil then
