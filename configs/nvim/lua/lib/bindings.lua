@@ -103,7 +103,8 @@ local map = function (mapper)
     operator = keymap {'o'},
     terminal = keymap {'t'},
     ni = keymap {'n', 'i'},
-    nv = keymap {'n', 'v'}
+    nv = keymap {'n', 'v'},
+    nt = keymap {'n', 't'}
   }
 end
 
