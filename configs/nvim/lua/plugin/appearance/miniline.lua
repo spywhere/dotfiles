@@ -513,10 +513,11 @@ local setup = function ()
         local win_cfg = api.nvim_win_get_config(wid)
         local bufid = api.nvim_win_get_buf(wid)
         local ft = api.nvim_buf_get_option(bufid, 'filetype')
+        local bt = api.nvim_buf_get_option(bufid, 'buftype')
         local skip = (
           ft == 'NvimTree' or ft == 'TreeFilter' or ft == 'alpha' or
           ft == 'vim-plug' or ft == 'packer' or ft == 'qf' or ft == 'dbui' or
-          ft == 'dbout'
+          ft == 'dbout' or bt ~= ''
         )
 
         if
