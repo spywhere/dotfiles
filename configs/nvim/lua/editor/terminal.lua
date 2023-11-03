@@ -1,31 +1,10 @@
 local bindings = require('lib.bindings')
 local registry = require('lib.registry')
 
-if fn.has('win32') == 1 and fn.executable('wsl.exe') == 1 then
-  local quick_terminal = function ()
-    if fn.executable('pwsh.exe') == 1 then
-      local powershell = {
-        function()
-          vim.cmd('terminal pwsh.exe')
-        end
-      }
-      bindings.cmd('PowerShell', powershell)
-    end
-
-    local wsl_terminal = {
-      function()
-        vim.cmd('terminal wsl.exe')
-      end
-    }
-    bindings.cmd('WSLTerminal', wsl_terminal)
-
-    bindings.map.normal('<C-a>c', '<cmd>WSLTerminal<cr>')
-    bindings.map.normal('<C-a>-', '<cmd>split | WSLTerminal<cr>')
-    bindings.map.normal('<C-a><bar>', '<cmd>vsplit | WSLTerminal<cr>')
-    bindings.map.normal('<C-a><space>', '<cmd>WSLTerminal<cr>')
-  end
-  registry.defer_first(quick_terminal)
+local quick_terminal = function ()
+  bindings.map.normal('<leader>t', '<cmd>split25 | terminal<cr>')
 end
+registry.defer_first(quick_terminal)
 
 local terminal_setup = function ()
   registry.auto('TermOpen', function ()
