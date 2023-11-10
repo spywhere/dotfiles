@@ -94,7 +94,7 @@ fi
 # 	typeset -g suggestion="$pattern from openai"
 # }
 
-if ! (echo "$PATH" | grep -q vim) && test -z "$TMUX" -a -z "$TERM_PROGRAM" -a ! -f ~/no-tmux; then
+if test -z "$VIM" && test -z "$TMUX" && test -z "$TERM_PROGRAM" && test ! -f ~/no-tmux; then
   zinit ice lucid wait"0"
   zinit snippet OMZ::plugins/tmux
 else
