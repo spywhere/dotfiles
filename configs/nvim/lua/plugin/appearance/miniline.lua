@@ -352,6 +352,19 @@ end)
   end
 }
 
+[[Recording]] {
+  hl = colors.group('white', 'red'),
+  visible = {
+    active = function (ctx)
+      return ctx.value ~= nil
+    end
+  },
+  fn = function ()
+    local register = fn.reg_recording()
+    return register ~= '' and string.format(' %s ', register) or nil
+  end
+}
+
 [[Obsession]] {
   hl = colors.group('white', 'brightblack'),
   visible = {
