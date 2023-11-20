@@ -29,7 +29,7 @@ registry.install {
       }
     }
 
-    bindings.set('foldmethod', 'expr')
-    bindings.set('foldexpr', 'nvim_treesitter#foldexpr()')
+    -- bindings.set('foldmethod', 'expr')
+    -- bindings.set('foldexpr', 'nvim_treesitter#foldexpr()')
   end
 }
