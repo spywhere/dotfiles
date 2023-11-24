@@ -1,0 +1,50 @@
+#!/bin/bash
+
+trap 'exit 0' INT
+
+DIRECTORY="$PWD"
+DELAY="1"
+
+while true; do
+  case "$1" in
+    -d|--dir)
+      shift
+      DIRECTORY="$(realpath "$DIRECTORY/$1" 2>/dev/null)"
+      if test $? -ne 0; then
+        echo "No such file or directory: $1"
+        exit 1
+      fi
+      ;;
+    -n|--delay)
+      shift
+      case "$1" in
+        -*)
+          echo "Delay must be a number, and greater than 0"
+          exit 1
+          ;;
+        *)
+          if test "$(echo "$1" | bc)" != '0'; then
+            DELAY="$1"
+          else
+            echo "Delay must be a number, and greater than 0"
+            exit 1
+          fi
+          ;;
+      esac
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift
+done
+
+if test -z "$1"; then
+  echo "No command given"
+  echo "Usage: $(basename "$0") [-n delay] [-d path] command args..."
+  exit 1
+fi
+
+while true; do
+  watch -Cwrt --chgexit -n "$DELAY" "command ls -oAT $DIRECTORY | sha256sum" 1>/dev/null && $@
+done
