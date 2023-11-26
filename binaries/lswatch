@@ -46,5 +46,5 @@ if test -z "$1"; then
 fi
 
 while true; do
-  watch -Cwrt --chgexit -n "$DELAY" "command ls -oAT $DIRECTORY | sha256sum" 1>/dev/null && $@
+  watch -Cwrt --chgexit -n "$DELAY" "command ls -oAT $DIRECTORY | sha256sum" 1>/dev/null && "$@"
 done
