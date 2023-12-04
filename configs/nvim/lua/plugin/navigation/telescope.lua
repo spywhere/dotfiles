@@ -4,6 +4,7 @@ local filter = require('plugin.explorer._filter')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
+  skip = registry.experiment('telescope').off,
   tag = '0.1.2',
   requires = {
     {
@@ -14,32 +15,6 @@ registry.install {
       build = 'make'
     }
   },
-  defer = function ()
-    local telescope = function (action, options)
-      return function ()
-        if type(options) == 'function' then
-          options = options()
-        end
-        require('telescope.builtin')[action](options)
-      end
-    end
-
-    bindings.map.normal('<C-p>', telescope('find_files', {
-      prompt_prefix='Find> ',
-      hidden = true
-    }))
-    bindings.map.normal('<leader>/', telescope('current_buffer_fuzzy_find', {
-      prompt_prefix='BLines> '
-    }))
-    -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
-    bindings.map.normal('<leader>f', function ()
-      require('telescope.builtin').live_grep {
-        prompt_prefix='Rg> ',
-        glob_pattern=filter.get()
-      }
-    end)
-    -- TODO: ripgrep the whole project with rg itself
-  end,
   config = function ()
     local actions = require('telescope.actions')
     local layout_actions = require('telescope.actions.layout')
@@ -78,5 +53,30 @@ registry.install {
     }
 
     require('telescope').load_extension('fzf')
+
+    local telescope = function (action, options)
+      return function ()
+        if type(options) == 'function' then
+          options = options()
+        end
+        require('telescope.builtin')[action](options)
+      end
+    end
+
+    bindings.map.normal('<C-p>', telescope('find_files', {
+      prompt_prefix='Find> ',
+      hidden = true
+    }))
+    bindings.map.normal('<leader>/', telescope('current_buffer_fuzzy_find', {
+      prompt_prefix='BLines> '
+    }))
+    -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
+    bindings.map.normal('<leader>f', function ()
+      require('telescope.builtin').live_grep {
+        prompt_prefix='Rg> ',
+        glob_pattern=filter.get()
+      }
+    end)
+    -- TODO: ripgrep the whole project with rg itself
   end
 }
