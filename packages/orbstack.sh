@@ -11,8 +11,7 @@ then
   exit 1
 fi
 
-has_executable 'podman'
+has_executable 'orb'
 
-profile -work
-use_apt 'podman'
-use_brew formula 'podman'
+profile work
+use_brew formula 'orbstack'
