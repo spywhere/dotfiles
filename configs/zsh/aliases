@@ -77,12 +77,9 @@ fi
 alias search_prs=search_github
 alias search_issues=search_github
 
-# Docker
-alias d="$(command -v docker)"
-
-# Podman
+# Container Engine
 alias p="podman"
-alias docker="podman"
+alias d="docker"
 
 # github cli - issues
 alias iscl="gh issue close"
