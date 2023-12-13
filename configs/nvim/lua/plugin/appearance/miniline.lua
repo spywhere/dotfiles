@@ -58,7 +58,7 @@ local function is_lsp_attached()
   return next(vim.lsp.buf_get_clients(0))
 end
 
-local function get_lsp_diagnostic_count(prefix, diagnostic_type)
+local function get_lsp_diagnostic_count(text, diagnostic_type)
   return function()
     if not is_lsp_attached() then
       return ''
@@ -77,7 +77,7 @@ local function get_lsp_diagnostic_count(prefix, diagnostic_type)
     ))
 
     if count ~= 0 then
-      return (prefix or '') .. count .. ' '
+      return string.gsub(text, '%%count%%', count)
     end
 
     return ''
@@ -478,34 +478,34 @@ end)
 [[Diagnostic]] {
   before = '',
   after = '',
-  sep = '',
+  sep = ' ',
   visible = {
     active = is_lsp_attached
   },
   -- Hint
   {
-    hl = colors.group('black', 'cyan'),
-    fn = get_lsp_diagnostic_count(' H: ', vim.diagnostic.severity.HINT)
+    hl = colors.group('cyan', 'black'),
+    fn = get_lsp_diagnostic_count(' %count%', vim.diagnostic.severity.HINT)
   },
   -- Info
   {
-    hl = colors.group('black', 'green'),
-    fn = get_lsp_diagnostic_count(' I: ', vim.diagnostic.severity.INFO)
+    hl = colors.group('green', 'black'),
+    fn = get_lsp_diagnostic_count(' %count%', vim.diagnostic.severity.INFO)
   },
   -- Warn
   {
-    hl = colors.group('black', 'orange'),
-    fn = get_lsp_diagnostic_count(' W: ', vim.diagnostic.severity.WARN)
+    hl = colors.group('orange', 'black'),
+    fn = get_lsp_diagnostic_count(' %count%', vim.diagnostic.severity.WARN)
   },
   -- Error
   {
-    hl = colors.group('black', 'red'),
-    fn = get_lsp_diagnostic_count(' E: ', vim.diagnostic.severity.ERROR)
+    hl = colors.group('red', 'black'),
+    fn = get_lsp_diagnostic_count(' %count%', vim.diagnostic.severity.ERROR)
   },
   -- OK
   {
-    hl = colors.group('black', 'cyan'),
-    fn = get_lsp_ok(' OK')
+    hl = colors.group('cyan', 'black'),
+    fn = get_lsp_ok('')
   }
 }
 
