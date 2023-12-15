@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'MonitorControl'
+has_app 'BetterDisplay'
 
-use_brew cask 'monitorcontrol'
+use_brew cask 'betterdisplay'
