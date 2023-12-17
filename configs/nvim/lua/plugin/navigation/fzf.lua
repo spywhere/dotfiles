@@ -14,7 +14,7 @@ registry.install {
         width = 0.9
       },
       fzf_opts = {
-        ['--layout']      = 'default'
+        ['--layout'] = 'default'
       },
       grep = {
         no_header = true,
@@ -22,11 +22,11 @@ registry.install {
       },
       keymap = {
         builtin = {
-          ['<C-_>']        = 'toggle-preview',
+          ['<C-_>'] = 'toggle-preview',
         },
         fzf = {
-          ['ctrl-u']      = 'half-page-up',
-          ['ctrl-d']      = 'half-page-down',
+          ['ctrl-u'] = 'half-page-up',
+          ['ctrl-d'] = 'half-page-down',
         }
       }
     }
