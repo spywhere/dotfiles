@@ -9,4 +9,4 @@ deno ref:1.22.0
 coursier 2.1.0-M6-53-gb4f448130
 zig 0.10.1
 kotlin 1.8.21
-pnpm 8.10.4
+pnpm 8.13.0
