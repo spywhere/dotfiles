@@ -46,6 +46,7 @@ setup_version_manager() {
   else
     bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add deno https://github.com/spywhere/asdf-deno.git"
   fi
+  bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add upgrade https://github.com/spywhere/asdf-upgrade.git"
   set -e
 
   if test -f "$HOME/.tool-versions"; then
