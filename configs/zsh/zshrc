@@ -94,6 +94,8 @@ fi
 # 	typeset -g suggestion="$pattern from openai"
 # }
 
+zinit snippet OMZP::brew
+
 if test -z "$VIM" && test -z "$TMUX" && test -z "$TERM_PROGRAM" && test ! -f ~/no-tmux; then
   zinit ice lucid wait"0"
   zinit snippet OMZ::plugins/tmux
@@ -117,7 +119,6 @@ else
   zinit light zdharma-continuum/fast-syntax-highlighting
 
   zinit snippet OMZP::asdf
-  zinit snippet OMZP::brew
   zinit snippet OMZP::common-aliases
   zinit ice lucid as"completion"
   zinit snippet OMZP::docker/completions/_docker
@@ -130,13 +131,6 @@ else
   zinit ice lucid as"completion"
   zinit snippet OMZP::httpie/_httpie
   zinit snippet OMZP::npm
-fi
-
-if test -d /opt/homebrew/bin; then
-  export PATH="/opt/homebrew/bin:$PATH"
-fi
-if test -d /opt/homebrew/sbin; then
-  export PATH="/opt/homebrew/sbin:$PATH"
 fi
 
 if $USE_STARSHIP; then
