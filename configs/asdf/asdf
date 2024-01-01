@@ -2,7 +2,7 @@ nodejs 18.16.1
 python 3.10.4
 dotnet-core 6.0.400
 java adoptopenjdk-17.0.4+101
-fzf 0.44.1
+fzf 0.45.0
 neovim ref:0.9.4
 rust 1.71.0
 deno ref:1.22.0
