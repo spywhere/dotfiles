@@ -16,6 +16,9 @@ registry.install {
       fzf_opts = {
         ['--layout'] = 'default'
       },
+      files = {
+        no_header = true
+      },
       grep = {
         no_header = true,
         rg_glob = true
