@@ -11,9 +11,9 @@ then
   exit 1
 fi
 
-has_app 'ProtonMail'
+has_app 'Proton Mail'
 
 SUPPORT_DIR="$HOME/$DOTFILES/supports/protonmail"
 
-use_nativefier 'ProtonMail' 'https://mail.proton.me' --conceal --background-color '#1C1B23' --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --inject "$SUPPORT_DIR/inject.js" --counter --title-bar-style hidden --disable-context-menu --darwin-dark-mode-support
+use_nativefier 'Proton Mail' 'https://mail.proton.me' --conceal --background-color '#1C1B23' --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --inject "$SUPPORT_DIR/inject.js" --counter --title-bar-style hidden --disable-context-menu --darwin-dark-mode-support
 # use_pake 'https://mail.proton.me' --name ProtonMail --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --transparent --safe-domain proton.me
