@@ -13,6 +13,7 @@ fi
 
 has_app 'Proton Pass'
 
-SUPPORT_DIR="$HOME/$DOTFILES/supports/protonpass"
+SUPPORT_DIR="$HOME/$DOTFILES/supports/proton/pass"
 
+profile -work
 use_nativefier 'Proton Pass' 'https://pass.proton.me' --fast-quit --conceal --background-color '#1C1B23' --icon "$SUPPORT_DIR/icon.icns" --inject "$SUPPORT_DIR/inject.css" --title-bar-style hidden --disable-context-menu --darwin-dark-mode-support
