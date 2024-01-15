@@ -12,6 +12,10 @@
   defaultBranch = main
 [fetch]
   prune = true
+[merge]
+  autoStash = true
+[rebase]
+  autoStash = true
 [pull]
   ff = only
 [push]
