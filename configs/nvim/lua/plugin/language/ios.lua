@@ -33,10 +33,13 @@ registry.install {
         auto_focus = false,
 
         notify = function (message, severity)
+          local fidget = prequire('fidget')
           if progress_handle then
             progress_handle.message = message
             progress_handle:finish()
             progress_handle = nil
+          elseif fidget then
+            fidget.notify(message, severity)
           else
             vim.notify(message, severity)
           end
