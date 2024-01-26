@@ -3,8 +3,32 @@ local registry = require('lib.registry')
 local dap = require('lib.dap')
 
 registry.install {
-  'mfussenegger/nvim-dap',
-  delay = dap.setup,
+  'jay-babu/mason-nvim-dap.nvim',
+  requires = {
+    'williamboman/mason.nvim',
+    'mfussenegger/nvim-dap',
+  },
+  delay = dap.setup(function (handler)
+    local mason_dap = require('mason-nvim-dap')
+
+    mason_dap.setup {
+      automatic_installation = true,
+      handlers = {
+        function (config)
+          local adapters
+          handler(config.name, {
+            adapter = function (_, adapter)
+              adapters = adapter
+            end
+          })
+
+          config.adapters = vim.tbl_extend('force', config.adapters, adapters)
+
+          mason_dap.default_setup(config)
+        end
+      }
+    }
+  end),
   config = function ()
     bindings.map.normal('<leader>b', {
       import='dap',
