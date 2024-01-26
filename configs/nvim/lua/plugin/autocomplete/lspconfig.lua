@@ -28,7 +28,6 @@ registry.install {
     skip_check = true
   }),
   config = function ()
-    require('mason').setup()
     lsp.on_setup(function ()
       vim.diagnostic.config({
         virtual_text = false
