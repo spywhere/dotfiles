@@ -17,7 +17,8 @@ registry.install {
         ['--layout'] = 'default'
       },
       files = {
-        no_header = true
+        no_header = true,
+        git_icons = false
       },
       grep = {
         no_header = true,
