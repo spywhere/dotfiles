@@ -1,6 +1,7 @@
 local registry = require('lib.registry')
 local bindings = require('lib.bindings')
 
+local progress_handle
 registry.install {
   'wojciech-kulik/xcodebuild.nvim',
   requires = {
@@ -26,6 +27,37 @@ registry.install {
     require('xcodebuild').setup {
       code_coverage = {
         enabled = true
+      },
+      logs = {
+        auto_open_on_success_build = false,
+        auto_focus = false,
+
+        notify = function (message, severity)
+          if progress_handle then
+            progress_handle.message = message
+            progress_handle:finish()
+            progress_handle = nil
+          else
+            vim.notify(message, severity)
+          end
+        end,
+        notify_progress = function (message)
+          local progress = prequire('fidget.progress')
+
+          if not progress then
+            vim.cmd("echo '" .. message .. "'")
+            return
+          end
+
+          if progress_handle then
+            progress_handle.message = message
+          else
+            progress_handle = progress.handle.create {
+              message = message,
+              lsp_client = { name = 'xcodebuild' }
+            }
+          end
+        end
       }
     }
 
