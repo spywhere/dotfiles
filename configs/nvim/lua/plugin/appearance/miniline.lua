@@ -401,6 +401,65 @@ end)
   end
 }
 
+[[iOS]] {
+  sep = ' | ',
+  after = ' |',
+  hl = colors.group('white', 'brightblack'),
+  visible = {
+    active = function ()
+      return fn.exists('g:xcodebuild_scheme') == 1 and
+        fn.exists('g:xcodebuild_platform') == 1 and
+        fn.exists('g:xcodebuild_device_name') == 1 and
+        fn.exists('g:xcodebuild_os') == 1
+    end,
+    inactive = false
+  },
+  -- Test Plan
+  {
+    visible = {
+      ['*'] = function ()
+        return vim.fn.exists('g:xcodebuild_test_plan') == 1
+      end
+    },
+    fn = function ()
+      return '󰙨 ' .. vim.g.xcodebuild_test_plan
+    end
+  },
+  -- Scheme
+  {
+    visible = {
+      ['*'] = function ()
+        return vim.fn.exists('g:xcodebuild_scheme') == 1
+      end
+    },
+    fn = function ()
+      return vim.g.xcodebuild_scheme
+    end
+  },
+  -- Device
+  {
+    visible = {
+      ['*'] = function ()
+        return vim.fn.exists('g:xcodebuild_platform') == 1
+      end
+    },
+    fn = function ()
+      return vim.g.xcodebuild_platform == 'macOS' and '  macOS' or ' ' .. vim.g.xcodebuild_device_name
+    end
+  },
+  -- OS Version
+  {
+    visible = {
+      ['*'] = function ()
+        return vim.fn.exists('g:xcodebuild_os') == 1
+      end,
+    },
+    fn = function ()
+      return ' ' .. vim.g.xcodebuild_os
+    end
+  }
+}
+
 [[FileInfo]] {
   sep = ' | ',
   hl = colors.group('white', 'brightblack'),

@@ -4,7 +4,6 @@ local filter = require('plugin.explorer._filter')
 
 registry.install {
   'nvim-telescope/telescope.nvim',
-  skip = registry.experiment('telescope').off,
   tag = '0.1.2',
   requires = {
     {
@@ -61,6 +60,10 @@ registry.install {
         end
         require('telescope.builtin')[action](options)
       end
+    end
+
+    if registry.experiment('telescope').off() then
+      return
     end
 
     bindings.map.normal('<C-p>', telescope('find_files', {
