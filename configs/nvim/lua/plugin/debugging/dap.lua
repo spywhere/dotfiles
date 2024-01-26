@@ -31,5 +31,9 @@ registry.install {
       import='dap',
       'step_over()'
     })
+    bindings.map.normal('<leader>dx', {
+      import='dap',
+      'terminate()'
+    })
   end
 }
