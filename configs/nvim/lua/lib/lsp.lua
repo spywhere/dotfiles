@@ -111,7 +111,7 @@ end
 local M = {}
 local has_been_setup = false
 
-local function setup (setup_fn)
+local function setup(setup_fn)
   if has_been_setup then
     return
   end
@@ -131,7 +131,7 @@ M.setup = function (name, options)
     -- return a setup function with a handler
     return function ()
       return setup(function ()
-        local function handler (server)
+        local function handler(server)
           if lsps[server] then
             setup_lsp(server, lsps[server], options)
           end

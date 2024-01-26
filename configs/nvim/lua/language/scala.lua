@@ -18,7 +18,7 @@ local function status_handler(_, status, ctx)
 end
 
 lsp.setup('metals')
-  .filetypes({ 'scala', 'sbt', 'java' })
+  .filetypes { 'scala', 'sbt', 'java' }
   .options(function ()
     local config = require('metals').bare_config()
 

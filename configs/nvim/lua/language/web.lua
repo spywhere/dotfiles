@@ -6,6 +6,6 @@ local capabilities = lsp.capabilities({
 
 lsp.setup('emmet_ls')
   .need_executable('emmet_ls')
-  .options({
+  .options {
     capabilities = capabilities
-  })
+  }

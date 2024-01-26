@@ -2,7 +2,7 @@ local lsp = require('lib.lsp')
 
 lsp.setup('rust_analyzer')
   .need_executable('rust-analyzer')
-  .options({
+  .options {
     settings = {
       ['rust-analyzer'] = {
         check = {
@@ -10,4 +10,4 @@ lsp.setup('rust_analyzer')
         }
       }
     }
-  })
+  }
