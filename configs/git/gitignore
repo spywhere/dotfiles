@@ -8,4 +8,6 @@ Session.vim
 .tool-versions
 .metals
 .bloop
+.nvim
+buildServer.json
 project/**/metals.sbt
