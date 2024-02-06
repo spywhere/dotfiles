@@ -4,7 +4,7 @@ local dap = require('lib.dap')
 lsp.setup('sourcekit')
   .need_executable('sourcekit-lsp')
   .command(function ()
-    local command = 'sourcekit-lsp'
+    local command = { 'sourcekit-lsp' }
     if fn.executable('xcode-select') == 0 then
       return command
     end
