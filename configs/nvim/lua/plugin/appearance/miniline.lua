@@ -352,6 +352,40 @@ end)
   end
 }
 
+[[SearchResult]] {
+  hl = colors.group('cyan', 'brightblack'),
+  visible = {
+    active = function (ctx)
+      return ctx.value ~= nil and ctx.value ~= ''
+    end
+  },
+  fn = function ()
+    if vim.v.hlsearch == 0 then
+      return ''
+    end
+    local count = fn.searchcount()
+    if not count then
+      return ''
+    end
+
+    if count.incomplete == 1 then
+      return string.format('[?/??]')
+    end
+
+    local current = count.current
+    local total = count.total
+
+    if count.incomplete == 2 and count.total > count.maxcount then
+      if count.current > count.maxcount then
+        current = string.format('>%d', count.current)
+      end
+      total = string.format('>%d', count.total)
+    end
+
+    return string.format('[%s/%s]', current, total)
+  end
+}
+
 [[Recording]] {
   hl = colors.group('white', 'red'),
   visible = {
