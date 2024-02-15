@@ -364,7 +364,7 @@ end)
       return ''
     end
     local count = fn.searchcount()
-    if not count then
+    if not count or count.total == 0 then
       return ''
     end
 
