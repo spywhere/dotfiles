@@ -5,6 +5,8 @@
   compression = 9
   preloadIndex = true
   untrackedCache = true
+[rerere]
+  enabled = true
 [feature]
   manyFiles = true
 [init]
