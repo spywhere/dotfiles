@@ -114,7 +114,7 @@ registry.install {
           { type = 'text', val = mru_title(cwd), opts = { hl = 'SpecialComment' } },
           { type = 'padding', val = 1 },
           { type = 'group', val = function ()
-            return { startify.mru(start, cwd, 20) }
+            return { startify.mru(start, cwd and cwd .. '/' or nil, 20) }
           end }
         }
       }
