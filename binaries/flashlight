@@ -1,0 +1,56 @@
+#!/bin/bash
+
+COLOR="7"
+DURATION="10"
+
+while test "$1" != ""; do
+  case "$1" in
+    -c|--color)
+      shift
+      if test -z "$1"; then
+        echo "ERROR: color is required"
+        return 1
+      fi
+
+      case "$1" in
+        red)
+          COLOR="1"
+          ;;
+        green)
+          COLOR="2"
+          ;;
+        yellow)
+          COLOR="3"
+          ;;
+        blue)
+          COLOR="4"
+          ;;
+        pink|purple)
+          COLOR="5"
+          ;;
+        cyan)
+          COLOR="6"
+          ;;
+        white)
+          COLOR="7"
+          ;;
+        black)
+          COLOR="8"
+          ;;
+        *)
+          COLOR="$1"
+      esac
+      ;;
+    *)
+      break
+      ;;
+  esac
+
+  shift
+done
+
+if test $# -gt 0; then
+  DURATION="$1"
+fi
+
+printf "%s" "$(tput setab "$COLOR")$(tput clear)" && sleep "$DURATION"
