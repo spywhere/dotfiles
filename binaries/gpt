@@ -43,14 +43,14 @@ usage() {
   echo "  --cmd, --command                 Produce only shell command output"
   echo "  --code                           Produce only one-liner code"
   echo "  --url                            Produce only URL for the given query"
-  if test "$cmd_name" = "gpt"; then
+  if test "$cmd_name" != "prepare-commit-msg"; then
     echo
     echo "ADDITIONAL USAGE"
     echo "  Symlink (or copy) this script as your 'prepare-commit-msg' hook on your git repository to have GPT suggested a commit message"
     echo "    ln -fs $0 /path/to/repo/.git/hooks/prepare-commit-msg"
     echo
     echo "  Add the following line to your .zshrc to enable GPT command lookup using '# <query>'"
-    echo "    . <(gpt --zsh)"
+    echo "    . <($cmd_name --zsh)"
   fi
 }
 
@@ -408,16 +408,18 @@ hook() {
 setup_zsh() {
   cat <<'EOF'
 gpt_prompt() {
-  if [[ "$1" = "#"* ]] && test -n "$(command -v gpt)"; then
+  if [[ "$1" = "#"* ]]; then
     INPUT="${1#"#"}"
     printf "Asking GenAI for command...\r"
-    print -z "$(gpt --cmd "$INPUT")"
+EOF
+  printf "    print -z \"\$(%s --cmd \"\$INPUT\")\"\n" "$cmd_name"
+  cat <<'EOF'
     return
   fi
 }
 
 gpt_prompt_handler() {
-  if [[ "$1" = "#"* ]] && test -n "$(command -v gpt)"; then
+  if [[ "$1" = "#"* ]]; then
     return
   elif test -n "${functions[gpt_prompt_fallback]}"; then
     gpt_prompt_fallback "$*"
