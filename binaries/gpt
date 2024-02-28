@@ -48,6 +48,9 @@ usage() {
     echo "ADDITIONAL USAGE"
     echo "  Symlink (or copy) this script as your 'prepare-commit-msg' hook on your git repository to have GPT suggested a commit message"
     echo "    ln -fs $0 /path/to/repo/.git/hooks/prepare-commit-msg"
+    echo
+    echo "  Add the following line to your .zshrc to enable GPT command lookup using '# <query>'"
+    echo "    . <(gpt --zsh)"
   fi
 }
 
@@ -205,6 +208,10 @@ main() {
     case "$param" in
       -h | --help)
         usage
+        return
+        ;;
+      --zsh)
+        setup_zsh
         return
         ;;
       --models)
@@ -396,6 +403,38 @@ hook() {
   COMMIT_MSG="$(cat "$COMMIT_MSG_FILE")"
 
   printf '# %s\n%s' "$GPT_MSG" "$COMMIT_MSG" > "$COMMIT_MSG_FILE"
+}
+
+setup_zsh() {
+  cat <<'EOF'
+gpt_prompt() {
+  if [[ "$1" = "#"* ]] && test -n "$(command -v gpt)"; then
+    INPUT="${1#"#"}"
+    printf "Asking GenAI for command...\r"
+    print -z "$(gpt --cmd "$INPUT")"
+    return
+  fi
+}
+
+gpt_prompt_handler() {
+  if [[ "$1" = "#"* ]] && test -n "$(command -v gpt)"; then
+    return
+  elif test -n "${functions[gpt_prompt_fallback]}"; then
+    gpt_prompt_fallback "$*"
+  else
+    echo "zsh: command not found: $1"
+  fi
+}
+
+if test -n "${functions[command_not_found_handler]}"; then
+  functions[gpt_prompt_fallback]="${functions[command_not_found_handler]}"
+fi
+command_not_found_handler() {
+  gpt_prompt_handler "$*"
+}
+
+preexec_functions+=gpt_prompt
+EOF
 }
 
 case "$cmd_name" in

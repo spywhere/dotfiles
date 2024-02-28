@@ -146,13 +146,20 @@ fi
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
 . $HOME/$DOTFILES_NAME/configs/zsh/variables
 . $HOME/$DOTFILES_NAME/configs/zsh/hooks
-. $HOME/$DOTFILES_NAME/configs/zsh/preexec
+for hook in $HOME/$DOTFILES_NAME/configs/zsh/preexec/*; do
+  . "$hook"
+done
 
 # Use personalize settings if found as well
 test -f ~/.personal && source ~/.personal
 
 # Use fzf if found
 test -f ~/.fzf.zsh && source ~/.fzf.zsh
+
+# Use GPT command lookup
+if test -n "$(command -v gpt)"; then
+  . <(gpt --zsh)
+fi
 
 # Setup hstr
 if test -n "$(command -v hstr)"; then

@@ -1,0 +1,29 @@
+#!/bin/zsh
+
+history_prompt() {
+  if [[ "$1" = "history:"* ]] && test -n "$(command -v fzf)"; then
+    INPUT="${1#"history:"}"
+    printf "Searching history for command...\r"
+    print -z "$(fc -l 1 | fzf --filter="$INPUT" H -n1 | awk '{$1="";print substr($0,2)}')"
+    return
+  fi
+}
+
+history_prompt_handler() {
+  if [[ "$1" = "history:"* ]] && test -n "$(command -v fzf)"; then
+    return
+  elif test -n "${functions[history_prompt_fallback]}"; then
+    history_prompt_fallback $*
+  else
+    echo "zsh: command not found: $1"
+  fi
+}
+
+if test -n "${functions[command_not_found_handler]}"; then
+  functions[history_prompt_fallback]="${functions[command_not_found_handler]}"
+fi
+command_not_found_handler() {
+  history_prompt_handler $*
+}
+
+preexec_functions+=history_prompt
