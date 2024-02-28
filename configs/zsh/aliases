@@ -5,7 +5,7 @@ DOTFILES_NAME=.dots
 alias resume="fg"
 
 # quick project switching
-alias w="work"
+alias w=". work"
 
 # git
 alias glgfp="glg --first-parent"

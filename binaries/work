@@ -1,18 +1,25 @@
 #!/bin/bash
 
+if test "${BASH_SOURCE[0]}" = "$0"; then
+  echo "ERROR: This command must be sourced"
+  echo "It can be setup as an alias like this:"
+  echo "  alias $(basename "$0")=\". $(basename "$0")\""
+  exit 1
+fi
+
 if test -z "$WORKSPACE"; then
   if test -d "$HOME/Documents"; then
     WORKSPACE="$HOME/Documents"
   else
     echo "ERROR: WORKSPACE is not set"
-    return 1
+    exit 1
   fi
 fi
 query=""
 if test "$1" = "-"; then
-  cd "$WORKSPACE" || return
-  return
+  cd "$WORKSPACE" || exit
+  exit
 elif test -n "$@"; then
   query="-q $*"
 fi
-cd "$(find "$WORKSPACE" -mindepth 1 -maxdepth 1 -type d | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || return
+cd "$(find "$WORKSPACE" -mindepth 1 -maxdepth 1 -type d | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || exit
