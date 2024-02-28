@@ -1,0 +1,32 @@
+#!/bin/zsh
+
+preexec() {
+  if [[ "$1" = "#"* ]] && test -n "$(command -v gpt)"; then
+    INPUT="${1#"#"}"
+    printf "Asking GenAI for command...\r"
+    print -z "$(gpt --cmd $INPUT)"
+    return
+  fi
+  if [[ "$1" = "history:"* ]] && test -n "$(command -v fzf)"; then
+    INPUT="${1#"history:"}"
+    printf "Searching history for command...\r"
+    print -z "$(fc -l 1 | fzf --filter="$INPUT" H -n1 | awk '{$1="";print substr($0,2)}')"
+    return
+  fi
+  # if [[ "$1" = "snippet:"* ]]; then
+  #   printf "Searching snippet for command...\r"
+  #   return
+  # fi
+}
+
+command_not_found_handler() {
+  if [[ "$1" = "#"* ]] && test -n "$(command -v gpt)"; then
+    return
+  elif test "$1" = "history:" && test -n "$(command -v fzf)"; then
+    return
+  # elif test "$1" = "snippet:"; then
+  #   return
+  else
+    echo zsh: command not found: "$1"
+  fi
+}
