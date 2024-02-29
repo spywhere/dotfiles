@@ -1,5 +1,10 @@
 add_newline = false
 
+# To make it bottom align
+#   ${custom.at_bottom}
+#   ...
+#   $line_break\
+#   $character
 format = """
 $directory\
 $git_branch\
@@ -16,6 +21,10 @@ $cmd_duration\
 $username\
 $hostname
 """
+
+[custom.at_bottom]
+command = "tput cup $LINES"
+when = true
 
 [cmd_duration]
 format = "[$duration]($style) "
@@ -46,9 +55,6 @@ staged = "[+](yellow)"
 renamed = "[»](yellow)"
 deleted = "[✘](red)"
 ignore_submodules = true
-
-[line_break]
-disabled = true
 
 [aws]
 disabled = true
