@@ -35,13 +35,13 @@ alias dw="defaults write"
 # exa (ls replacement)
 if test -n "$(command -v eza)"; then
   alias ls="eza"
-  alias l="eza -lFh"
-  alias la="eza -laFh"
+  alias l="eza -lhF"
+  alias la="eza -lahF"
   alias ll="eza -l"
 elif test -n "$(command -v exa)"; then
   alias ls="exa"
-  alias l="exa -lFh"
-  alias la="exa -laFh"
+  alias l="exa -lhF"
+  alias la="exa -lahF"
   alias ll="exa -l"
 fi
 
