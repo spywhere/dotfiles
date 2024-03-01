@@ -1,6 +1,8 @@
 #!/bin/bash
 DOTFILES_NAME=.dots
 
+export EDITOR=nvim
+
 # increase history size
 export HISTFILE=~/.zsh_history
 export HISTSIZE=1000000
