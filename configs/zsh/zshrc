@@ -117,9 +117,15 @@ fi
 
 zinit snippet OMZP::brew
 
-if test -z "$VIM" && test -z "$TMUX" && test -z "$TERM_PROGRAM" && test ! -f ~/no-tmux; then
-  zinit ice lucid wait"0"
-  zinit snippet OMZ::plugins/tmux
+if test -z "$VIM" && test -z "$TMUX" && test -z "$ZELLIJ" && test -z "$TERM_PROGRAM" && ! exp_is aA tmux; then
+  if test -n "$(command -v zellij)" && exp_is bB zellij; then
+    ZELLIJ_AUTO_ATTACH=true
+    ZELLIJ_AUTO_EXIT=true
+    . <(zellij setup --generate-auto-start zsh)
+  elif test -n "$(command -v tmux)"; then
+    zinit ice lucid wait"0"
+    zinit snippet OMZ::plugins/tmux
+  fi
 else
   if ! $USE_STARSHIP; then
     zinit ice lucid depth"1"

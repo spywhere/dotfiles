@@ -1,0 +1,43 @@
+layout {
+  pane
+  pane size=2 borderless=true {
+    plugin location="zellij:status-bar"
+  }
+  pane size=1 borderless=true {
+    plugin location="file:/Users/spywhere/.dots/configs/zellij/plugins/zjstatus.wasm" {
+      format_left "{mode} {command_session}#[fg=#eceff4,bg=#4c566a] {session} #[fg=#f5bde6,bg=#262626] {tabs}"
+      format_right "{command_kbd}{command_datetime}#[fg=#eceff4,bg=#4c566a] {datetime}{command_weather}"
+      format_space "#[fg=#eceff4,bg=#262626]"
+
+      mode_normal  "#[bg=blue] "
+      mode_tmux    "#[bg=#ffc387] "
+
+      tab_normal   "#[fg=#262626,bg=#eed49f] {index} #[fg=#eceff4,bg=#262626] {name} "
+      tab_active   "#[fg=#262626,bg=#91d7e3] {index} #[fg=#eceff4,bg=#4c566a] {name} "
+
+      datetime        "{format} "
+      datetime_format "%a#%V %d %B %y, %H:%M"
+      datetime_timezone "Asia/Bangkok"
+
+      command_session_command "sh /Users/spywhere/.dots/supports/zellij/scripts/pill.sh - icon  #eceff4 #262626 #f5bde6"
+      command_session_format "{stdout}"
+      command_session_interval "3600"
+      command_session_rendermode "dynamic"
+
+      command_kbd_command "sh /Users/spywhere/.dots/supports/zellij/scripts/pill.sh kbd wrap #eceff4 #bf616a #eceff4 #262626"
+      command_kbd_format "{stdout}"
+      command_kbd_interval "1"
+      command_kbd_rendermode "dynamic"
+
+      command_datetime_command "sh /Users/spywhere/.dots/supports/zellij/scripts/pill.sh - icon  #eceff4 #262626 #f5bde6"
+      command_datetime_format "{stdout}"
+      command_datetime_interval "3600"
+      command_datetime_rendermode "dynamic"
+
+      command_weather_command "sh /Users/spywhere/.dots/supports/zellij/scripts/pill.sh weather segment  #eceff4 #4c566a #a6da95 #4c566a"
+      command_weather_format "{stdout}"
+      command_weather_interval "60"
+      command_weather_rendermode "dynamic"
+    }
+  }
+}

@@ -1,0 +1,240 @@
+keybinds {
+  normal {
+    bind "Ctrl a" { Write 1; SwitchToMode "Locked"; }
+    bind "-" { NewPane "Down"; SwitchToMode "Locked"; }
+    bind "|" { NewPane "Right"; SwitchToMode "Locked"; }
+
+    bind "[" { SwitchToMode "Scroll"; }
+    bind "z" { ToggleFocusFullscreen; SwitchToMode "Locked"; }
+    bind "c" { NewTab; SwitchToMode "Locked"; }
+    bind "," { SwitchToMode "RenameTab"; }
+    bind "p" { GoToPreviousTab; SwitchToMode "Locked"; }
+    bind "n" { GoToNextTab; SwitchToMode "Locked"; }
+    bind "h" { MoveFocus "Left"; SwitchToMode "Locked"; }
+    bind "l" { MoveFocus "Right"; SwitchToMode "Locked"; }
+    bind "j" { MoveFocus "Down"; SwitchToMode "Locked"; }
+    bind "k" { MoveFocus "Up"; SwitchToMode "Locked"; }
+    bind "o" { FocusNextPane; }
+    bind "d" { Detach; }
+    bind "Space" { NextSwapLayout; }
+    bind "x" { CloseFocus; SwitchToMode "Locked"; }
+
+    // Easy resize
+    bind "Left" { Resize "Increase Left"; }
+    bind "Down" { Resize "Increase Down"; }
+    bind "Up" { Resize "Increase Up"; }
+    bind "Right" { Resize "Increase Right"; }
+
+    // Zellij mode
+    bind "Ctrl p" { SwitchToMode "Pane"; }
+    bind "Ctrl n" { SwitchToMode "Resize"; }
+    bind "Ctrl s" { SwitchToMode "Scroll"; }
+    bind "Ctrl o" { SwitchToMode "Session"; }
+    bind "Ctrl t" { SwitchToMode "Tab"; }
+    bind "Ctrl h" { SwitchToMode "Move"; }
+  }
+  locked {
+    unbind "Ctrl g"
+    bind "Ctrl a" { SwitchToMode "Normal"; }
+
+    // Shift is not supported :(
+    //   See https://github.com/zellij-org/zellij/issues/2673
+    //       https://github.com/zellij-org/zellij/discussions/2934
+    // bind "Shift Left" { GoToPreviousTab; }
+    // bind "Shift Right" { GoToNextTab; }
+    bind "Home" { GoToPreviousTab; }
+    bind "End" { GoToNextTab; }
+
+    bind "Ctrl j" { MovePane "Down"; }
+    bind "Ctrl k" { MovePane "Up"; }
+  }
+  shared_except "normal" "locked" {
+    bind "Enter" "Esc" { SwitchToMode "Locked"; }
+  }
+  shared_except "pane" "locked" {
+    unbind "Ctrl p"
+  }
+  shared_except "resize" "locked" {
+    unbind "Ctrl n"
+  }
+  shared_except "scroll" "locked" {
+    unbind "Ctrl s"
+  }
+  shared_except "session" "locked" {
+    unbind "Ctrl o"
+  }
+  shared_except "tab" "locked" {
+    unbind "Ctrl t"
+  }
+  shared_except "move" "locked" {
+    unbind "Ctrl h"
+  }
+}
+
+plugins {
+  tab-bar { path "tab-bar"; }
+  status-bar { path "status-bar"; }
+  compact-bar { path "compact-bar"; }
+  session-manager { path "session-manager"; }
+}
+
+// Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
+// eg. when terminal window with an active zellij session is closed
+// Options:
+//   - detach (Default)
+//   - quit
+//
+// on_force_close "quit"
+
+//  Send a request for a simplified ui (without arrow fonts) to plugins
+//  Options:
+//    - true
+//    - false (Default)
+//
+// simplified_ui true
+
+// Choose the path to the default shell that zellij will use for opening new panes
+// Default: $SHELL
+//
+// default_shell "fish"
+
+// Choose the path to override cwd that zellij will use for opening new panes
+//
+// default_cwd ""
+
+// Toggle between having pane frames around the panes
+// Options:
+//   - true (default)
+//   - false
+//
+pane_frames false
+
+// Toggle between having Zellij lay out panes according to a predefined set of layouts whenever possible
+// Options:
+//   - true (default)
+//   - false
+//
+// auto_layout true
+
+// Whether sessions should be serialized to the cache folder (including their tabs/panes, cwds and running commands) so that they can later be resurrected
+// Options:
+//   - true (default)
+//   - false
+//
+// session_serialization false
+
+// Whether pane viewports are serialized along with the session, default is false
+// Options:
+//   - true
+//   - false (default)
+// serialize_pane_viewport true
+
+// Scrollback lines to serialize along with the pane viewport when serializing sessions, 0
+// defaults to the scrollback size. If this number is higher than the scrollback size, it will
+// also default to the scrollback size. This does nothing if `serialize_pane_viewport` is not true.
+//
+// scrollback_lines_to_serialize 10000
+
+// Define color themes for Zellij
+// For more examples, see: https://github.com/zellij-org/zellij/tree/main/example/themes
+// Once these themes are defined, one of them should to be selected in the "theme" section of this file
+//
+// themes {
+//     dracula {
+//         fg 248 248 242
+//         bg 40 42 54
+//         red 255 85 85
+//         green 80 250 123
+//         yellow 241 250 140
+//         blue 98 114 164
+//         magenta 255 121 198
+//         orange 255 184 108
+//         cyan 139 233 253
+//         black 0 0 0
+//         white 255 255 255
+//     }
+// }
+
+// Choose the theme that is specified in the themes section.
+// Default: default
+//
+// theme "default"
+
+// The name of the default layout to load on startup
+// Default: "default"
+//
+// default_layout "compact"
+default_layout "main"
+
+// Choose the mode that zellij uses when starting up.
+// Default: normal
+//
+default_mode "locked"
+
+// Toggle enabling the mouse mode.
+// On certain configurations, or terminals this could
+// potentially interfere with copying text.
+// Options:
+//   - true (default)
+//   - false
+//
+// mouse_mode false
+
+// Configure the scroll back buffer size
+// This is the number of lines zellij stores for each pane in the scroll back
+// buffer. Excess number of lines are discarded in a FIFO fashion.
+// Valid values: positive integers
+// Default value: 10000
+//
+// scroll_buffer_size 10000
+
+// Provide a command to execute when copying text. The text will be piped to
+// the stdin of the program to perform the copy. This can be used with
+// terminal emulators which do not support the OSC 52 ANSI control sequence
+// that will be used by default if this option is not set.
+// Examples:
+//
+// copy_command "xclip -selection clipboard" // x11
+// copy_command "wl-copy"                    // wayland
+// copy_command "pbcopy"                     // osx
+
+// Choose the destination for copied text
+// Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.
+// Does not apply when using copy_command.
+// Options:
+//   - system (default)
+//   - primary
+//
+// copy_clipboard "primary"
+
+// Enable or disable automatic copy (and clear) of selection when releasing mouse
+// Default: true
+//
+// copy_on_select false
+
+// Path to the default editor to use to edit pane scrollbuffer
+// Default: $EDITOR or $VISUAL
+//
+// scrollback_editor "/usr/bin/vim"
+
+// When attaching to an existing session with other users,
+// should the session be mirrored (true)
+// or should each user have their own cursor (false)
+// Default: false
+//
+// mirror_session true
+
+// The folder in which Zellij will look for layouts
+//
+// layout_dir "/path/to/my/layout_dir"
+layout_dir "/Users/spywhere/.dots/configs/zellij/layouts"
+
+// The folder in which Zellij will look for themes
+//
+// theme_dir "/path/to/my/theme_dir"
+
+// Enable or disable the rendering of styled and colored underlines (undercurl).
+// May need to be disabled for certain unsupported terminals
+// Default: true
+//
+// styled_underlines false

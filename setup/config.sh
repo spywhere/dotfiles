@@ -317,6 +317,9 @@ setup_config() {
   step "  - w3m"
   link w3m/ .w3m
 
+  step "  - zellij"
+  link zellij/ .config/zellij
+
   step "  - zsh"
   link zsh/zshrc .zshrc
 
