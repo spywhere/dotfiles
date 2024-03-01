@@ -12,14 +12,14 @@ if test -z "$WORKSPACE"; then
     WORKSPACE="$HOME/Documents"
   else
     echo "ERROR: WORKSPACE is not set"
-    exit 1
+    return 1
   fi
 fi
 query=""
 if test "$1" = "-"; then
   cd "$WORKSPACE" || exit
-  exit
+  return
 elif test -n "$@"; then
   query="-q $*"
 fi
-cd "$(find "$WORKSPACE" -mindepth 1 -maxdepth 1 -type d | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || exit
+cd "$(find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2- | rev | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || exit
