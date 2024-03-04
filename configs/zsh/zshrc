@@ -21,6 +21,9 @@ fi
 
 source ~/.zinit/bin/zinit.zsh
 
+# force to use emacs-style keymapping
+bindkey -e
+
 autoload -Uz compinit
 autoload -Uz bashcompinit && bashcompinit
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
