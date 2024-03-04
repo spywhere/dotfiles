@@ -74,6 +74,7 @@ EXPLIST=""
 get_variant() {
   if ! test -f ~/.explist; then
     printf 'z'
+    return
   fi
   if test -z "$EXPLIST"; then
     EXPLIST="$(cat ~/.explist)"
