@@ -82,7 +82,7 @@ get_variant() {
   if test -z "$EXPLIST"; then
     EXPLIST="$(cat ~/.explist)"
   fi
-  variant="$(printf '%s' "$EXPLIST" | grep "\b$1\b=" | cut -d'=' -f2)"
+  variant="$(printf '%s' "$EXPLIST" | grep "\b$1\b=" | tail -n1 | cut -d'=' -f2)"
   if test -z "$variant"; then
     printf 'z'
   else
