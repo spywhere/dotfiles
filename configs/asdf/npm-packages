@@ -1,4 +1,5 @@
+@ast-grep/cli
 eslint
 jest
 neovim
-@ast-grep/cli
+npm
