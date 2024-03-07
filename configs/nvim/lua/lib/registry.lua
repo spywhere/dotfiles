@@ -108,38 +108,18 @@ local install_plugin_manager = function (callback)
   end
 end
 
-local function split(str, sep, fn, default)
-  local output = default
-
-  if fn == nil then
-    output = {}
-    fn = function (acc, item)
-      table.insert(acc, item)
-      return acc
-    end
-  end
-
-  for s in string.gmatch(str, '([^'..sep..']+)') do
-    output = fn(output, s)
-  end
-
-  return output
-end
-
 local get_experiment_options = function (name)
-  if _explist == nil and vim.env.NVIM_EXPLIST then
-    _explist = split(
-      vim.env.NVIM_EXPLIST,
-      ',',
-      function (explist, exp)
-        local experiment = split(exp, '=')
+  if _explist == nil and fn.filereadable(fn.expand('~/.explist')) == 1 then
+    _explist = {}
+    vim.tbl_map(
+      function (exp)
+        local experiment = vim.split(exp, '=')
         local name, value = experiment[1], string.lower(experiment[2])
-        explist[name] = (
+        _explist[name] = (
           value == 'b' or value == 'true' or value == 'on' or value == 'yes'
         )
-        return explist
       end,
-      {}
+      fn.readfile(fn.expand('~/.explist'))
     )
   end
 
