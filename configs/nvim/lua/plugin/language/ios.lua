@@ -1,6 +1,10 @@
 local registry = require('lib.registry')
 local bindings = require('lib.bindings')
 
+registry.install {
+  'milch/vim-fastlane'
+}
+
 local progress_handle
 registry.install {
   'wojciech-kulik/xcodebuild.nvim',
