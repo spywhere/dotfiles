@@ -8,6 +8,7 @@ registry.install {
     'nvim-tree/nvim-web-devicons'
   },
   config = function ()
+    local actions = require('fzf-lua.actions')
     require('fzf-lua').setup {
       winopts = {
         height = 0.9,
@@ -31,6 +32,17 @@ registry.install {
         fzf = {
           ['ctrl-u'] = 'half-page-up',
           ['ctrl-d'] = 'half-page-down',
+          ['ctrl-a'] = 'beginning-of-line',
+          ['ctrl-e'] = 'end-of-line',
+        }
+      },
+      actions = {
+        files = {
+          ['default'] = actions.file_edit_or_qf,
+          ['ctrl-s'] = actions.file_split,
+          ['ctrl-v'] = actions.file_vsplit,
+          ['ctrl-t'] = actions.file_tabedit,
+          ['ctrl-q'] = actions.file_sel_to_qf
         }
       }
     }
