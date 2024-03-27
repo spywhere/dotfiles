@@ -22,5 +22,3 @@ use_brew_tap 'homebrew/cask-fonts'
 use_brew_tap 'homebrew/cask-versions'
 use_brew_tap 'homebrew/services'
 use_brew_tap 'homebrew/autoupdate'
-
-use_brew_tap 'buo/cask-upgrade'
