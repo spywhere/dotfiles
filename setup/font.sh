@@ -42,7 +42,7 @@ install_fonts() {
   for install_fonts__font_info in "$@"; do
     install_fonts__file="$(parse_field "$install_fonts__font_info" file)"
 
-    if ! test -f "$install_fonts__font_path/$install_fonts__file"; then
+    if _has_indicate update || ! test -f "$install_fonts__font_path/$install_fonts__file"; then
       install_fonts__missing_fonts="$(_add_item "$install_fonts__missing_fonts" ";" "$install_fonts__font_info")"
     fi
   done
