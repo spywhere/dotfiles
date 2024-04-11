@@ -30,5 +30,7 @@ jobs:
       - name: Perform Installation
         env:
           FLAG: ${{ matrix.flag }}
+          REPO_NAME: spywhere/dotfiles
+          REPO_BRANCH: installer
         run: |
-          sh install.sh --profile=ci -y $FLAG no-app-store
+          sh install.sh -y $FLAG

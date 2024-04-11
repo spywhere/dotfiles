@@ -22,5 +22,7 @@ jobs:
         env:
           IMAGE: ${{ matrix.os }}
           FLAG: ${{ matrix.flag }}
+          REPO_NAME: spywhere/dotfiles
+          REPO_BRANCH: installer
         run: |
           docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -y $FLAG
