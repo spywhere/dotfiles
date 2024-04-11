@@ -287,9 +287,12 @@ _POST_INSTALL_MSGS="" # keep a list of post installation messages
 _main() {
   _detect_os
 
-  # Basic flags
+  # Config flags
   while test "$1" != ""; do
-    case "$1" in
+    PARAM="$(printf "%s" "$1" | sed 's/=.*//g')"
+    VALUE="$(printf "%s" "$1" | sed 's/^[^=]*=//g')"
+    EQUAL_SIGN="$(printf "%s" "$1" | sed 's/[^=]//g')"
+    case $PARAM in
       -h | --help)
         _usage
         quit
@@ -302,20 +305,6 @@ _main() {
         _info
         quit
         ;;
-      *)
-        break
-        ;;
-    esac
-
-    shift
-  done
-
-  # Config flags
-  while test "$1" != ""; do
-    PARAM="$(printf "%s" "$1" | sed 's/=.*//g')"
-    VALUE="$(printf "%s" "$1" | sed 's/^[^=]*=//g')"
-    EQUAL_SIGN="$(printf "%s" "$1" | sed 's/[^=]//g')"
-    case $PARAM in
       -l | --local)
         RUN_LOCAL=1
         ;;
@@ -358,7 +347,31 @@ _main() {
         quit 1
         ;;
       *)
-        break
+        if test -n "$REPO_URL"; then
+          break
+        else
+          GIT_REPO_URL="$(printf "%s" "$1" | cut -d'@' -f1)"
+          GIT_REPO_BRANCH="$(printf "%s" "$1" | cut -d'@' -f2-)"
+          if test "$GIT_REPO_BRANCH" = "$1"; then
+            GIT_REPO_BRANCH=""
+          fi
+          GIT_REPO_URL_PROTO="$(printf "%s" "$GIT_REPO_URL" | cut -d'/' -f1)"
+
+          if test "$GIT_REPO_URL_PROTO" != "http:" -a "$GIT_REPO_URL_PROTO" != "https:" -a "$GIT_REPO_URL_PROTO" != "ssh:"; then
+            GIT_REPO_URL_THIRD="$(printf "%s" "$GIT_REPO_URL" | cut -d'/' -f3)"
+            if test "$GIT_REPO_URL_THIRD" = "$GIT_REPO_URL" -o -n "$GIT_REPO_URL_THIRD"; then
+              error "repository format is not in a 'user/repo' format, got  '$GIT_REPO_URL' instead"
+              quit 1
+            fi
+
+            GIT_REPO_URL="https://github.com/$GIT_REPO_URL"
+          fi
+
+          REPO_URL="$GIT_REPO_URL"
+          if test -n "$GIT_REPO_BRANCH"; then
+            REPO_BRANCH="$GIT_REPO_BRANCH"
+          fi
+        fi
         ;;
     esac
 
