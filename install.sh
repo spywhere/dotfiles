@@ -6,25 +6,16 @@ set -e
 # Internal Information #
 ########################
 
-if test -z "$INSTALLER_REPO_NAME"; then
-  INSTALLER_REPO_NAME="spywhere/dotfiles"
-fi
-
-if test -z "$INSTALLER_REPO"; then
-  INSTALLER_REPO="https://github.com/$INSTALLER_REPO_NAME"
+INSTALLER_REPO_NAME="spywhere/dotfiles"
+if test -z "$INSTALLER_REPO_URL"; then
+  INSTALLER_REPO_URL="https://github.com/$INSTALLER_REPO_NAME"
 fi
 if test -z "$INSTALLER_REPO_BRANCH"; then
   INSTALLER_REPO_BRANCH="installer"
 fi
 
-if test -z "$REPO_NAME"; then
-  REPO_NAME="spywhere/dotfiles"
-fi
-if test -z "$CLONE_REPO"; then
-  CLONE_REPO="https://github.com/$REPO_NAME"
-fi
-if test -z "$CLONE_REPO_BRANCH"; then
-  CLONE_REPO_BRANCH="main"
+if test -z "$REPO_URL" -a -n "$REPO_NAME"; then
+  REPO_URL="https://github.com/$REPO_NAME"
 fi
 
 if test -z "$SYSTEM_FILES"; then
@@ -296,12 +287,9 @@ _POST_INSTALL_MSGS="" # keep a list of post installation messages
 _main() {
   _detect_os
 
-  # Read flags
+  # Basic flags
   while test "$1" != ""; do
-    PARAM="$(printf "%s" "$1" | sed 's/=.*//g')"
-    VALUE="$(printf "%s" "$1" | sed 's/^[^=]*=//g')"
-    EQUAL_SIGN="$(printf "%s" "$1" | sed 's/[^=]//g')"
-    case $PARAM in
+    case "$1" in
       -h | --help)
         _usage
         quit
@@ -314,11 +302,22 @@ _main() {
         _info
         quit
         ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  # Config flags
+  while test "$1" != ""; do
+    PARAM="$(printf "%s" "$1" | sed 's/=.*//g')"
+    VALUE="$(printf "%s" "$1" | sed 's/^[^=]*=//g')"
+    EQUAL_SIGN="$(printf "%s" "$1" | sed 's/[^=]//g')"
+    case $PARAM in
       -l | --local)
         RUN_LOCAL=1
-        ;;
-      -ll)
-        RUN_LOCAL=2
         ;;
       -y | --yes)
         CONFIRMATION=0
@@ -374,6 +373,10 @@ _main() {
         main__name=$(printf "%s" "$1" | cut -c4-)
         _SKIPPED=$(_add_item "$_SKIPPED" " " "$main__name")
         ;;
+      -*)
+        error "unexpected flag \"$1\""
+        quit 1
+        ;;
       *)
         # Add package to the indicated list
         main__name="$1"
@@ -390,23 +393,36 @@ _main() {
 
 _usage() {
   VERBOSE=1
-  print "Usage: $0 [flag ...] [package/setup ...]"
+  print "Usage: $0 [user/repo] [flag ...] [package/setup ...]"
   print
   print "A cross-platform, modular dotfiles installer"
   print
+  print "Environment Variables:"
+  print 25 "  DOTFILES" "Target directory to stored the setup (default to '$DOTFILES')"
+  print
+  print 25 "  REPO_URL" "Git URL to pull the setup from"
+  print 25 "  REPO_BRANCH" "Git branch to pull the setup from (default to default branch)"
+  print 25 "  REPO_NAME" "Repository short hand for using GitHub URL as a Git URL"
+  print
+  print "  ** Do not change the following variables unless you know what you are doing **"
+  print 25 "  INSTALLER_REPO_URL" "Git URL to pull the installer from (default to '$INSTALLER_REPO_URL')"
+  print 25 "  INSTALLER_REPO_BRANCH" "Git branch to pull the installer from (default to '$INSTALLER_REPO_BRANCH')"
+  print 25 "  INSTALLER_DIR" "Target directory to stored the installer (default to unique temporary directory)"
+  print 25 "  SYSTEM_FILES" "Template string to direct URL to requested system files"
+  print
   print "Flags:"
-  print 23 "  -h, --help" "Show this help message"
-  print 23 "  -i, --info" "Print out the setup environment information"
-  print 23 "  -l, --local" "Run install script locally without update (use -ll for force running local script even through remote install)"
-  print 23 "  -y, --yes" "Do not ask for confirmation before performing installation"
-  print 23 "  -d, --dumb" "Do not attempt to install dependencies automatically"
-  print 23 "  -k, --keep" "Keep downloaded dependencies"
-  print 23 "  -f, --force" "Force reinstall any installed packages when possible"
-  print 23 "  -q, --quiet" "Suppress output messages when possible"
-  print 23 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
-  print 23 "  -p, --packages" "Print out available packages"
-  print 23 "  -s, --setup" "Print out available setup"
-  print 23 "  --profile=<profile>" "Specify the setup profile"
+  print 25 "  -h, --help" "Show this help message"
+  print 25 "  -i, --info" "Print out the setup environment information"
+  print 25 "  -l, --local" "Use the setup from the local copy"
+  print 25 "  -y, --yes" "Do not ask for confirmation before performing installation"
+  print 25 "  -d, --dumb" "Do not attempt to install dependencies automatically"
+  print 25 "  -k, --keep" "Keep downloaded artifacts"
+  print 25 "  -f, --force" "Force reinstall any installed packages when possible"
+  print 25 "  -q, --quiet" "Suppress output messages when possible"
+  print 25 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
+  print 25 "  -p, --packages" "Print out available packages"
+  print 25 "  -s, --setup" "Print out available setup"
+  print 25 "  --profile=<profile>" "Specify the setup profile"
   print
   print "To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself."
   print
@@ -419,11 +435,11 @@ _usage() {
   print "  Skip package installation, but install ASDF and ZSH"
   print
   print "To skip system update/upgrade, package installation or setups, use"
-  print 23 "  no-update" "Skip system update and system upgrade"
-  print 23 "  no-upgrade" "Only perform a system update but not system upgrade"
-  print 23 "  no-package" "Skip package installations, including a custom one"
-  print 23 "  no-custom" "Skip custom installations"
-  print 23 "  no-setup" "Skip setups"
+  print 25 "  no-update" "Skip system update and system upgrade"
+  print 25 "  no-upgrade" "Only perform a system update but not system upgrade"
+  print 25 "  no-package" "Skip package installations, including a custom one"
+  print 25 "  no-custom" "Skip custom installations"
+  print 25 "  no-setup" "Skip setups"
   print
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
@@ -451,7 +467,15 @@ _info() {
   print      20 "Home Directory" ": $HOME"
   print      20 "Working Directory" ": $CURRENT_DIR"
   print      20 "Installer Target" ": $INSTALLER_DIR"
-  print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES ($REPO_NAME@$CLONE_REPO_BRANCH)"
+  if test -n "$REPO_NAME"; then
+    if test -n "$REPO_BRANCH"; then
+      print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES ($REPO_NAME@$REPO_BRANCH)"
+    else
+      print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES ($REPO_NAME)"
+    fi
+  else
+    print      20 ".dots Target" ": $DOTFILES -> $HOME/$DOTFILES (no repository defined)"
+  fi
   print_bool 20 "Remote Install" "$REMOTE_INSTALL" ": "
   print_bool 20 "Has Local Copy" "$HAS_LOCAL_COPY" ": "
 }
@@ -565,7 +589,7 @@ _try_git() {
 # shellcheck disable=SC2120
 _try_run_install() {
   if test "$HAS_INSTALLER" -eq 0; then
-    clone "$INSTALLER_REPO" "$INSTALLER_DIR" "installer into $INSTALLER_DIR" --branch "$INSTALLER_REPO_BRANCH"
+    clone "$INSTALLER_REPO_URL" "$INSTALLER_DIR" "installer into $INSTALLER_DIR" --branch "$INSTALLER_REPO_BRANCH"
   fi
 
   # Run local script when install remotely
@@ -583,7 +607,16 @@ _try_run_install() {
       quit 1
     fi
 
-    clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" --branch "$CLONE_REPO_BRANCH"
+    if test -z "$REPO_URL"; then
+      error "no repository defined"
+      exit 1
+    fi
+
+    if test -n "$REPO_BRANCH"; then
+      clone "$REPO_URL" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" --branch "$REPO_BRANCH"
+    else
+      clone "$REPO_URL" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES"
+    fi
   fi
 
   if test -n "$PRINT_MODE"; then
