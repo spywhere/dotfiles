@@ -13,9 +13,9 @@ flags:
   -h, --help         Show this help message
   -r, --recreate     Always recreate test image
   -k, --keep         Do not autoremove the container
-  -l, --local        Simulate an installation using local packages and setups
-  -u, --upgrade      Simulate an installer upgrade
-  -i, --installer    Simulate an installation from a local installer
+  -u, --upgrade      Simulate an installation with existing packages and setups
+  -l, --local        Simulate an installation using a local installer
+  -i, --installer    Simulate an installation from an existing installer
   -e, --env <value>  Set environment variables
 
 By default, test will simulate a remote installation from scatch.
@@ -135,13 +135,13 @@ else
   INSTALL_PATH="/root/.installer"
   DOCKER_FLAGS="$DOCKER_FLAGS --env INSTALLER_DIR=$INSTALL_PATH"
 fi
-if test $UPGRADE -eq 0; then
-  SCRIPT="sh $INSTALL_PATH/install.sh $ARGS"
-else
+if test $LOCAL -eq 0; then
   SCRIPT="sh -c \"\$(cat $INSTALL_PATH/install.sh)\" - $ARGS"
+else
+  SCRIPT="sh $INSTALL_PATH/install.sh $ARGS"
 fi
 
-if test $LOCAL -eq 0; then
+if test $UPGRADE -eq 0; then
   DOTS_PATH="/root/dots"
 else
   DOTS_PATH="/root/.dots"
