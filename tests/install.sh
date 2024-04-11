@@ -119,6 +119,11 @@ while test "$1" != ""; do
   shift
 done
 
+if test -z "$PLATFORM"; then
+  printf "ERROR: platform is required\n"
+  exit 1
+fi
+
 printf "Testing on %s...\n" "$PLATFORM"
 
 VOLUME=$(dirname "$SCRIPT_DIR")
