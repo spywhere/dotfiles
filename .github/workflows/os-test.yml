@@ -17,10 +17,10 @@ jobs:
         env:
           IMAGE: ${{ matrix.os }}
         run: |
-          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -i
+          docker run -v $(pwd):/root/dots $IMAGE sh -c "apt update && apt install -y curl && /root/dots/install.sh -i"
       - name: Perform Installation
         env:
           IMAGE: ${{ matrix.os }}
           FLAG: ${{ matrix.flag }}
         run: |
-          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -y $FLAG
+          docker run -v $(pwd):/root/dots $IMAGE sh -c "apt update && apt install -y curl && /root/dots/install.sh -y $FLAG"
