@@ -25,10 +25,13 @@ jobs:
             rm -f $REMOVE_FILES
           fi
       - name: Installation Info
+        env:
+          REPO_NAME: spywhere/dotfiles
         run: |
           sh install.sh -i
       - name: Perform Installation
         env:
           FLAG: ${{ matrix.flag }}
+          REPO_NAME: spywhere/dotfiles
         run: |
           sh install.sh --profile=ci -y $FLAG no-app-store
