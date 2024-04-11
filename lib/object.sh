@@ -1,6 +1,8 @@
 #!/bin/sh
 
+# shellcheck disable=SC1091
 . "$INSTALLER_DIR/lib/list.sh"
+# shellcheck disable=SC1091
 . "$INSTALLER_DIR/lib/string.sh"
 
 _FIELDS=""
