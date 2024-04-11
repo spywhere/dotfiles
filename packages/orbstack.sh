@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'orb'
+has_app 'OrbStack'
 
-use_brew formula 'orbstack'
+use_brew cask 'orbstack'
