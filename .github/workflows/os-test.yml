@@ -25,4 +25,4 @@ jobs:
           REPO_NAME: spywhere/dotfiles
           REPO_BRANCH: installer
         run: |
-          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -y $FLAG
+          docker run -v $(pwd):/root/dots -e REPO_NAME=$REPO_NAME -e REPO_BRANCH=$REPO_BRANCH $IMAGE sh /root/dots/install.sh -y $FLAG
