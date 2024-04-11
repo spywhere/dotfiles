@@ -565,15 +565,15 @@ _try_git() {
 # shellcheck disable=SC2120
 _try_run_install() {
   if test "$HAS_INSTALLER" -eq 0; then
-    clone "$INSTALLER_REPO" "$INSTALLER_DIR" "installer" --branch "$INSTALLER_REPO_BRANCH"
+    clone "$INSTALLER_REPO" "$INSTALLER_DIR" "installer into $INSTALLER_DIR" --branch "$INSTALLER_REPO_BRANCH"
   fi
 
   # Run local script when install remotely
   if test "$REMOTE_INSTALL" -eq 1; then
     step "Executing local script..."
 
-    # shellcheck disable=SC2086
-    sh "$INSTALLER_DIR/install.sh" $FLAGS
+    # shellcheck disable=SC2086,SC2097,SC2098
+    INSTALLER_DIR="$INSTALLER_DIR" sh "$INSTALLER_DIR/install.sh" $FLAGS
     quit
   fi
 
@@ -583,11 +583,7 @@ _try_run_install() {
       quit 1
     fi
 
-    if test "$VERBOSE" -le 1; then
-      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" --branch "$CLONE_REPO_BRANCH"
-    else
-      clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles" --branch "$CLONE_REPO_BRANCH"
-    fi
+    clone "$CLONE_REPO" "$HOME/$DOTFILES" "dotfiles into $HOME/$DOTFILES" --branch "$CLONE_REPO_BRANCH"
   fi
 
   if test -n "$PRINT_MODE"; then
