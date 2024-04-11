@@ -31,4 +31,4 @@ jobs:
         env:
           FLAG: ${{ matrix.flag }}
         run: |
-          sh install.sh --profile=ci $FLAG no-app-store
+          sh install.sh --profile=ci -y $FLAG no-app-store

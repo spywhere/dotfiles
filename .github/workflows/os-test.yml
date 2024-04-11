@@ -23,4 +23,4 @@ jobs:
           IMAGE: ${{ matrix.os }}
           FLAG: ${{ matrix.flag }}
         run: |
-          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh $FLAG
+          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -y $FLAG

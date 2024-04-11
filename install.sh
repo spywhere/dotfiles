@@ -257,7 +257,7 @@ _add_item() {
 RUN_LOCAL=0
 DUMB=0
 KEEP_FILES=0
-CONFIRMATION=0
+CONFIRMATION=1
 FORCE_INSTALL=0
 # Verbosity
 #   0: Quiet
@@ -320,8 +320,8 @@ _main() {
       -ll)
         RUN_LOCAL=2
         ;;
-      -c | --confirmation)
-        CONFIRMATION=1
+      -y | --yes)
+        CONFIRMATION=0
         ;;
       -d | --dumb)
         DUMB=1
@@ -398,7 +398,7 @@ _usage() {
   print 23 "  -h, --help" "Show this help message"
   print 23 "  -i, --info" "Print out the setup environment information"
   print 23 "  -l, --local" "Run install script locally without update (use -ll for force running local script even through remote install)"
-  print 23 "  -c, --confirmation" "Ask for confirmation before performing installation"
+  print 23 "  -y, --yes" "Do not ask for confirmation before performing installation"
   print 23 "  -d, --dumb" "Do not attempt to install dependencies automatically"
   print 23 "  -k, --keep" "Keep downloaded dependencies"
   print 23 "  -f, --force" "Force reinstall any installed packages when possible"
