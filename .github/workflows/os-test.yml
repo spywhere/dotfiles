@@ -1,0 +1,47 @@
+name: Installation Test (via Docker)
+on: push
+
+# Available runners
+# https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+jobs:
+  local:
+    name: Local Installation (${{ matrix.os }}) [${{ matrix.flag }}]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: ['debian:bullseye-slim', 'ubuntu:rolling']
+        flag: [-v, '', -q]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Installation Info
+        env:
+          IMAGE: ${{ matrix.os }}
+        run: |
+          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh -i
+      - name: Perform Installation
+        env:
+          IMAGE: ${{ matrix.os }}
+          FLAG: ${{ matrix.flag }}
+        run: |
+          docker run -v $(pwd):/root/dots $IMAGE sh /root/dots/install.sh $FLAG
+
+  remote:
+    name: Remote Installation (${{ matrix.os }}) [${{ matrix.flag }}]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: ['debian:bullseye-slim', 'ubuntu:rolling']
+        flag: [-v, '', -q]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Installation Info
+        env:
+          IMAGE: ${{ matrix.os }}
+        run: |
+          docker run -v $(pwd):/root/dots $IMAGE sh -c "$(cat install.sh)" - -i
+      - name: Perform Installation
+        env:
+          IMAGE: ${{ matrix.os }}
+          FLAG: ${{ matrix.flag }}
+        run: |
+          docker run -v $(pwd):/root/dots $IMAGE sh -c "$(cat install.sh)" - $FLAG
