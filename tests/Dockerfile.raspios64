@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM raspios:lite-arm64
 
 RUN apt update
 RUN apt install -y curl
