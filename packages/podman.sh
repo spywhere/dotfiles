@@ -13,6 +13,4 @@ fi
 
 has_executable 'podman'
 
-profile -work
 use_apt 'podman'
-use_brew formula 'podman'

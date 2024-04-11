@@ -13,5 +13,4 @@ fi
 
 has_executable 'orb'
 
-profile work
 use_brew formula 'orbstack'
