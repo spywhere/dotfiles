@@ -5,14 +5,14 @@ on: push
 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 jobs:
   local:
-    name: Local Installation (${{ matrix.os }}) [${{ matrix.flag }}]
+    name: Installation on ${{ matrix.os }} [${{ matrix.flag }}]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest]
         flag: [-v, '', -q]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Clean Up Environment
         env:
           REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
@@ -31,33 +31,4 @@ jobs:
         env:
           FLAG: ${{ matrix.flag }}
         run: |
-          sh install.sh --profile=ci $FLAG no-app-store
-
-  remote:
-    name: Remote Installation (${{ matrix.os }}) [${{ matrix.flag }}]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
-        flag: [-v, '', -q]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Clean Up Environment
-        env:
-          REMOVE_PACKAGES: ${{ vars.REMOVE_PACKAGES }}
-          REMOVE_FILES: ${{ vars.REMOVE_FILES }}
-        run: |
-          if test -n "$REMOVE_PACKAGES"; then
-            brew uninstall --ignore-dependencies $REMOVE_PACKAGES
-          fi
-          if test -n "$REMOVE_FILES"; then
-            rm -f $REMOVE_FILES
-          fi
-      - name: Installation Info
-        run: |
-          sh -c "$(curl -sSL dots.spywhere.me)" - -i
-      - name: Perform Installation
-        env:
-          FLAG: ${{ matrix.flag }}
-        run: |
-          sh -c "$(curl -sSL dots.spywhere.me)" - --profile=ci $FLAG no-app-store
+          sh install.sh --profile=ci -y $FLAG no-app-store

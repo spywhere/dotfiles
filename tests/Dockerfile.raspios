@@ -1,6 +1,0 @@
-FROM raspios:lite-armhf
-
-RUN apt update
-RUN apt install -y curl
-RUN curl -sSL get.docker.com -o install-docker.sh
-RUN sh install-docker.sh
