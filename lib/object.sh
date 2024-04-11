@@ -1,7 +1,7 @@
 #!/bin/sh
 
-. "$HOME/$DOTFILES/lib/list.sh"
-. "$HOME/$DOTFILES/lib/string.sh"
+. "$INSTALLER_DIR/lib/list.sh"
+. "$INSTALLER_DIR/lib/string.sh"
 
 _FIELDS=""
 field() {

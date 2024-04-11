@@ -621,11 +621,11 @@ _try_run_install() {
   step "Ready"
 
   # Load libs
-  for try_run_install__lib_path in "$HOME/$DOTFILES/lib"/*.sh; do
+  for try_run_install__lib_path in "$INSTALLER_DIR/lib"/*.sh; do
     . "$try_run_install__lib_path"
   done
   # Load processes
-  for try_run_install__lib_path in "$HOME/$DOTFILES/lib/process"/*.sh; do
+  for try_run_install__lib_path in "$INSTALLER_DIR/lib/process"/*.sh; do
     . "$try_run_install__lib_path"
   done
 
