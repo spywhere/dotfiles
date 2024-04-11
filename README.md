@@ -1,8 +1,6 @@
-# Dotfiles
+# Dotfiles Installer
 
-A cross-platform, modular dotfiles for my personal setup
-
-![Screen Shot](https://user-images.githubusercontent.com/1087399/270018021-aa94a7c6-4e38-4e30-994f-7281ca92f3e2.png)
+A cross-platform, modular dotfiles installer
 
 ## Required Commands
 
@@ -11,10 +9,10 @@ A cross-platform, modular dotfiles for my personal setup
 
 ## Supported Platforms
 
-[![Installation Test (native)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml)
-[![Installation Test (via Docker)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml/badge.svg)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml)
+[![Installation Test (native)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml/badge.svg?branch=installer)](https://github.com/spywhere/dotfiles/actions/workflows/macos-test.yml)
+[![Installation Test (via Docker)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml/badge.svg?branch=installer)](https://github.com/spywhere/dotfiles/actions/workflows/os-test.yml)
 
-[![Build Stats](https://buildstats.info/github/chart/spywhere/dotfiles?branch=main)](https://github.com/spywhere/dotfiles/actions)
+[![Build Stats](https://buildstats.info/github/chart/spywhere/dotfiles?branch=installer)](https://github.com/spywhere/dotfiles/actions)
 
 - macOS
 - Linux
@@ -25,7 +23,7 @@ A cross-platform, modular dotfiles for my personal setup
 ## Quick Installation
 
 ```sh
-sh -c "$(curl -sSL dots.spywhere.me)"
+sh -c "$(curl -sSL dots.spywhere.me)" - user/repo@branch
 ```
 
 ## Available Flags and Options
@@ -81,7 +79,7 @@ sh -c "$(curl -sSL dots.spywhere.me)"
 To use flags in remote installation, use this command
 
 ```sh
-sh -c "$(curl -sSL dots.spywhere.me)" - [flags...]
+sh -c "$(curl -sSL dots.spywhere.me)" - user/repo@branch [flags...]
 ```
 
 ## Development
@@ -89,15 +87,15 @@ sh -c "$(curl -sSL dots.spywhere.me)" - [flags...]
 To run the setup without auto updating use
 
 ```sh
-sh install.sh -l
+sh install.sh user/repo@branch -l
 ```
 
 To simulate a remote setup use one of these commands
 
 ```sh
-sh -c "$(cat install.sh)" - [flags...]
+sh -c "$(cat install.sh)" - user/repo@branch [flags...]
 ```
 
 ```sh
-cat install.sh | sh -s -- [flags...]
+cat install.sh | sh -s -- user/repo@branch [flags...]
 ```
