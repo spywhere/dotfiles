@@ -62,6 +62,21 @@ while test "$1" != ""; do
       INSTALLER=1
       ;;
     -e | --env)
+      if test "$1" = "-e"; then
+        case $2 in
+          -*)
+            printf "ERROR: flag \"%s\" required a value but received a flag \"%s\" instead\n" "$1" "$2"
+            printf "  Use \"--env %s\" to force passing a value with a dash prefix" "$2"
+            exit 1
+            ;;
+          *)
+            ;;
+        esac
+      fi
+      if test -z "$2"; then
+        printf "ERROR: flag \"%s\" required a value\n" "$1"
+        exit 1
+      fi
       shift
       DOCKER_FLAGS="$DOCKER_FLAGS --env $1"
       ;;
@@ -131,4 +146,5 @@ if test $RECREATE -eq 1 -o "$(docker images "dots:$PLATFORM" -q)" = ""; then
   docker build --no-cache --network=host -t "dots:$PLATFORM" - <"$SCRIPT_DIR/Dockerfile.$PLATFORM"
 fi
 
+# shellcheck disable=SC2086
 docker run $DOCKER_FLAGS "$KEEP" --network=host -v /var/run/docker.sock:/var/run/docker.sock -v "$VOLUME:$DOTS_PATH" -v "$VOLUME:$INSTALL_PATH" "dots:$PLATFORM" sh -c "$SCRIPT"
