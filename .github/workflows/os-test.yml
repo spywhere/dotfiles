@@ -12,7 +12,7 @@ jobs:
         os: ['debian:bullseye-slim', 'ubuntu:rolling']
         flag: [-v, '', -q]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Installation Info
         env:
           IMAGE: ${{ matrix.os }}
