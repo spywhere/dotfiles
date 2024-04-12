@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Bartender 4'
+has_app 'Bartender 5'
 
 use_brew cask 'bartender'
