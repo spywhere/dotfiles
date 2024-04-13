@@ -20,6 +20,10 @@ A cross-platform, modular dotfiles installer
     - Raspberry Pi OS
     - Ubuntu
 
+## Get Started with Your Setup
+
+Head over the [docs](/docs) to get started and for all API references
+
 ## Quick Installation
 
 ```sh
