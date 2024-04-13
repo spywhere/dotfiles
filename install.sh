@@ -406,7 +406,7 @@ _main() {
 
 _usage() {
   VERBOSE=1
-  print "Usage: $0 [user/repo] [flag ...] [package/setup ...]"
+  print "Usage: $0 [user/repo@branch] [flag ...] [package/setup ...]"
   print
   print "A cross-platform, modular dotfiles installer"
   print
