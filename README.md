@@ -29,23 +29,36 @@ sh -c "$(curl -sSL dots.spywhere.me)" - user/repo@branch
 ## Available Flags and Options
 <!--FLAGS:START-->
 
-    Usage: install.sh [flag ...] [package/setup ...] 
+    Usage: install.sh [user/repo] [flag ...] [package/setup ...] 
      
     A cross-platform, modular dotfiles installer 
      
+    Environment Variables: 
+      DOTFILES               Target directory to stored the setup (default to '.dots')
+     
+      REPO_URL               Git URL to pull the setup from
+      REPO_BRANCH            Git branch to pull the setup from (default to default branch)
+      REPO_NAME              Repository short hand for using GitHub URL as a Git URL
+     
+      ** Do not change the following variables unless you know what you are doing ** 
+      INSTALLER_REPO_URL     Git URL to pull the installer from (default to 'https://github.com/spywhere/dotfiles')
+      INSTALLER_REPO_BRANCH  Git branch to pull the installer from (default to 'installer')
+      INSTALLER_DIR          Target directory to stored the installer (default to unique temporary directory)
+      SYSTEM_FILES           Template string to direct URL to requested system files
+     
     Flags: 
-      -h, --help           Show this help message
-      -i, --info           Print out the setup environment information
-      -l, --local          Run install script locally without update (use -ll for force running local script even through remote install)
-      -c, --confirmation   Ask for confirmation before performing installation
-      -d, --dumb           Do not attempt to install dependencies automatically
-      -k, --keep           Keep downloaded dependencies
-      -f, --force          Force reinstall any installed packages when possible
-      -q, --quiet          Suppress output messages when possible
-      -v, --verbose        Produce command output messages when possible (use -vv for more verbosity)
-      -p, --packages       Print out available packages
-      -s, --setup          Print out available setup
-      --profile=<profile>  Specify the setup profile
+      -h, --help             Show this help message
+      -i, --info             Print out the setup environment information
+      -l, --local            Use the setup from the local copy
+      -y, --yes              Do not ask for confirmation before performing installation
+      -d, --dumb             Do not attempt to install dependencies automatically
+      -k, --keep             Keep downloaded artifacts
+      -f, --force            Force reinstall any installed packages when possible
+      -q, --quiet            Suppress output messages when possible
+      -v, --verbose          Produce command output messages when possible (use -vv for more verbosity)
+      -p, --packages         Print out available packages
+      -s, --setup            Print out available setup
+      --profile=<profile>    Specify the setup profile
      
     To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself. 
      
@@ -58,11 +71,11 @@ sh -c "$(curl -sSL dots.spywhere.me)" - user/repo@branch
       Skip package installation, but install ASDF and ZSH 
      
     To skip system update/upgrade, package installation or setups, use 
-      no-update            Skip system update and system upgrade
-      no-upgrade           Only perform a system update but not system upgrade
-      no-package           Skip package installations, including a custom one
-      no-custom            Skip custom installations
-      no-setup             Skip setups
+      no-update              Skip system update and system upgrade
+      no-upgrade             Only perform a system update but not system upgrade
+      no-package             Skip package installations, including a custom one
+      no-custom              Skip custom installations
+      no-setup               Skip setups
      
     Note: 
       - Package name is indicated by the file name under 'packages' or 'setup' directory 
