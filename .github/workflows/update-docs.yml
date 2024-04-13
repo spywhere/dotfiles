@@ -1,8 +1,5 @@
 name: Update Documentations
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
+on: push
 
 jobs:
   ubuntu-local-verbose:
