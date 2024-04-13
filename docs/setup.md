@@ -91,9 +91,9 @@ While the setup cannot be skipped, it can requested for a package to be
 installed (`require`) or determine if it should get setup based on the package
 collection (`depends`).
 
-Check out available [built-in API](/lib) on how to call one.
+Check out available [built-in APIs](/lib) on how to call one.
 
-For all available API to help with the setup, check out [systems API](/systems).
+For all available APIs to help with the setup, check out [system APIs](/systems).
 
 The rest of the file is simply defined a function `setup_ssh` that called
 `try_generate_keypair` for each keypair type, by checking for the existing

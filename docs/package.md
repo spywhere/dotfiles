@@ -74,7 +74,7 @@ not.
 has_executable 'tmux'
 ```
 
-This line is using the available [built-in API](/lib) to check if the command
+This line is using the available [built-in APIs](/lib) to check if the command
 `tmux` is exists. If it is exists, the script will halt and nothing will get
 installed. This basically means skip the installation if it was installed
 already.
@@ -125,7 +125,7 @@ if various kind of software is exists or not. To name a few, you could use
 - `has_app '<app name>'`
 - `has_string '<string>' command args...`
 
-Check out [built-in API references](/lib) for a function prefixed with `has_`.
+Check out [built-in API references](/lib) for a function under 'Package State'.
 
 As certain systems might also implemented a similar function, be sure to check
 out [system APIs](/systems) as well.
