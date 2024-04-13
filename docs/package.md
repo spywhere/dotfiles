@@ -106,7 +106,7 @@ the mentioned package.
 
 ## Supported Package Managers
 
-Check out [systems API](/systems) for all available command on each supported
+Check out [system APIs](/systems) for all available command on each supported
 systems.
 
 ## Conditions
@@ -126,6 +126,9 @@ if various kind of software is exists or not. To name a few, you could use
 - `has_string '<string>' command args...`
 
 Check out [built-in API references](/lib) for a function prefixed with `has_`.
+
+As certain systems might also implemented a similar function, be sure to check
+out [system APIs](/systems) as well.
 
 ### Skip installation for a specific system
 
