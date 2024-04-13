@@ -29,7 +29,7 @@ sh -c "$(curl -sSL dots.spywhere.me)" - user/repo@branch
 ## Available Flags and Options
 <!--FLAGS:START-->
 
-    Usage: install.sh [user/repo] [flag ...] [package/setup ...] 
+    Usage: install.sh [user/repo@branch] [flag ...] [package/setup ...] 
      
     A cross-platform, modular dotfiles installer 
      
