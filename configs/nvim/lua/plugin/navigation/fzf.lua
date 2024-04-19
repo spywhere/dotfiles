@@ -23,7 +23,8 @@ registry.install {
       },
       grep = {
         no_header = true,
-        rg_glob = true
+        rg_glob = true,
+        rg_opts = "--column --line-number --no-heading --hidden --color=always --smart-case --max-columns=4096 -e",
       },
       keymap = {
         builtin = {
