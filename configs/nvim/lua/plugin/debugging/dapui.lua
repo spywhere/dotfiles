@@ -2,7 +2,10 @@ local registry = require('lib.registry')
 
 registry.install {
   'rcarriga/nvim-dap-ui',
-  requires = 'mfussenegger/nvim-dap',
+  requires = {
+    'mfussenegger/nvim-dap',
+    'nvim-neotest/nvim-nio'
+  },
   delay = function ()
     local dap = require('dap')
     local dapui = require('dapui')
