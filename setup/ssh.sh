@@ -23,7 +23,11 @@ try_generate_keypairs() {
       ssh-keygen -b 2048 -t rsa -f "$1" -q -N ""
     }
   else
-    try_generate_keypairs__suffix="sk"
+    if _has_indicate sk2; then
+      try_generate_keypairs__suffix="sk2"
+    else
+      try_generate_keypairs__suffix="sk"
+    fi
     try_generate_keypairs__user="$(whoami)"
     try_generate_keypairs__generate() {
       ssh-keygen -t ed25519-sk -f "$1" -O resident -O application="ssh://$2" -O user="$try_generate_keypairs__user" -O verify-required -N ""
@@ -97,11 +101,15 @@ download_keypairs() {
   ssh-keygen -K -q -P ''
   for file in ./id_*; do
     # shellcheck disable=SC2068
-    download_keypairs__name="$(lookup_keypairs "$file" $@)"
-    if has_suffix "$file" ".pub"; then
-      download_keypairs__file="$download_keypairs__name.sk.pub"
+    if _has_indicate sk2; then
+      download_keypairs__name="$(lookup_keypairs "$file" $@).sk2"
     else
-      download_keypairs__file="$download_keypairs__name.sk"
+      download_keypairs__name="$(lookup_keypairs "$file" $@).sk"
+    fi
+    if has_suffix "$file" ".pub"; then
+      download_keypairs__file="$download_keypairs__name.pub"
+    else
+      download_keypairs__file="$download_keypairs__name"
     fi
     download_keypairs__path="$ssh__target/$download_keypairs__file"
 
