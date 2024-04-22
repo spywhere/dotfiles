@@ -27,3 +27,8 @@ fi
 if test -d "/opt/homebrew/opt/ruby/bin"; then
   export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 fi
+
+# Use homebrew version for security key support
+if test -d "/opt/homebrew/opt/openssh/bin"; then
+  export PATH="/opt/homebrew/opt/openssh/bin:$PATH"
+fi
