@@ -31,4 +31,5 @@ fi
 # Use homebrew version for security key support
 if test -d "/opt/homebrew/opt/openssh/bin"; then
   export PATH="/opt/homebrew/opt/openssh/bin:$PATH"
+  export GIT_SSH="/opt/homebrew/opt/openssh/bin/ssh"
 fi
