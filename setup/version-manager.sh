@@ -35,7 +35,7 @@ deno_pr_merged() {
 }
 
 setup_version_manager() {
-  setup_version_manager__plugins="fzf neovim nodejs python rust shellcheck zig"
+  setup_version_manager__plugins="fzf neovim nodejs python rust shellcheck tuist zig"
   step "Setting up version manager plugins..."
   set +e
   for setup_version_manager__plugin in $setup_version_manager__plugins; do

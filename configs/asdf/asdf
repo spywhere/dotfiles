@@ -11,3 +11,4 @@ zig 0.10.1
 kotlin 1.8.21
 pnpm 8.15.4
 zoxide 0.9.4
+tuist 4.15.0
