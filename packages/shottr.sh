@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Draw Things'
+has_app 'Shottr'
 
-profile -work
-use_mas 'draw-things' 6444050820
+use_brew cask 'shottr'

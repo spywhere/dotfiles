@@ -13,5 +13,4 @@ fi
 
 has_app 'Squirrel'
 
-profile work
 use_mas 'squirrel' 1669664068

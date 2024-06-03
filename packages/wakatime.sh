@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'ncmpcpp'
+has_app 'WakaTime'
 
-use_apt 'ncmpcpp'
-use_brew formula 'ncmpcpp'
+use_brew cask 'wakatime'

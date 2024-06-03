@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'tig'
+has_app 'Developer'
 
-use_apt 'tig'
-use_brew formula 'tig'
+use_mas 'Apple Developer' 640199958

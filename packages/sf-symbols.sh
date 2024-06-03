@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_app 'TablePlus'
+has_app 'SF Symbols'
 
-optional
-use_brew cask 'tableplus'
+use_brew cask 'sf-symbols'
