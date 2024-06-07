@@ -23,11 +23,7 @@ try_generate_keypairs() {
       ssh-keygen -b 2048 -t rsa -f "$1" -q -N ""
     }
   else
-    if _has_indicate sk2; then
-      try_generate_keypairs__suffix="sk2"
-    else
-      try_generate_keypairs__suffix="sk"
-    fi
+    try_generate_keypairs__suffix="sk"
     try_generate_keypairs__user="$(whoami)"
     try_generate_keypairs__generate() {
       ssh-keygen -t ed25519-sk -f "$1" -O resident -O application="ssh://$2" -O user="$try_generate_keypairs__user" -O verify-required -N ""
