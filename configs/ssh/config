@@ -12,3 +12,7 @@ Host github.com
 Host gitlab.com
   IdentityFile ~/.ssh/gitlab.sk
   PreferredAuthentications publickey
+Host git.spywhere.me
+  ProxyCommand cloudflared access tcp --hostname %h
+  IdentityFile ~/.ssh/personal.sk
+  PreferredAuthentications publickey

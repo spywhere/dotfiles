@@ -127,9 +127,9 @@ download_keypairs() {
 
 setup_ssh() {
   if ! _has_indicate generate; then
-    download_keypairs srht github gitlab digitalocean
+    download_keypairs srht github gitlab digitalocean personal
     return
   fi
 
-  try_generate_keypairs srht github gitlab digitalocean
+  try_generate_keypairs srht github gitlab digitalocean personal
 }
