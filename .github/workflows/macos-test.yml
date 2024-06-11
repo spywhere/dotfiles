@@ -34,4 +34,4 @@ jobs:
           FLAG: ${{ matrix.flag }}
           REPO_NAME: spywhere/dotfiles
         run: |
-          sh install.sh --profile=ci -y $FLAG no-app-store
+          sh install.sh --profile=ci -y $FLAG $FLAGS
