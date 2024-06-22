@@ -6,13 +6,6 @@ if test -f ~/recovery; then
 fi
 DOTFILES_NAME=.dots
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 if ! test -f ~/.zinit/bin/zinit.zsh; then
   echo "Installing zinit..."
   mkdir -p ~/.zinit
@@ -95,30 +88,6 @@ exp_is() {
   printf '%s' "$1" | grep -q "$variant"
 }
 
-if exp_is bB starship && test -n "$(command -v starship)"; then
-  USE_STARSHIP=true
-else
-  USE_STARSHIP=false
-fi
-
-# ZSH_AUTOSUGGEST_STRATEGY=(openai)
-#
-# _zsh_autosuggest_strategy_openai() {
-# 	# Reset options to defaults and enable LOCAL_OPTIONS
-# 	emulate -L zsh
-#
-# 	# Escape backslashes and all of the glob operators so we can use
-# 	# this string as a pattern to search the $history associative array.
-# 	# - (#m) globbing flag enables setting references for match data
-# 	# TODO: Use (b) flag when we can drop support for zsh older than v5.0.8
-# 	local prefix="${1//(#m)[\\*?[\]<>()|^~#]/\\$MATCH}"
-#
-# 	# Get the history items that match the prefix, excluding those that match
-# 	# the ignore pattern
-# 	local pattern="$prefix"
-# 	typeset -g suggestion="$pattern from openai"
-# }
-
 zinit snippet OMZP::brew
 
 if test -z "$VIM" && test -z "$TMUX" && test -z "$ZELLIJ" && test -z "$TERM_PROGRAM" && ! exp_is aA tmux; then
@@ -131,13 +100,6 @@ if test -z "$VIM" && test -z "$TMUX" && test -z "$ZELLIJ" && test -z "$TERM_PROG
     zinit snippet OMZ::plugins/tmux
   fi
 else
-  if ! $USE_STARSHIP; then
-    zinit ice lucid depth"1"
-    zinit light romkatv/powerlevel10k
-
-    zinit light romkatv/gitstatus
-  fi
-
   zinit light michaelaquilina/zsh-you-should-use
   zinit light aloxaf/fzf-tab
   zinit ice lucid depth"1" as"program" pick"bin/git-fuzzy"
@@ -164,15 +126,7 @@ else
   zinit snippet OMZP::npm
 fi
 
-if $USE_STARSHIP; then
-  # Setup starship
-  . <(starship init zsh)
-elif test -f $HOME/$DOTFILES_NAME/configs/zsh/p10k; then
-  # Setup powerlevel10k
-  source $HOME/$DOTFILES_NAME/configs/zsh/p10k
-fi
-
-unset USE_STARSHIP
+. <(starship init zsh)
 
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
