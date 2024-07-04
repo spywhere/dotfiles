@@ -1,0 +1,6 @@
+maximized = true
+neovim-bin = "$HOME/.asdf/shims/nvim"
+
+[font]
+  normal = "JetBrainsMono Nerd Font"
+  size = 12

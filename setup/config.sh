@@ -289,6 +289,9 @@ setup_config() {
   step "  - neomutt"
   link neomutt/ .config/neomutt
 
+  step "  - neovide"
+  link neovide/ .config/neovide
+
   step "  - neovim"
   link nvim/ .config/nvim
   add_post_install_message "Run 'nvim' for the first time setup"
