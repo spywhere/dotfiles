@@ -18,10 +18,10 @@ registry.install {
 
     tmux.bind('r', cmds.rotate_window {})
 
-    tmux.bind('<S-Left>', cmds.previous_window { T = 'root' })
-    tmux.bind('<S-Right>', cmds.next_window { T = 'root' })
+    tmux.bind('<S-Left>', cmds.previous_window {}, { T = 'root' })
+    tmux.bind('<S-Right>', cmds.next_window {}, { T = 'root' })
 
-    vim.o.shell = string.format('%s/.dots/binaries/zsh', vim.env.HOME)
+    vim.o.shell = string.format('%s/.dots/binaries/shell', vim.env.HOME)
     tmux.start()
   end
 }

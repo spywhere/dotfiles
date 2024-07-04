@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+VIM=1 "$SHELL" "$@"
