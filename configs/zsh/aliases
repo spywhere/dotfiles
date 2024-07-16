@@ -11,6 +11,7 @@ alias w=". work"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 
+alias gig="git ignore"
 alias glig="git local-ignore"
 
 # git revert
