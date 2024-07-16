@@ -11,6 +11,8 @@ alias w=". work"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 
+alias glig="git local-ignore"
+
 # git revert
 alias grevc="grev --continue"
 alias greva="grev --abort"
