@@ -22,7 +22,7 @@ export YSU_IGNORED_ALIASES=("g" "ga." "d" "p" "vi" "vim" "search_prs" "search_is
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # export binaries to path
-export PATH=$HOME/$DOTFILES_NAME/binaries:$PATH
+export PATH="$HOME/$DOTFILES_NAME/binaries:$PATH"
 
 # setup locales, to fix...
 # - https://github.com/jwilm/alacritty/issues/2566
@@ -33,3 +33,6 @@ export LC_CTYPE=en_US.UTF-8
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_ENV_HINTS=1
 export NOW_PLAYING_SHADA="$HOME/.cache/now-playing"
+
+# suppress warnings (especially on git)
+export STARSHIP_LOG=error
