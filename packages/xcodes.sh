@@ -13,5 +13,4 @@ fi
 
 has_executable 'xcodes'
 
-profile work
 use_brew formula 'xcodes'

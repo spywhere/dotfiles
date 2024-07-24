@@ -13,5 +13,4 @@ fi
 
 has_executable 'xcode-build-server'
 
-profile work
 use_brew formula 'xcode-build-server'

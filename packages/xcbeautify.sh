@@ -13,5 +13,4 @@ fi
 
 has_executable 'xcbeautify'
 
-profile work
 use_brew formula 'xcbeautify'
