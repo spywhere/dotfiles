@@ -5,6 +5,7 @@
   compression = 9
   preloadIndex = true
   untrackedCache = true
+  attributesFile = ~/.dots/configs/git/gitattributes
 [rerere]
   enabled = true
 [feature]
@@ -44,3 +45,6 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[diff "hex"]
+  textconv = hexdump -v -C
+  binary = true
