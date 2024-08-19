@@ -16,10 +16,16 @@ if test -z "$WORKSPACE"; then
   fi
 fi
 query=""
+
+command="cd"
+if ! test -t 1; then
+  command="echo"
+fi
+
 if test "$1" = "-"; then
-  cd "$WORKSPACE" || exit
+  "$command" "$WORKSPACE" || exit
   return
 elif test -n "$@"; then
   query="-q $*"
 fi
-cd "$(find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2- | rev | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || exit
+"$command" "$(find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2- | rev | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || exit
