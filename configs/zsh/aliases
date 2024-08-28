@@ -1,6 +1,4 @@
 #!/bin/bash
-DOTFILES_NAME=.dots
-
 # Ctrl+Z will send the process to background, use "resume" to bring it back
 alias resume="fg"
 
@@ -20,12 +18,26 @@ alias greva="grev --abort"
 alias grevs="grev --skip"
 
 # git worktree
-alias gwt="git worktree"
-alias gwta="git worktree add"
-alias gwtl="git worktree list"
-alias gwtm="git worktree move"
-alias gwtp="git worktree prune"
-alias gwtrm="git worktree remove"
+unalias gwt
+gwt() {
+  case "$1" in
+    a)
+      git worktree a
+      ;;
+    ls)
+      git worktree list
+      ;;
+    mv)
+      git worktree move
+      ;;
+    rm)
+      git worktree remove
+      ;;
+    *)
+      git worktree "$@"
+      ;;
+  esac
+}
 # kill the annoyance
 alias ga.="ga ."
 
