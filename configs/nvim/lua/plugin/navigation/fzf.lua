@@ -35,6 +35,7 @@ registry.install {
           ['ctrl-d'] = 'half-page-down',
           ['ctrl-a'] = 'beginning-of-line',
           ['ctrl-e'] = 'end-of-line',
+          ['alt-q'] = 'select-all+accept',
         }
       },
       actions = {
