@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if test "${BASH_SOURCE[0]}" = "$0"; then
+  echo "ERROR: This command must be sourced"
+  echo "It can be setup as an alias like this:"
+  echo "  alias $(basename "$0")=\". $(basename "$0")\""
+  exit 1
+fi
+
+query=""
+
+command="cd"
+if ! test -t 1; then
+  command="echo"
+fi
+
+if test "$1" = "-"; then
+  root="$(git rev-parse --show-toplevel 2>/dev/null)"
+  if test -n "$root"; then
+    "$command" "$root" || exit
+  else
+    echo "ERROR: Cannot infer root directory as working directory is not in a git project"
+  fi
+  return
+elif test -n "$@"; then
+  query="-q $*"
+fi
+
+bfs() {
+  for i in $(seq 1 5); do
+    find . -type d -mindepth "$i" -maxdepth "$i" -not -name .
+  done
+  find . -type d -mindepth 5 -not -name .
+}
+
+"$command" "$(bfs | cut -d'/' -f2- | fzf --height=20 '--preview=ls -1 {}' '--bind=ctrl-/:toggle-preview' "$query")" || exit

@@ -4,6 +4,7 @@ alias resume="fg"
 
 # quick project switching
 alias w=". work"
+alias c=". navigate"
 
 # git
 alias glgfp="glg --first-parent"
