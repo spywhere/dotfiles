@@ -26,6 +26,27 @@ if test "$1" = "-"; then
   "$command" "$WORKSPACE" || exit
   return
 elif test -n "$@"; then
-  query="-q $*"
+  query="--query=$*"
 fi
-"$command" "$(find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2- | rev | fzf --height=20 '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")" || exit
+
+output="$(find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2- | rev | fzf --height=20 --print-query '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")"
+query="$(echo "$output" | sed -n 1p)"
+selection="$(echo "$output" | sed -n 2p)"
+if test -n "$selection"; then
+  "$command" "$selection" || exit
+elif test -z "$selection" && test "$command" = "cd"; then
+  printf "Create %s? [y/N] " "$WORKSPACE/$query"
+  while true; do
+    read -r REPLY
+    case "$REPLY" in
+      y|Y)
+        mkdir -p "$WORKSPACE/$query" || exit
+        "$command" "$WORKSPACE/$query" || exit
+        break
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+fi
