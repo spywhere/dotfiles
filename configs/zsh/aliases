@@ -19,7 +19,7 @@ alias greva="grev --abort"
 alias grevs="grev --skip"
 
 # git worktree
-unalias gwt
+unalias gwt >/dev/null 2>/dev/null
 gwt() {
   case "$1" in
     a)
