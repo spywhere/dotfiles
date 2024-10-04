@@ -20,7 +20,7 @@ registry.install {
 
     mason_lsp.setup {
       ensure_installed = {
-        'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'tsserver', 'vimls', 'yamlls'
+        'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'ts_ls', 'vimls', 'yamlls'
       },
       handlers = { handler }
     }
