@@ -29,13 +29,20 @@ registry.install {
       keymap = {
         builtin = {
           ['<C-_>'] = 'toggle-preview',
+          ['<C-u>'] = 'preview-page-up',
+          ['<C-d>'] = 'preview-page-down',
+          ['<S-up>'] = 'preview-up',
+          ['<S-down>'] = 'preview-down',
         },
         fzf = {
-          ['ctrl-u'] = 'half-page-up',
-          ['ctrl-d'] = 'half-page-down',
+          ['ctrl-b'] = 'half-page-up',
+          ['ctrl-f'] = 'half-page-down',
+          ['ctrl-u'] = 'preview-half-page-up',
+          ['ctrl-d'] = 'preview-half-page-down',
           ['ctrl-a'] = 'beginning-of-line',
           ['ctrl-e'] = 'end-of-line',
           ['alt-q'] = 'select-all+accept',
+          ['ctrl-/'] = 'toggle-preview',
         }
       },
       actions = {
