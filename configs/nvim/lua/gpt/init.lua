@@ -20,7 +20,8 @@ P.layout = function (opts, winid)
   winopts.height = to_int(opts.height or 0.9, vim.o.lines)
   winopts.col = math.floor(vim.o.columns / 2 - winopts.width / 2)
   winopts.row = math.floor(vim.o.lines / 2 - winopts.height / 2)
-  winopts.title = string.format(' %s ', 'ChatGPT')
+  local title = opts.context and string.format('ChatGPT [%s]', opts.context) or 'ChatGPT'
+  winopts.title = string.format(' %s ', title)
   winopts.title_pos = 'center'
   winopts.border = 'rounded'
 
@@ -34,7 +35,11 @@ end
 M.create = function (options)
   local opts = options or {}
   local cmd = { 'gpt' }
-  table.insert(cmd, '-c')
+  if opts.context then
+    table.insert(cmd, string.format('-c=%s', opts.context))
+  else
+    table.insert(cmd, '-c')
+  end
   local prompt = opts.prompt or {}
   if prompt.system and prompt.system ~= '' then
     table.insert(cmd, prompt.system)
@@ -71,6 +76,23 @@ M.create = function (options)
   P.winid = vim.api.nvim_open_win(P.bufid, true, P.layout(opts))
 end
 
+M.prompt_create = function (options, input_options)
+  local input_opts = input_options or {}
+
+  vim.ui.input({
+    prompt = input_opts.prompt or 'System Instruction'
+  }, function (input)
+    if input == nil then
+      return
+    end
+
+    local opts = options or {}
+    opts.prompt = opts.prompt or {}
+    opts.prompt.system = input
+    M.create(opts)
+  end)
+end
+
 M.fzf = function (options)
   local opts = options or {}
   require('fzf-lua').fzf_exec('find . -maxdepth 1 -type f', {
@@ -92,7 +114,17 @@ M.fzf = function (options)
     },
     actions = {
       ['default'] = function (selected, action_opts)
-        print('selected item:', selected[1] or action_opts.last_query)
+        if selected[1] then
+          M.create({
+            context = selected[1]
+          })
+        else
+          M.prompt_create({
+            context = action_opts.last_query
+          }, {
+            prompt = string.format('System Instruction for %s', action_opts.last_query)
+          })
+        end
       end
     }
   })

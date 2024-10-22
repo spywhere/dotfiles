@@ -75,20 +75,7 @@ registry.install {
 
     if registry.experiment('gpt').on() then
       bindings.map.normal('<leader>g', gpt.fzf)
-      bindings.map.normal('<leader>G', function ()
-        vim.ui.input({
-          prompt = 'System Instruction'
-        }, function (input)
-          if input == nil then
-            return
-          end
-          gpt.create({
-            prompt = {
-              system = input
-            }
-          })
-        end)
-      end)
+      bindings.map.normal('<leader>G', gpt.prompt_create)
     end
   end
 }
