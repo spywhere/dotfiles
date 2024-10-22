@@ -71,5 +71,27 @@ registry.install {
     }))
     -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
     bindings.map.normal('<leader>f', fuzzy('live_grep'))
+
+    if registry.experiment('gpt').on() then
+      bindings.map.normal('<leader>g', function ()
+        require('fzf-lua').fzf_exec('find . -maxdepth 1 -type f', {
+          prompt = "GPT Context> ",
+          cwd = vim.env.CLIGPT_CONTEXT_STORAGE,
+          previewer = false,
+          preview = {
+            type = "cmd",
+            fn = function (items)
+              local file = require('fzf-lua').path.entry_to_file(items[1])
+              return string.format("CLIGPT_FORCE_COLOR=1 gpt --parse=%s", file.path)
+            end
+          },
+          actions = {
+            ['default'] = function (selected)
+              print('selected item:', selected[1])
+            end
+          }
+        })
+      end)
+    end
   end
 }
