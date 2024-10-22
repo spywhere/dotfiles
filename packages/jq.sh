@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_string 'jq-.*dirty' jq --version
+has_string 'jq-[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' jq --version
 
 use_apt 'jq'
 use_brew formula 'jq'
