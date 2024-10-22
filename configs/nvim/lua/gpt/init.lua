@@ -1,6 +1,7 @@
 local P = {
   bufid = nil,
-  winid = nil
+  winid = nil,
+  hanging = false
 }
 local M = {}
 
@@ -32,6 +33,39 @@ P.layout = function (opts, winid)
   end
 end
 
+P.add_event_listener = function (opts)
+  vim.api.nvim_create_autocmd('VimResized', {
+    buffer = P.bufid,
+    callback = function ()
+      vim.api.nvim_win_set_config(P.winid, P.layout(opts, P.winid))
+    end
+  })
+  vim.api.nvim_create_autocmd('TermLeave', {
+    buffer = P.bufid,
+    callback = function ()
+      vim.api.nvim_buf_call(P.bufid, function ()
+        if P.hanging then
+          vim.api.nvim_win_close(P.winid, true)
+          P.winid = nil
+        else
+          vim.cmd('startinsert!')
+        end
+      end)
+    end
+  })
+  vim.api.nvim_create_autocmd('TermClose', {
+    buffer = P.bufid,
+    callback = function ()
+      if vim.v.event.status == 0 then
+        vim.api.nvim_win_close(P.winid, true)
+        P.winid = nil
+      else
+        P.hanging = true
+      end
+    end
+  })
+end
+
 M.create = function (options)
   local opts = options or {}
   local cmd = { 'gpt' }
@@ -45,31 +79,18 @@ M.create = function (options)
     table.insert(cmd, prompt.system)
   end
 
+  P.hanging = false
   P.bufid = vim.api.nvim_create_buf(false, true)
   vim.bo[P.bufid].bufhidden = 'wipe'
   vim.bo[P.bufid].modifiable = true
   vim.api.nvim_buf_call(P.bufid, function ()
     vim.fn.termopen(cmd, {
       cwd = vim.fn.getcwd(-1, -1),
-      on_exit = function ()
-        vim.api.nvim_win_close(P.winid, true)
-      end
     })
   end)
-  vim.api.nvim_create_autocmd('VimResized', {
-    buffer = P.bufid,
-    callback = function ()
-      vim.api.nvim_win_set_config(P.winid, P.layout(opts, P.winid))
-    end
-  })
-  vim.api.nvim_create_autocmd('TermLeave', {
-    buffer = P.bufid,
-    callback = function ()
-      vim.api.nvim_buf_call(P.bufid, function ()
-        vim.cmd('startinsert!')
-      end)
-    end
-  })
+
+  P.add_event_listener(opts)
+
   -- TODO
   --   Keymap to scroll up/down
 
