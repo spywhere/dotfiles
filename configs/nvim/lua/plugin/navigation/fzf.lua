@@ -1,5 +1,6 @@
 local registry = require('lib.registry')
 local bindings = require('lib.bindings')
+local gpt = require('gpt')
 
 registry.install {
   'ibhagwan/fzf-lua',
@@ -73,24 +74,20 @@ registry.install {
     bindings.map.normal('<leader>f', fuzzy('live_grep'))
 
     if registry.experiment('gpt').on() then
-      bindings.map.normal('<leader>g', function ()
-        require('fzf-lua').fzf_exec('find . -maxdepth 1 -type f', {
-          prompt = "GPT Context> ",
-          cwd = vim.env.CLIGPT_CONTEXT_STORAGE,
-          previewer = false,
-          preview = {
-            type = "cmd",
-            fn = function (items)
-              local file = require('fzf-lua').path.entry_to_file(items[1])
-              return string.format("CLIGPT_FORCE_COLOR=1 gpt --parse=%s", file.path)
-            end
-          },
-          actions = {
-            ['default'] = function (selected)
-              print('selected item:', selected[1])
-            end
-          }
-        })
+      bindings.map.normal('<leader>g', gpt.fzf)
+      bindings.map.normal('<leader>G', function ()
+        vim.ui.input({
+          prompt = 'System Instruction'
+        }, function (input)
+          if input == nil then
+            return
+          end
+          gpt.create({
+            prompt = {
+              system = input
+            }
+          })
+        end)
       end)
     end
   end
