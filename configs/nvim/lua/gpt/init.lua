@@ -47,8 +47,6 @@ P.add_event_listener = function (opts)
         if P.hanging then
           vim.api.nvim_win_close(P.winid, true)
           P.winid = nil
-        else
-          vim.cmd('startinsert!')
         end
       end)
     end
@@ -64,6 +62,61 @@ P.add_event_listener = function (opts)
       end
     end
   })
+end
+
+P.bind_keymaps = function (bid)
+  local call = function (fn)
+    return function ()
+        vim.api.nvim_buf_call(bid, fn)
+    end
+  end
+
+  local feed_normal = function (key)
+    return function ()
+      local esc_key = vim.api.nvim_replace_termcodes(key, false, false, true)
+      vim.cmd.stopinsert({ bang = true })
+      vim.api.nvim_feedkeys(esc_key, 'n', false)
+    end
+  end
+
+  local buf_feed = function (key)
+    return call(feed_normal(key))
+  end
+
+  local keymap = {
+    t = {
+      ['<up>'] = buf_feed('<C-y>'),
+      ['<down>'] = buf_feed('<C-e>'),
+      ['<C-y>'] = buf_feed('<C-y>'),
+      ['<C-e>'] = buf_feed('<C-e>'),
+      ['<C-u>'] = buf_feed('<C-u>'),
+      ['<C-d>'] = buf_feed('<C-d>'),
+      ['<C-f>'] = buf_feed('<C-f>'),
+      ['<C-b>'] = buf_feed('<C-b>'),
+      ['<esc>'] = call(function ()
+        vim.cmd.stopinsert({ bang = true })
+      end)
+    },
+    n = {
+      ['<up>'] = buf_feed('<C-y>'),
+      ['<down>'] = buf_feed('<C-e>'),
+      ['<left>'] = buf_feed('zh'),
+      ['<right>'] = buf_feed('zl'),
+      ['<cr>'] = call(function ()
+        vim.cmd.startinsert({ bang = true })
+      end)
+    }
+  }
+
+  for mode, map in pairs(keymap) do
+    for lhs, rhs in pairs(map) do
+      vim.api.nvim_buf_set_keymap(bid, mode, lhs, '', {
+        noremap = true,
+        silent = true,
+        callback = rhs
+      })
+    end
+  end
 end
 
 M.create = function (options)
@@ -90,9 +143,7 @@ M.create = function (options)
   end)
 
   P.add_event_listener(opts)
-
-  -- TODO
-  --   Keymap to scroll up/down
+  P.bind_keymaps(P.bufid)
 
   P.winid = vim.api.nvim_open_win(P.bufid, true, P.layout(opts))
 end
