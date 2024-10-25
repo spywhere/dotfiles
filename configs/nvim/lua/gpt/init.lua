@@ -121,7 +121,7 @@ end
 
 M.create = function (options)
   local opts = options or {}
-  local cmd = { 'gpt' }
+  local cmd = opts.cmd or { 'gpt', '--fancy' }
   if opts.context then
     table.insert(cmd, string.format('-c=%s', opts.context))
   else
