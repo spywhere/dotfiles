@@ -137,9 +137,7 @@ M.create = function (options)
   vim.bo[P.bufid].bufhidden = 'wipe'
   vim.bo[P.bufid].modifiable = true
   vim.api.nvim_buf_call(P.bufid, function ()
-    vim.fn.termopen(cmd, {
-      cwd = vim.fn.getcwd(-1, -1),
-    })
+    vim.fn.termopen(cmd, {})
   end)
 
   P.add_event_listener(opts)
