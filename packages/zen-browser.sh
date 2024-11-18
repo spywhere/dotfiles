@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Arc'
+has_app 'Zen Browser'
 
-use_brew cask 'arc'
+use_brew cask 'zen-browser'
