@@ -7,6 +7,7 @@ module.exports = {
     'scope-enum': [2, 'always', [
       'asdf',
       'binaries',
+      'configs',
       'git',
       'nvim',
       'packages',

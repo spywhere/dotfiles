@@ -296,6 +296,10 @@ setup_config() {
   link nvim/ .config/nvim
   add_post_install_message "Run 'nvim' for the first time setup"
 
+  step "  - presenterm"
+  link presenterm/ "Library/Application Support/presenterm"
+  link presenterm/ .config/presenterm
+
   step "  - shrimp"
   link shrimp/ .shrimp/recipe
 

@@ -1,0 +1,2 @@
+defaults:
+  image_protocol: kitty-local
