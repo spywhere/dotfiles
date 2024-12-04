@@ -35,6 +35,11 @@ selection="$(echo "$output" | sed -n 2p)"
 if test -n "$selection"; then
   "$command" "$selection" || exit
 elif test -z "$selection" -a -n "$query" -a "$command" = "cd"; then
+  if test -d "$WORKSPACE/$query"; then
+    "$command" "$WORKSPACE/$query" || exit
+    return
+  fi
+
   printf "Create %s? [y/N] " "$WORKSPACE/$query"
   while true; do
     read -r REPLY
