@@ -11,8 +11,7 @@ then
   exit 1
 fi
 
-optional
-has_string 'nano' nano -h
+has_app 'MediaMate'
 
-use_apt 'nano'
-use_brew formula 'nano'
+profile -work
+use_brew cask 'mediamate'

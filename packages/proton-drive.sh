@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_app 'Proton Pass'
+has_app 'Proton Drive'
 
 profile -work
-use_brew cask 'proton-pass'
+use_brew cask 'proton-drive'
