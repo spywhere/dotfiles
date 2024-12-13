@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-use_brew cask 'qlimagesize'
 use_brew cask 'qlprettypatch'
 use_brew cask 'quicklook-csv'
 use_brew cask 'quicklook-json'
