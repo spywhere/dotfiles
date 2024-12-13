@@ -297,8 +297,11 @@ setup_config() {
   add_post_install_message "Run 'nvim' for the first time setup"
 
   step "  - presenterm"
-  link presenterm/ "Library/Application Support/presenterm"
-  link presenterm/ .config/presenterm
+  if test "$OSKIND" = "macos"; then
+    link presenterm/ "Library/Application Support/presenterm"
+  else
+    link presenterm/ .config/presenterm
+  fi
 
   step "  - shrimp"
   link shrimp/ .shrimp/recipe
