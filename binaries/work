@@ -29,7 +29,17 @@ elif test -n "$@"; then
   query="--query=$*"
 fi
 
-output="$(find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2- | rev | fzf --height=20 --print-query '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")"
+if test -n "$(command -v fd)"; then
+  search() {
+    fd --type d --max-depth 3 --no-ignore --hidden '\.git$' "$WORKSPACE" | rev | cut -d'/' -f3-
+  }
+else
+  search() {
+    find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2-
+  }
+fi
+
+output="$(search | rev | fzf --height=20 --print-query '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")"
 query="$(echo "$output" | sed -n 1p)"
 selection="$(echo "$output" | sed -n 2p)"
 if test -n "$selection"; then

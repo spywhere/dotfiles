@@ -26,11 +26,21 @@ elif test -n "$@"; then
   query="-q $*"
 fi
 
-bfs() {
-  for i in $(seq 1 5); do
-    find . -type d -mindepth "$i" -maxdepth "$i" -not -name .
-  done
-  find . -type d -mindepth 5 -not -name .
-}
+if test -n "$(command -v fd)"; then
+  bfs() {
+    fd --type d --exclude .git --exclude node_modules .
+  }
+elif test -n "$(command -v rg)"; then
+  bfs() {
+    rg --files --iglob '!.git/**' --iglob '!node_modules/**' --null . | xargs -0 dirname | sort -u | cut -d'/' -f2-
+  }
+else
+  bfs() {
+    for i in $(seq 1 5); do
+      find . -type d -mindepth "$i" -maxdepth "$i" -not -path '*/.*' -not -path '*/.git/*' -not -path '*/node_modules/*' | cut -d'/' -f2-
+    done
+    find . -type d -mindepth 5 -not -path '*/.*' -not -path '*/.git/*' -not -path '*/node_modules/*' | cut -d'/' -f2-
+  }
+fi
 
-"$command" "$(bfs | cut -d'/' -f2- | fzf --height=20 '--preview=ls -1 {}' '--bind=ctrl-/:toggle-preview' "$query")" || exit
+"$command" "$(bfs | fzf --height=20 '--preview=ls -1 {}' '--bind=ctrl-/:toggle-preview' "$query")" || exit
