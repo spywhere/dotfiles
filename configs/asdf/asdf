@@ -2,7 +2,7 @@ nodejs 20.11.0
 python 3.10.4
 dotnet-core 7.0.405
 java adoptopenjdk-17.0.4+101
-fzf 0.56.3
+fzf 0.57.0
 neovim ref:0.10.2
 rust 1.75.0
 deno ref:1.22.0
@@ -11,4 +11,4 @@ zig 0.10.1
 kotlin 1.8.21
 pnpm 9.14.1
 zoxide 0.9.4
-tuist 4.34.3
+tuist 4.38.1
