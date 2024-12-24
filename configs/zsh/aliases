@@ -18,6 +18,9 @@ alias grevc="grev --continue"
 alias greva="grev --abort"
 alias grevs="grev --skip"
 
+# git stash
+alias gstas="gsta --staged"
+
 # git worktree
 unalias gwt >/dev/null 2>/dev/null
 gwt() {
@@ -39,6 +42,7 @@ gwt() {
       ;;
   esac
 }
+
 # kill the annoyance
 alias ga.="ga ."
 
