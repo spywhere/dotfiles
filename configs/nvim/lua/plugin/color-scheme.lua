@@ -23,7 +23,7 @@ registry.install {
         fg = onenord.cyan
       },
       NvimTreeNormal = {
-        bg = colors.darkgray.gui,
+        bg = vim.env.TERM_APP == 'ghostty' and colors.darkgray.gui_transparent or colors.darkgray.gui,
         fg = onenord.white
       }
     }
@@ -83,7 +83,7 @@ registry.install {
     require('onenord').setup {
       custom_highlights = custom_highlights,
       custom_colors = {
-        bg = colors.darkgray.gui,
+        bg = vim.env.TERM_APP == 'ghostty' and colors.darkgray.gui_transparent or colors.darkgray.gui,
         diff_change = onenord.yellow,
         status = colors.resolve_color('black').gui
       }

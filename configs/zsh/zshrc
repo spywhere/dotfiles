@@ -90,7 +90,7 @@ exp_is() {
 
 zinit snippet OMZP::brew
 
-if test -z "$VIM" && test -z "$TMUX" && test -z "$ZELLIJ" && test -z "$TERM_PROGRAM" && ! exp_is aA tmux; then
+if test -z "$VIM" && test -z "$TMUX" && test -z "$ZELLIJ" && (test -z "$TERM_PROGRAM" || test "$TERM_PROGRAM" = "ghostty") && ! exp_is aA tmux; then
   if test -n "$(command -v zellij)" && exp_is bB zellij; then
     ZELLIJ_AUTO_ATTACH=true
     ZELLIJ_AUTO_EXIT=true

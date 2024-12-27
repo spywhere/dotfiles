@@ -1,0 +1,20 @@
+macos-option-as-alt = left
+quit-after-last-window-closed = true
+font-thicken = true
+macos-auto-secure-input = true
+
+window-inherit-font-size = false
+font-size = 12
+adjust-cell-height = -7%
+
+scrollback-limit = 100
+shell-integration-features = no-cursor
+
+background-opacity = 0.9
+background-blur-radius = 26
+
+keybind = alt+left=unbind
+keybind = alt+right=unbind
+keybind = super+n=unbind
+keybind = super+t=unbind
+keybind = super+w=unbind

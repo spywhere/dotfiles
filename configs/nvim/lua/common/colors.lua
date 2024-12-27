@@ -1,5 +1,5 @@
 local M = {
-  darkgray = { gui='#1c1c1c', cterm=234 }
+  darkgray = { gui='#1c1c1c', cterm=234, gui_transparent='none' }
 }
 
 -- color palettes (from nord-vim)

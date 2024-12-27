@@ -36,3 +36,7 @@ export NOW_PLAYING_SHADA="$HOME/.cache/now-playing"
 
 # suppress warnings (especially on git)
 export STARSHIP_LOG=error
+
+if test -z "$TERM_APP"; then
+  export TERM_APP="$TERM_PROGRAM"
+fi
