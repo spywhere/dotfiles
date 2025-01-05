@@ -3,9 +3,11 @@ quit-after-last-window-closed = true
 font-thicken = true
 macos-auto-secure-input = true
 
+window-width = 240
+window-height = 60
 window-inherit-font-size = false
 font-size = 12
-adjust-cell-height = -7%
+adjust-cell-height = -8%
 
 scrollback-limit = 100
 shell-integration-features = no-cursor
@@ -18,3 +20,12 @@ keybind = alt+right=unbind
 keybind = super+n=unbind
 keybind = super+t=unbind
 keybind = super+w=unbind
+
+# primary
+background = #1c1c1c
+foreground = #d8dee9
+# cursor
+cursor-color = #d8dee9
+cursor-text = #2e3440
+# selection
+selection-background = #4c566a
