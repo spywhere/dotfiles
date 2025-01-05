@@ -144,7 +144,7 @@ test -f ~/.personal && source ~/.personal
 test -f ~/.fzf.zsh && source ~/.fzf.zsh
 
 # Use GPT command lookup
-if test -n "$(command -v gpt)"; then
+if test -n "$(command -v gpt)" && gpt --uuid >/dev/null 2>&1; then
   . <(gpt --zsh)
 fi
 

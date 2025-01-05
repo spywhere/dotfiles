@@ -16,7 +16,7 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 # zsh-you-should-use
 export YSU_MESSAGE_POSITION="after"
-export YSU_IGNORED_ALIASES=("g" "ga." "d" "p" "vi" "vim" "search_prs" "search_issues")
+export YSU_IGNORED_ALIASES=("g" "ga." "d" "p" "vi" "vim" "search_prs" "search_issues" "bi" "bu" "bup")
 
 # use bat as a man pager
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
