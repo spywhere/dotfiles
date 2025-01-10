@@ -9,6 +9,7 @@ module.exports = {
       'binaries',
       'configs',
       'git',
+      'install',
       'nvim',
       'packages',
       'setup',
