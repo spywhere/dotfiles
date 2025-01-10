@@ -13,6 +13,7 @@ fi
 
 has_executable 'asdf'
 
+use_brew formula 'asdf'
 use_custom 'install_asdf'
 
 install_asdf() {

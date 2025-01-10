@@ -35,18 +35,31 @@ deno_pr_merged() {
 }
 
 setup_version_manager() {
+  if has_cmd asdf; then
+    run_asdf() {
+      asdf "$@"
+    }
+  elif test -d "$HOME/.asdf/asfd.sh"; then
+    run_asdf() {
+      bash -c ". $HOME/.asdf/asdf.sh && asdf $*"
+    }
+  else
+    warn "ASDF cannot be found on PATH or ~/.asdf"
+    return 1
+  fi
+
   setup_version_manager__plugins="fzf neovim nodejs python rust shellcheck tuist zig"
   step "Setting up version manager plugins..."
   set +e
   for setup_version_manager__plugin in $setup_version_manager__plugins; do
-    bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add $setup_version_manager__plugin"
+    run_asdf plugin add "$setup_version_manager__plugin"
   done
   if deno_pr_merged; then
-    bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add deno"
+    run_asdf plugin add deno
   else
-    bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add deno https://github.com/spywhere/asdf-deno.git"
+    run_asdf plugin add deno https://github.com/spywhere/asdf-deno.git
   fi
-  bash -c ". $HOME/.asdf/asdf.sh && asdf plugin add upgrade https://github.com/spywhere/asdf-upgrade.git"
+  run_asdf plugin add upgrade https://github.com/spywhere/asdf-upgrade.git
   set -e
 
   if test -f "$HOME/.tool-versions"; then
@@ -59,7 +72,7 @@ setup_version_manager() {
     setup_version_manager__plugins="fzf nodejs python neovim"
     set +e
     for setup_version_manager__plugin in $setup_version_manager__plugins; do
-      bash -c ". $HOME/.asdf/asdf.sh && asdf install $setup_version_manager__plugin"
+      run_asdf install "$setup_version_manager__plugin"
     done
     set -e
   fi
