@@ -39,7 +39,7 @@ setup_version_manager() {
     run_asdf() {
       asdf "$@"
     }
-  elif test -d "$HOME/.asdf/asfd.sh"; then
+  elif test -f "$HOME/.asdf/asdf.sh"; then
     run_asdf() {
       bash -c ". $HOME/.asdf/asdf.sh && asdf $*"
     }
