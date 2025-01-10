@@ -194,21 +194,6 @@ setup_macos() {
   sudo_config "com.apple.loginwindow" "GuestEnabled" false
   sudo_config "com.apple.loginwindow" "showInputMenu" true
 
-  if has_cmd bw && has_profile -ci; then
-    while true; do
-      if test "$(bw status --raw | jq -r .status)" = "unauthenticated"; then
-        session_id="$(bw login --raw)"
-      fi
-      if test "$(bw status --session "$session_id" --raw | jq -r .status)" = "locked"; then
-        session_id="$(bw unlock --raw)"
-      fi
-      if test "$(bw status --session "$session_id" --raw | jq -r .status)" = "unlocked"; then
-        break
-      fi
-    done
-    sudo_config "com.apple.loginwindow" "LoginwindowText" "$(bw --response get notes 52184c08-c21c-4bad-9280-b01c00bc71d3 --session "$session_id" | jq '.data.data')"
-  fi
-
   ###########
   # Network #
   ###########
