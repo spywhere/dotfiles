@@ -16,7 +16,7 @@ Looking to use my dotfiles installer for your setup? Check out [installer](https
 ## Quick Installation
 
 ```sh
-sh -c "$(curl -sSL dots.spywhere.me)" - spywhere/dotfiles
+sh -c "$(curl -sSL dotfiles.spywhere.me)"
 ```
 
 ## Installation with Additional Flags and Options
@@ -24,5 +24,5 @@ sh -c "$(curl -sSL dots.spywhere.me)" - spywhere/dotfiles
 To use flags in remote installation, use this command
 
 ```sh
-sh -c "$(curl -sSL dots.spywhere.me)" - spywhere/dotfiles [flags...]
+sh -c "$(curl -sSL dotfiles.spywhere.me)" - [flags...]
 ```

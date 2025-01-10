@@ -16,7 +16,6 @@ jobs:
       - name: Installation Info
         env:
           IMAGE: ${{ matrix.os }}
-          REPO_NAME: spywhere/dotfiles
         run: |
           docker run -v $(pwd):/root/dots -e REPO_NAME=$REPO_NAME $IMAGE sh -c "apt update && apt install -y curl && sh /root/dots/install.sh -i"
       - name: Perform Installation
@@ -24,6 +23,5 @@ jobs:
           IMAGE: ${{ matrix.os }}
           FLAG: ${{ matrix.flag }}
           FLAGS: ${{ vars.FLAGS }}
-          REPO_NAME: spywhere/dotfiles
         run: |
           docker run -v $(pwd):/root/dots -e REPO_NAME=$REPO_NAME $IMAGE sh -c "apt update && apt install -y curl && sh /root/dots/install.sh -y $FLAG $FLAGS"
