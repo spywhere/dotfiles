@@ -122,10 +122,13 @@ download_keypairs() {
 }
 
 setup_ssh() {
-  if ! _has_indicate generate; then
-    download_keypairs srht github gitlab digitalocean personal
-    return
+  operation="download_keypairs"
+  if _has_indicate generate; then
+    step "Generating SSH keypairs..."
+    operation="try_generate_keypairs"
+  else
+    step "Downloading SSH keypairs..."
   fi
 
-  try_generate_keypairs srht github gitlab digitalocean personal
+  "$operation" srht github gitlab digitalocean personal
 }
