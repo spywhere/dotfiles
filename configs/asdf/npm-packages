@@ -1,5 +1,3 @@
-@ast-grep/cli
-eslint
-jest
 neovim
 npm
+pnpm
