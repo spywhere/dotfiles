@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'gpt'
+has_string '4210bbbd-7376-4c55-ac3a-093552be821c' gpt --uuid
 
 use_bin 'gpt' 'https://raw.githubusercontent.com/spywhere/gpt/main/gpt'
