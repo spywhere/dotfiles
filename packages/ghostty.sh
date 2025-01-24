@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'kitty'
+has_app 'Ghostty'
 
-use_brew cask 'kitty'
+use_brew cask 'ghostty'
