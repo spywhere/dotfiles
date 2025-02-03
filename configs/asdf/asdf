@@ -2,13 +2,13 @@ nodejs 23.6.0
 python 3.10.4
 dotnet-core 7.0.405
 java adoptopenjdk-17.0.4+101
-fzf 0.57.0
-neovim ref:0.10.3
+fzf 0.59.0
+neovim ref:0.10.4
 rust 1.75.0
 deno ref:1.22.0
 coursier 2.1.0-M6-53-gb4f448130
 zig 0.10.1
 kotlin 1.8.21
-pnpm 9.14.1
+pnpm 9.15.5
 zoxide 0.9.4
-tuist 4.38.1
+tuist 4.40.0
