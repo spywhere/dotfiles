@@ -11,6 +11,10 @@ if test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; th
   export PATH="$DOTNET_ROOT:$PATH"
 fi
 
+if test -n "$(command -v asdf)"; then
+  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+fi
+
 # clangd (through llvm if installed)
 if test -d /usr/local/opt/llvm/bin; then
   export PATH="/usr/local/opt/llvm/bin:$PATH"
