@@ -150,7 +150,6 @@ else
   zinit light zsh-users/zsh-history-substring-search
   zinit light zdharma-continuum/fast-syntax-highlighting
 
-  zinit snippet OMZP::asdf
   zinit snippet OMZP::common-aliases
   zinit ice lucid as"completion"
   zinit snippet OMZP::docker/completions/_docker
