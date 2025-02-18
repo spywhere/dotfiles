@@ -15,7 +15,6 @@ registry.pre(function ()
     'getscriptPlugin',
     'vimball',
     'vimballPlugin',
-    '2html_plugin',
     'logipat',
     'rrhelper',
     'spellfile_plugin',
