@@ -8,20 +8,27 @@
   attributesFile = ~/.dots/configs/git/gitattributes
 [rerere]
   enabled = true
+  autoupdate = true
 [feature]
   manyFiles = true
 [init]
   defaultBranch = main
 [fetch]
   prune = true
+  pruneTags = true
+  all = true
 [merge]
   autoStash = true
 [rebase]
   autoStash = true
+  updateRefs = true
 [pull]
   ff = only
+  rebase = true
 [push]
+  default = simple
   autoSetupRemote = true
+  followTags = true
 [advice]
   addEmptyPathspec = false
 [delta]
@@ -48,3 +55,9 @@
 [diff "hex"]
   textconv = hexdump -v -C
   binary = true
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+[help]
+	autocorrect = prompt
