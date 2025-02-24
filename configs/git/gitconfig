@@ -6,22 +6,17 @@
   preloadIndex = true
   untrackedCache = true
   attributesFile = ~/.dots/configs/git/gitattributes
-[rerere]
-  enabled = true
-  autoupdate = true
 [feature]
   manyFiles = true
 [init]
   defaultBranch = main
+[rerere]
+  enabled = true
+  autoupdate = true
 [fetch]
   prune = true
   pruneTags = true
   all = true
-[merge]
-  autoStash = true
-[rebase]
-  autoStash = true
-  updateRefs = true
 [pull]
   ff = only
   rebase = true
@@ -29,24 +24,15 @@
   default = simple
   autoSetupRemote = true
   followTags = true
-[advice]
-  addEmptyPathspec = false
-[delta]
-  syntax-theme = Nord
-  line-numbers = true
+[merge]
+  autoStash = true
+[rebase]
+  autoStash = true
+  updateRefs = true
 [interactive]
   diffFilter = delta --color-only
-[user]
-  useConfigOnly = true
-[user "me"]
-  name = Sirisak Lueangsaksri
-  email = 1087399+spywhere@users.noreply.github.com
 [color]
   ui = true
-[include]
-  path = ~/.gitidentity
-  path = ~/.dots/configs/git/gitalias
-  path = .gitconfig.platform
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
@@ -59,5 +45,21 @@
 	sort = version:refname
 [diff]
 	algorithm = histogram
+[delta]
+  syntax-theme = Nord
+  line-numbers = true
+[advice]
+  addEmptyPathspec = false
 [help]
 	autocorrect = prompt
+
+[include]
+  path = ~/.gitidentity
+  path = ~/.dots/configs/git/gitalias
+  path = .gitconfig.platform
+
+[user]
+  useConfigOnly = true
+[user "me"]
+  name = Sirisak Lueangsaksri
+  email = 1087399+spywhere@users.noreply.github.com
