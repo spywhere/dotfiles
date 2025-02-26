@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 # Ctrl+Z will send the process to background, use "resume" to bring it back
 alias resume="fg"
 
