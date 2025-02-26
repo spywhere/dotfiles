@@ -6,6 +6,7 @@
   preloadIndex = true
   untrackedCache = true
   attributesFile = ~/.dots/configs/git/gitattributes
+  autocrlf = input
 [feature]
   manyFiles = true
 [init]
