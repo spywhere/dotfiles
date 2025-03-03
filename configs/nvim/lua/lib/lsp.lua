@@ -24,6 +24,18 @@ local generate_lsp_setup = function (name)
   LSPM.filetypes = set('filetypes')
   LSPM.auto = set('auto')
   LSPM.need_executable = set('executable')
+  LSPM.experiment = function (expid)
+    return {
+      on = function ()
+        lsps[name].experiment = registry.experiment(expid).on
+        return LSPM
+      end,
+      off = function ()
+        lsps[name].experiment = registry.experiment(expid).off
+        return LSPM
+      end
+    }
+  end
   LSPM.prepare = set('prepare')
   LSPM.command = set('cmd')
   LSPM.options = set('options')
@@ -51,8 +63,9 @@ end
 
 local setup_lsp = function (name, lsp, options)
   if
-    (not options or not options.skip_check) and
-    (lsp.executable and fn.executable(lsp.executable) == 0)
+    (options and options.skip_check) or
+    (lsp.executable and fn.executable(lsp.executable) == 0) or
+    (lsp.experiment and not lsp.experiment())
   then
     return
   end
@@ -126,12 +139,12 @@ local function setup(setup_fn)
   has_been_setup = true
 end
 
-M.setup = function (name, options)
+M.setup = function (name)
   if type(name) == 'function' then
     -- return a setup function with a handler
     return function ()
       return setup(function ()
-        local function handler(server)
+        local function handler(server, options)
           if lsps[server] then
             setup_lsp(server, lsps[server], options)
           end

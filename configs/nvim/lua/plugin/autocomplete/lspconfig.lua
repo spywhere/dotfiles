@@ -22,11 +22,13 @@ registry.install {
       ensure_installed = {
         'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'ts_ls', 'vimls', 'yamlls'
       },
-      handlers = { handler }
+      handlers = { function (name)
+        return handler(name, {
+          skip_check = true
+        })
+      end }
     }
-  end, {
-    skip_check = true
-  }),
+  end),
   config = function ()
     lsp.on_setup(function ()
       vim.diagnostic.config({
