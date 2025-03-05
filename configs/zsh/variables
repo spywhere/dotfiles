@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+homebrew_prefix=""
+if test -n "$(command -v brew)"; then
+  homebrew_prefix="$(brew --prefix)"
+fi
+
 # set dotnet root and its binary to have it running properly
 if test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
   export DOTNET_ROOT="$(asdf where dotnet-core)"
@@ -30,13 +35,13 @@ fi
 
 homebrew_bins='jq ruby git'
 for bin_name in $=homebrew_bins; do
-  if test -d "/opt/homebrew/opt/$bin_name/bin"; then
-    export PATH="/opt/homebrew/opt/$bin_name/bin:$PATH"
+  if test -d "$homebrew_prefix/opt/$bin_name/bin"; then
+    export PATH="$homebrew_prefix/opt/$bin_name/bin:$PATH"
   fi
 done
 
 # Use homebrew version for security key support
-if test -d "/opt/homebrew/opt/openssh/bin"; then
-  export PATH="/opt/homebrew/opt/openssh/bin:$PATH"
-  export GIT_SSH="/opt/homebrew/opt/openssh/bin/ssh"
+if test -d "$homebrew_prefix/opt/openssh/bin"; then
+  export PATH="$homebrew_prefix/opt/openssh/bin:$PATH"
+  export GIT_SSH="$homebrew_prefix/opt/openssh/bin/ssh"
 fi

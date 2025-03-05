@@ -1,0 +1,5 @@
+[filter "lfs"]
+  clean = ~/.dots/binaries/trybrew git-lfs git-lfs clean -- %f
+  smudge = ~/.dots/binaries/trybrew git-lfs git-lfs smudge -- %f
+  process = ~/.dots/binaries/trybrew git-lfs git-lfs filter-process
+  required = true

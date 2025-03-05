@@ -1,0 +1,12 @@
+#!/bin/bash
+
+name="$1"
+shift
+bin_name="$1"
+shift
+
+if test "$(command -v brew)" && test -x "$(brew --prefix)/opt/$name/bin/$bin_name"; then
+  "$(brew --prefix)/opt/$name/bin/$bin_name" "$@"
+else
+  "$bin_name" "$@"
+fi

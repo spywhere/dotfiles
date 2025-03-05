@@ -34,11 +34,6 @@
   diffFilter = delta --color-only
 [color]
   ui = true
-[filter "lfs"]
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
-  required = true
 [diff "hex"]
   textconv = hexdump -v -C
   binary = true
@@ -55,12 +50,8 @@
 	autocorrect = prompt
 
 [include]
+  path = ~/.dots/configs/git/gitidentity
   path = ~/.gitidentity
   path = ~/.dots/configs/git/gitalias
-  path = .gitconfig.platform
-
-[user]
-  useConfigOnly = true
-[user "me"]
-  name = Sirisak Lueangsaksri
-  email = 1087399+spywhere@users.noreply.github.com
+  path = ~/.dots/configs/git/gitlfs
+  path = ~/.gitconfig.platform
