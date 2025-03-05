@@ -11,6 +11,8 @@
   manyFiles = true
 [init]
   defaultBranch = main
+[commit]
+  verbose = true
 [rerere]
   enabled = true
   autoupdate = true
