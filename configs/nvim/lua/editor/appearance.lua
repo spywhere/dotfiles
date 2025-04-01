@@ -77,7 +77,11 @@ end
 registry.defer_first(netrw)
 
 local highlight_yank = function ()
-  require('vim.highlight').on_yank({ timeout = 300 })
+  local highlight = prequire('vim.hl') or prequire('vim.highlight')
+  if not highlight then
+    return
+  end
+  highlight.on_yank({ timeout = 300 })
 end
 registry.auto('TextYankPost', highlight_yank, nil, 'silent!')
 

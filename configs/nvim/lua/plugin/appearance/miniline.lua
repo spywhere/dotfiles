@@ -64,7 +64,7 @@ local function get_lsp_diagnostic_count(text, diagnostic_type)
       return ''
     end
 
-    local active_clients = vim.lsp.get_active_clients()
+    local active_clients = vim.lsp.get_clients()
     if vim.tbl_isempty(active_clients) then
       return ''
     end
@@ -90,7 +90,7 @@ local function get_lsp_ok(text)
       return ''
     end
 
-    local active_clients = vim.lsp.get_active_clients()
+    local active_clients = vim.lsp.get_clients()
     if vim.tbl_isempty(active_clients) then
       return ''
     end
