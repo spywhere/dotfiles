@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Ice'
+has_app 'Barbee'
 
-use_brew cask 'jordanbaird-ice'
+use_mas 'barbee' '1548711022'
