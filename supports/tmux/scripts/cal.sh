@@ -3,6 +3,16 @@
 # shellcheck disable=SC1091
 . "$HOME/.dots/binaries/_cache"
 
+if test -n "$(command -v scrolling-text)"; then
+  print() {
+    scrolling-text "$1" 35 "$(date +%s)"
+  }
+else
+  print() {
+    printf '%s\n' "$1"
+  }
+fi
+
 if test -n "$(command -v icalBuddy)"; then
   calitem() {
     icalBuddy -ea -nc -b '' -ss '' -ps '| |' "$@"
@@ -15,11 +25,11 @@ if test -n "$(command -v icalBuddy)"; then
   }
 
   if test "$1" = 'time'; then
-    printf '%s\n' "$(calfield datetime)"
+    print "$(calfield datetime)"
   elif test "$1" = 'title'; then
-    printf '%s\n' "$(calfield title)"
+    print "$(calfield title)"
   elif test "$1" = 'location'; then
-    printf '%s\n' "$(calfield location -npn)"
+    print "$(calfield location -npn)"
   else
     printf '[%s] %s [%s]\n' "$(calfield datetime)" "$(calfield title)" "$(calfield location -npn)"
   fi
