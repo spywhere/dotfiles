@@ -1,0 +1,17 @@
+#!/bin/bash
+
+text="$1"
+size="$2"
+offset="$3"
+if test $# -ge 4; then
+  text_length="$4"
+else
+  text_length=$(printf "%s" "$text" | wc -m)
+fi
+if test "$text_length" -gt "$size"; then
+  index=$(( offset % (text_length + 3) ))
+  padded_text="$text   $text"
+  printf "%s" "$padded_text" | cut -c"$(( index + 1 ))-$(( index + size ))"
+else
+  printf "%s" "$text"
+fi

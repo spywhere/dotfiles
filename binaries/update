@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if test -n "$(command -v brew)"; then
+  brew update
+  brew upgrade
+  brew cleanup
+fi
+
+if test -n "$(command -v zi)"; then
+  zi update
+fi
+
+if test -n "$(command -v asdf)"; then
+  asdf update --all
+fi
