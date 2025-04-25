@@ -11,5 +11,5 @@ if test -n "$(command -v zi)"; then
 fi
 
 if test -n "$(command -v asdf)"; then
-  asdf update --all
+  asdf plugin update --all
 fi
