@@ -56,4 +56,5 @@
   path = ~/.gitidentity
   path = ~/.dots/configs/git/gitalias
   path = ~/.dots/configs/git/gitlfs
+  path = ~/.gitpersonal
   path = ~/.gitconfig.platform

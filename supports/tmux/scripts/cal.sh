@@ -5,7 +5,7 @@
 
 if test -n "$(command -v scrolling-text)"; then
   print() {
-    scrolling-text "$1" 35 "$(date +%s)"
+    scrolling-text "$1" "$2" "$(date +%s)"
   }
 else
   print() {
@@ -27,9 +27,9 @@ if test -n "$(command -v icalBuddy)"; then
   if test "$1" = 'time'; then
     print "$(calfield datetime)"
   elif test "$1" = 'title'; then
-    print "$(calfield title)"
+    print "$(calfield title)" 35
   elif test "$1" = 'location'; then
-    print "$(calfield location -npn)"
+    print "$(calfield location -npn)" 20
   else
     printf '[%s] %s [%s]\n' "$(calfield datetime)" "$(calfield title)" "$(calfield location -npn)"
   fi
