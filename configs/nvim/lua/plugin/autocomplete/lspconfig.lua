@@ -9,25 +9,24 @@ registry.install {
   },
   delay = lsp.setup(function (handler, required_servers)
     local mason_lsp = require('mason-lspconfig')
-
-    local available_servers = mason_lsp.get_available_servers()
-    for _, server in ipairs(required_servers) do
-      -- setup lsp manually for unsupported servers
-      if not available_servers[server] then
-        handler(server)
-      end
-    end
-
     mason_lsp.setup {
       ensure_installed = {
         'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'ts_ls', 'vimls', 'yamlls'
       },
-      handlers = { function (name)
-        return handler(name, {
-          skip_check = true
-        })
-      end }
+      handlers = fn.has('nvim-0.11') == 0 and { function (name)
+        return handler(name, { skip_check = true })
+      end } or nil
     }
+
+    for _, server in ipairs(required_servers) do
+      local available_servers = mason_lsp.get_available_servers()
+      if fn.has('nvim-0.11') == 1 then
+        -- setup all the required servers, extending mason configs
+        handler(server)
+      elseif not available_servers[server] then
+        handler(server)
+      end
+    end
   end),
   config = function ()
     lsp.on_setup(function ()

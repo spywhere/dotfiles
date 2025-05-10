@@ -49,15 +49,19 @@ local generate_lsp_setup = function (name)
   return LSPM
 end
 
+local all_lsp_on_attach = function (client, bufnr)
+  for _, cfn in ipairs(fns.attach) do
+    cfn(client, bufnr)
+  end
+end
+
 local lsp_on_attach = function (fn)
   return function (client, bufnr)
     if type(fn) == 'function' then
       fn(client, bufnr)
     end
 
-    for _, cfn in ipairs(fns.attach) do
-      cfn(client, bufnr)
-    end
+    all_lsp_on_attach(client, bufnr)
   end
 end
 
@@ -90,7 +94,6 @@ local setup_lsp = function (name, lsp, options)
     end
   end
 
-  local nvim_lsp = require('lspconfig')
   local nvim_lsp_util = require('lspconfig.util')
   local nvim_lsp_config = require('lspconfig.configs')
 
@@ -118,7 +121,13 @@ local setup_lsp = function (name, lsp, options)
   if not nvim_lsp_config[name] and lsp.config and next(lsp.config) then
     nvim_lsp_config[name] = lsp.config
   end
-  nvim_lsp[name].setup(lsp_options)
+  if fn.has('nvim-0.11') == 1 then
+    vim.lsp.config(name, lsp_options)
+    vim.lsp.enable(name)
+  else
+    local nvim_lsp = require('lspconfig')
+    nvim_lsp[name].setup(lsp_options)
+  end
 end
 
 local M = {}

@@ -55,7 +55,7 @@ local mode_map = {
 }
 
 local function is_lsp_attached()
-  return next(vim.lsp.buf_get_clients(0))
+  return next(vim.lsp.get_clients({buffer=0}))
 end
 
 local function get_lsp_diagnostic_count(text, diagnostic_type)
