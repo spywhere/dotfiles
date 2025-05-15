@@ -2,9 +2,9 @@ local registry = require('lib.registry')
 local lsp = require('lib.lsp')
 
 registry.install {
-  'williamboman/mason-lspconfig.nvim',
+  'mason-org/mason-lspconfig.nvim',
   requires = {
-    'williamboman/mason.nvim',
+    'mason-org/mason.nvim',
     'neovim/nvim-lspconfig'
   },
   delay = lsp.setup(function (handler, required_servers)
@@ -13,6 +13,7 @@ registry.install {
       ensure_installed = {
         'bashls', 'emmet_ls', 'eslint', 'graphql', 'lua_ls', 'pyright', 'ts_ls', 'vimls', 'yamlls'
       },
+      automatic_enable = false,
       handlers = fn.has('nvim-0.11') == 0 and { function (name)
         return handler(name, { skip_check = true })
       end } or nil
