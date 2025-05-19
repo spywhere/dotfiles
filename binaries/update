@@ -13,3 +13,7 @@ fi
 if test -n "$(command -v asdf)"; then
   asdf plugin update --all
 fi
+
+if test -n "$(command -v nvim)"; then
+  nvim -c 'autocmd User LazyVimStarted lua=require("lazy").sync()' -c 'autocmd User LazySync qa!'
+fi
