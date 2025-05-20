@@ -7,6 +7,7 @@ alias w=". work"
 alias c=". navigate"
 
 # git
+alias gaap="gaa --patch"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 
