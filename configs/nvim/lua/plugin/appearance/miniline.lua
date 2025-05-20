@@ -153,7 +153,7 @@ end)
   },
   {
     fn = function (options)
-      local limit = options.kind == 'active' and 70 or 50
+      local limit = options.kind == 'active' and 90 or 70
 
       local function split(str, sep)
         local output = {}
