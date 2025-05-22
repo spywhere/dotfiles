@@ -15,22 +15,30 @@ fi
 
 if test -n "$(command -v icalBuddy)"; then
   calitem() {
-    icalBuddy -ea -nc -b '' -ss '' -ps '| |' "$@"
+    icalBuddy -ea -nc -b '' -ss '' -ps '|\t|' -npn "$@"
   }
 
-  calfield() {
-    fieldname="$1"
-    shift
-    calitem -iep "$fieldname" -li 1 "$@" eventsNow
+  filter() {
+    grep -v -i -e 'ooo' -e 'appointment' -e 'lunch' -e 'busy' -e 'blocked'
   }
+
+  item="$(calitem -iep 'datetime,title,location' -po 'datetime,title,location' -n eventsNow | filter | head -n 1)"
+
+  if test -z "$item"; then
+    return
+  fi
+
+  datetime="$(echo "$item" | cut -f 1)"
+  title="$(echo "$item" | cut -f 2)"
+  location="$(echo "$item" | cut -f 3)"
 
   if test "$1" = 'time'; then
-    print "$(calfield datetime)"
+    print "$datetime"
   elif test "$1" = 'title'; then
-    print "$(calfield title)" 35
+    print "$title" 35
   elif test "$1" = 'location'; then
-    print "$(calfield location -npn)" 20
+    print "$location" 20
   else
-    printf '[%s] %s [%s]\n' "$(calfield datetime)" "$(calfield title)" "$(calfield location -npn)"
+    printf '[%s] %s [%s]\n' "$datetime" "$title" "$location"
   fi
 fi
