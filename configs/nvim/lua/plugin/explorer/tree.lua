@@ -42,11 +42,19 @@ end
 
 registry.install {
   'nvim-tree/nvim-tree.lua',
+  skip = registry.experiment('oil').on,
   defer = function ()
+    if registry.experiment('oil').on() then
+      return
+    end
     bindings.map.all('<leader>E', '<cmd>NvimTreeFocus<cr>')
 
     bindings.map.all('<leader>e', function ()
-      local tree = require('nvim-tree.api').tree
+      local tree = prequire('nvim-tree.api')
+      if not tree then
+        return
+      end
+      tree = tree.tree
 
       if tree.is_visible() and not tree.is_tree_buf(0) then
         tree.focus()
@@ -56,7 +64,11 @@ registry.install {
     end)
   end,
   delay = function ()
-    require('nvim-tree').setup {
+    local tree = prequire('nvim-tree')
+    if not tree then
+      return
+    end
+    tree.setup {
       sync_root_with_cwd = true,
       select_prompts = true,
       on_attach = on_attach,

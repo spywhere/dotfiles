@@ -73,6 +73,22 @@ registry.install {
     -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
     bindings.map.normal('<leader>f', fuzzy('live_grep'))
 
+    if registry.experiment('oil').on() then
+      bindings.map.normal('<leader>E', fuzzy('complete_path', {
+          word_pattern = '',
+          actions = {
+            ['enter'] = function (selection)
+              if not selection then
+                return
+              end
+
+              require('oil').open(selection[1])
+            end
+          }
+        })
+      )
+    end
+
     if registry.experiment('gpt').on() then
       bindings.map.normal('<leader>g', gpt.fzf)
       bindings.map.normal('<leader>G', gpt.prompt_create)
