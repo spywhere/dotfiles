@@ -79,6 +79,12 @@ registry.install {
         change_dir = {
           global = true
         }
+      },
+      git = {
+        enable = false,
+      },
+      filesystem_watchers = {
+        ignore_dirs = { 'node_modules', '.git' }
       }
     }
 
