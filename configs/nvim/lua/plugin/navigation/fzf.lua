@@ -74,10 +74,19 @@ registry.install {
     bindings.map.normal('<leader>f', fuzzy('live_grep'))
 
     if registry.experiment('oil').on() then
-      bindings.map.normal('<leader>E', fuzzy('complete_path', {
-          word_pattern = '',
+      local cmd = (function()
+        if vim.fn.executable('fd') then
+          return 'fd --type d --hidden --exclude .git --exclude node_modules'
+        else
+          return 'find -type d -not -path "*/\\.git/*" -not -path "*/node_modules/*"'
+        end
+      end)()
+      bindings.map.normal('<leader>E', function ()
+        local fzf = require('fzf-lua')
+        fzf.fzf_exec(cmd, {
+          prompt = 'Oil> ',
           actions = {
-            ['enter'] = function (selection)
+            ['default'] = function(selection)
               if not selection then
                 return
               end
@@ -86,7 +95,7 @@ registry.install {
             end
           }
         })
-      )
+      end)
     end
 
     if registry.experiment('gpt').on() then
