@@ -20,7 +20,7 @@ registry.install {
         ['<C-p>'] = false,
         ['<C-s>'] = { 'actions.select', opts = { horizontal = true } },
         ['<C-v>'] = { 'actions.select', opts = { vertical = true } },
-        ['<C-\\>'] = { 'actions.preview' },
+        ['<C-_>'] = { 'actions.preview' },
         ['<C-]>'] = { 'actions.select' },
         ['<C-i>'] = { 'actions.select' },
         ['<C-o>'] = { 'actions.parent', mode = 'n' },

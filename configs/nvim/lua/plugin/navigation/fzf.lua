@@ -81,7 +81,7 @@ registry.install {
           return 'find -type d -not -path "*/\\.git/*" -not -path "*/node_modules/*"'
         end
       end)()
-      bindings.map.normal('<leader>E', function ()
+      bindings.map.normal('<leader>c', function ()
         local fzf = require('fzf-lua')
         fzf.fzf_exec(cmd, {
           prompt = 'Oil> ',
