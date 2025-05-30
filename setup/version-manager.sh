@@ -11,8 +11,7 @@ then
   exit 1
 fi
 
-depends 'asdf'
-depends 'bash'
+depends 'mise'
 # nodejs requirements
 require 'gnupg'
 # python requirements
@@ -26,54 +25,21 @@ require 'lib-zlib'
 
 add_setup 'setup_version_manager'
 
-deno_pr_merged() {
-  if curl -sSL 'https://api.github.com/repos/asdf-community/asdf-deno/pulls/29' | grep -q '"merged": true'; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 setup_version_manager() {
-  if has_cmd asdf; then
-    run_asdf() {
-      asdf "$@"
-    }
-  elif test -f "$HOME/.asdf/asdf.sh"; then
-    run_asdf() {
-      bash -c ". $HOME/.asdf/asdf.sh && asdf $*"
+  if has_cmd mise; then
+    run_mise() {
+      mise "$@"
     }
   else
-    warn "ASDF cannot be found on PATH or ~/.asdf"
+    warn "Mise cannot be found on PATH"
     return 1
   fi
 
-  setup_version_manager__plugins="fzf neovim nodejs python rust shellcheck tuist zig"
-  step "Setting up version manager plugins..."
-  set +e
-  for setup_version_manager__plugin in $setup_version_manager__plugins; do
-    run_asdf plugin add "$setup_version_manager__plugin"
-  done
-  if deno_pr_merged; then
-    run_asdf plugin add deno
-  else
-    run_asdf plugin add deno https://github.com/spywhere/asdf-deno.git
-  fi
-  run_asdf plugin add upgrade https://github.com/spywhere/asdf-upgrade.git
-  set -e
-
-  if test -f "$HOME/.tool-versions"; then
+  if test -f "$HOME/$DOTFILES/configs/mise/config.toml"; then
     cmd cd "$HOME"
     step "Installing version manager plugins..."
-    # asdf v0.9 will now error if the plugin is missing from .tool-versions
-    #   Ref: https://github.com/asdf-vm/asdf/issues/574
-    # Possible solutions:
-    #   - A new install flag: https://github.com/asdf-vm/asdf/issues/968#issuecomment-991106501
-    setup_version_manager__plugins="fzf nodejs python neovim"
     set +e
-    for setup_version_manager__plugin in $setup_version_manager__plugins; do
-      run_asdf install "$setup_version_manager__plugin"
-    done
+    run_mise install fzf nodejs python asdf:neovim
     set -e
   fi
   cmd cd "$CURRENT_DIR"

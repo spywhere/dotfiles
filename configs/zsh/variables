@@ -6,9 +6,13 @@ if test -n "$(command -v brew)"; then
 fi
 
 # set dotnet root and its binary to have it running properly
-if test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
+if test -n "$(command -v mise)" && mise where dotnet-core 1>/dev/null 2>&1; then
+  export DOTNET_ROOT="$(mise where dotnet-core)"
+elif test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; then
   export DOTNET_ROOT="$(asdf where dotnet-core)"
+fi
 
+if test -n "$DOTNET_ROOT"; then
   if test -d "$HOME/.dotnet/tools"; then
     export PATH="$HOME/.dotnet/tools:$PATH"
   fi
@@ -16,7 +20,7 @@ if test -n "$(command -v asdf)" && asdf current dotnet-core 1>/dev/null 2>&1; th
   export PATH="$DOTNET_ROOT:$PATH"
 fi
 
-if test -n "$(command -v asdf)"; then
+if test -z "$(command -v mise)" -a -n "$(command -v asdf)"; then
   export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 fi
 

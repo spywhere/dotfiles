@@ -19,8 +19,9 @@ lsp.setup('omnisharp')
 
     -- See: https://github.com/OmniSharp/omnisharp-vscode/blob/1d477d2e0495a9a7d76c7856dc4fe1a46343b7e1/src/omnisharp/server.ts#L380
     table.insert(command, 'RoslynExtensionsOptions:EnableDecompilationSupport=true')
-    if fn.executable('asdf') == 1 then
-      local sdk = string.gsub(fn.system('asdf where dotnet-core'), '[ \n]*$', '')
+    local dotnet_path = (fn.executable('mise') and fn.system('mise where dotnet-core')) or (fn.executable('asdf') and fn.system('asdf where dotnet-core'))
+    if dotnet_path then
+      local sdk = string.gsub(dotnet_path, '[ \n]*$', '')
 
       if string.find(sdk, 'No such plugin') == nil then
         table.insert(command, string.format('Sdk:Path=\'%s/sdk\'', sdk))

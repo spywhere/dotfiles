@@ -219,11 +219,6 @@ setup_config() {
     link alacritty/alacritty.yml .alacritty.yml
   fi
 
-  step "  - asdf"
-  link asdf/asdf .tool-versions
-  link asdf/npm-packages .default-npm-packages
-  link asdf/python-packages .default-python-packages
-
   step "  - bat"
   link bat/ .config/bat
 
@@ -261,6 +256,9 @@ setup_config() {
     step "  - kitty"
     link kitty/ .config/kitty
   fi
+
+  step "  - mise"
+  link mise/ .config/mise
 
   step "  - mpd"
   link mpd/ .mpd

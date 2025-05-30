@@ -10,6 +10,7 @@ module.exports = {
       'configs',
       'git',
       'install',
+      'mise',
       'nvim',
       'packages',
       'setup',

@@ -166,6 +166,10 @@ fi
 
 . <(starship init zsh)
 
+if test -n "$(command -v mise)"; then
+  . <(mise activate zsh)
+fi
+
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
 . $HOME/$DOTFILES_NAME/configs/zsh/fuzzy
