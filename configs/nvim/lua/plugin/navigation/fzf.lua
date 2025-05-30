@@ -20,12 +20,10 @@ registry.install {
       },
       files = {
         no_header = true,
-        git_icons = false
       },
       grep = {
         no_header = true,
-        rg_glob = true,
-        rg_opts = "--column --line-number --no-heading --hidden --color=always --smart-case --max-columns=4096 -e",
+        hidden = true
       },
       keymap = {
         builtin = {
@@ -70,8 +68,9 @@ registry.install {
     bindings.map.normal('<leader>/', fuzzy('blines', {
       prompt_prefix='BLines> '
     }))
-    -- fuzzy search buffer content (.buffers is fuzzy search buffer selection)
-    bindings.map.normal('<leader>f', fuzzy('live_grep'))
+    bindings.map.normal('<leader>f', fuzzy('live_grep', {
+      exec_empty_query = true
+    }))
 
     if registry.experiment('oil').on() then
       local cmd = (function()
