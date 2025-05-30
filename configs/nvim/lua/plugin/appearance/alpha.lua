@@ -86,6 +86,7 @@ registry.install {
   end,
   config = function ()
     local startify = require('alpha.themes.startify')
+    startify.file_icons.provider = 'devicons'
 
     local header = {
       type = 'text',
