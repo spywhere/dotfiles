@@ -72,7 +72,7 @@ registry.install {
       exec_empty_query = true
     }))
 
-    if registry.experiment('oil').on() then
+    if registry.experiment('explorer').is_not('tree') then
       local cmd = (function()
         if vim.fn.executable('fd') then
           return 'fd --type d --hidden --exclude .git --exclude node_modules'
@@ -80,17 +80,22 @@ registry.install {
           return 'find -type d -not -path "*/\\.git/*" -not -path "*/node_modules/*"'
         end
       end)()
+
       bindings.map.normal('<leader>c', function ()
         local fzf = require('fzf-lua')
         fzf.fzf_exec(cmd, {
-          prompt = 'Oil> ',
+          prompt = registry.experiment('explorer').is('oil') and 'Oil> ' or 'Mini.Files> ',
           actions = {
             ['default'] = function(selection)
               if not selection then
                 return
               end
 
-              require('oil').open(selection[1])
+              if registry.experiment('explorer').is('oil') then
+                require('oil').open(selection[1])
+              else
+                require('mini.files').open(selection[1])
+              end
             end
           }
         })

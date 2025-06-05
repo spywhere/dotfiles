@@ -3,7 +3,7 @@ local bindings = require('lib.bindings')
 
 registry.install {
   'stevearc/oil.nvim',
-  skip = registry.experiment('oil').off,
+  skip = registry.experiment('explorer').not_be('oil'),
   requires = {
     'echasnovski/mini.icons',
     'nvim-tree/nvim-web-devicons'

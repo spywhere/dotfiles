@@ -114,10 +114,14 @@ local get_experiment_options = function (name)
     vim.tbl_map(
       function (exp)
         local experiment = vim.split(exp, '=')
-        local name, value = experiment[1], string.lower(experiment[2])
-        _explist[name] = (
-          value == 'b' or value == 'true' or value == 'on' or value == 'yes'
-        )
+        local expname, value = experiment[1], string.lower(experiment[2])
+        if value == 'a' or value == 'false' or value == 'off' or value == 'no' then
+          _explist[expname] = false
+        elseif value == 'b' or value == 'true' or value == 'on' or value == 'yes' then
+          _explist[expname] = true
+        else
+          _explist[expname] = value
+        end
       end,
       fn.readfile(fn.expand('~/.explist'))
     )
@@ -146,6 +150,16 @@ M.experiment = function (name, options, start)
       end,
       off = function ()
         return not is_on
+      end,
+      be = function (value)
+        return function ()
+          return experiment == value
+        end
+      end,
+      not_be = function (value)
+        return function ()
+          return experiment ~= value
+        end
       end,
       is = function (value)
         return experiment == value

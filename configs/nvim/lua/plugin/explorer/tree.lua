@@ -42,9 +42,9 @@ end
 
 registry.install {
   'nvim-tree/nvim-tree.lua',
-  skip = registry.experiment('oil').on,
+  skip = registry.experiment('explorer').not_be('tree'),
   defer = function ()
-    if registry.experiment('oil').on() then
+    if registry.experiment('explorer').is_not('tree') then
       return
     end
     bindings.map.all('<leader>E', '<cmd>NvimTreeFocus<cr>')
