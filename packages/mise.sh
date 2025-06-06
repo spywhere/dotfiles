@@ -18,6 +18,9 @@ use_custom 'install_mise'
 
 install_mise() {
   if ! test -n "$(command -v mise)"; then
+    if ! test -d '/usr/local/bin'; then
+      cmd mkdir -p '/usr/local/bin'
+    fi
     cmd MISE_INSTALL_PATH=/usr/local/bin/mise sh -c "$(curl -fsSL https://mise.run)"
     cmd cd "$CURRENT_DIR"
   fi
