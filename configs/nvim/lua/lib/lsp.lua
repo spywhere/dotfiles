@@ -27,11 +27,15 @@ local generate_lsp_setup = function (name)
   LSPM.experiment = function (expid)
     return {
       on = function ()
-        lsps[name].experiment = registry.experiment(expid).on
+        lsps[name].experiment = vim.tbl_extend('force', lsps[name].experiment or {}, {
+          [expid] = true
+        })
         return LSPM
       end,
       off = function ()
-        lsps[name].experiment = registry.experiment(expid).off
+        lsps[name].experiment = vim.tbl_extend('force', lsps[name].experiment or {}, {
+          [expid] = false
+        })
         return LSPM
       end
     }
@@ -65,11 +69,21 @@ local lsp_on_attach = function (fn)
   end
 end
 
+local check_experiment = function (exps, name)
+  for exp, enabled in pairs(exps) do
+    print('[' .. name .. ']Checking experiment: ' .. exp .. ' with value: ' .. tostring(enabled) .. ' got ' .. tostring(registry.experiment(exp).on()))
+    if registry.experiment(exp).on() ~= enabled then
+      return false
+    end
+  end
+  return true
+end
+
 local setup_lsp = function (name, lsp, options)
   if
     (options and options.skip_check) or
     (lsp.executable and fn.executable(lsp.executable) == 0) or
-    (lsp.experiment and not lsp.experiment())
+    (lsp.experiment and not check_experiment(lsp.experiment, name))
   then
     return
   end
