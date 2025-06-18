@@ -31,11 +31,11 @@ fi
 
 if test -n "$(command -v fd)"; then
   search() {
-    fd --type d --max-depth 3 --no-ignore --hidden '\.git$' "$WORKSPACE" | rev | cut -d'/' -f3-
+    fd --type d --max-depth 3 --unrestricted --full-path "$WORKSPACE/[^/]+$|forks/[^/]+$" "$WORKSPACE" | rev
   }
 else
   search() {
-    find "$WORKSPACE" -mindepth 1 -maxdepth 3 -type d -name '.git' | rev | cut -d'/' -f2-
+    find "$WORKSPACE" -mindepth 1 -maxdepth 3 \( \( -type d -name '.git' \) -or \( -type f -name '.gitignore' \) \) | rev | cut -d'/' -f2-
   }
 fi
 
