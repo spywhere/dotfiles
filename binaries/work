@@ -39,7 +39,7 @@ else
   }
 fi
 
-output="$(search | rev | fzf --height=20 --print-query '--preview=git -C {} branch' '--bind=ctrl-/:toggle-preview' "$query")"
+output="$(search | rev | fzf --height=20 --ghost 'Loading...' --print-query '--preview=git -C {} branch' '--bind=load:change-ghost(),ctrl-/:toggle-preview,ctrl-s:become(tmux split-window -h -c {}),ctrl-v:become(tmux split-window -v -c {})' "$query")"
 query="$(echo "$output" | sed -n 1p)"
 selection="$(echo "$output" | sed -n 2p)"
 if test -n "$selection"; then
