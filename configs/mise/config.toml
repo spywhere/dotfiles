@@ -1,5 +1,5 @@
 [tools]
-"asdf:neovim" = "ref:0.11.2"
+"asdf:neovim" = "ref:0.11.3"
 fzf = "0.62.0"
 node = "23.6.0"
 pnpm = "10.13.1"
