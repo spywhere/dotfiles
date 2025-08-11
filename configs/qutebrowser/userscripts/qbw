@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SCRIPT_NAME=$(basename "$0")
 CLIPBOARD="$(pbpaste)"
@@ -8,23 +8,23 @@ cmd() {
 }
 
 rerun_script() {
-  cmd "spawn -u $SCRIPT_NAME $@"
+  cmd "spawn -u $SCRIPT_NAME $*"
 }
 
 ask_for_cmd() {
-  cmd cmd-set-text -s ":spawn -u $SCRIPT_NAME $@"
+  cmd cmd-set-text -s ":spawn -u $SCRIPT_NAME $*"
 }
 
 print() {
-  cmd message-info "\"[$SCRIPT_NAME] $@\""
+  cmd message-info "\"[$SCRIPT_NAME] $*\""
 }
 
 warning() {
-  cmd message-warning "\"[$SCRIPT_NAME] $@\""
+  cmd message-warning "\"[$SCRIPT_NAME] $*\""
 }
 
 error() {
-  cmd message-error "\"[$SCRIPT_NAME] $@\""
+  cmd message-error "\"[$SCRIPT_NAME] $*\""
 }
 
 unlock_session() {

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+is_number() {
+  case $1 in
+    ''|*[!0-9]*) return 1 ;;
+    *) return 0 ;;
+  esac
+}
+
+if is_number "$1"; then
+  echo open -t "localhost:$1" > "$QUTE_FIFO"
+elif test -n "$QUTE_COUNT"; then
+  echo open -t "localhost:$QUTE_COUNT" > "$QUTE_FIFO"
+else
+  echo open -t "localhost" > "$QUTE_FIFO"
+fi
