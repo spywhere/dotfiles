@@ -1,6 +1,6 @@
 [tools]
 "asdf:neovim" = "ref:0.11.3"
-fzf = "0.62.0"
+fzf = "0.65.1"
 node = "23.6.0"
 pnpm = "10.13.1"
 python = "3.10.4"
