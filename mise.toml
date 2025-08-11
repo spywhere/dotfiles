@@ -1,0 +1,2 @@
+[tools]
+shellcheck = "0.10.0"
