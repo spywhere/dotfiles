@@ -1,0 +1,159 @@
+#!/bin/bash
+
+SCRIPT_NAME=$(basename "$0")
+CLIPBOARD="$(pbpaste)"
+
+cmd() {
+  echo "$@" >> "$QUTE_FIFO"
+}
+
+rerun_script() {
+  cmd "spawn -u $SCRIPT_NAME $@"
+}
+
+ask_for_cmd() {
+  cmd cmd-set-text -s ":spawn -u $SCRIPT_NAME $@"
+}
+
+print() {
+  cmd message-info "\"[$SCRIPT_NAME] $@\""
+}
+
+warning() {
+  cmd message-warning "\"[$SCRIPT_NAME] $@\""
+}
+
+error() {
+  cmd message-error "\"[$SCRIPT_NAME] $@\""
+}
+
+unlock_session() {
+  print "Unlocking Bitwarden..."
+  BW_SESSION="$(bw unlock --raw "$1" 2>/dev/null)"
+  if test $? -ne 0; then
+    error "Failed to unlock Bitwarden. Please check your credentials."
+    exit 0
+  fi
+  security add-generic-password -a "$USER" -s "$SCRIPT_NAME" -w "$BW_SESSION" -U 2>/dev/null
+  if test $? -ne 0; then
+    error "Failed to store session in Keychain. Please check and try again."
+    exit 0
+  fi
+  print "Session successfully stored in Keychain."
+}
+
+get_session() {
+  if ! bw login --check 2>/dev/null; then
+    # not logged in
+    return 3
+  fi
+
+  BW_SESSION="$(security find-generic-password -a "$USER" -s "$SCRIPT_NAME" -w 2>/dev/null)"
+  if test $? -ne 0 -o -z "$BW_SESSION"; then
+    # no session found
+    return 2
+  fi
+
+  bw --nointeraction --session "$BW_SESSION" list items 2>/dev/null 1>&2
+  if test $? -ne 0; then
+    # session is no longer valid
+    return 1
+  fi
+}
+
+lock_session() {
+  security delete-generic-password -a "$USER" -s "$SCRIPT_NAME" 2>/dev/null
+  if test $? -eq 0; then
+    print "Session deleted successfully."
+  else
+    error "Failed to delete session. It may not exist."
+  fi
+}
+
+ensure_path() {
+  if test -d "$1"; then
+    export PATH="$1:$PATH"
+  fi
+}
+
+main() {
+  if test -z "$QUTE_FIFO"; then
+    error "QUTE_FIFO is not set. Please set it to the path of the qute browser FIFO."
+    exit 0
+  fi
+
+  if ! test -p "$QUTE_FIFO"; then
+    error "QUTE_FIFO does not point to a valid FIFO. Please check the path."
+    exit 0
+  fi
+
+  ensure_path '/opt/homebrew/bin'
+  ensure_path '/usr/local/bin'
+
+  if test -z "$(command -v bw)"; then
+    error "Bitwarden CLI (bw) is not installed. Please install it to use this script."
+    exit 0
+  fi
+
+  if test -z "$(command -v jq)"; then
+    error "jq is not installed. Please install it to use this script."
+    exit 0
+  fi
+
+  case "$1" in
+    unlock)
+      shift
+      if test -n "$1"; then
+        unlock_session "$1"
+      elif test -n "$CLIPBOARD"; then
+        unlock_session "$CLIPBOARD"
+      else
+        error "Please provide a valid password."
+      fi
+      ;;
+    lock)
+      shift
+      lock_session
+      ;;
+    *)
+      print "Checking Bitwarden session..."
+      get_session
+      code="$?"
+      if test "$code" -eq 3; then
+        error "Bitwarden CLI is not logged in. Please log in first."
+        exit 0
+      elif test "$code" -ne 0; then
+        if test "$code" -eq 1; then
+          warning "Session is no longer valid. Deleting the session..."
+          lock_session
+          warning "Setting up a new session."
+        else
+          warning "No Bitwarden session found. Setting up a new session."
+        fi
+        print "Press Enter your Bitwarden master password (empty to use clipboard)."
+        ask_for_cmd unlock
+        exit 0
+      fi
+      print "Bitwarden session is active."
+      ;;
+  esac
+}
+
+# Check Session:
+#   Check login
+#   Check session exists
+#   Check session valid
+# Lock session:
+#   Delete session
+# Unlock session [password]:
+#   Unlock session with password
+#   [Resume]
+# AutoFill [candidates]:
+#   Check Session:
+#     [Unlock session]
+#   Has candidates:
+#     Build candidate list
+#     Filter candidates
+#     [AutoFill candidates]
+
+main "$@"
