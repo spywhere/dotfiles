@@ -1,5 +1,7 @@
 import os
 
+c.url.searchengines = {'DEFAULT': 'https://kagi.com/search?q={}'}
+
 config.load_autoconfig(True)
 
 c.aliases = {
@@ -33,7 +35,6 @@ c.tabs.title.elide = 'middle'
 c.tabs.title.format_pinned = '#{audio}{index}: {current_title}'
 c.url.default_page = 'https://web.tabliss.io/'
 c.url.start_pages = 'https://web.tabliss.io/'
-c.url.searchengines = {'DEFAULT': 'https://kagi.com/search?q={}'}
 
 c.colors.statusbar.normal.bg = '#333'
 c.colors.tabs.bar.bg = '#222'
