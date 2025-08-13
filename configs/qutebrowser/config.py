@@ -1,3 +1,5 @@
+import os
+
 config.load_autoconfig(True)
 
 c.aliases = {
@@ -60,3 +62,7 @@ config.bind('<Meta+s>', 'config-cycle tabs.show always never')
 config.bind('Q', 'macro-record')
 config.bind('q', 'tab-prev')
 config.bind('w', 'tab-next')
+
+if os.path.isfile('/opt/homebrew/bin/iina'):
+  config.bind('M', 'hint links spawn --detach /opt/homebrew/bin/iina {hint-url}')
+  config.bind(';M', 'spawn --detach /opt/homebrew/bin/iina {url}')
