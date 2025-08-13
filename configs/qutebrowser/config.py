@@ -64,5 +64,5 @@ config.bind('q', 'tab-prev')
 config.bind('w', 'tab-next')
 
 if os.path.isfile('/opt/homebrew/bin/iina'):
-  config.bind('M', 'hint links spawn --detach /opt/homebrew/bin/iina {hint-url}')
-  config.bind(';M', 'spawn --detach /opt/homebrew/bin/iina {url}')
+  config.bind('p', 'hint links spawn --detach /opt/homebrew/bin/iina --no-stdin {hint-url}')
+  config.bind('P', 'spawn --detach /opt/homebrew/bin/iina --no-stdin {url}')
