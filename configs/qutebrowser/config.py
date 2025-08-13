@@ -1,6 +1,14 @@
 config.load_autoconfig(True)
 
-c.aliases = {'h': 'help -t', 'localhost': 'spawn -u localhost', 'q': 'close', 'qa': 'quit', 'w': 'session-save', 'wq': 'quit --save', 'wqa': 'quit --save'}
+c.aliases = {
+  'h': 'help -t',
+  'localhost': 'spawn -u localhost',
+  'q': 'close',
+  'qa': 'quit',
+  'w': 'session-save',
+  'wq': 'quit --save',
+  'wqa': 'quit --save'
+}
 
 c.auto_save.session = True
 c.content.default_encoding = 'utf-8'
@@ -39,6 +47,7 @@ c.colors.tabs.pinned.selected.even.bg = '#363'
 c.colors.webpage.preferred_color_scheme = 'dark'
 config.set('colors.webpage.darkmode.enabled', True, 'qute://*')
 
+c.fonts.default_family = 'JetBrainsMono Nerd Font'
 c.fonts.default_size = '12pt'
 c.fonts.statusbar = 'default_size default_family'
 c.fonts.tabs.selected = '14pt system'
