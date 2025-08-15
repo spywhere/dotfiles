@@ -78,6 +78,7 @@ html() {
   printf '  position: relative;'
   printf '  overflow: hidden;'
   printf '  flex: 1;'
+  printf '  transition: flex-grow 0.1s ease;'
   printf '}'
   printf 'iframe {'
   printf '  display: block;'
