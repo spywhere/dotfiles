@@ -27,11 +27,11 @@ js() {
   if test "$1" = "vertical"; then
     first="<"
     second=">"
-    attr="cols"
+    attr="v"
   else
     first="^"
     second="v"
-    attr="rows"
+    attr="h"
   fi
 
   html() {
@@ -46,18 +46,144 @@ js() {
     printf 'setInterval(cycleTitle, 3000);'
     printf 'cycleTitle();'
     printf '</script>'
+    printf '<style>'
+    printf 'body {'
+    printf '  margin: 0;'
+    printf '  padding: 0;'
+    printf '  overflow: hidden;'
+    printf '}'
+    printf '.overlay {'
+    printf '  display: none;'
+    printf '  position: absolute;'
+    printf '  top: 0;'
+    printf '  left: 0;'
+    printf '  right: 0;'
+    printf '  bottom: 0;'
+    printf '  z-index: 1000;'
+    printf '}'
+    printf 'flex {'
+    printf '  display: flex;'
+    printf '  height: 100vh;'
+    printf '  width: 100vw;'
+    printf '}'
+    printf 'flex.h {'
+    printf '  flex-direction: column;'
+    printf '}'
+    printf 'flex.v {'
+    printf '  flex-direction: row;'
+    printf '}'
+    printf 'flex-item {'
+    printf '  display: flex;'
+    printf '  position: relative;'
+    printf '  overflow: hidden;'
+    printf '  flex: 1;'
+    printf '}'
+    printf 'iframe {'
+    printf '  display: block;'
+    printf '  border: none;'
+    printf '  height: 100%%;'
+    printf '  width: 100%%;'
+    printf '}'
+    printf 'flex > flex-resizer {'
+    printf '  flex: 0 0 4px;'
+    printf '  background: #fff;'
+    printf '}'
+    printf 'flex.h > flex-resizer {'
+    printf '  cursor: ns-resize;'
+    printf '}'
+    printf 'flex.v > flex-resizer {'
+    printf '  cursor: ew-resize;'
+    printf '}'
+    printf '</style>'
     printf '</head>'
-    printf '<frameset %s="50%%25,*">' "$attr"
-    printf '<frame src="%s" />' "$2"
-    printf '<frame src="%s" />' "$3"
-    printf '</frameset>'
+    printf '<body>'
+    printf '<div class="overlay"></div>'
+    printf '<flex class="%s">' "$attr"
+    printf '<flex-item><iframe src="%s"></iframe></flex-item>' "$2"
+    printf '<flex-resizer></flex-resizer>'
+    printf '<flex-item><iframe src="%s"></iframe></flex-item>' "$3"
+    printf '</flex>'
+    printf '<script type="text/javascript">'
+    printf 'let lastClick = Date.now();'
+    printf 'function resetSize(prevItem, nextItem) {'
+    printf '  prevItem.style.flexGrow = null;'
+    printf '  nextItem.style.flexGrow = null;'
+    printf '}'
+
+    printf 'function setupResizer(event) {'
+    printf '  const resizer = event.target;'
+
+    printf '  const flex = resizer.parentElement;'
+    printf '  const isHorizontal = flex.classList.contains("h");'
+
+    printf '  const nextItem = resizer.nextElementSibling;'
+    printf '  const prevItem = resizer.previousElementSibling;'
+    printf '  const overlay = document.querySelector(".overlay");'
+    printf '  if (!nextItem || !prevItem || !overlay) return;'
+
+    printf '  if (Date.now() - lastClick < 300) {'
+    printf '    resetSize(prevItem, nextItem);'
+    printf '    return;'
+    printf '  }'
+    printf '  lastClick = Date.now();'
+
+    printf '  event.preventDefault();'
+
+    printf '  let prevSize = isHorizontal ? prevItem.offsetHeight : prevItem.offsetWidth;'
+    printf '  let nextSize = isHorizontal ? nextItem.offsetHeight : nextItem.offsetWidth;'
+    printf '  const sumSize = prevSize + nextSize;'
+    printf '  const prevGrow = parseFloat(prevItem.style.flexGrow) || 1;'
+    printf '  const nextGrow = parseFloat(nextItem.style.flexGrow) || 1;'
+    printf '  const sumGrow = nextGrow + prevGrow;'
+    printf '  let lastPos = isHorizontal ? event.clientY : event.clientX;'
+
+    printf '  const onMouseUp = () => {'
+    printf '    overlay.removeEventListener("mousemove", onMouseMove);'
+    printf '    overlay.removeEventListener("mouseup", onMouseUp);'
+    printf '    overlay.style.display = "none";'
+    printf '  };'
+    printf '  const onMouseMove = (moveEvent) => {'
+    printf '    let pos = isHorizontal ? moveEvent.clientY : moveEvent.clientX;'
+    printf '    const delta = pos - lastPos;'
+    printf '    prevSize += delta;'
+    printf '    nextSize -= delta;'
+    printf '    if (prevSize < 0) {'
+    printf '      nextSize += prevSize;'
+    printf '      pos -= prevSize;'
+    printf '      prevSize = 0;'
+    printf '    }'
+    printf '    if (nextSize < 0) {'
+    printf '      prevSize += nextSize;'
+    printf '      pos += nextSize;'
+    printf '      nextSize = 0;'
+    printf '    }'
+    printf '    const prevGrowNew = sumGrow * (prevSize / sumSize);'
+    printf '    const nextGrowNew = sumGrow * (nextSize / sumSize);'
+    printf '    prevItem.style.flexGrow = prevGrowNew;'
+    printf '    nextItem.style.flexGrow = nextGrowNew;'
+    printf '    lastPos = pos;'
+    printf '  };'
+    printf '  overlay.style.display = "block";'
+    printf '  overlay.addEventListener("dblclick", resetSize);'
+    printf '  overlay.addEventListener("mousemove", onMouseMove);'
+    printf '  overlay.addEventListener("mouseup", onMouseUp);'
+    printf '  event.preventDefault();'
+    printf '}'
+    printf 'document.body.addEventListener("mousedown", (event) => {'
+    printf '  if (event.target.tagName === "FLEX-RESIZER") {'
+    printf '    setupResizer(event);'
+    printf '  }'
+    printf '});'
+    printf '</script>'
+    printf '</body>'
     printf '</html>'
   }
-  html "$@" | jq -sRr 'tojson'
+
+  printf 'document.write(%s)' "$(html "$@" | jq -sRr 'tojson')"
 }
 
 split() {
-  cmd jseval -q "document.write($(js "$@"))"
+  cmd jseval -q "$(js "$@")"
 }
 
 expand_url() {
