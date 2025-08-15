@@ -57,8 +57,8 @@ config.set('colors.webpage.darkmode.enabled', True, 'qute://*')
 c.fonts.default_family = 'JetBrainsMono Nerd Font'
 c.fonts.default_size = '12pt'
 c.fonts.statusbar = 'default_size default_family'
-c.fonts.tabs.selected = '14pt system'
-c.fonts.tabs.unselected = '14pt system'
+c.fonts.tabs.selected = '14pt "SF Pro Rounded",system'
+c.fonts.tabs.unselected = '14pt "SF Pro Rounded",system'
 
 config.bind('<Meta+Ctrl+f>', 'fullscreen')
 config.bind('<Meta+Shift+t>', 'undo')
