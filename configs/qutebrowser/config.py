@@ -60,9 +60,12 @@ config.bind('<Meta+Ctrl+f>', 'fullscreen')
 config.bind('<Meta+Shift+t>', 'undo')
 config.bind('<Meta+d>', 'tab-pin')
 config.bind('<Meta+s>', 'config-cycle tabs.show always never')
+config.bind('<Alt+Up>', 'tab-move -')
+config.bind('<Alt+Down>', 'tab-move +')
 config.bind('Q', 'macro-record')
 config.bind('q', 'tab-prev')
 config.bind('w', 'tab-next')
+config.bind('yt', 'tab-clone')
 
 if os.path.isfile('/opt/homebrew/bin/iina'):
   config.bind('p', 'hint links spawn --detach /opt/homebrew/bin/iina --no-stdin {hint-url}')
