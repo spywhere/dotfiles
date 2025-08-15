@@ -6,6 +6,7 @@ config.load_autoconfig(True)
 
 c.aliases = {
   'h': 'help -t',
+  'bw': 'spawn -u qbw',
   'localhost': 'spawn -u localhost',
   'q': 'close',
   'qa': 'quit',
