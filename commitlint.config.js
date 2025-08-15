@@ -13,6 +13,7 @@ module.exports = {
       'mise',
       'nvim',
       'packages',
+      'qutebrowser',
       'setup',
       'tmux',
       'zsh',

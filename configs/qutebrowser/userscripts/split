@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+SCRIPT_NAME=$(basename "$0")
+
+if test -z "$QUTE_FIFO"; then
+  cmd() {
+    printf '%s\n' "$*" >&2
+  }
+else
+  cmd() {
+    printf '%s' "$*" >> "$QUTE_FIFO"
+  }
+fi
+
+print() {
+  cmd message-info "\"[$SCRIPT_NAME] $*\""
+}
+
+error() {
+  cmd message-error "\"[$SCRIPT_NAME] $*\""
+}
+
+js() {
+  local first
+  local second
+  local attr
+  if test "$1" = "vertical"; then
+    first="<"
+    second=">"
+    attr="cols"
+  else
+    first="^"
+    second="v"
+    attr="rows"
+  fi
+
+  html() {
+    printf '<html>'
+    printf '<head>'
+    printf '<script type="text/javascript">'
+    printf 'const titles = ["[%s] %s", "[%s] %s"];' "$first" "$2" "$second" "$3"
+    printf 'function cycleTitle() {'
+    printf '  document.title = titles[0];'
+    printf '  titles.push(titles.shift());'
+    printf '}'
+    printf 'setInterval(cycleTitle, 3000);'
+    printf 'cycleTitle();'
+    printf '</script>'
+    printf '</head>'
+    printf '<frameset %s="50%%25,*">' "$attr"
+    printf '<frame src="%s" />' "$2"
+    printf '<frame src="%s" />' "$3"
+    printf '</frameset>'
+    printf '</html>'
+  }
+  html "$@" | jq -sRr 'tojson'
+}
+
+split() {
+  cmd jseval -q "document.write($(js "$@"))"
+}
+
+expand_url() {
+  case "$1" in
+    "{}"|"{url}")
+      printf '%s' "$QUTE_URL"
+      ;;
+    localhost:[0-9]*)
+      # Handle localhost URLs by prepending the protocol
+      printf 'http://%s' "$1"
+      ;;
+    :[0-9]*)
+      # Handle port numbers by prepending the localhost
+      printf 'http://localhost%s' "$1"
+      ;;
+    *://*)
+      # Already a full URL, just return it
+      printf '%s' "$1"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+main() {
+  if test "$1" != "--skip-check"; then
+    if test -z "$QUTE_FIFO"; then
+      error "QUTE_FIFO is not set. Please set it to the path of the qute browser FIFO."
+      exit 0
+    fi
+
+    if ! test -p "$QUTE_FIFO"; then
+      error "QUTE_FIFO does not point to a valid FIFO. Please check the path."
+      exit 0
+    fi
+  else
+    shift
+  fi
+
+  local dir
+  dir="horizontal"
+  local pane1
+  pane1="$QUTE_URL"
+  local pane2
+  pane2="$QUTE_URL"
+
+  if test "$1" = "-h" -o "$1" = "--horizontal"; then
+    dir="horizontal"
+    shift
+  elif test "$1" = "-v" -o "$1" = "--vertical"; then
+    dir="vertical"
+    shift
+  fi
+
+  if test -n "$1"; then
+    pane1="$(expand_url "$1")"
+    if test "$?" -ne 0; then
+      error "Invalid URL format: $1"
+      exit 0
+    fi
+    shift
+  fi
+  if test -n "$1"; then
+    pane2="$(expand_url "$1")"
+    if test "$?" -ne 0; then
+      error "Invalid URL format: $1"
+      exit 0
+    fi
+    shift
+  fi
+
+  print "$pane1 | $pane2"
+  split "$dir" "$pane1" "$pane2" "$pane1 | $pane2"
+}
+
+main "$@"
