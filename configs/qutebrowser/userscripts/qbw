@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
 SCRIPT_NAME=$(basename "$0")
-CLIPBOARD="$(pbpaste)"
 
-cmd() {
-  echo "$@" >> "$QUTE_FIFO"
-}
+if test -z "$QUTE_FIFO"; then
+  cmd() {
+    printf '%s\n' "$*" >&2
+  }
+else
+  cmd() {
+    printf '%s' "$*" >> "$QUTE_FIFO"
+  }
+fi
 
 rerun_script() {
   cmd "spawn -u $SCRIPT_NAME $*"
@@ -27,38 +32,17 @@ error() {
   cmd message-error "\"[$SCRIPT_NAME] $*\""
 }
 
-unlock_session() {
-  print "Unlocking Bitwarden..."
-  BW_SESSION="$(bw unlock --raw "$1" 2>/dev/null)"
-  if test $? -ne 0; then
-    error "Failed to unlock Bitwarden. Please check your credentials."
-    exit 0
-  fi
-  security add-generic-password -a "$USER" -s "$SCRIPT_NAME" -w "$BW_SESSION" -U 2>/dev/null
-  if test $? -ne 0; then
-    error "Failed to store session in Keychain. Please check and try again."
-    exit 0
-  fi
-  print "Session successfully stored in Keychain."
+parsejson() {
+  local json="$1"
+  shift
+  printf '%s' "$json" | jq -rc "$@"
 }
 
-get_session() {
-  if ! bw login --check 2>/dev/null; then
-    # not logged in
-    return 3
-  fi
-
-  BW_SESSION="$(security find-generic-password -a "$USER" -s "$SCRIPT_NAME" -w 2>/dev/null)"
-  if test $? -ne 0 -o -z "$BW_SESSION"; then
-    # no session found
-    return 2
-  fi
-
-  bw --nointeraction --session "$BW_SESSION" list items 2>/dev/null 1>&2
-  if test $? -ne 0; then
-    # session is no longer valid
-    return 1
-  fi
+is_number() {
+  case "$1" in
+    ''|*[!0-9]*) return 1 ;;
+    *) return 0 ;;
+  esac
 }
 
 lock_session() {
@@ -70,25 +54,173 @@ lock_session() {
   fi
 }
 
+unlock_session() {
+  local password="$1"
+  if test -z "$1"; then
+    local clipboard
+    clipboard="$(pbpaste 2>/dev/null)"
+    if test -z "$clipboard"; then
+      error "No password provided."
+      return 1
+    fi
+    print "Authenticate using a password from the clipboard."
+    password="$clipboard"
+  fi
+  print "Unlocking Bitwarden..."
+  BW_SESSION="$(bw --nointeraction unlock --raw "$password" 2>/dev/null)"
+  if test $? -ne 0; then
+    error "Failed to unlock Bitwarden. Please check your credentials."
+    return 1
+  fi
+  security add-generic-password -a "$USER" -s "$SCRIPT_NAME" -w "$BW_SESSION" -U 2>/dev/null
+  if test $? -ne 0; then
+    error "Failed to store session in Keychain. Please check and try again."
+    return 2
+  fi
+  print "Session successfully stored in Keychain."
+}
+
+get_item_for() {
+  BW_SESSION="$(security find-generic-password -a "$USER" -s "$SCRIPT_NAME" -w 2>/dev/null)"
+  if test $? -ne 0 -o -z "$BW_SESSION"; then
+    # no session found
+    return 2
+  fi
+
+  print "Finding login items for $1..."
+  bw --nointeraction --session "$BW_SESSION" list items --url "$1" 2>/dev/null
+  if test $? -ne 0; then
+    # session is no longer valid
+    return 1
+  fi
+}
+
 ensure_path() {
   if test -d "$1"; then
     export PATH="$1:$PATH"
   fi
 }
 
+ask_input() {
+  local title=""
+  local hidden="false"
+  local timeout=60
+  while test -n "$1"; do
+    case "$1" in
+      --hidden)
+        hidden="true"
+        ;;
+      --title)
+        shift
+        title="$1"
+        ;;
+      --timeout)
+        shift
+        timeout="$1"
+        ;;
+      *)
+        break
+        ;;
+    esac
+    shift
+  done
+  local response
+  response="$(osascript -l JavaScript -e "const app=Application.currentApplication();app.includeStandardAdditions=true;JSON.stringify(app.displayDialog('$1', {withTitle:'[qutebrowser] $title',defaultAnswer:'',hiddenAnswer:$hidden,givingUpAfter:$timeout}))" 2>/dev/null)"
+  if test -z "$response"; then
+    # cancelled or error
+    return 1
+  elif test "$(parsejson "$response" '.gaveUp')" = 'true'; then
+    # timeout
+    return 2
+  else
+    parsejson "$response" '.textReturned'
+  fi
+}
+
+find_items() {
+  local retry_count=0
+  local items="[]"
+  while test -n "$1" -a "$retry_count" -lt 1; do
+    items="$(get_item_for "$1")"
+    code="$?"
+    if test "$code" -eq 0; then
+      break
+    elif test "$code" -ne 0; then
+      if test "$code" -eq 1; then
+        warning "Session is no longer valid. Deleting the session..."
+        lock_session
+        warning "Setting up a new session."
+      else
+        warning "No Bitwarden session found. Setting up a new session."
+      fi
+      local response
+      response="$(ask_input --hidden --title "Unlock Bitwarden Vault" "Press Enter your Bitwarden master password (empty to use clipboard).")"
+      if test $? -ne 0; then
+        error "Authentication cancelled."
+        return 2
+      fi
+      unlock_session "$response"
+      if test $? -ne 0; then
+        return 3
+      fi
+    fi
+    retry_count="$((retry_count + 1))"
+  done
+  shift
+  if test "$items" != '[]'; then
+    parsejson "$items" '[.[] | .login+{ id: .id, name: .name }]'
+  elif test $# -gt 0; then
+    while test $# -gt 0; do
+      if test -n "$1"; then
+        break
+      fi
+      shift
+    done
+    find_items "$*"
+  fi
+}
+
+get_totp() {
+  local iid="$1"
+  if test -z "$iid"; then
+    return 1
+  fi
+
+  BW_SESSION="$(security find-generic-password -a "$USER" -s "$SCRIPT_NAME" -w 2>/dev/null)"
+  if test $? -ne 0 -o -z "$BW_SESSION"; then
+    # no session found
+    return 2
+  fi
+  totp="$(bw --nointeraction --session "$BW_SESSION" get totp "$iid" 2>/dev/null)"
+  if test -z "$totp"; then
+    return 2
+  fi
+
+  printf '%s' "$totp"
+}
+
+escape_keystroke() {
+  jq -Rr 'split("") | map("\\\(.)") | join("")'
+}
+
 main() {
-  if test -z "$QUTE_FIFO"; then
-    error "QUTE_FIFO is not set. Please set it to the path of the qute browser FIFO."
-    exit 0
+  if test "$1" != "--skip-check"; then
+    if test -z "$QUTE_FIFO"; then
+      error "QUTE_FIFO is not set. Please set it to the path of the qute browser FIFO."
+      exit 0
+    fi
+
+    if ! test -p "$QUTE_FIFO"; then
+      error "QUTE_FIFO does not point to a valid FIFO. Please check the path."
+      exit 0
+    fi
+  else
+    shift
   fi
 
-  if ! test -p "$QUTE_FIFO"; then
-    error "QUTE_FIFO does not point to a valid FIFO. Please check the path."
-    exit 0
-  fi
-
-  ensure_path '/opt/homebrew/bin'
   ensure_path '/usr/local/bin'
+  ensure_path '/usr/bin'
+  ensure_path '/opt/homebrew/bin'
 
   if test -z "$(command -v bw)"; then
     error "Bitwarden CLI (bw) is not installed. Please install it to use this script."
@@ -100,60 +232,112 @@ main() {
     exit 0
   fi
 
+  print "Checking login status..."
+  if ! bw --nointeraction login --check 2>/dev/null 1>&2; then
+    # not logged in
+    error "Bitwarden CLI is not logged in. Please log in first."
+    return 1
+  fi
+
   case "$1" in
-    unlock)
-      shift
-      if test -n "$1"; then
-        unlock_session "$1"
-      elif test -n "$CLIPBOARD"; then
-        unlock_session "$CLIPBOARD"
-      else
-        error "Please provide a valid password."
-      fi
-      ;;
     lock)
       shift
       lock_session
       ;;
     *)
-      print "Checking Bitwarden session..."
-      get_session
-      code="$?"
-      if test "$code" -eq 3; then
-        error "Bitwarden CLI is not logged in. Please log in first."
-        exit 0
-      elif test "$code" -ne 0; then
-        if test "$code" -eq 1; then
-          warning "Session is no longer valid. Deleting the session..."
-          lock_session
-          warning "Setting up a new session."
-        else
-          warning "No Bitwarden session found. Setting up a new session."
-        fi
-        print "Press Enter your Bitwarden master password (empty to use clipboard)."
-        ask_for_cmd unlock
+      local autofill=""
+      local insert_mode="yes"
+      local url="$QUTE_URL"
+      if test -z "$url"; then
+        url="$QUTE_CURRENT_URL"
+      fi
+      while true; do
+        case "$1" in
+          --url)
+            shift
+            url="$1"
+            ;;
+          --username-only)
+            autofill='username'
+            ;;
+          --password-only)
+            autofill='password'
+            ;;
+          --totp-only)
+            autofill='totp'
+            ;;
+          --no-insert-mode)
+            insert_mode=""
+            ;;
+          *)
+            break
+            ;;
+        esac
+        shift
+      done
+
+      local items
+      items="$(find_items "$url")"
+      if test $? -ne 0; then
         exit 0
       fi
-      print "Bitwarden session is active."
+      if test -z "$items"; then
+        warning "No items found."
+        exit 0
+      fi
+      local item
+      local items_count
+      items_count="$(parsejson "$items" 'length')"
+      if test "$items_count" -eq 0; then
+        warning "No items found."
+        exit 0
+      elif test "$items_count" -gt 1; then
+        while true; do
+          selection="$(ask_input --title "Choose login item" "Found $items_count items for URL: $url\n\nPlease select an item to autofill.\n$(parsejson "$items" 'to_entries | map("\(.key + 1): \(.value.name)") | join("\n") | tojson | sub("^\"|\"$";"";"g")')")"
+          if test $? -ne 0; then
+            error "Autofill cancelled."
+            exit 0
+          fi
+          if ! is_number "$selection"; then
+            error "Invalid selection. Please enter a number."
+          elif test "$selection" -lt 1 -o "$selection" -gt "$items_count"; then
+            error "Invalid selection. Please enter a number between 1 and $items_count."
+          else
+            break
+          fi
+        done
+        item="$(parsejson "$items" ".[$selection - 1]")"
+      else
+        item="$(parsejson "$items" '.[0]')"
+      fi
+
+      if test -z "$autofill" -o "$autofill" = "username"; then
+        cmd "fake-key $(parsejson "$item" '.username' | escape_keystroke)"
+      fi
+      if test -z "$autofill"; then
+        cmd 'fake-key <Tab><Backspace>'
+      fi
+      if test -z "$autofill" -o "$autofill" = "password"; then
+        cmd "fake-key $(parsejson "$item" '.password' | escape_keystroke)"
+      fi
+
+      if test -z "$autofill" -o "$autofill" = "totp" && test -n "$(parsejson "$item" '.totp // ""')"; then
+        totp="$(get_totp "$(parsejson "$item" '.id // ""')")"
+        if test $? -eq 0; then
+          if test -z "$autofill"; then
+            printf '%s' "$totp" | pbcopy
+            print "TOTP copied to clipboard."
+          elif test "$autofill" = "totp"; then
+            cmd "fake-key $(printf '%s' "$totp" | escape_keystroke)"
+          fi
+        fi
+      fi
+
+      if test -n "$insert_mode"; then
+        cmd 'mode-enter insert'
+      fi
       ;;
   esac
 }
-
-# Check Session:
-#   Check login
-#   Check session exists
-#   Check session valid
-# Lock session:
-#   Delete session
-# Unlock session [password]:
-#   Unlock session with password
-#   [Resume]
-# AutoFill [candidates]:
-#   Check Session:
-#     [Unlock session]
-#   Has candidates:
-#     Build candidate list
-#     Filter candidates
-#     [AutoFill candidates]
 
 main "$@"
