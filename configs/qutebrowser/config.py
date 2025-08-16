@@ -11,6 +11,7 @@ c.aliases = {
   'split': 'spawn -u split',
   'sp': 'spawn -u split -h',
   'vs': 'spawn -u split -v',
+  'o': 'open',
   'q': 'close',
   'qa': 'quit',
   'w': 'session-save',
@@ -63,11 +64,18 @@ c.fonts.tabs.unselected = '14pt "SF Pro Rounded",system'
 config.bind('<Meta+Ctrl+f>', 'fullscreen')
 config.bind('<Meta+Shift+t>', 'undo')
 config.bind('<Meta+d>', 'tab-pin')
+config.bind('<Meta+n>', 'open -w')
 config.bind('<Meta+s>', 'config-cycle tabs.show always never')
 config.bind('<Alt+Up>', 'tab-move -')
 config.bind('<Alt+Down>', 'tab-move +')
 config.bind('Q', 'macro-record')
 config.bind('q', 'tab-prev')
+config.bind('tdh', 'config-cycle -p -t -u *://{url:host}/* colors.webpage.darkmode.enabled ;; reload')
+config.bind('tdu', 'config-cycle -p -t -u {url} colors.webpage.darkmode.enabled ;; reload')
+config.bind('tdH', 'config-cycle -p -t -u *://*.{url:host}/* colors.webpage.darkmode.enabled ;; reload')
+config.bind('tDh', 'config-cycle -p -u *://{url:host}/* colors.webpage.darkmode.enabled ;; reload')
+config.bind('tDu', 'config-cycle -p -u {url} colors.webpage.darkmode.enabled ;; reload')
+config.bind('tDH', 'config-cycle -p -u *://*.{url:host}/* colors.webpage.darkmode.enabled ;; reload')
 config.bind('w', 'tab-next')
 config.bind('yt', 'tab-clone')
 
