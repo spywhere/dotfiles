@@ -203,8 +203,29 @@ escape_keystroke() {
   jq -Rr 'split("") | map("\\\(.)") | join("")'
 }
 
+help() {
+  print "$SCRIPT_NAME [options] [command]"
+  print ''
+  print 'Autofill matching item given the current URL.'
+  print ''
+  print 'Options:'
+  print '  --url <url>         Use specified URL instead of inferred from the current page'
+  print '  --username-only     Autofill only username'
+  print '  --password-only     Autofill only password'
+  print '  --totp-only         Autofill only TOTP'
+  print '  --no-insert-mode    Do not enter insert mode after autofill'
+  print '  --help              Show this message'
+  print ''
+  print 'Commands:'
+  print '  lock                Purge the stored session key'
+  print '  help                Show this message'
+}
+
 main() {
-  if test "$1" != "--skip-check"; then
+  if test "$1" = "help" -o "$1" = "--help"; then
+    help
+    exit 0
+  elif test "$1" != "--skip-check"; then
     if test -z "$QUTE_FIFO"; then
       error "QUTE_FIFO is not set. Please set it to the path of the qute browser FIFO."
       exit 0
