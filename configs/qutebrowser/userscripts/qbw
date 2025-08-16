@@ -8,7 +8,7 @@ if test -z "$QUTE_FIFO"; then
   }
 else
   cmd() {
-    printf '%s' "$*" >> "$QUTE_FIFO"
+    printf '%s\n' "$*" >> "$QUTE_FIFO"
   }
 fi
 
