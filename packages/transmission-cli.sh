@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
-has_app 'LM Studio'
+profile -work
+has_executable 'transmission-cli'
 
-use_brew cask 'lm-studio'
+use_apt 'transmission-cli'
+use_brew formula 'transmission-cli'

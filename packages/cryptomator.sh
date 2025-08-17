@@ -11,7 +11,9 @@ then
   exit 1
 fi
 
-has_app 'Cryptomator'
-
 profile -work
+
+has_app 'Cryptomator'
+require fuse-t
+
 use_brew cask 'cryptomator'

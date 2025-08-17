@@ -11,6 +11,5 @@ then
   exit 1
 fi
 
-has_executable 'podman'
-
-use_apt 'podman'
+optional
+use_brew cask 'fuse-t'

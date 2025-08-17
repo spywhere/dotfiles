@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Jan'
+has_executable 'qutebrowser'
 
-use_brew cask 'jan'
+use_brew cask 'qutebrowser'

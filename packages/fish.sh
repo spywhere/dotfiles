@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_app '4K Stogram'
+has_executable 'fish'
 
-profile -work
-use_brew cask '4k-stogram'
+use_apt 'fish'
+use_brew formula 'fish'

@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_app 'MediaMate'
+has_executable 'yt-dlp'
 
-profile -work
-use_brew cask 'mediamate'
+use_apt 'yt-dlp'
+use_brew formula 'yt-dlp'

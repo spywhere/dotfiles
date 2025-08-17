@@ -291,6 +291,9 @@ setup_config() {
     link presenterm/ .config/presenterm
   fi
 
+  step "  - qutebrowser"
+  link qutebrowser/ .config/qutebrowser
+
   step "  - shrimp"
   link shrimp/ .shrimp/recipe
 
