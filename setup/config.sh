@@ -279,6 +279,11 @@ setup_config() {
   link nvim/ .config/nvim
   add_post_install_message "Run 'nvim' for the first time setup"
 
+  if has_package opencode; then
+    step "  - opencode"
+    link opencode/ .config/opencode
+  fi
+
   step "  - presenterm"
   if test "$OSKIND" = "macos"; then
     link presenterm/ "Library/Application Support/presenterm"
