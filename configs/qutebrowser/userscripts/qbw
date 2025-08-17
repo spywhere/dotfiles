@@ -209,12 +209,12 @@ help() {
   print 'Autofill matching item given the current URL.'
   print ''
   print 'Options:'
-  print '  --url <url>         Use specified URL instead of inferred from the current page'
-  print '  --username-only     Autofill only username'
-  print '  --password-only     Autofill only password'
-  print '  --totp-only         Autofill only TOTP'
-  print '  --no-insert-mode    Do not enter insert mode after autofill'
-  print '  --help              Show this message'
+  print '  -U, --url <url>      Use specified URL instead of inferred from the current page'
+  print '  -u, --username-only  Autofill only username'
+  print '  -p, --password-only  Autofill only password'
+  print '  -t, --totp-only      Autofill only TOTP'
+  print '  --no-insert-mode     Do not enter insert mode after autofill'
+  print '  --help               Show this message'
   print ''
   print 'Commands:'
   print '  lock                Purge the stored session key'
@@ -274,17 +274,17 @@ main() {
       fi
       while true; do
         case "$1" in
-          --url)
+          -U|--url)
             shift
             url="$1"
             ;;
-          --username-only)
+          -u|--username-only)
             autofill='username'
             ;;
-          --password-only)
+          -p|--password-only)
             autofill='password'
             ;;
-          --totp-only)
+          -t|--totp-only)
             autofill='totp'
             ;;
           --no-insert-mode)
