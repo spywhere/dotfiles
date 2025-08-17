@@ -2,7 +2,7 @@ local bindings = require('lib.bindings')
 local registry = require('lib.registry')
 
 local quick_terminal = function ()
-  bindings.map.normal('<leader>t', '<cmd>25split | terminal<cr>')
+  bindings.map.normal('<leader>t', '<cmd>vsplit | terminal<cr>')
 end
 registry.defer_first(quick_terminal)
 
