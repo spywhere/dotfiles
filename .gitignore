@@ -14,6 +14,8 @@ configs/nvim/lua/plug.lua.old
 configs/nvim/plugged
 configs/nvim/plugin/packer_compiled.lua
 configs/nvim/lazy-lock.json
+configs/opencode/**
+!configs/opencode/opencode.json
 configs/qutebrowser/bookmarks
 configs/qutebrowser/quickmarks
 configs/ssh/**
