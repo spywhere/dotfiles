@@ -140,30 +140,30 @@
     */
     function generateRemoveADCssText(cssSelectorArr){
         const enhancedStyles = [];
-        
+
         cssSelectorArr.forEach((selector,index)=>{
             // Primary rule - hide the element completely
             enhancedStyles.push(`${selector}{display:none!important;visibility:hidden!important;opacity:0!important;height:0!important;width:0!important;margin:0!important;padding:0!important;border:none!important;position:absolute!important;top:-9999px!important;left:-9999px!important;}`);
-            
+
             // Collapse parent containers that might be holding space
             enhancedStyles.push(`${selector}:empty{display:none!important;}`);
-            
+
             // Target parent containers that become empty after ad removal
             enhancedStyles.push(`ytd-rich-item-renderer:has(${selector}){display:none!important;}`);
             enhancedStyles.push(`ytd-rich-grid-row:has(${selector}){display:none!important;}`);
             enhancedStyles.push(`ytd-rich-section-renderer:has(${selector}){display:none!important;}`);
             enhancedStyles.push(`ytd-item-section-renderer:has(${selector}){display:none!important;}`);
-            
+
             // Additional container collapse rules
             if (selector.includes('ytd-display-ad-renderer')) {
                 enhancedStyles.push(`ytd-rich-item-renderer:has(.ytd-display-ad-renderer){display:none!important;height:0!important;margin:0!important;padding:0!important;}`);
             }
-            
+
             if (selector.includes('ytd-ad-slot-renderer')) {
                 enhancedStyles.push(`ytd-item-section-renderer:has(ytd-ad-slot-renderer){display:none!important;height:0!important;margin:0!important;padding:0!important;}`);
             }
         });
-        
+
         // Additional global rules to prevent empty space
         enhancedStyles.push(`
             /* Global ad container collapse rules */
@@ -176,17 +176,16 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            
+
             /* Prevent layout shifts */
             ytd-rich-grid-row:has(> ytd-rich-item-renderer[hidden]),
             ytd-rich-grid-row:has(> ytd-rich-item-renderer:empty) {
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            
+
             /* Masthead ad container collapse */
             #masthead-ad,
-            #masthead-ad + *,
             .masthead-ad-control {
                 display: none !important;
                 height: 0 !important;
@@ -194,7 +193,7 @@
                 padding: 0 !important;
             }
         `);
-        
+
         return enhancedStyles.join(' ');//拼接成字符串.
     }
 
@@ -299,20 +298,20 @@
     */
     function skipAd(mutationsList, observer) {
         // More specific selectors that ensure we're only targeting video player skip buttons
-        const skipButton = document.querySelector(`.html5-video-player .ytp-ad-skip-button`) || 
-                           document.querySelector(`.html5-video-player .ytp-skip-ad-button`) || 
+        const skipButton = document.querySelector(`.html5-video-player .ytp-ad-skip-button`) ||
+                           document.querySelector(`.html5-video-player .ytp-skip-ad-button`) ||
                            document.querySelector(`.html5-video-player .ytp-ad-skip-button-modern`) ||
                            document.querySelector(`#movie_player .ytp-ad-skip-button`) ||
                            document.querySelector(`#movie_player .ytp-skip-ad-button`) ||
                            document.querySelector(`#movie_player .ytp-ad-skip-button-modern`);
-        
-        const shortAdMsg = document.querySelector(`.html5-video-player .video-ads.ytp-ad-module .ytp-ad-player-overlay`) || 
+
+        const shortAdMsg = document.querySelector(`.html5-video-player .video-ads.ytp-ad-module .ytp-ad-player-overlay`) ||
                           document.querySelector(`.html5-video-player .ytp-ad-button-icon`) ||
                           document.querySelector(`#movie_player .video-ads.ytp-ad-module .ytp-ad-player-overlay`) ||
                           document.querySelector(`#movie_player .ytp-ad-button-icon`);
 
         // Additional validation: ensure we're actually in an ad context
-        const isAdPlaying = document.querySelector(`.html5-video-player.ad-showing`) || 
+        const isAdPlaying = document.querySelector(`.html5-video-player.ad-showing`) ||
                            document.querySelector(`#movie_player.ad-showing`) ||
                            document.querySelector(`.ytp-ad-module`);
 
@@ -392,11 +391,11 @@
         if (elpopup) {
             // Double check this is actually an ad blocker warning and not a regular notification
             const popupText = elpopup.textContent || '';
-            const isAdBlockerWarning = popupText.includes('ad blocker') || 
+            const isAdBlockerWarning = popupText.includes('ad blocker') ||
                                       popupText.includes('Ad blockers') ||
                                       popupText.includes('blocking ads') ||
                                       elpopup.closest('ytd-popup-container')?.querySelector('a[href="/premium"]');
-            
+
             if (isAdBlockerWarning) {
                 elpopup.parentNode.remove()
                 console.log('remove ad blocker popup', elpopup)
@@ -413,7 +412,7 @@
         }
 
         // Only remove backdrop if it's specifically for ad blocker warnings (high z-index)
-        if (node.tagName.toLowerCase() === 'tp-yt-iron-overlay-backdrop' && 
+        if (node.tagName.toLowerCase() === 'tp-yt-iron-overlay-backdrop' &&
             (node.style.zIndex === '2201' || node.style.zIndex === '2200')) {
             node.remove()
             resumeVideo()
