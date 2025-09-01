@@ -18,6 +18,7 @@ configs/opencode/**
 !configs/opencode/opencode.json
 configs/qutebrowser/bookmarks
 configs/qutebrowser/quickmarks
+configs/qutebrowser/greasemonkey/_*
 configs/ssh/**
 !configs/ssh/config
 configs/w3m/cookie
