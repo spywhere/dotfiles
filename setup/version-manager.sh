@@ -39,7 +39,7 @@ setup_version_manager() {
     cmd cd "$HOME"
     step "Installing version manager plugins..."
     set +e
-    run_mise install fzf nodejs python asdf:neovim
+    run_mise install fzf nodejs python neovim
     set -e
   fi
   cmd cd "$CURRENT_DIR"
