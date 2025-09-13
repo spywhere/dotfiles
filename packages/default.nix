@@ -1,10 +1,10 @@
 {...}:
 {
-  imports = [
-    ./curl.nix
-  ];
+  imports = (import ../core/mkImports.nix) ./.;
 
   packages = {
-    curl = {};
+    curl = {
+      except = [ "work" ];
+    };
   };
 }

@@ -8,8 +8,11 @@ _default:
 repl:
   {{ nix }} repl
 
+eval TYPE PROFILE:
+  {{ nix }} eval --json '.#{{ TYPE }}Configurations.{{ PROFILE }}.config'
+
 flake-check:
   {{ nix }} flake check ~/.dots-nix?shallow=1
 
 darwin-check PROFILE:
-  sudo {{ nix }} run nix-darwin/master#darwin-rebuild -- check --flake .#{{ PROFILE }}
+  sudo {{ nix }} run nix-darwin/master#darwin-rebuild -- check --flake '.#{{ PROFILE }}'

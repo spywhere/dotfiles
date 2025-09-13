@@ -1,4 +1,4 @@
-{ lib, config, username, ... }:
+{ config, lib, username, ... }:
 {
   options.profile = lib.mkOption {
     type = lib.types.enum [ "work" "personal" ];
