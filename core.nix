@@ -24,6 +24,7 @@
     environment.systemPackages = config.nixpkgs.add;
 
     system.primaryUser = username;
+    # For backward compatibility, see nix-darwin changelog before changing it
     system.stateVersion = 6;
 
     homebrew = {

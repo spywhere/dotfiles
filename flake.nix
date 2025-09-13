@@ -46,7 +46,10 @@
             {
               home-manager.users.${username} = {
                 # imports = [];
+
+                # For backward compatibility, see home-manager changelog before changing it
                 home.stateVersion = "25.05";
+
                 _module.args.profile = profile;
               };
               users.users.${username}.home = homePath;
