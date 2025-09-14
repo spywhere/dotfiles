@@ -19,34 +19,36 @@ rec {
     homePath = if isDarwin then "/Users/${username}" else "/home/${username}";
     profile = name;
 
+    hm = if isDarwin then home-manager.darwinModules.home-manager else home-manager.nixosModules.home-manager;
+
     modules = [
       ./.
     ] ++ ((import ./mkImports.nix) ../packages) ++ [
-      (
-        if isAuto then
-          if isDarwin then
-            home-manager.darwinModules.home-manager
-          else
-            home-manager.nixosModules.home-manager
-          {
-            home-manager.users.${username} = {
-              # imports = [];
+      hm {
+        users.users.${username} = {
+          name = username;
+          home = homePath;
+        };
 
+        home-manager = {
+          useGlobalPkgs = true;
+
+          users.${username} = {
+            # imports = [];
+
+            home = {
+              inherit username;
+              homeDirectory = homePath;
               # For backward compatibility, see home-manager changelog before changing it
-              home.stateVersion = "25.05";
+              stateVersion = "25.05";
 
-              _module.args.profile = profile;
             };
-            users.users.${username}.home = homePath;
-          }
-        else
-        {
-          home = {
-            inherit username;
-            homeDirectory = homePath;
+            programs.home-manager.enable = true;
+
+            _module.args.profile = profile;
           };
-        }
-      )
+        };
+      }
     ];
   in
     if isDarwin then
