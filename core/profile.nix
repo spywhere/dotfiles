@@ -21,7 +21,7 @@ rec {
 
     modules = [
       ./.
-      ../packages
+    ] ++ ((import ./mkImports.nix) ../packages) ++ [
       (
         if isAuto then
           if isDarwin then

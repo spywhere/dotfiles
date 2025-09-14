@@ -7,5 +7,7 @@ let
   };
   inherit (package) mkPackage;
 in mkPackage "curl" {
-  nixpkgs.add = [ pkgs.curl ];
+  config = {
+    nixpkgs.add = [ pkgs.curl ];
+  };
 }
