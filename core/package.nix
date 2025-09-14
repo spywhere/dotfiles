@@ -2,11 +2,12 @@
   mkPackage = name: spec:
   let
     inherit (lib) types;
+    isEmpty = list: builtins.length list == 0;
     cfg = config.packages.${name};
-    shouldInstall = !cfg.optional && (
-      cfg.only == [] || lib.elem profile cfg.only
-    ) && (
-      cfg.except == [] || !(lib.elem profile cfg.except)
+    shouldInstall = (
+      !cfg.optional &&
+      (isEmpty cfg.only || lib.elem profile cfg.only) &&
+      !(lib.elem profile cfg.except)
     );
   in {
     options.packages.${name} = {
