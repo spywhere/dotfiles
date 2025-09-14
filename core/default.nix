@@ -21,11 +21,15 @@
   };
 
   config = {
+    nix.settings.experimental-features = "nix-command flakes";
+
     environment.systemPackages = config.nixpkgs.add;
 
-    system.primaryUser = username;
-    # For backward compatibility, see nix-darwin changelog before changing it
-    system.stateVersion = 6;
+    system = {
+      primaryUser = username;
+      # For backward compatibility, see nix-darwin changelog before changing it
+      stateVersion = 6;
+    };
 
     homebrew = {
       enable = true;
