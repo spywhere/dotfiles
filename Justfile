@@ -12,7 +12,7 @@ eval TYPE PROFILE CONFIG:
   {{ nix }} eval --json '.#{{ TYPE }}Configurations.{{ PROFILE }}.config{{ CONFIG }}'
 
 flake-check:
-  {{ nix }} flake check ~/.dots-nix?shallow=1
+  {{ nix }} flake check
 
 darwin-check PROFILE:
   sudo {{ nix }} run nix-darwin/master#darwin-rebuild -- check --flake '.#{{ PROFILE }}'
