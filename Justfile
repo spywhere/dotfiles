@@ -8,8 +8,8 @@ _default:
 repl:
   {{ nix }} repl
 
-eval TYPE PROFILE:
-  {{ nix }} eval --json '.#{{ TYPE }}Configurations.{{ PROFILE }}.config'
+eval TYPE PROFILE CONFIG:
+  {{ nix }} eval --json '.#{{ TYPE }}Configurations.{{ PROFILE }}.config{{ CONFIG }}'
 
 flake-check:
   {{ nix }} flake check ~/.dots-nix?shallow=1
