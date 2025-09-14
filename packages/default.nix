@@ -4,7 +4,6 @@
 
   packages = {
     curl = {
-      except = [ "work" ];
     };
   };
 }

@@ -4,8 +4,9 @@
     inherit (lib) types;
     cfg = config.packages.${name};
     shouldInstall = !cfg.optional && (
-      (lib.elem profile cfg.only) ||
-      (!(lib.elem profile cfg.except))
+      cfg.only == [] || lib.elem profile cfg.only
+    ) && (
+      cfg.except == [] || !(lib.elem profile cfg.except)
     );
   in {
     options.packages.${name} = {
