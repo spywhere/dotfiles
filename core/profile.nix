@@ -1,6 +1,7 @@
 {
   nixpkgs,
   darwin,
+  homebrew,
   flake-utils,
   ...
 }:
@@ -25,8 +26,17 @@ rec {
     if isDarwin then
       {
         darwinConfigurations.${name} = darwin.lib.darwinSystem {
-          inherit system modules;
+          inherit system;
           specialArgs = { inherit profile username; };
+          modules = modules ++ [
+            homebrew.darwinModules.nix-homebrew {
+              inherit lib;
+              nix-homebrew = {
+                enable = true;
+                user = username;
+              };
+            }
+          ];
         };
       }
     else

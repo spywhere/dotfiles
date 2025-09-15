@@ -96,24 +96,6 @@ else
   }
 fi
 
-has_homebrew_installed() {
-  if is_arm64 && test -f /opt/homebrew/bin/brew; then
-    return 0
-  elif ! is_arm64 && test -f /usr/local/Homebrew/bin/brew; then
-    return 0
-  fi
-
-  return 1
-}
-
-install_homebrew() {
-  export HOMEBREW_NO_ANALYTICS=1
-  if ! has_homebrew_installed; then
-    info "Installing Homebrew..."
-    /bin/bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
-}
-
 install_rosetta() {
   if is_arm64 && test -n "$(command -v pkgutil)" -a "$(pkgutil --pkgs=com.apple.pkg.RosettaUpdateAuto)" != "com.apple.pkg.RosettaUpdateAuto"; then
     info "Installing Rosetta 2..."
@@ -127,7 +109,6 @@ install_nix() {
 
 main() {
   if is_mac; then
-    install_homebrew
     install_rosetta
   fi
 

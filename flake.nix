@@ -9,6 +9,9 @@
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+    };
   };
 
   outputs = inputs:

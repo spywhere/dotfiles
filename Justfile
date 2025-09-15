@@ -20,4 +20,4 @@ eval TYPE PROFILE CONFIG:
   {{ nix }} eval --json '.#{{ TYPE }}Configurations.{{ PROFILE }}.config{{ CONFIG }}'
 
 darwin-check PROFILE:
-  echo sudo {{ nix }} {{ darwin-rebuild }} check --flake '.#{{ PROFILE }}'
+  sudo {{ nix }} {{ darwin-rebuild }} check --flake '.#{{ PROFILE }}'
