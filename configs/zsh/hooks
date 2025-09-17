@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+zmodload zsh/datetime
+zmodload -F zsh/stat b:zstat
+
 function install_git_hook() {
   # No auto pre-commit hook setup
   if test -n "$NO_PRE_COMMIT_HOOK"; then
@@ -29,4 +32,38 @@ function install_git_hook() {
   pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg -t commit-msg
 }
 
-add-zsh-hook -Uz chpwd (){ install_git_hook; }
+: ${GIT_AUTO_FETCH_INTERVAL:=60}
+# taken from: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git-auto-fetch/git-auto-fetch.plugin.zsh
+function git_auto_fetch() {
+  (
+    if ! test -n "$(command -v git)"; then
+      return 0
+    fi
+
+    # Get git root directory
+    if ! gitdir="$(command git rev-parse --git-dir 2>/dev/null)"; then
+      return 0
+    fi
+
+    # Do nothing if auto-fetch is disabled or don't have permissions
+    if [[ ! -w "$gitdir" || -f "$gitdir/NO_AUTO_FETCH" ]] ||
+       [[ -f "$gitdir/FETCH_LOG" && ! -w "$gitdir/FETCH_LOG" ]]; then
+      return 0
+    fi
+
+    # Get time (seconds) when auto-fetch was last run
+    lastrun="$(zstat +mtime "$gitdir/FETCH_LOG" 2>/dev/null || echo 0)"
+    # Do nothing if not enough time has passed since last auto-fetch
+    if (( EPOCHSECONDS - lastrun < $GIT_AUTO_FETCH_INTERVAL )); then
+      return 0
+    fi
+
+    # Fetch all remotes (avoid ssh passphrase prompt)
+    date -R &>! "$gitdir/FETCH_LOG"
+    GIT_SSH_COMMAND="command ssh -o BatchMode=yes" \
+    GIT_TERMINAL_PROMPT=0 \
+      command git fetch --all --recurse-submodules=yes 2>/dev/null &>> "$gitdir/FETCH_LOG"
+  ) &|
+}
+
+add-zsh-hook -Uz chpwd (){ install_git_hook; git_auto_fetch; }

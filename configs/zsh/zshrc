@@ -157,7 +157,6 @@ else
   zinit snippet https://raw.githubusercontent.com/containers/podman/main/completions/zsh/_podman
   zinit snippet OMZL::git.zsh
   zinit snippet OMZP::git
-  zinit snippet OMZP::git-auto-fetch
   zinit snippet OMZP::gitignore
   zinit ice lucid as"completion"
   zinit snippet OMZP::httpie/_httpie
