@@ -16,7 +16,7 @@
   #   see https://nix-darwin.github.io/nix-darwin/manual/index.html#opt-homebrew.brews
   options.brew.add = lib.mkOption {
     type = lib.types.attrsOf (lib.types.listOf lib.types.str);
-    default = { taps = []; formula = []; casks = []; };
+    default = { taps = []; formula = []; cask = []; };
     description = "Homebrew items to be installed";
   };
 
@@ -36,7 +36,7 @@
       global.autoUpdate = true;
       taps = config.brew.add.taps;
       brews = config.brew.add.formula;
-      casks = config.brew.add.casks;
+      casks = config.brew.add.cask;
 
       onActivation = {
         autoUpdate = true;
