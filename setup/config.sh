@@ -214,10 +214,8 @@ setup_config() {
     cmd mkdir -p "$HOME/.shrimp"
   fi
 
-  if has_package alacritty; then
-    step "  - Alacritty"
-    link alacritty/alacritty.yml .alacritty.yml
-  fi
+  step "  - Alacritty"
+  link alacritty/alacritty.yml .alacritty.yml
 
   step "  - bat"
   link bat/ .config/bat
@@ -244,18 +242,14 @@ setup_config() {
   step "  - htop"
   link htop/ .config/htop
 
-  if has_package iterm2; then
-    step "  - iTerm2"
-    link iterm2/ "Library/Application Support/iTerm2"
-  fi
+  step "  - iTerm2"
+  link iterm2/ "Library/Application Support/iTerm2"
 
   step "  - jetbrains"
   link jetbrains/ideavimrc .ideavimrc
 
-  if has_package kitty; then
-    step "  - kitty"
-    link kitty/ .config/kitty
-  fi
+  step "  - kitty"
+  link kitty/ .config/kitty
 
   step "  - mise"
   link mise/ .config/mise
@@ -279,10 +273,8 @@ setup_config() {
   link nvim/ .config/nvim
   add_post_install_message "Run 'nvim' for the first time setup"
 
-  if has_package opencode; then
-    step "  - opencode"
-    link opencode/ .config/opencode
-  fi
+  step "  - opencode"
+  link opencode/ .config/opencode
 
   step "  - presenterm"
   if test "$OSKIND" = "macos"; then
@@ -327,5 +319,9 @@ setup_config() {
   if test "$OSKIND" = "macos" && has_profile -work; then
     step "Setting up system configurations..."
     setup_macos
+
+    step "Setting up LaunchAgents..."
+    step "  - restart"
+    raw_copy "supports/mac/launchd/me.spywhere.restart.plist" "$HOME/Library/LaunchAgents/me.spywhere.restart.plist"
   fi
 }
