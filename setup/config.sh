@@ -226,6 +226,9 @@ setup_config() {
   step "  - editorconfig"
   raw_link .editorconfig .editorconfig
 
+  step "  - ghostty"
+  link ghostty/ .config/ghostty
+
   step "  - git"
   link git/gitconfig .gitconfig
   if test -f "$HOME/$DOTFILES/configs/git/gitconfig.$OS"; then
@@ -284,7 +287,7 @@ setup_config() {
   fi
 
   step "  - qutebrowser"
-  link qutebrowser/ .config/qutebrowser
+  link qutebrowser/ .qutebrowser
 
   step "  - shrimp"
   link shrimp/ .shrimp/recipe
