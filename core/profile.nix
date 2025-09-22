@@ -16,7 +16,6 @@ rec {
   }:
   let
     isDarwin = lib.hasSuffix "-darwin" system;
-    homePath = if isDarwin then "/Users/${username}" else "/home/${username}";
     profile = name;
 
     modules = [
@@ -27,7 +26,7 @@ rec {
       {
         darwinConfigurations.${name} = darwin.lib.darwinSystem {
           inherit system;
-          specialArgs = { inherit profile username; };
+          specialArgs = { inherit profile username isDarwin; };
           modules = modules ++ [
             homebrew.darwinModules.nix-homebrew {
               inherit lib;

@@ -14,5 +14,4 @@ fi
 has_app 'Proton Mail'
 
 profile -work
-# use_nix 'protonmail-desktop'
 use_brew cask 'proton-mail'

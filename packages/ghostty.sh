@@ -13,5 +13,6 @@ fi
 
 has_app 'Ghostty'
 
-# use_nix 'ghostty'
+# platform darwin
+# use_nix 'ghostty-bin'
 use_brew cask 'ghostty'

@@ -13,5 +13,6 @@ fi
 
 has_executable 'sysstat'
 
+# platform linux
 # use_nix 'sysstat'
 use_apt 'sysstat'

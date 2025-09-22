@@ -2,12 +2,13 @@
 
 write_nix() {
   cat <<'EOF'
-{ config, lib, pkgs, profile, ...}:
+{ config, lib, pkgs, profile, isDarwin, ...}:
 let
   package = import ../core/package.nix {
     inherit lib;
     inherit profile;
     inherit config;
+    inherit isDarwin;
   };
   inherit (package) mkPackage;
 EOF
@@ -21,8 +22,11 @@ EOF
   if test -n "$4"; then
     printf '  except = [ %s ];\n' "$4"
   fi
+  if test -n "$5"; then
+    printf '  platform = [ %s ];\n' "$5"
+  fi
   printf '  config = {\n'
-  printf '    %s = [ %s ];\n' "$5" "$6"
+  printf '    %s = [ %s ];\n' "$6" "$7"
   printf '  };\n}\n'
 }
 
@@ -79,12 +83,32 @@ parse_profiles() {
   printf '%s' "$output"
 }
 
+parse_platforms() {
+  if test "$1" = "#"; then
+    shift
+  fi
+  if test "$1" = "platform"; then
+    shift
+  else
+    return
+  fi
+  output=""
+  while test -n "$1"; do
+    if test -n "$output"; then
+      output="$output "
+    fi
+    output="\"$1\""
+    shift
+  done
+  printf '%s' "$output"
+}
+
 migrate_to_nix() {
   source="$1"
   destination="$(printf '%s' "$source" | sed 's/\.sh/.nix/')"
   package="$2"
   manager="$3"
-  write_nix "$(basename "$1" | sed 's/\.sh$//' | normalize)" "$4" "$5" "$6" "$manager" "$package" >"$destination"
+  write_nix "$(basename "$1" | sed 's/\.sh$//' | normalize)" "$4" "$5" "$6" "$7" "$manager" "$package" >"$destination"
 }
 
 validate_package() {
@@ -92,6 +116,7 @@ validate_package() {
   optional=""
   only=""
   except=""
+  platforms=""
   if contains "$content" optional; then
     optional="1"
   fi
@@ -100,17 +125,20 @@ validate_package() {
     only="$(parse_profiles only $profiles)"
     except="$(parse_profiles except $profiles)"
   fi
+  if contains "$content" platform; then
+    platforms="$(parse_platforms $(read_match "$content" platform))"
+  fi
 
   if contains "$content" "use_nix"; then
-    migrate_to_nix "$1" "pkgs.$(read_match "$content" "use_nix" | item_at 3 | strip)" nixpkgs.add "$optional" "$only" "$except"
+    migrate_to_nix "$1" "pkgs.$(read_match "$content" "use_nix" | item_at 3 | strip)" nixpkgs.add "$optional" "$only" "$except" "$platforms"
   elif contains "$content" "use_brew formula"; then
-    migrate_to_nix "$1" "$(read_match "$content" "use_brew formula" | item_at 3 | normalize)" brew.add.formula "$optional" "$only" "$except"
+    migrate_to_nix "$1" "$(read_match "$content" "use_brew formula" | item_at 3 | normalize)" brew.add.formula "$optional" "$only" "$except" "$platforms"
   elif contains "$content" "use_brew cask"; then
-    migrate_to_nix "$1" "$(read_match "$content" "use_brew cask" | item_at 3 | normalize | xargs sh -c 'out="";for i in $*; do case "$1" in -*) continue;; *);; esac;if test -n "$out"; then out="$out ";fi;out="$out\"$i\""; done; printf "%s" "$out"' sh)" brew.add.cask "$optional" "$only" "$except"
+    migrate_to_nix "$1" "$(read_match "$content" "use_brew cask" | item_at 3 | normalize | xargs sh -c 'out="";for i in $*; do case "$1" in -*) continue;; *);; esac;if test -n "$out"; then out="$out ";fi;out="$out\"$i\""; done; printf "%s" "$out"' sh)" brew.add.cask "$optional" "$only" "$except" "$platforms"
   elif contains "$content" "use_brew_tap"; then
-    migrate_to_nix "$1" "$(read_match "$content" "use_brew_tap" | item_at 2 | normalize | xargs sh -c 'out="";for i in $*; do case "$1" in -*) continue;; *);; esac;if test -n "$out"; then out="$out ";fi;out="$out\"$i\""; done; printf "%s" "$out"' sh)" brew.add.tap "$optional" "$only" "$except"
+    migrate_to_nix "$1" "$(read_match "$content" "use_brew_tap" | item_at 2 | normalize | xargs sh -c 'out="";for i in $*; do case "$1" in -*) continue;; *);; esac;if test -n "$out"; then out="$out ";fi;out="$out\"$i\""; done; printf "%s" "$out"' sh)" brew.add.tap "$optional" "$only" "$except" "$platforms"
   # elif contains "$content" "has_executable"; then
-  #   migrate_to_nix "$1" "pkgs.$(read_match "$content" "has_executable" | item_at 2 | strip)" nixpkgs.add "$optional" "$only" "$except"
+  #   migrate_to_nix "$1" "pkgs.$(read_match "$content" "has_executable" | item_at 2 | strip)" nixpkgs.add "$optional" "$only" "$except" "$platforms"
   else
     printf ' skipped\n'
     return 1

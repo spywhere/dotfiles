@@ -21,6 +21,10 @@
   };
 
   config = {
+    nixpkgs.config = {
+      allowUnfree = true;
+      allowBroken = true;
+    };
     nix.settings.experimental-features = "nix-command flakes";
 
     environment.systemPackages = config.nixpkgs.add;
@@ -34,7 +38,7 @@
     homebrew = {
       enable = true;
       global.autoUpdate = true;
-      taps = config.brew.add.taps;
+      # taps = config.brew.add.taps;
       brews = config.brew.add.formula;
       casks = config.brew.add.cask;
 

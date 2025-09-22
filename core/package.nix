@@ -1,16 +1,19 @@
-{ lib, profile, config }: {
+{ lib, profile, config, isDarwin }: {
   mkPackage = name: {
     optional ? false,
     only ? [],
     except ? [],
+    platform ? [],
     config ? {},
   }:
   let
     inherit (lib) types;
+    systemPlatform = if isDarwin then "darwin" else "linux";
     isEmpty = list: builtins.length list == 0;
-    cfg = config.packages.${name} or { inherit optional only except; };
+    cfg = config.packages.${name} or { inherit optional only except platform; };
     shouldInstall = (
       !cfg.optional &&
+      (isEmpty cfg.platform || lib.elem systemPlatform cfg.platform) &&
       (isEmpty cfg.only || lib.elem profile cfg.only) &&
       !(lib.elem profile cfg.except)
     );
@@ -30,6 +33,11 @@
         type = types.listOf types.str;
         default = except;
         description = "Excluded profiles.";
+      };
+      platform = lib.mkOption {
+        type = types.listOf types.str;
+        default = platform;
+        description = "Allowed platforms (empty = all).";
       };
     };
 

@@ -16,5 +16,4 @@ profile -work
 has_app 'Cryptomator'
 require fuse-t
 
-# use_nix 'cryptomator'
 use_brew cask 'cryptomator'
