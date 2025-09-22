@@ -13,5 +13,6 @@ fi
 
 has_executable 'w3m'
 
+# use_nix 'w3m'
 use_apt 'w3m'
 use_brew formula 'w3m'

@@ -14,4 +14,5 @@ fi
 optional
 has_executable 'neomutt'
 
+# use_nix 'neomutt'
 use_brew formula 'neomutt'

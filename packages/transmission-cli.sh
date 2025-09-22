@@ -14,5 +14,6 @@ fi
 profile -work
 has_executable 'transmission-cli'
 
+# use_nix 'transmission_4'
 use_apt 'transmission-cli'
 use_brew formula 'transmission-cli'

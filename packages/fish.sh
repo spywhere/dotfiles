@@ -13,5 +13,6 @@ fi
 
 has_executable 'fish'
 
+# use_nix 'fish'
 use_apt 'fish'
 use_brew formula 'fish'

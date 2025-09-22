@@ -14,4 +14,5 @@ fi
 has_app 'Proton Pass'
 
 profile -work
+# use_nix 'proton-pass'
 use_brew cask 'proton-pass'

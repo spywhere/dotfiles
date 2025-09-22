@@ -13,5 +13,6 @@ fi
 
 has_executable 'tree'
 
+# use_nix 'tree'
 use_apt 'tree'
 use_brew formula 'tree'

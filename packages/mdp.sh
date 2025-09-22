@@ -13,4 +13,5 @@ fi
 
 has_executable 'mdp'
 
+# use_nix 'mdp'
 use_apt 'mdp'

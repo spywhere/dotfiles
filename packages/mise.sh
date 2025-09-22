@@ -13,6 +13,7 @@ fi
 
 has_executable 'mise'
 
+# use_nix 'mise'
 use_brew formula 'mise'
 use_custom 'install_mise'
 

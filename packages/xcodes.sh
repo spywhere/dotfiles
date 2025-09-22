@@ -13,4 +13,5 @@ fi
 
 has_executable 'xcodes'
 
+# use_nix 'xcodes'
 use_brew formula 'xcodes'

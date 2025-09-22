@@ -14,4 +14,5 @@ fi
 has_app 'Charles'
 
 profile work
+# use_nix 'charles'
 use_brew cask 'charles'

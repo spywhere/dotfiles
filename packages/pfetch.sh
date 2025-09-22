@@ -13,4 +13,5 @@ fi
 
 has_executable 'pfetch'
 
+# use_nix 'pfetch'
 use_bin 'pfetch' 'https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch'

@@ -13,4 +13,5 @@ fi
 
 has_app 'Raycast'
 
+# use_nix 'raycast'
 use_brew cask 'raycast'

@@ -13,4 +13,5 @@ fi
 
 has_executable 'ykman'
 
+# use_nix 'yubikey-manager'
 use_brew formula 'ykman'

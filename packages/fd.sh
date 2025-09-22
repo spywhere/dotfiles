@@ -32,5 +32,6 @@ case "$cpu_type" in
     ;;
 esac
 
+# use_nix 'fd'
 use_brew formula 'fd'
 use_dpkg 'fd' "https://github.com/sharkdp/fd" "%url/releases/download/v%version/fd${libc_type}_%version_$cpu_type.deb" "8.3.2"

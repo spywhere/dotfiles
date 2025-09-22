@@ -13,4 +13,5 @@ fi
 
 has_app 'Keka'
 
+# use_nix 'keka'
 use_mas 'keka' '470158793'

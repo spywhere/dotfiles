@@ -14,4 +14,5 @@ fi
 has_app 'Schism Tracker'
 
 optional
+# use_nix 'schismtracker'
 use_brew cask 'schism-tracker'

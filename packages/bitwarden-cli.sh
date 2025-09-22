@@ -13,4 +13,5 @@ fi
 
 has_executable 'bw'
 
+# use_nix 'bitwarden-cli'
 use_brew formula 'bitwarden-cli'

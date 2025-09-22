@@ -14,4 +14,5 @@ fi
 has_app 'luajit'
 
 optional
+# use_nix 'luajit'
 use_brew formula 'luajit' '--head'

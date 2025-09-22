@@ -13,4 +13,5 @@ fi
 
 has_executable 'cloudflared'
 
+# use_nix 'cloudflared'
 use_brew formula 'cloudflared'

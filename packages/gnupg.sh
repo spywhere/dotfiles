@@ -14,4 +14,5 @@ fi
 has_executable 'gpg'
 
 optional
+# use_nix 'gnupg'
 use_brew formula 'gnupg'

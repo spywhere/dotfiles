@@ -13,4 +13,5 @@ fi
 
 has_app 'iStat Menus'
 
+# use_nix 'istat-menus'
 use_brew cask 'istat-menus'

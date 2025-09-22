@@ -13,4 +13,5 @@ fi
 
 has_string 'OpenSSL' ssh -V
 
+# use_nix 'openssh'
 use_brew formula 'openssh'

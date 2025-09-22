@@ -13,5 +13,6 @@ fi
 
 has_executable 'tmate'
 
+# use_nix 'tmate'
 use_apt 'tmate'
 use_brew formula 'tmate'

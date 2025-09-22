@@ -13,5 +13,6 @@ fi
 
 has_executable 'git'
 
+# use_nix 'git'
 use_apt 'git'
 use_brew formula 'git'

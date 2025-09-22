@@ -15,4 +15,5 @@ has_executable 'eza'
 
 # TODO: https://github.com/eza-community/eza#debian-and-ubuntu
 # use_apt 'eza'
+# use_nix 'eza'
 use_brew formula 'eza'

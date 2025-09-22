@@ -13,4 +13,5 @@ fi
 
 has_app 'AirBuddy'
 
+# use_nix 'airbuddy'
 use_brew cask 'airbuddy'

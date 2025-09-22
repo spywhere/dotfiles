@@ -13,4 +13,5 @@ fi
 
 has_app 'Shottr'
 
+# use_nix 'shottr'
 use_brew cask 'shottr'

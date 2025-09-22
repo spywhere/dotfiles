@@ -13,4 +13,5 @@ fi
 
 has_executable 'htop'
 
+# use_nix 'htop'
 use_brew formula 'htop'

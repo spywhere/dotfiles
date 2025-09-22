@@ -13,5 +13,6 @@ fi
 
 has_executable 'nc'
 
+# use_nix 'netcat'
 use_apt 'netcat-openbsd'
 use_brew formula 'netcat'

@@ -14,4 +14,5 @@ fi
 has_app 'AlDente'
 
 profile -work
+# use_nix 'aldente'
 use_brew cask 'aldente'

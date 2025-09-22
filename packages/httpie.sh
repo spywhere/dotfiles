@@ -13,5 +13,6 @@ fi
 
 has_executable 'http'
 
+# use_nix 'httpie'
 use_apt 'httpie'
 use_brew formula 'httpie'

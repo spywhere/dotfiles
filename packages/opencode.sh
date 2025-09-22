@@ -13,4 +13,5 @@ fi
 
 has_executable 'opencode'
 
+# use_nix 'opencode'
 use_brew formula 'sst/tap/opencode'

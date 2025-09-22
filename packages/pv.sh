@@ -13,5 +13,6 @@ fi
 
 has_executable 'pv'
 
+# use_nix 'pv'
 use_apt 'pv'
 use_brew formula 'pv'

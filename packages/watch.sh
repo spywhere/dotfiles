@@ -13,5 +13,6 @@ fi
 
 has_executable 'watch'
 
+# use_nix 'unixtools.watch'
 use_apt 'watch'
 use_brew formula 'watch'

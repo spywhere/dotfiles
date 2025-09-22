@@ -12,16 +12,16 @@ let
   inherit (package) mkPackage;
 EOF
   printf 'in mkPackage %s {\n' "$1"
-  printf '  config = {\n'
   if test -n "$2"; then
-    printf '    optional = true;\n'
+    printf '  optional = true;\n'
   fi
   if test -n "$3"; then
-    printf '    only = [ %s ];\n' "$3"
+    printf '  only = [ %s ];\n' "$3"
   fi
   if test -n "$4"; then
-    printf '    except = [ %s ];\n' "$4"
+    printf '  except = [ %s ];\n' "$4"
   fi
+  printf '  config = {\n'
   printf '    %s = [ %s ];\n' "$5" "$6"
   printf '  };\n}\n'
 }
@@ -101,14 +101,16 @@ validate_package() {
     except="$(parse_profiles except $profiles)"
   fi
 
-  if contains "$content" "use_brew formula"; then
+  if contains "$content" "use_nix"; then
+    migrate_to_nix "$1" "pkgs.$(read_match "$content" "use_nix" | item_at 3 | strip)" nixpkgs.add "$optional" "$only" "$except"
+  elif contains "$content" "use_brew formula"; then
     migrate_to_nix "$1" "$(read_match "$content" "use_brew formula" | item_at 3 | normalize)" brew.add.formula "$optional" "$only" "$except"
   elif contains "$content" "use_brew cask"; then
     migrate_to_nix "$1" "$(read_match "$content" "use_brew cask" | item_at 3 | normalize | xargs sh -c 'out="";for i in $*; do case "$1" in -*) continue;; *);; esac;if test -n "$out"; then out="$out ";fi;out="$out\"$i\""; done; printf "%s" "$out"' sh)" brew.add.cask "$optional" "$only" "$except"
   elif contains "$content" "use_brew_tap"; then
     migrate_to_nix "$1" "$(read_match "$content" "use_brew_tap" | item_at 2 | normalize | xargs sh -c 'out="";for i in $*; do case "$1" in -*) continue;; *);; esac;if test -n "$out"; then out="$out ";fi;out="$out\"$i\""; done; printf "%s" "$out"' sh)" brew.add.tap "$optional" "$only" "$except"
-  elif contains "$content" "has_executable"; then
-    migrate_to_nix "$1" "pkgs.$(read_match "$content" "has_executable" | item_at 2 | strip)" nixpkgs.add "$optional" "$only" "$except"
+  # elif contains "$content" "has_executable"; then
+  #   migrate_to_nix "$1" "pkgs.$(read_match "$content" "has_executable" | item_at 2 | strip)" nixpkgs.add "$optional" "$only" "$except"
   else
     printf ' skipped\n'
     return 1

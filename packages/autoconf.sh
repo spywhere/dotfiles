@@ -14,4 +14,5 @@ fi
 has_executable 'autoconf'
 
 # neovim rebuild dependencies
+# use_nix 'autoconf'
 use_apt 'autoconf'

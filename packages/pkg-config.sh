@@ -12,5 +12,6 @@ then
 fi
 
 # neovim rebuild dependencies
+# use_nix 'pkg-config'
 use_apt 'pkg-config'
 use_brew formula 'pkg-config'

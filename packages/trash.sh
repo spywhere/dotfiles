@@ -13,4 +13,5 @@ fi
 
 has_executable 'trash'
 
+# use_nix 'darwin.trash'
 use_brew formula 'trash'

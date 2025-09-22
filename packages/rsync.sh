@@ -13,5 +13,6 @@ fi
 
 has_string 'version 3\.[0-9]*\.[0-9]*' rsync --version
 
+# use_nix 'rsync'
 use_apt 'rsync'
 use_brew formula 'rsync'

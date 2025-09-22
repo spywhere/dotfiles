@@ -13,6 +13,7 @@ fi
 
 has_executable 'jo'
 
+# use_nix 'jo'
 use_apt 'jo'
 # jo is outdated on AUR
 use_brew formula 'jo'

@@ -14,4 +14,5 @@ fi
 has_executable 'libtool'
 
 # neovim rebuild dependencies
+# use_nix 'libtool'
 use_apt 'libtool-bin'

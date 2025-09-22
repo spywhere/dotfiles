@@ -13,5 +13,6 @@ fi
 
 has_executable 'mpd'
 
+# use_nix 'mpd'
 use_apt 'mpd'
 use_brew formula 'mpd'

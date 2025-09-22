@@ -13,5 +13,6 @@ fi
 
 has_executable 'wget'
 
+# use_nix 'wget'
 use_apt 'wget'
 use_brew formula 'wget'

@@ -14,5 +14,6 @@ fi
 has_executable 'rg'
 
 # (a better grep) fzf.vim dependencies
+# use_nix 'ripgrep'
 use_apt 'ripgrep'
 use_brew formula 'ripgrep'

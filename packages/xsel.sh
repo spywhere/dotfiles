@@ -14,4 +14,5 @@ fi
 has_executable 'xsel'
 
 # tmux-yank dependencies
+# use_nix 'xsel'
 use_apt 'xsel'

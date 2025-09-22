@@ -14,5 +14,6 @@ fi
 has_executable 'automake'
 
 # neovim rebuild dependencies
+# use_nix 'automake'
 use_apt 'automake'
 use_brew formula 'automake'

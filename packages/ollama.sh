@@ -13,4 +13,5 @@ fi
 
 has_executable 'ollama'
 
+# use_nix 'ollama'
 use_brew formula 'ollama'

@@ -13,4 +13,5 @@ fi
 
 has_executable 'hstr'
 
+# use_nix 'hstr'
 use_brew formula 'hstr'

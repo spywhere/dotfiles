@@ -11,5 +11,6 @@ then
   exit 1
 fi
 
+# use_nix 'csvkit'
 use_apt 'csvkit'
 use_brew formula 'csvkit'

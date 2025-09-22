@@ -13,4 +13,5 @@ fi
 
 has_app 'BetterDisplay'
 
+# use_nix 'betterdisplay'
 use_brew cask 'betterdisplay'

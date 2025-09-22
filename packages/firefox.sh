@@ -14,4 +14,5 @@ fi
 has_app 'Firefox'
 
 profile work
+# use_nix 'firefox'
 use_brew cask 'firefox'

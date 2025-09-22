@@ -15,6 +15,7 @@ has_executable 'starship'
 
 require 'curl'
 
+# use_nix 'starship'
 use_custom 'curl_starship'
 
 curl_starship() {

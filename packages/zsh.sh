@@ -13,4 +13,5 @@ fi
 
 has_executable 'zsh'
 
+# use_nix 'zsh'
 use_apt 'zsh'

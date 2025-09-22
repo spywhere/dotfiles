@@ -14,4 +14,5 @@ fi
 has_app 'DaisyDisk'
 
 optional
+# use_nix 'daisydisk'
 use_brew cask 'daisydisk'

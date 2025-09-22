@@ -13,4 +13,5 @@ fi
 
 has_app 'IINA'
 
+# use_nix 'iina'
 use_brew cask 'iina'

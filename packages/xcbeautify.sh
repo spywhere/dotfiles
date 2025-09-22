@@ -13,4 +13,5 @@ fi
 
 has_executable 'xcbeautify'
 
+# use_nix 'xcbeautify'
 use_brew formula 'xcbeautify'

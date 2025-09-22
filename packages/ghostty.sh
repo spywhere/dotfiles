@@ -13,4 +13,5 @@ fi
 
 has_app 'Ghostty'
 
+# use_nix 'ghostty'
 use_brew cask 'ghostty'

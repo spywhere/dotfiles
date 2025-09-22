@@ -22,6 +22,7 @@ if has_flag wsl; then
 else
   use_apt 'clang-tools'
 fi
+# use_nix 'clang-tools'
 # see https://releases.llvm.org/10.0.0/tools/clang/tools/extra/docs/clangd/Installation.html
 use_brew formula 'llvm'
 # see https://github.com/clangd/clangd/issues/450

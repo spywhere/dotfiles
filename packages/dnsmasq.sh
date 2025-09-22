@@ -13,4 +13,5 @@ fi
 
 has_executable 'dnsmasq'
 
+# use_nix 'dnsmasq'
 use_apt 'dnsmasq'

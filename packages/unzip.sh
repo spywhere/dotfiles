@@ -12,4 +12,5 @@ then
 fi
 
 # neovim rebuild dependencies
+# use_nix 'unzip'
 use_apt 'unzip'

@@ -13,5 +13,6 @@ fi
 
 has_executable 'yt-dlp'
 
+# use_nix 'yt-dlp'
 use_apt 'yt-dlp'
 use_brew formula 'yt-dlp'

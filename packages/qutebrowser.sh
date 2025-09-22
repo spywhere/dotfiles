@@ -13,4 +13,5 @@ fi
 
 has_executable 'qutebrowser'
 
+# use_nix 'qutebrowser'
 use_brew cask 'qutebrowser'

@@ -13,5 +13,6 @@ fi
 
 has_string 'jq-[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' jq --version
 
+# use_nix 'jq'
 use_apt 'jq'
 use_brew formula 'jq'

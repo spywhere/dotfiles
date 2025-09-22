@@ -14,4 +14,5 @@ fi
 has_executable 'tree-sitter'
 
 optional
+# use_nix 'tree-sitter'
 use_brew formula 'tree-sitter' '--head'

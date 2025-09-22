@@ -13,4 +13,5 @@ fi
 
 has_executable 'curl'
 
+# use_nix 'curl'
 use_apt 'curl'

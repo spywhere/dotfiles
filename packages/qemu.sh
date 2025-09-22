@@ -14,4 +14,5 @@ fi
 has_executable 'qemu'
 
 optional
+# use_nix 'qemu'
 use_brew formula 'qemu'

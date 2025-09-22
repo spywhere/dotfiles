@@ -14,4 +14,5 @@ fi
 has_app 'Tailscale'
 
 profile -work
+# use_nix 'tailscale'
 use_mas 'Tailscale' 1475387142

@@ -14,4 +14,5 @@ fi
 has_executable 'ninja'
 
 # neovim rebuild dependencies
+# use_nix 'ninja'
 use_apt 'ninja-build'

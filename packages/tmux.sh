@@ -13,6 +13,7 @@ fi
 
 has_executable 'tmux'
 
+# use_nix 'tmux'
 # tmux on arm is still outdated
 use_apt 'tmux'
 use_brew formula 'tmux'

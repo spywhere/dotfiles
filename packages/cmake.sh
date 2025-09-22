@@ -14,5 +14,6 @@ fi
 has_executable 'cmake'
 
 # neovim rebuild dependencies
+# use_nix 'cmake'
 use_apt 'cmake'
 use_brew formula 'cmake'

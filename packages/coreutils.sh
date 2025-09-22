@@ -12,4 +12,5 @@ then
 fi
 
 # Those that come with macOS are outdated
+# use_nix 'coreutils'
 use_brew formula 'coreutils'

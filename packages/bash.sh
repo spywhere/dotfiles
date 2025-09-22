@@ -13,5 +13,6 @@ fi
 
 has_string 'version 5\.[0-9]*\.[0-9]*' bash --version
 
+# use_nix 'bash'
 use_apt 'bash'
 use_brew formula 'bash'
