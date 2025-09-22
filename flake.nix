@@ -20,6 +20,7 @@
     inherit (profile) mkProfiles;
 
     profiles = [
+      { name = "darwin-sandbox"; username = "virtualization"; }
       { name = "personal"; username = "spywhere"; }
       { name = "work"; username = "slueangsaksr"; }
     ];
