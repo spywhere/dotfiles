@@ -23,7 +23,6 @@
   config = {
     nixpkgs.config = {
       allowUnfree = true;
-      allowBroken = true;
     };
     nix.settings.experimental-features = "nix-command flakes";
 
