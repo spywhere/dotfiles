@@ -1,6 +1,7 @@
 [tools]
-fzf = "0.65.1"
-neovim = "0.11.4"
+bun = "1.3"
+fzf = "latest"
+neovim = "0.11"
 node = "23.6.0"
 pnpm = "10.13.1"
 python = "3.13.7"
