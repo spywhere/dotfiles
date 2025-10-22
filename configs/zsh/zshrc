@@ -163,11 +163,16 @@ else
   zinit snippet OMZP::npm
 fi
 
-. <(starship init zsh)
+setup_cmd() {
+  cmd="$1"
+  shift
+  if test -n "$(command -v "$cmd")"; then
+    . <("$cmd" "$@")
+  fi
+}
 
-if test -n "$(command -v mise)"; then
-  . <(mise activate zsh)
-fi
+setup_cmd starship init zsh
+setup_cmd mise activate zsh
 
 . $HOME/$DOTFILES_NAME/configs/zsh/aliases
 . $HOME/$DOTFILES_NAME/configs/zsh/functions
@@ -197,16 +202,7 @@ if test -n "$(command -v hstr)"; then
   export HSTR_TIOCSTI=y
 fi
 
-# Setup github cli
-if test -n "$(command -v gh)"; then
-  . <(gh completion -s zsh)
-fi
-
-# Setup deno
-if test -n "$(command -v deno)" && deno completions bash >/dev/null 2>&1; then
-  . <(deno completions bash)
-fi
-
-if test -n "$(command -v zoxide)"; then
-  . <(zoxide init zsh)
-fi
+setup_cmd jj util completion zsh
+setup_cmd gh completion -s zsh
+setup_cmd deno completions bash
+setup_cmd zoxide init zsh
