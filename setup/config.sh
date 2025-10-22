@@ -251,6 +251,9 @@ setup_config() {
   step "  - jetbrains"
   link jetbrains/ideavimrc .ideavimrc
 
+  step "  - jujutsu"
+  link jj/ .config/jj
+
   step "  - kitty"
   link kitty/ .config/kitty
 
