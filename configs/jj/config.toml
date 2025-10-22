@@ -1,0 +1,23 @@
+#:schema https://jj-vcs.github.io/jj/latest/config-schema.json
+
+[user.me]
+name = "Sirisak Lueangsaksri"
+email = "1087399+spywhere@users.noreply.github.com"
+
+[aliases]
+clone = ["git", "clone"]
+identity = ["util", "exec", "--", "bash", "-c", """
+  if test -z "$1"; then
+    echo "usage: jj identity <identity>"
+    echo
+    echo "available identities:"
+    jj config list -T 'name++"\n"' user | grep 'user\\..*\\.name' | cut -d. -f2 | sed 's/^/  - /'
+    exit 0
+  fi
+
+  jj config set --repo user.name "$(jj config get user.$1.name)"
+  jj config set --repo user.email "$(jj config get user.$1.email)"
+""", ""]
+
+[ui]
+default-command = "help"

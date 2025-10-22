@@ -55,6 +55,31 @@ gwt() {
 # kill the annoyance
 alias ga.="ga ."
 
+# jujutsu
+alias j="jj"
+alias jc="jj commit"
+alias jcm="jj commit --message"
+alias jd="jj diff"
+alias jds="jj desc"
+alias jdm="jj desc --message"
+alias je="jj edit"
+alias jcl="jj git clone"
+alias jf="jj git fetch"
+alias jfa="jj git fetch --all-remotes"
+alias jp="jj git push"
+alias jl="jj log"
+alias jla="jj log -r '::'"
+alias jlg="jj log -r '::@'"
+alias jn="jj new"
+alias jrb="jj rebase"
+alias jrs="jj restore"
+alias jsp="jj split"
+alias jsq="jj squash"
+alias jst="jj status"
+alias jsh="jj show"
+alias ju="jj undo"
+alias jr="jj redo"
+
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 

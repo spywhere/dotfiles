@@ -1,4 +1,5 @@
 configs/github/hosts.yml
+configs/jj/conf.d/**
 configs/mpd/**
 !configs/mpd/mpd.conf
 !configs/mpd/playlists
