@@ -11,3 +11,4 @@ Session.vim
 .nvim
 buildServer.json
 project/**/metals.sbt
+mise.toml
