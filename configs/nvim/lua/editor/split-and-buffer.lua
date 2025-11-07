@@ -1,5 +1,6 @@
 local bindings = require('lib.bindings')
 local registry = require('lib.registry')
+local logger = require('lib.logger')
 
 local split_management = function ()
   -- split resize
@@ -53,7 +54,18 @@ local buffer_management = function ()
           tree_api.tree.close()
         end
       end
-      vim.cmd(command)
+      local result, error = pcall(vim.cmd, command)
+      if not result then
+        logger.inline.info('Command failed: '..error)
+        if vim.b.bd_last_attempt and os.time() - vim.b.bd_last_attempt < 3 then
+          logger.inline.info('Force running: '..command)
+          vim.cmd({
+            cmd = command,
+            bang = true,
+          })
+        end
+        vim.b.bd_last_attempt = os.time()
+      end
       if tree_api and tree_open then
         tree_api.tree.open()
         if switch_to_last then
@@ -66,7 +78,7 @@ local buffer_management = function ()
   -- close current buffer
   bindings.map.normal(
     '<A-w>',
-    close_buffer('silent! bd', true)
+    close_buffer('bd', true)
   )
   -- close all buffers
   bindings.map.normal(
