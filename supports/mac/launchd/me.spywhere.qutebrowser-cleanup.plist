@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>me.spywhere.qutebrowser-cleanup</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>-c</string>
+		<string>if [ -f &quot;$HOME/Library/Application Support/qutebrowser/history.sqlite&quot; ]; then
+  /usr/bin/sqlite3 &quot;$HOME/Library/Application Support/qutebrowser/history.sqlite&quot; &quot;delete from History where atime &lt; strftime(&apos;%s&apos;, datetime(&apos;now&apos;, &apos;-1 month&apos;))+0;&quot;;
+fi</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+</dict>
+</plist>

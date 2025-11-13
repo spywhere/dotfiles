@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+SCRIPT_NAME=$(basename "$0")
+
+if test -z "$QUTE_FIFO"; then
+  cmd() {
+    printf '%s\n' "$*" >&2
+  }
+else
+  cmd() {
+    printf '%s\n' "$*" >> "$QUTE_FIFO"
+  }
+fi
+
+print() {
+  cmd message-info "\"[$SCRIPT_NAME] $*\""
+}
+
+error() {
+  cmd message-error "\"[$SCRIPT_NAME] $*\""
+}
+
+try_cmd() {
+  local cmd="$1"
+  shift
+  if test -n "$(command -v "$cmd")"; then
+    "$cmd" "$@"
+  elif test -f "/opt/homebrew/bin/$cmd"; then
+    "/opt/homebrew/bin/$cmd" "$@"
+  elif test "$cmd" != "mise" && try_cmd mise which "$cmd" 1>/dev/null 2>/dev/null; then
+    "$(try_cmd mise which "$cmd")" "$@"
+  else
+    error "$cmd commmand is not found 2"
+    exit 1
+  fi
+}
+
+print "Downloading $QUTE_URL"
+try_cmd gallery-dl -D "$HOME/Downloads" "$QUTE_URL"
+if test $? -eq 0; then
+  print "Download finished for $QUTE_URL"
+else
+  error "Download failed for $QUTE_URL: $ERROR_LOGS"
+fi
