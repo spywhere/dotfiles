@@ -80,6 +80,15 @@ unlock_session() {
   print "Session successfully stored in Keychain."
 }
 
+sync_vault() {
+  bw --nointeraction sync
+  if test $? -ne 0; then
+    error "Failed to sync Bitwarden. Please check your credentials."
+  else
+    print "Vault successfully synced."
+  fi
+}
+
 get_item_for() {
   BW_SESSION="$(security find-generic-password -a "$USER" -s "$SCRIPT_NAME" -w 2>/dev/null)"
   if test $? -ne 0 -o -z "$BW_SESSION"; then
@@ -218,6 +227,7 @@ help() {
   print ''
   print 'Commands:'
   print '  lock                Purge the stored session key'
+  print '  sync                Synchronize vault'
   print '  help                Show this message'
 }
 
@@ -264,6 +274,10 @@ main() {
     lock)
       shift
       lock_session
+      ;;
+    sync)
+      shift
+      sync_vault
       ;;
     *)
       local autofill=""
