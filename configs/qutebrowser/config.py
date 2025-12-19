@@ -1,6 +1,9 @@
 import os
 
-c.url.searchengines = {'DEFAULT': 'https://kagi.com/search?q={}'}
+c.url.searchengines = {
+  'DEFAULT': 'https://kagi.com/search?q={}',
+  'gh': 'https://github.com/{}'
+}
 
 config.load_autoconfig(True)
 
@@ -20,11 +23,15 @@ c.aliases = {
 }
 
 c.auto_save.session = True
+
 c.content.default_encoding = 'utf-8'
 c.content.geolocation = False
+c.content.autoplay = False
+
 c.downloads.location.prompt = False
 c.downloads.position = 'bottom'
 c.downloads.remove_finished = 10000
+
 c.scrolling.bar = 'always'
 c.statusbar.show = 'always'
 c.statusbar.padding = {'bottom': 1, 'left': 0, 'right': 0, 'top': 1}
@@ -68,6 +75,9 @@ config.bind('<Meta+n>', 'open -w')
 config.bind('<Meta+s>', 'config-cycle tabs.show always never')
 config.bind('<Alt+Up>', 'tab-move -')
 config.bind('<Alt+Down>', 'tab-move +')
+config.bind('a', 'mode-enter insert')
+config.bind('p', 'hint links spawn --detach /opt/homebrew/bin/iina --no-stdin {hint-url}')
+config.bind('P', 'spawn --detach /opt/homebrew/bin/iina --no-stdin {url}')
 config.bind('Q', 'macro-record')
 config.bind('q', 'tab-prev')
 config.bind('tdh', 'config-cycle -p -t -u *://{url:host}/* colors.webpage.darkmode.enabled ;; reload')
