@@ -11,9 +11,7 @@ local filetypes = {
     mode2 = fn.has('nvim-0.7') == 1,
     music = true,
     path = true,
-    path1 = 'Explorer',
-    clock = true,
-    clock1 = true
+    path1 = 'Explorer'
   },
   treefilter = {
     ['*'] = false,
@@ -22,9 +20,7 @@ local filetypes = {
     mode2 = fn.has('nvim-0.7') == 1,
     music = true,
     path = true,
-    path1 = 'Explorer - Filters',
-    clock = true,
-    clock1 = true
+    path1 = 'Explorer - Filters'
   },
   alpha = {
     ['*'] = false,
@@ -34,9 +30,23 @@ local filetypes = {
     music = true,
     fileinfo = true,
     fileinfo1 = true,
+    fileinfo4 = true
+  },
+  qf = {
+    ['*'] = false,
+    mode = true,
+    mode1 = true,
+    mode2 = true,
+    music = true,
+    path = true,
+    path1 = function () return vim.w.quickfix_title or '[Quick Fix]' end,
+    fileinfo = true,
+    fileinfo1 = true,
+    fileinfo3 = true,
     fileinfo4 = true,
-    clock = true,
-    clock1 = true
+    lineinfo = true,
+    lineinfo1 = true,
+    lineinfo2 = true
   }
 }
 
@@ -606,6 +616,9 @@ local setup = function ()
   local stl = statusline('miniline', components())
   stl.filetypes(filetypes)
   vim.o.statusline = stl.render()
+  registry.auto('FileType', function ()
+    vim.wo.statusline = stl.render()
+  end, 'qf')
 
   if fn.has('nvim-0.8') == 1 then
     registry.auto({

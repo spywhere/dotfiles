@@ -9,7 +9,11 @@ registry.install {
         {
           ">",
           function()
-            require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+            require("quicker").expand {
+              before = 2,
+              after = 2,
+              add_to_existing = true
+            }
           end,
           desc = "Expand quickfix context",
         },
@@ -24,10 +28,10 @@ registry.install {
     }
 
     bindings.map.normal('<leader>q', function ()
-      require('quicker').toggle()
+      require('quicker').toggle { focus = true }
     end)
     bindings.map.normal('<leader>l', function ()
-      require('quicker').toggle { loclist = true }
+      require('quicker').toggle { focus = true, loclist = true }
     end)
   end
 }

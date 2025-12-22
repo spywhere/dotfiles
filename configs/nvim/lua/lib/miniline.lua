@@ -213,6 +213,9 @@ local function get_filetype_activation(component, fts)
     filetype_map['*']
   )
   if filetype_activation ~= nil then
+    if type(filetype_activation) == 'function' then
+      filetype_activation = filetype_activation()
+    end
     if not filetype_activation then
       return ''
     elseif type(filetype_activation) == 'string' then

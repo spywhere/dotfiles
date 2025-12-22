@@ -22,7 +22,7 @@ local columns = function ()
     bindings.set('colorcolumn', '')
   end
   registry.auto('FileType', no_ruler, {
-    'dbout', 'dbui'
+    'dbout', 'dbui', 'qf'
   })
 end
 registry.pre(columns)
