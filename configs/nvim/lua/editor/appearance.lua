@@ -15,15 +15,17 @@ local columns = function ()
 
   -- always show sign column, resize as needed
   bindings.set('signcolumn', 'auto:1-3')
-  -- ruler at 79 chars
-  bindings.set('colorcolumn', '79')
 
-  local function no_ruler()
-    bindings.set('colorcolumn', '')
-  end
-  registry.auto('FileType', no_ruler, {
-    'dbout', 'dbui', 'qf'
-  })
+  -- ruler at 79 chars
+  registry.auto('BufEnter', vim.schedule_wrap(function ()
+    if vim.list_contains({
+      'dbout', 'dbui', 'qf', 'help', 'alpha'
+    }, vim.bo.filetype) then
+      return
+    end
+
+    vim.cmd('match ColorColumn /\\%80v./')
+  end))
 end
 registry.pre(columns)
 
