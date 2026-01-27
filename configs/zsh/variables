@@ -37,6 +37,10 @@ if test -d "$HOME/Library/Application Support/Coursier/bin"; then
   export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"
 fi
 
+if test -d "$HOME/.bun/bin"; then
+  export PATH="$PATH:$HOME/.bun/bin"
+fi
+
 homebrew_bins='jq ruby git'
 for bin_name in $=homebrew_bins; do
   if test -d "$homebrew_prefix/opt/$bin_name/bin"; then
