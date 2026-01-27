@@ -61,6 +61,13 @@ local proxy_map = function (backend)
       cmd = 'cmd',
       ft = 'ft'
     }
+  elseif backend == 'mini.deps' then
+    return {
+      branch = { 'checkout', 'monitor' },
+      tag = { 'checkout', 'monitor' },
+      commit = { 'checkout', 'monitor' },
+      run = { hooks = 'post_checkout' }
+    }
   end
 end
 
