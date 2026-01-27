@@ -76,8 +76,6 @@ config.bind('<Meta+s>', 'config-cycle tabs.show always never')
 config.bind('<Alt+Up>', 'tab-move -')
 config.bind('<Alt+Down>', 'tab-move +')
 config.bind('a', 'mode-enter insert')
-config.bind('p', 'hint links spawn --detach /opt/homebrew/bin/iina --no-stdin {hint-url}')
-config.bind('P', 'spawn --detach /opt/homebrew/bin/iina --no-stdin {url}')
 config.bind('Q', 'macro-record')
 config.bind('q', 'tab-prev')
 config.bind('tdh', 'config-cycle -p -t -u *://{url:host}/* colors.webpage.darkmode.enabled ;; reload')
@@ -89,6 +87,10 @@ config.bind('tDH', 'config-cycle -p -u *://*.{url:host}/* colors.webpage.darkmod
 config.bind('w', 'tab-next')
 config.bind('yt', 'tab-clone')
 
+if os.path.isfile('/opt/homebrew/bin/gallery-dl'):
+  config.bind(';p', 'hint links userscript gallery-dl')
+if os.path.isfile('/opt/homebrew/bin/yt-dlp'):
+  config.bind(';v', 'hint links userscript yt-dlp')
 if os.path.isfile('/opt/homebrew/bin/iina'):
   config.bind('p', 'hint links spawn --detach /opt/homebrew/bin/iina --no-stdin {hint-url}')
   config.bind('P', 'spawn --detach /opt/homebrew/bin/iina --no-stdin {url}')
