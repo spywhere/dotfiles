@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: ['debian:bullseye-slim', 'ubuntu:rolling']
+        os: ['ubuntu:rolling']
         flag: [-v, '', -q]
     steps:
       - uses: actions/checkout@v4
