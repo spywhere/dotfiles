@@ -33,4 +33,4 @@ case "$cpu_type" in
 esac
 
 use_brew formula 'bat'
-use_dpkg 'bat' "https://github.com/sharkdp/bat" "%url/releases/download/v%version/bat${libc_type}_%version_$cpu_type.deb" "0.19.0"
+use_apt 'bat'
