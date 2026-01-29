@@ -328,6 +328,6 @@ setup_config() {
 
     step "Setting up LaunchAgents..."
     step "  - restart"
-    raw_copy "supports/mac/launchd/me.spywhere.restart.plist" "$HOME/Library/LaunchAgents/me.spywhere.restart.plist"
+    raw_copy "supports/mac/launchd/me.spywhere.restart.plist" "Library/LaunchAgents/me.spywhere.restart.plist"
   fi
 }
