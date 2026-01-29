@@ -136,10 +136,10 @@ setup_macos() {
   ##########
   plist "com.apple.finder" ":DesktopViewSettings:IconViewSettings:arrangeBy" name
   plist "com.apple.finder" ":DesktopViewSettings:IconViewSettings:showItemInfo" true
-  plist "com.apple.finder" ":ICloudViewSettings:IconViewSettings:arrangeBy" name
-  plist "com.apple.finder" ":ICloudViewSettings:IconViewSettings:showItemInfo" true
-  plist "com.apple.finder" ":FK_StandardViewSettings:IconViewSettings:arrangeBy" name
-  plist "com.apple.finder" ":FK_StandardViewSettings:IconViewSettings:showItemInfo" true
+  # plist "com.apple.finder" ":ICloudViewSettings:IconViewSettings:arrangeBy" name
+  # plist "com.apple.finder" ":ICloudViewSettings:IconViewSettings:showItemInfo" true
+  # plist "com.apple.finder" ":FK_StandardViewSettings:IconViewSettings:arrangeBy" name
+  # plist "com.apple.finder" ":FK_StandardViewSettings:IconViewSettings:showItemInfo" true
 
   config "com.apple.finder" "FXArrangeGroupViewBy" "Name"
   config "com.apple.finder" "FXDefaultSearchScope" "SCsp"
@@ -245,8 +245,10 @@ setup_config() {
   step "  - htop"
   link htop/ .config/htop
 
-  step "  - iTerm2"
-  link iterm2/ "Library/Application Support/iTerm2"
+  if test "$OSKIND" = "macos"; then
+    step "  - iTerm2"
+    link iterm2/ "Library/Application Support/iTerm2"
+  fi
 
   step "  - jetbrains"
   link jetbrains/ideavimrc .ideavimrc
