@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'ollama'
+has_executable 'osaurus'
 
-use_brew formula 'ollama'
+use_brew formula 'osaurus'
