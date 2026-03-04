@@ -13,6 +13,7 @@ c.aliases = {
   'localhost': 'spawn -u localhost',
   'split': 'spawn -u split',
   'sp': 'spawn -u split -h',
+  'translate': 'spawn -u translate',
   'vs': 'spawn -u split -v',
   'o': 'open',
   'q': 'close',
