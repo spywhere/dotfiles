@@ -46,6 +46,7 @@ is_number() {
 }
 
 lock_session() {
+  print "Deleting session..."
   security delete-generic-password -a "$USER" -s "$SCRIPT_NAME" 2>/dev/null
   if test $? -eq 0; then
     print "Session deleted successfully."
@@ -81,6 +82,7 @@ unlock_session() {
 }
 
 sync_vault() {
+  print "Syncing vault..."
   bw --nointeraction sync
   if test $? -ne 0; then
     error "Failed to sync Bitwarden. Please check your credentials."
@@ -96,8 +98,8 @@ get_item_for() {
     return 2
   fi
 
-  print "Finding login items for $1..."
-  bw --nointeraction --session "$BW_SESSION" list items --url "$1" 2>/dev/null
+  print "Finding login items for '$2'..."
+  bw --nointeraction --session "$BW_SESSION" list items "$1" "$2" 2>/dev/null
   if test $? -ne 0; then
     # session is no longer valid
     return 1
@@ -147,10 +149,12 @@ ask_input() {
 }
 
 find_items() {
+  local kind="$1"
+  shift
   local retry_count=0
   local items="[]"
   while test -n "$1" -a "$retry_count" -lt 1; do
-    items="$(get_item_for "$1")"
+    items="$(get_item_for "$kind" "$1")"
     code="$?"
     if test "$code" -eq 0; then
       break
@@ -185,7 +189,7 @@ find_items() {
       fi
       shift
     done
-    find_items "$*"
+    find_items "$kind" "$*"
   fi
 }
 
@@ -213,7 +217,7 @@ escape_keystroke() {
 }
 
 help() {
-  print "$SCRIPT_NAME [options] [command]"
+  print "$SCRIPT_NAME [command] [filter] [options]"
   print ''
   print 'Autofill matching item given the current URL.'
   print ''
@@ -222,12 +226,18 @@ help() {
   print '  -u, --username-only  Autofill only username'
   print '  -p, --password-only  Autofill only password'
   print '  -t, --totp-only      Autofill only TOTP'
+  print '  -T, --TOTP           Autofill only TOTP but put tab on each digits'
+  print '  --copy               Copy to clipboard instead of autofill'
   print '  --no-insert-mode     Do not enter insert mode after autofill'
   print '  --help               Show this message'
   print ''
   print 'Commands:'
   print '  lock                Purge the stored session key'
   print '  sync                Synchronize vault'
+  print '  u, user             Same as --username-only'
+  print '  p, password         Same as --password-only'
+  print '  t, totp             Same as --totp-only'
+  print '  T, TOTP             Same as --TOTP'
   print '  help                Show this message'
 }
 
@@ -270,109 +280,155 @@ main() {
     return 1
   fi
 
+  local item_type=""
+  local fill_mode="fill"
   case "$1" in
     lock)
       shift
       lock_session
+      exit 0
       ;;
     sync)
       shift
       sync_vault
+      exit 0
+      ;;
+    user|u)
+      shift
+      item_type='username'
+      ;;
+    password|p)
+      shift
+      item_type='password'
+      ;;
+    totp|t)
+      shift
+      item_type='totp'
+      ;;
+    TOTP|T)
+      shift
+      item_type='TOTP'
       ;;
     *)
-      local autofill=""
-      local insert_mode="yes"
-      local url="$QUTE_URL"
-      if test -z "$url"; then
-        url="$QUTE_CURRENT_URL"
-      fi
-      while true; do
-        case "$1" in
-          -U|--url)
-            shift
-            url="$1"
-            ;;
-          -u|--username-only)
-            autofill='username'
-            ;;
-          -p|--password-only)
-            autofill='password'
-            ;;
-          -t|--totp-only)
-            autofill='totp'
-            ;;
-          --no-insert-mode)
-            insert_mode=""
-            ;;
-          *)
-            break
-            ;;
-        esac
-        shift
-      done
-
-      local items
-      items="$(find_items "$url")"
-      if test $? -ne 0; then
-        exit 0
-      fi
-      if test -z "$items"; then
-        warning "No items found."
-        exit 0
-      fi
-      local item
-      local items_count
-      items_count="$(parsejson "$items" 'length')"
-      if test "$items_count" -eq 0; then
-        warning "No items found."
-        exit 0
-      elif test "$items_count" -gt 1; then
-        while true; do
-          selection="$(ask_input --title "Choose login item" "Found $items_count items for URL: $url\n\nPlease select an item to autofill.\n$(parsejson "$items" 'to_entries | map("\(.key + 1): \(.value.name)") | join("\n") | tojson | sub("^\"|\"$";"";"g")')")"
-          if test $? -ne 0; then
-            error "Autofill cancelled."
-            exit 0
-          fi
-          if ! is_number "$selection"; then
-            error "Invalid selection. Please enter a number."
-          elif test "$selection" -lt 1 -o "$selection" -gt "$items_count"; then
-            error "Invalid selection. Please enter a number between 1 and $items_count."
-          else
-            break
-          fi
-        done
-        item="$(parsejson "$items" ".[$selection - 1]")"
-      else
-        item="$(parsejson "$items" '.[0]')"
-      fi
-
-      if test -z "$autofill" -o "$autofill" = "username"; then
-        cmd "fake-key $(parsejson "$item" '.username' | escape_keystroke)"
-      fi
-      if test -z "$autofill"; then
-        cmd 'fake-key <Tab><Backspace>'
-      fi
-      if test -z "$autofill" -o "$autofill" = "password"; then
-        cmd "fake-key $(parsejson "$item" '.password' | escape_keystroke)"
-      fi
-
-      if test -z "$autofill" -o "$autofill" = "totp" && test -n "$(parsejson "$item" '.totp // ""')"; then
-        totp="$(get_totp "$(parsejson "$item" '.id // ""')")"
-        if test $? -eq 0; then
-          if test -z "$autofill"; then
-            printf '%s' "$totp" | pbcopy
-            print "TOTP copied to clipboard."
-          elif test "$autofill" = "totp"; then
-            cmd "fake-key $(printf '%s' "$totp" | escape_keystroke)"
-          fi
-        fi
-      fi
-
-      if test -n "$insert_mode"; then
-        cmd 'mode-enter insert'
-      fi
       ;;
   esac
+
+  local insert_mode="yes"
+  local kind="--url"
+  local query="$QUTE_URL"
+  if test -z "$query"; then
+    query="$QUTE_CURRENT_URL"
+  fi
+  while true; do
+    case "$1" in
+      -U|--url)
+        shift
+        query="$1"
+        ;;
+      -u|--username-only)
+        item_type='username'
+        ;;
+      -p|--password-only)
+        item_type='password'
+        ;;
+      -t|--totp-only)
+        item_type='totp'
+        ;;
+      --copy)
+        fill_mode="copy"
+        ;;
+      --no-insert-mode)
+        insert_mode=""
+        ;;
+      *)
+        if test -n "$1"; then
+          kind="--search"
+          query="$1"
+        else
+          break
+        fi
+        ;;
+    esac
+    shift
+  done
+
+  if test -n "$item_type" -a "$fill_mode" = "copy"; then
+    autofill() {
+      printf '%s' "$1" | pbcopy
+      print "$2 copied to clipboard."
+    }
+  else
+    autofill() {
+      cmd "fake-key $(printf '%s' "$1" | escape_keystroke)"
+    }
+  fi
+
+  local items
+  items="$(find_items "$kind" "$query")"
+  if test $? -ne 0; then
+    exit 0
+  fi
+  if test -z "$items"; then
+    warning "No items found."
+    exit 0
+  fi
+  local item
+  local items_count
+  items_count="$(parsejson "$items" 'length')"
+  if test "$items_count" -eq 0; then
+    warning "No items found."
+    exit 0
+  elif test "$items_count" -gt 1; then
+    while true; do
+      selection="$(ask_input --title "Choose login item" "Found $items_count items for \\'$query\\'\n\nPlease select an item to autofill.\n$(parsejson "$items" 'to_entries | map("\(.key + 1): \(.value.name)") | join("\n") | tojson | sub("^\"|\"$";"";"g")')")"
+      if test $? -ne 0; then
+        error "Autofill cancelled."
+        exit 0
+      fi
+      if ! is_number "$selection"; then
+        error "Invalid selection. Please enter a number."
+      elif test "$selection" -lt 1 -o "$selection" -gt "$items_count"; then
+        error "Invalid selection. Please enter a number between 1 and $items_count."
+      else
+        break
+      fi
+    done
+    item="$(parsejson "$items" ".[$selection - 1]")"
+  else
+    item="$(parsejson "$items" '.[0]')"
+  fi
+
+  if test -z "$item_type" -o "$item_type" = "username"; then
+    autofill "$(parsejson "$item" '.username')" "Username"
+  fi
+  if test -z "$item_type"; then
+    cmd 'fake-key <Tab><Backspace>'
+  fi
+  if test -z "$item_type" -o "$item_type" = "password"; then
+    autofill "$(parsejson "$item" '.password')" "Password"
+  fi
+
+  if test -z "$item_type" -o "$item_type" = "totp" -o "$item_type" = "TOTP" && test -n "$(parsejson "$item" '.totp // ""')"; then
+    totp="$(get_totp "$(parsejson "$item" '.id // ""')")"
+    if test $? -eq 0; then
+      if test -z "$item_type"; then
+        printf '%s' "$totp" | pbcopy
+        print "TOTP copied to clipboard."
+      elif test "$item_type" = "TOTP" -a "$fill_mode" = "fill"; then
+        while test -n "$totp"; do
+          autofill "$(printf '%s' "$totp" | cut -c1)"
+          sleep 0.01
+          totp="$(printf '%s' "$totp" | cut -c2-)"
+        done
+      elif test "$item_type" = "totp" -o "$item_type" = "TOTP"; then
+        autofill "$totp" "TOTP"
+      fi
+    fi
+  fi
+
+  if test -n "$insert_mode"; then
+    cmd 'mode-enter insert'
+  fi
 }
 
 main "$@"
