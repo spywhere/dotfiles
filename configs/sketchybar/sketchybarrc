@@ -40,8 +40,11 @@ items front_app
 
 ## Right Items
 items clock
-items volume
+# items more
+# items network
 items battery
+# items weather
+# items vpn
 
 sketchybar --hotload true
 sketchybar --update
