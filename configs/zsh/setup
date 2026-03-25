@@ -4,9 +4,9 @@ DOTFILES_NAME=.dots
 export EDITOR=nvim
 
 # increase history size
-export HISTFILE=~/.zsh_history
-export HISTSIZE=1000000
-export SAVEHIST=100000
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=2000
+export SAVEHIST=$HISTSIZE
 
 # better word separator
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;-'
