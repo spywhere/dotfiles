@@ -111,6 +111,10 @@ on-mode-changed = [
     if.during-aerospace-startup = true
     run = 'move-node-to-workspace 4'
 
+[[on-window-detected]]
+    if.app-id = 'com.colliderli.iina'
+    run = 'layout floating'
+
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
