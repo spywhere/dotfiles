@@ -33,6 +33,8 @@ c.downloads.location.prompt = False
 c.downloads.position = 'bottom'
 c.downloads.remove_finished = 10000
 
+c.window.hide_decoration = True
+
 c.scrolling.bar = 'always'
 c.statusbar.show = 'always'
 c.statusbar.padding = {'bottom': 1, 'left': 0, 'right': 0, 'top': 1}

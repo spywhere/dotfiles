@@ -2,6 +2,7 @@ macos-option-as-alt = left
 quit-after-last-window-closed = true
 font-thicken = true
 macos-auto-secure-input = true
+window-decoration = none
 
 window-width = 240
 window-height = 60

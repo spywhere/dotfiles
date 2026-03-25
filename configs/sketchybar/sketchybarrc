@@ -1,0 +1,47 @@
+#!/bin/bash
+
+export BAR_COLOR=0x40000000
+export ITEM_BG_COLOR=0xff353c3f
+export ACCENT_COLOR=0xffffffff
+export BACKGROUND=0xff101314
+
+items() {
+  while test -n "$1"; do
+    if test -f "$CONFIG_DIR/items/$1.sh"; then
+      source "$CONFIG_DIR/items/$1.sh"
+    fi
+    shift
+  done
+}
+
+sketchybar --bar position=top height=30 blur_radius=30 color="$BAR_COLOR"
+
+default=(
+  padding_left=0
+  padding_right=0
+  icon.font="JetBrainsMono Nerd Font:Regular:14.0"
+  label.font="SF Pro:Semibold:13.0"
+  icon.color="$ACCENT_COLOR"
+  label.color="$ACCENT_COLOR"
+  icon.padding_left=4
+  icon.padding_right=4
+  label.padding_left=4
+  label.padding_right=4
+)
+sketchybar --default "${default[@]}"
+
+sketchybar --add event aerospace_workspace_change
+sketchybar --add event aerospace_mode_change
+
+## Left Items
+items apple
+items spaces
+items front_app
+
+## Right Items
+items clock
+items volume
+items battery
+
+sketchybar --hotload true
+sketchybar --update
