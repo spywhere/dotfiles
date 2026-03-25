@@ -32,6 +32,8 @@
 [rebase]
   autoStash = true
   updateRefs = true
+[pager]
+  diff = diffnav
 [interactive]
   diffFilter = delta --color-only
 [color]
