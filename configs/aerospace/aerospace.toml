@@ -44,7 +44,6 @@ on-mode-changed = [
     4 = ['built-in', 'secondary']
     5 = ['built-in', 'secondary']
     6 = ['built-in', 'secondary']
-    mail = ['built-in', 'secondary']
     chat = ['built-in', 'secondary']
     music = ['built-in', 'secondary']
 
@@ -54,7 +53,24 @@ on-mode-changed = [
 
 [[on-window-detected]]
     if.app-id = 'com.microsoft.Outlook'
-    run = 'move-node-to-workspace mail'
+    run = [
+      'move-node-to-workspace mail',
+      'move-workspace-to-monitor --workspace mail secondary main'
+    ]
+
+[[on-window-detected]]
+    if.app-id = 'ch.protonmail.desktop'
+    run = [
+      'move-node-to-workspace mail',
+      'move-workspace-to-monitor --workspace mail main'
+    ]
+
+[[on-window-detected]]
+    if.app-id = 'org.qbittorrent.qBittorrent'
+    run = [
+      'move-node-to-workspace torrent',
+      'move-workspace-to-monitor --workspace torrent main'
+    ]
 
 [[on-window-detected]]
     if.app-id = 'com.apple.Music'
@@ -123,7 +139,10 @@ on-mode-changed = [
     alt-q = 'exec-and-forget open /Applications/qutebrowser.app'
     alt-t = 'exec-and-forget open /Applications/Ghostty.app'
     alt-m = 'exec-and-forget open /System/Applications/Music.app'
-    alt-o = 'exec-and-forget open "/Applications/Microsoft Outlook.app"'
+    alt-o = [
+      'exec-and-forget open "/Applications/Microsoft Outlook.app"',
+      'exec-and-forget open "/Applications/Proton Mail.app"'
+    ]
     alt-c = 'exec-and-forget open "/Applications/Microsoft Teams.app"'
     alt-s = 'exec-and-forget open /Applications/Slack.app'
 
