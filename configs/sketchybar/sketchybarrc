@@ -14,7 +14,7 @@ items() {
   done
 }
 
-sketchybar --bar position=top height=30 blur_radius=30 color="$BAR_COLOR"
+sketchybar --bar position=top height=30 blur_radius=30 color="$BAR_COLOR" padding_left=0
 
 default=(
   padding_left=0
@@ -39,8 +39,10 @@ items front_app
 items clock
 # items more
 # items network
-items battery
+items istats
 # items weather
+items battery
+# items timemachine
 # items vpn
 
 sketchybar --hotload true
