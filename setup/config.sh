@@ -214,6 +214,9 @@ setup_config() {
     cmd mkdir -p "$HOME/.shrimp"
   fi
 
+  step "  - AeroSpace"
+  link aerospace/ .config/aerospace
+
   step "  - Alacritty"
   link alacritty/alacritty.yml .alacritty.yml
 
@@ -222,6 +225,9 @@ setup_config() {
 
   step "  - code-server"
   link code-server/ .config/code-server
+
+  step "  - diffnav"
+  link diffnav/ .config/diffnav
 
   step "  - editorconfig"
   raw_link .editorconfig .editorconfig
@@ -296,6 +302,9 @@ setup_config() {
 
   step "  - shrimp"
   link shrimp/ .shrimp/recipe
+
+  step "  - sketchybar"
+  link sketchybar/ .config/sketchybar
 
   step "  - ssh"
   link ssh/ .ssh
