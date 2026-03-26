@@ -8,6 +8,19 @@ export ACCENT_COLOR=0xffffffff
 export BACKGROUND=0xff101314
 # source "$CONFIG_DIR/colors.sh"
 
+if test "$NAME" = "aerospace_mode"; then
+  CURRENT_MODE=$(aerospace list-modes --current)
+
+  if [ "$CURRENT_MODE" == "main" ]; then
+    sketchybar --set "$NAME" \
+      drawing=off
+  else
+    sketchybar --set "$NAME" \
+      drawing=on
+  fi
+  exit
+fi
+
 FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused --format "%{workspace}")
 
 if [ "$SENDER" == "mouse.entered" ]; then

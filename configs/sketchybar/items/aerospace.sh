@@ -1,9 +1,12 @@
 #!/bin/bash
 
+sketchybar --add event aerospace_workspace_change
+sketchybar --add event aerospace_mode_change
+
 sketchybar --add item aerospace_mode left \
   --subscribe aerospace_mode aerospace_mode_change \
   --set aerospace_mode icon="" \
-  script="$CONFIG_DIR/plugins/aerospace_mode.sh" \
+  script="$CONFIG_DIR/plugins/aerospace.sh" \
   drawing=off
 
 for sid in $(aerospace list-workspaces --all); do

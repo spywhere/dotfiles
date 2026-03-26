@@ -30,12 +30,9 @@ default=(
 )
 sketchybar --default "${default[@]}"
 
-sketchybar --add event aerospace_workspace_change
-sketchybar --add event aerospace_mode_change
-
 ## Left Items
 items apple
-items spaces
+items aerospace
 items front_app
 
 ## Right Items
