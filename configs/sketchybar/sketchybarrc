@@ -44,6 +44,7 @@ items istats
 items battery
 # items timemachine
 # items vpn
+items events
 
 sketchybar --hotload true
 sketchybar --update
