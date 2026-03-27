@@ -19,7 +19,7 @@ sketchybar --bar position=top height=30 blur_radius=30 color="$BAR_COLOR" paddin
 default=(
   padding_left=0
   padding_right=0
-  icon.font="JetBrainsMono Nerd Font:Regular:14.0"
+  icon.font="SF Pro:Semibold:14.0"
   label.font="SF Pro:Semibold:13.0"
   icon.color="$ACCENT_COLOR"
   label.color="$ACCENT_COLOR"
