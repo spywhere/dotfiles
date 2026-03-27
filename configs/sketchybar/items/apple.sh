@@ -103,6 +103,6 @@ apple_item shutdown 􀆨 'Shut Down...' "osascript -e 'tell app \"loginwindow\" 
 apple_item_divider
 
 apple_item lockscreen 􀎠 'Lock Screen' "osascript -e 'tell application \"System Events\" to keystroke \"q\" using {command down,control down}'"
-apple_item logout 􀉭 'Log Out...' "osascript -e 'tell application \"System Events\" to keystroke \"q\" using {command down,shift down}'"
+apple_item logout 􀉭 "Log Out $(id -F)..." "osascript -e 'tell application \"System Events\" to keystroke \"q\" using {command down,shift down}'"
 
 apple_item_gap
