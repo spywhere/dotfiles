@@ -33,7 +33,7 @@ sketchybar --default "${default[@]}"
 ## Left Items
 items apple
 items aerospace
-items app
+items menubar
 
 ## Right Items
 items clock
