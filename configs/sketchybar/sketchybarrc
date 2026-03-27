@@ -38,12 +38,13 @@ items front_app
 ## Right Items
 items clock
 # items more
-# items network
-items istats
-# items weather
+# items istats
+items network
+items cpu
 items battery
+# items weather
 # items timemachine
-# items vpn
+items slack
 items events
 
 sketchybar --hotload true
