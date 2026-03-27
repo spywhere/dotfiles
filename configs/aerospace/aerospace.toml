@@ -143,7 +143,7 @@ on-mode-changed = [
       'exec-and-forget open "/Applications/Microsoft Outlook.app"',
       'exec-and-forget open "/Applications/Proton Mail.app"'
     ]
-    alt-c = 'exec-and-forget open "/Applications/Microsoft Teams.app"'
+    alt-c = 'exec-and-forget bash -c "osascript -e \"tell application \\\"Microsoft Teams\\\" to activate\" || open \"/Applications/Microsoft Teams.app\""'
     alt-s = 'exec-and-forget open /Applications/Slack.app'
 
     alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
