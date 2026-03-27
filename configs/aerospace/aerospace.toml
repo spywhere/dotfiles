@@ -159,7 +159,7 @@ on-mode-changed = [
     alt-shift-f = 'fullscreen'
 
     alt-tab = 'workspace-back-and-forth'
-    alt-shift-tab = 'move-node-to-monitor --wrap-around next'
+    alt-shift-tab = 'move-node-to-monitor --focus-follows-window --wrap-around next'
 
     alt-shift-semicolon = 'mode service'
 
