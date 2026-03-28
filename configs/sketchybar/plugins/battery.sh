@@ -2,6 +2,7 @@
 
 PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
 CHARGING="$(pmset -g batt | grep 'AC Power')"
+REMAINING="$(pmset -g batt | grep -Eo "\d+:\d+ remaining" | cut -d' ' -f1)"
 
 if [ "$PERCENTAGE" = "" ]; then
   exit 0
@@ -23,4 +24,24 @@ if [[ "$CHARGING" != "" ]]; then
   ICON="􀢋"
 fi
 
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%"
+if test -z "$REMAINING"; then
+  sketchybar --animate sin 10 \
+    --set "$NAME.status" \
+    label.color=0x00ffffff \
+    --set "$NAME" \
+    label.y_offset=0 \
+    label.font.size=13 \
+    label.width=35
+else
+  sketchybar --animate sin 10 \
+    --set "$NAME.status" \
+    label.color=0xffffffff \
+    --set "$NAME" \
+    label.y_offset=-5 \
+    label.font.size=8 \
+    label.width=25
+
+  sketchybar --set "$NAME.status" label="$REMAINING"
+fi
+
+sketchybar --set "$NAME" icon="$ICON" label="$PERCENTAGE%"
