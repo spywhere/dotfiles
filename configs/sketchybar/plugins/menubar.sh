@@ -175,10 +175,19 @@ create_popup() {
   sketchybar --remove "/$parent_id\.menu\..*/"
 
   create_menu_margin "$parent_id" "$menu_id"
-  for menu64 in $(fetch_menu "menuBar.menus['$menu_id'].menuItems.name()" | jq 'map(@base64)|.[]'); do
-    menu="$(echo "$menu64" | jq -r '@base64d')"
+  menu_items_var="menuBar.menus['$menu_id'].menuItems"
+  item_names="$(fetch_menu "$menu_items_var.name().map((item,index)=>({name:item,index}))" | jq 'map(@base64)|.[]')"
+  item_enabled="$(fetch_menu "$menu_items_var.enabled()" | jq 'map(@base64)')"
+  for menu64 in $item_names; do
+    menu="$(echo "$menu64" | jq -r '@base64d|fromjson|.name')"
+    menu_index="$(echo "$menu64" | jq -r '@base64d|fromjson|.index')"
+    menu_enabled="$(echo "$item_enabled" | jq -r ".[$menu_index]|@base64d|fromjson")"
     if test "$menu" = "null"; then
       create_menu_divider "$parent_id" "$menu_id"
+    elif test "$menu_enabled" = "false"; then
+      create_menu_item "$parent_id" "$menu_id" "$menu" "$menu" \
+        label.color=0xff666666 \
+        icon.color=0xff666666
     else
       create_clickable_menu_item "$parent_id" "$menu_id" "$menu" "$menu"
     fi
