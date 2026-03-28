@@ -1,21 +1,36 @@
 #!/bin/bash
 
+# A script that accepts a menu title as an input
+#   Returns an icon for the menu, or empty string for no icon
+# Set to empty to use no icon
 ICON_MAP_SCRIPT="$CONFIG_DIR/plugins/icon_map.sh"
 
 MENU_BAR_FONT="SF Pro:Semibold:13"
+MENU_BAR_BACKGROUND_COLOR="0x40ffffff"
 MENU_BAR_PADDING=10
 MENU_BAR_CORNER_RADIUS=10
+MENU_BAR_HEIGHT=25
 
+MENU_POPUP_BACKGROUND_COLOR="0xa0222222"
+MENU_POPUP_BORDER_COLOR="0x40ffffff"
 MENU_POPUP_BLUR_RADIUS=20
 MENU_POPUP_CORNER_RADIUS=10
 
 # A script that accepts a menu title as an input
-#   Returns an icon for the menu, or empty string for no icon
+#   Returns one of the following:
+#     - an icon for the menu
+#     - an icon for the menu and an override font (space separated)
+#     - a space for no icon but keep the icon padding
+#     - an empty string for no icon and no padding
 # Set to empty to use no icon
 MENU_ITEM_ICON_SCRIPT="$CONFIG_DIR/plugins/menu_icon_map.sh"
 MENU_ITEM_ICON_FONT="SF Pro:Medium:12"
+MENU_ITEM_ICON_WIDTH=30
 MENU_ITEM_FONT="SF Pro:Medium:13"
+MENU_ITEM_ACCENT_COLOR="0xff007aff"
+MENU_ITEM_DISABLED_COLOR="0x40ffffff"
 MENU_ITEM_WIDTH=280
+MENU_ITEM_HEIGHT=29
 MENU_ITEM_MARGIN=5
 MENU_ITEM_PADDING=10
 MENU_ITEM_CORNER_RADIUS=10
@@ -103,13 +118,13 @@ create_menu_item() {
     icon.align=center \
     icon.font="$icon_font" \
     icon.drawing="$draw_icon"  \
-    icon.width=30 \
+    icon.width="$MENU_ITEM_ICON_WIDTH" \
     icon.padding_left="$icon_padding" \
     icon.padding_right="$icon_padding" \
     label="$label" \
     label.font="$MENU_ITEM_FONT" \
     background.drawing=on \
-    background.height=29 \
+    background.height="$MENU_ITEM_HEIGHT" \
     background.padding_left="$MENU_ITEM_MARGIN" \
     background.padding_right="$MENU_ITEM_MARGIN" \
     label.padding_left="$label_padding" \
@@ -150,7 +165,7 @@ create_menu_divider() {
     background.height=1 \
     background.padding_left="$(( MENU_ITEM_MARGIN + MENU_ITEM_PADDING ))" \
     background.padding_right=0 \
-    label.background.color=0x40ffffff
+    label.background.color="$MENU_ITEM_DISABLED_COLOR"
 }
 
 create_menu_margin() {
@@ -186,8 +201,8 @@ create_popup() {
       create_menu_divider "$parent_id" "$menu_id"
     elif test "$menu_enabled" = "false"; then
       create_menu_item "$parent_id" "$menu_id" "$menu" "$menu" \
-        label.color=0xff666666 \
-        icon.color=0xff666666
+        label.color="$MENU_ITEM_DISABLED_COLOR" \
+        icon.color="$MENU_ITEM_DISABLED_COLOR"
     else
       create_clickable_menu_item "$parent_id" "$menu_id" "$menu" "$menu"
     fi
@@ -225,17 +240,17 @@ update_item_for_popup() {
   sketchybar --set "$item_id" \
              background.padding_left=0 \
              background.padding_right=0 \
-             background.color=0x40ffffff \
+             background.color="$MENU_BAR_BACKGROUND_COLOR" \
              background.corner_radius="$MENU_BAR_CORNER_RADIUS" \
-             background.height=25 \
+             background.height="$MENU_BAR_HEIGHT" \
              background.drawing=off \
              popup.topmost=on \
              popup.height=0 \
              popup.blur_radius="$MENU_POPUP_BLUR_RADIUS" \
              popup.background.drawing=on \
-             popup.background.color=0xa0222222 \
+             popup.background.color="$MENU_POPUP_BACKGROUND_COLOR" \
              popup.background.border_width=1 \
-             popup.background.border_color=0x40ffffff \
+             popup.background.border_color="$MENU_POPUP_BORDER_COLOR" \
              popup.background.corner_radius="$MENU_POPUP_CORNER_RADIUS" \
              "$@"
 }
@@ -256,7 +271,7 @@ populate_menus() {
 
 case "$SENDER" in
   mouse.entered)
-    sketchybar --set "$NAME" background.color=0xff007aff
+    sketchybar --set "$NAME" background.color="$MENU_ITEM_ACCENT_COLOR"
     ;;
   mouse.exited)
     sketchybar --set "$NAME" background.color=0x00000000
@@ -285,6 +300,11 @@ case "$SENDER" in
     ;;
   front_app_switched)
     sketchybar --set "$NAME" background.drawing=off popup.drawing=off
+    local app_icon
+
+    if test -n "$ICON_MAP_SCRIPT"; then
+      app_icon="$("$ICON_MAP_SCRIPT" "$INFO")"
+    fi
 
     case "$NAME" in
       apple|apple.logo)
@@ -294,7 +314,7 @@ case "$SENDER" in
       front_app|application|app)
         update_item_for_popup "$NAME" \
           label="$INFO" \
-          icon="$("$CONFIG_DIR/plugins/icon_map.sh" "$INFO")"
+          icon="$app_icon"
         create_popup "$NAME" "1" &
         ;;
     esac
