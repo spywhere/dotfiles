@@ -152,7 +152,7 @@ create_clickable_menu_item() {
   shift
   create_menu_item "$parent_id" "$menu_id" "$item_id" "$label" "$@" \
     script="$CONFIG_DIR/plugins/menubar.sh" \
-    --subscribe "$parent_id.menu.$menu_id.$item_id" mouse.entered mouse.exited mouse.exited.global mouse.clicked
+    --subscribe "$parent_id.menu.$menu_id.$item_id" mouse.entered mouse.exited mouse.clicked
 }
 
 create_menu_divider() {
@@ -286,7 +286,7 @@ case "$SENDER" in
   mouse.exited)
     sketchybar --set "$NAME" background.color=0x00000000
     ;;
-  mouse.exited.global|mouse.clicked)
+  mouse.clicked)
     local parent_id
     local menu_id
     local item_id
@@ -305,10 +305,7 @@ case "$SENDER" in
     else
       sketchybar --set "$parent_id" background.drawing=off popup.drawing=off
       sketchybar --set "$parent_id.menu.$menu_id" background.drawing=off popup.drawing=off
-
-      if test "$SENDER" = "mouse.clicked"; then
-        fetch_menu "menuBar.menus['$menu_id'].menuItems['$item_id'].click()"
-      fi
+      fetch_menu "menuBar.menus['$menu_id'].menuItems['$item_id'].click()"
     fi
     ;;
   front_app_switched)
