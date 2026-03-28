@@ -5,7 +5,7 @@ module.exports = {
     'scope-case': [2, 'always', 'lower-case'],
     'scope-empty': [2, 'never'],
     'scope-enum': [2, 'always', [
-      'asdf',
+      'aerospace',
       'binaries',
       'configs',
       'git',
@@ -15,6 +15,7 @@ module.exports = {
       'packages',
       'qutebrowser',
       'setup',
+      'sketchybar',
       'tmux',
       'zsh',
     ]],
