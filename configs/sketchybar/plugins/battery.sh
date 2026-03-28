@@ -49,7 +49,7 @@ else
     --set "$NAME" \
     label.y_offset=-5 \
     label.font.size=8 \
-    label.width=25
+    label.width=30
 
   sketchybar --set "$NAME.status" label="$REMAINING" label.color="$LABEL_COLOR"
 fi
