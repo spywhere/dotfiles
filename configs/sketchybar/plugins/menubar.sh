@@ -13,7 +13,7 @@ MENU_POPUP_CORNER_RADIUS=10
 #   Returns an icon for the menu, or empty string for no icon
 # Set to empty to use no icon
 MENU_ITEM_ICON_SCRIPT="$CONFIG_DIR/plugins/menu_icon_map.sh"
-MENU_ITEM_ICON_FONT="SF Pro:Medium:13"
+MENU_ITEM_ICON_FONT="SF Pro:Medium:12"
 MENU_ITEM_FONT="SF Pro:Medium:13"
 MENU_ITEM_WIDTH=280
 MENU_ITEM_MARGIN=5
@@ -74,8 +74,14 @@ create_menu_item() {
   shift
   shift
   local icon
+  local icon_font
+  icon_font="$MENU_ITEM_ICON_FONT"
   if test -n "$MENU_ITEM_ICON_SCRIPT"; then
-    icon="$("$MENU_ITEM_ICON_SCRIPT" "$label")"
+    icon="$("$MENU_ITEM_ICON_SCRIPT" "$INFO" "$menu_id" "$label")"
+    if echo "$icon" | grep -q '^..* ..*'; then
+      icon_font="$(echo "$icon" | cut -d' ' -f2-)"
+      icon="$(echo "$icon" | cut -d' ' -f1)"
+    fi
   fi
   local icon_padding
   local label_padding
@@ -95,7 +101,7 @@ create_menu_item() {
     width="$MENU_ITEM_WIDTH" \
     icon="$icon" \
     icon.align=center \
-    icon.font="$MENU_ITEM_ICON_FONT" \
+    icon.font="$icon_font" \
     icon.drawing="$draw_icon"  \
     icon.width=30 \
     icon.padding_left="$icon_padding" \
