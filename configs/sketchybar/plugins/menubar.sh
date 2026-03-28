@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Turn on/off checking for disabled menu items
+#   Turning this off may improve the rendering performance
+CHECK_FOR_DISABLED_MENU_ITEM="on"
+
 # A script that accepts a menu title as an input
 #   Returns an icon for the menu, or empty string for no icon
 # Set to empty to use no icon
@@ -192,11 +196,17 @@ create_popup() {
   create_menu_margin "$parent_id" "$menu_id"
   menu_items_var="menuBar.menus['$menu_id'].menuItems"
   item_names="$(fetch_menu "$menu_items_var.name().map((item,index)=>({name:item,index}))" | jq 'map(@base64)|.[]')"
-  item_enabled="$(fetch_menu "$menu_items_var.enabled()" | jq 'map(@base64)')"
+  if test "$CHECK_FOR_DISABLED_MENU_ITEM" = "on"; then
+    item_enabled="$(fetch_menu "$menu_items_var.enabled()" | jq 'map(@base64)')"
+  fi
   for menu64 in $item_names; do
     menu="$(echo "$menu64" | jq -r '@base64d|fromjson|.name')"
-    menu_index="$(echo "$menu64" | jq -r '@base64d|fromjson|.index')"
-    menu_enabled="$(echo "$item_enabled" | jq -r ".[$menu_index]|@base64d|fromjson")"
+
+    if test "$CHECK_FOR_DISABLED_MENU_ITEM" = "on"; then
+      menu_index="$(echo "$menu64" | jq -r '@base64d|fromjson|.index')"
+      menu_enabled="$(echo "$item_enabled" | jq -r ".[$menu_index]|@base64d|fromjson")"
+    fi
+
     if test "$menu" = "null"; then
       create_menu_divider "$parent_id" "$menu_id"
     elif test "$menu_enabled" = "false"; then
@@ -321,7 +331,7 @@ case "$SENDER" in
 
     case "$NAME" in
       application|app|app_menu)
-        populate_menus "$NAME"
+        populate_menus "$NAME" &
         ;;
     esac
     ;;
