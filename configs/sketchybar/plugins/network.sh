@@ -1,8 +1,10 @@
 #!/bin/bash
 
+COMMON_NAME="$(echo "$NAME" | cut -d. -f1)"
+
 if ! test -n "$(command -v ifstat)"; then
-  sketchybar --set netup label="Required" \
-             --set netdown label="ifstat"
+  sketchybar --set "$COMMON_NAME.up" label="Required" \
+             --set "$COMMON_NAME.down" label="ifstat"
   exit
 fi
 
@@ -40,5 +42,5 @@ function human_readable() {
 DOWN_FORMAT=$(human_readable "$DOWN")
 UP_FORMAT=$(human_readable "$UP")
 
-sketchybar --set netup label="$UP_FORMAT/s" \
-           --set netdown label="$DOWN_FORMAT/s"
+sketchybar --set "$COMMON_NAME.up" label="$UP_FORMAT/s" \
+           --set "$COMMON_NAME.down" label="$DOWN_FORMAT/s"

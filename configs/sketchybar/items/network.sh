@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sketchybar --add item netup right \
-           --set netup \
+sketchybar --add item network.up right \
+           --set network.up \
            icon=􀄨 \
            icon.font.size=7 \
            label.font.size=8 \
@@ -14,8 +14,8 @@ sketchybar --add item netup right \
            update_freq=1 \
            script="$CONFIG_DIR/plugins/network.sh"
 
-sketchybar --add item netdown right \
-           --set netdown \
+sketchybar --add item network.down right \
+           --set network.down \
            icon=􀄩 \
            icon.font.size=7 \
            label.font.size=8 \
