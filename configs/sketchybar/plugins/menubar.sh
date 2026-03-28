@@ -94,9 +94,12 @@ create_menu_item() {
     --set "$parent_id.menu.$menu_id.$item_id" \
     width="$MENU_ITEM_WIDTH" \
     icon="$icon" \
+    icon.align=center \
     icon.font="$MENU_ITEM_ICON_FONT" \
     icon.drawing="$draw_icon"  \
+    icon.width=30 \
     icon.padding_left="$icon_padding" \
+    icon.padding_right="$icon_padding" \
     label="$label" \
     label.font="$MENU_ITEM_FONT" \
     background.drawing=on \
