@@ -88,7 +88,7 @@ apple_item about 􁟬 'About This Mac' "open -a 'About This Mac'"
 apple_item_divider
 
 apple_item settings 􀍟 'System Settings...' "open -a 'System Settings'"
-apple_item appstore  'App Store' "open -a 'App Store'" icon.font="JetBrainsMono Nerd Font:Regular:12"
+apple_item appstore  'App Store' "open -a 'App Store'" icon.font="JetBrainsMono Nerd Font:Regular:13"
 
 apple_item_divider
 

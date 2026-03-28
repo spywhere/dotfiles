@@ -41,9 +41,11 @@ is_exact() {
   test "$1" = "$2"
 }
 
+_OUTPUT=" "
 output() {
-  echo "$1"
-  exit
+  if test -z "$_OUTPUT" -o "$_OUTPUT" = " "; then
+    _OUTPUT="$1"
+  fi
 }
 
 prefix() {
@@ -77,7 +79,7 @@ case "$MENU" in
     exact "System Information" "􁟬"
 
     exact "System Settings…" "􀍟"
-    exact "App Store" " JetBrainsMono Nerd Font:Regular:13"
+    exact "App Store" " JetBrainsMono Nerd Font:Regular:15"
 
     exact "Force Quit…" "􀒉"
     exact "Force Quit $APP" "􀒉"
@@ -92,8 +94,6 @@ case "$MENU" in
     exact "Lock Screen" "􀎠"
     exact "Log Out $(id -F)…" "􀉭"
     exact "Log Out $(id -F)" "􀉭"
-
-    output " "
     ;;
   "$APP"|1)
     exact "About $APP" "􀅴"
@@ -101,14 +101,37 @@ case "$MENU" in
 
     exact "Services" "􀥎"
 
-    exact "Hide $APP" "􀍟"
+    exact "Hide $APP" "􀥁"
     exact "Hide Others" "􂠗"
     exact "Show All" "􀢌"
 
     exact "Quit $APP" "􀏍"
     exact "Quit and Close All Windows" "􀏍"
+    ;;
+  File)
+    exact "Close" "􀆄"
+    exact "Close All Windows" "􀏍"
+    ;;
+  Edit)
+    prefix "Undo" "􀄼"
+    prefix "Redo" "􀄽"
 
-    output " "
+    exact "Cut" "􀉈"
+    prefix "Copy" "􀉁"
+    exact "Paste" "􀉃"
+    exact "Select All" "􀂔"
+    exact "Deselect All" "􀂔"
+
+    exact "Writing Tools" "􂷴"
+    exact "AutoFill" "􀈏"
+    exact "Start Dictation…" "􀊰"
+    exact "Emoji & Symbols" "􀙌"
+    ;;
+  View)
+    exact "Show Tab Bar" ""
+    exact "Show All Tabs" ""
+
+    exact "Enter Full Screen" "􂂟"
     ;;
   Window)
     exact "Minimize" "􀏉"
@@ -135,24 +158,93 @@ case "$MENU" in
     if has_prefix "$ITEM" "Move to" && has_suffix "$ITEM" "iPad"; then
       output "􀥔"
     fi
-
-    output " "
+    ;;
+  Help)
+    prefix "Send $APP Feedback" ""
     ;;
 esac
 
 case "$APP" in
+  Finder)
+    case "$MENU" in
+      "$APP"|1)
+        prefix "Empty Trash" "􀈑"
+        ;;
+      Go)
+        exact "Back" "􀯶"
+        exact "Forward" "􀯻"
+        prefix "Enclosing Folder" "􃀧"
+        exact "Select Startup Disk" "􀤂"
+
+        exact "Recents" "􀐫"
+        exact "Documents" "􀈷"
+        exact "Desktop" "􀣰"
+        exact "Downloads" "􀁸"
+        exact "Home" "􀎞"
+        exact "Library" "􀤨"
+        exact "Computer" "􁟬"
+        exact "AirDrop" "󰐻 JetBrainsMono Nerd Font:Regular:15"
+        exact "Network" "􀤆"
+        exact "iCloud Drive" "􀇂"
+        exact "Shared" "􀈝"
+        exact "Applications" " JetBrainsMono Nerd Font:Regular:15"
+        exact "Utilities" "􀤊"
+
+        exact "Recent Folders" "􀐫"
+
+        exact "Go to Folder…" "􃀩"
+        exact "Connect to Server…" "􀩲"
+
+        output "􀈕"
+        ;;
+      Window)
+        exact "Cycle Through Windows" "􁉽"
+        ;;
+    esac
+    ;;
   Ghostty)
     case "$MENU" in
+      "$APP"|1)
+        prefix "Check for Updates" "􀈄"
+        exact "Reload Configuration" "􀊯"
+        exact "Secure Keyboard Entry" "􀼑"
+        exact "Make Ghostty the Default Terminal" "􀋃"
+        ;;
       File)
-        if has_prefix "$ITEM" "Close"; then
-          exact "Close" "􀆄"
-          exact "Close All Windows" "􀏍"
+        exact "New Window" "􀥃"
+        exact "New Tab" "􀏜"
 
-          output " "
-        fi
+        exact "Split Right" "􀤵"
+        exact "Split Left" "􀤴"
+        exact "Split Down" "􀾯"
+        exact "Split Up" "􀾮"
+        ;;
+      Edit)
+        exact "Paste Selection" "􀉄"
+
+        exact "Find" "􀕹"
+        ;;
+      View)
+        ;;
+      Window)
+        exact "Toggle Full Screen" "􀠹"
+        exact "Show/Hide All Terminals" "􀋭"
+
+        exact "Zoom Split" "􀅊"
+        exact "Select Previous Split" "􀆋"
+        exact "Select Next Split" "􀆌"
+
+        exact "Return To Default Size" ""
+
+        exact "Float on Top" "􀫝"
+        ;;
+      Help)
+        exact "Ghostty Help" "􀛭"
         ;;
     esac
     ;;
   *)
     ;;
 esac
+
+echo "$_OUTPUT"
