@@ -2,6 +2,7 @@
 
 sketchybar --add item trash right \
            --set trash \
+           drawing=off \
            icon=􀈑 \
            icon.color=0xffff9966 \
            label.padding_left=0 \
