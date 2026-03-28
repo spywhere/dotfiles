@@ -9,9 +9,9 @@ if test "$SENDER" = "mouse.clicked"; then
   exit
 fi
 
-DRAWING="off"
-if test "$(osascript -l JavaScript -e 'Application("Finder").trash.items.length > 0')" = "true"; then
-  DRAWING="on"
+TRASH_ITEMS="$(osascript -l JavaScript -e 'Application("Finder").trash.items.length')"
+if test "$TRASH_ITEMS" -gt 0; then
+  sketchybar --set "$NAME" icon.drawing=on label="$TRASH_ITEMS"
+else
+  sketchybar --set "$NAME" icon.drawing=off
 fi
-
-sketchybar --set "$NAME" icon.drawing="$DRAWING"
