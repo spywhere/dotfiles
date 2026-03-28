@@ -45,6 +45,7 @@ items cpu
 items battery
 # items weather
 # items timemachine
+items trash
 items slack
 items events
 
