@@ -9,7 +9,7 @@ sketchybar --add item battery.status right \
 
 sketchybar --add item battery right \
            --set battery \
-           update_freq=60 \
+           update_freq=30 \
            script="$CONFIG_DIR/plugins/battery.sh" \
            icon.font="SF Pro:Regular:18" \
            label.font.size=8 \
