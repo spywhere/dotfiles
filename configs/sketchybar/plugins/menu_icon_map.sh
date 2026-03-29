@@ -315,6 +315,17 @@ case "$APP" in
         exact "Find" "􀕹"
         ;;
       View)
+        exact "Reset Font Size" "􀅐"
+        exact "Increase Font Size" "􀵷"
+        exact "Decrease Font Size" "􀵿"
+
+        exact "Command Palette" "􀱢"
+        exact "Change Tab Title..." "􁚛"
+        exact "Terminal Read-only" "􀋮"
+
+        exact "Quick Terminal" "􀩼"
+
+        exact "Terminal Inspector" "􀐩"
         ;;
       Window)
         exact "Toggle Full Screen" "􀠹"
