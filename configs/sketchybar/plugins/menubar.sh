@@ -205,10 +205,12 @@ create_popup() {
 
   create_menu_margin "$parent_id" "$menu_id"
   menu_items_var="menuBar.menus['$menu_id'].menuItems"
-  item_names="$(fetch_menu "$menu_items_var.name().map((item,index)=>({name:item,index}))" | jq 'map(@base64)|.[]')"
+  item_names="$(fetch_menu "$menu_items_var.name().map((item,index)=>({name:item,index}))" | jq '(to_entries|map(select(.value.name!=null))) as $e|.[($e|first.key):($e|last.key+1)]|map(@base64)|.[]')"
   if test "$CHECK_FOR_DISABLED_MENU_ITEM" = "on"; then
     item_enabled="$(fetch_menu "$menu_items_var.enabled()" | jq 'map(@base64)')"
   fi
+  local has_divider
+  has_divider=""
   for menu64 in $item_names; do
     menu="$(echo "$menu64" | jq -r '@base64d|fromjson|.name')"
 
@@ -218,7 +220,11 @@ create_popup() {
     fi
 
     if test "$menu" = "null"; then
-      create_menu_divider "$parent_id" "$menu_id"
+      if test "$has_divider" = "no"; then
+        create_menu_divider "$parent_id" "$menu_id"
+        has_divider="yes"
+      fi
+      continue
     elif test "$menu_enabled" = "false"; then
       create_menu_item "$parent_id" "$menu_id" "$menu" "$menu" \
         label.color="$MENU_ITEM_DISABLED_COLOR" \
@@ -226,6 +232,7 @@ create_popup() {
     else
       create_clickable_menu_item "$parent_id" "$menu_id" "$menu" "$menu"
     fi
+    has_divider="no"
   done
   create_menu_margin "$parent_id" "$menu_id"
 }
