@@ -14,6 +14,7 @@ for (let i=0;i<items.length;i++) {
 	break;
   }
 }
-EOF)"
+EOF
+)"
 
 osascript -l JavaScript -e "$script"

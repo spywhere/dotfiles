@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while [[ $# > 0 ]]; do
+while test "$#" -gt 0; do
     case $1 in
         -s|--source)
             QUTE_TRANS_SOURCE=$2

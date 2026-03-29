@@ -76,7 +76,8 @@ function getMenuItems(menu, depth) {
 }
 
 JSON.stringify($1)
-EOF)"
+EOF
+)"
 
   osascript -l JavaScript -e "$script"
 }
