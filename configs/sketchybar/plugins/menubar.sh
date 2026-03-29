@@ -310,7 +310,9 @@ case "$SENDER" in
     ;;
   mouse.clicked)
     if echo "$NAME" | grep -q '\.menu\.'; then
+      # shellcheck disable=SC2001
       parent_id="$(echo "$NAME" | sed 's/\.menu\..*//g')"
+      # shellcheck disable=SC2001
       menu_identifier="$(echo "$NAME" | sed 's/.*\.menu\.//g')"
       if echo "$menu_identifier" | grep -q '\.'; then
         menu_id="$(echo "$menu_identifier" | cut -d. -f1)"
