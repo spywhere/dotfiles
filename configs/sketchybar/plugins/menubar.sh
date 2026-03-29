@@ -34,10 +34,12 @@ MENU_ITEM_FONT="SF Pro:Medium:13"
 MENU_ITEM_ACCENT_COLOR="0xff007aff"
 MENU_ITEM_DISABLED_COLOR="0x40ffffff"
 MENU_ITEM_WIDTH=280
-MENU_ITEM_HEIGHT=29
+MENU_ITEM_HEIGHT=25
 MENU_ITEM_MARGIN=5
 MENU_ITEM_PADDING=10
 MENU_ITEM_CORNER_RADIUS=10
+
+MENU_ITEM_DIVIDER_HEIGHT=10
 
 #########################
 
@@ -168,7 +170,7 @@ create_menu_divider() {
     label= \
     icon.drawing=off \
     label.width="$(( MENU_ITEM_WIDTH - MENU_ITEM_MARGIN - MENU_ITEM_PADDING ))" \
-    background.height=1 \
+    background.height="$MENU_ITEM_DIVIDER_HEIGHT" \
     background.padding_left="$(( MENU_ITEM_MARGIN + MENU_ITEM_PADDING ))" \
     background.padding_right=0 \
     label.background.color="$MENU_ITEM_DISABLED_COLOR"
