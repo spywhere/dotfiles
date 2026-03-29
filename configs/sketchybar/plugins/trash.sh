@@ -1,9 +1,14 @@
 #!/bin/bash
 
+ICON="/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/FullTrashIcon.icns"
+PROMPT="Are you sure you want to permanently erase the items in the Trash?\n\nYou can\'t undo this action."
+CANCEL_BUTTON="Cancel"
+DEFAULT_BUTTON="Empty Trash"
+
 if test "$SENDER" = "mouse.clicked"; then
   if test "$MODIFIER" = "none"; then
-    action="$(osascript -l JavaScript -e "var app=Application.currentApplication();app.includeStandardAdditions=true;app.displayDialog('Are you sure you want to permanently erase the items in the Trash?\n\nYou can\'t undo this action.', {buttons: ['Cancel', 'Empty Trash'], defaultButton: 2, withIcon: Path('/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/FullTrashIcon.icns')});")"
-    if test "$action" = "buttonReturned:Empty Trash"; then
+    prompt_script="var app=Application.currentApplication();app.includeStandardAdditions=true;app.displayDialog('$PROMPT', {buttons: ['$CANCEL_BUTTON', '$DEFAULT_BUTTON'], defaultButton: 2, withIcon: Path('$ICON')});"
+    if osascript -l JavaScript -e "$prompt_script"; then
       osascript -l JavaScript -e 'var finder=Application("Finder");if(finder.trash.items.length>0){finder.empty();}'
       sketchybar --set "$NAME" drawing=off
     fi
