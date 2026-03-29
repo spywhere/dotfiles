@@ -45,7 +45,6 @@ if test -z "$REMAINING"; then
     label.width=35 \
     label.color="$LABEL_COLOR"
 else
-  local y_offset
   y_offset="-5"
   if test "$(sketchybar --query "$NAME" | jq -r '.label.y_offset')" != "$y_offset"; then
     y_offset="label.y_offset=$y_offset"

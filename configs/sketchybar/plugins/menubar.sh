@@ -309,12 +309,8 @@ case "$SENDER" in
     sketchybar --set "$NAME" background.color.alpha=0
     ;;
   mouse.clicked)
-    local parent_id
-    local menu_id
-    local item_id
     if echo "$NAME" | grep -q '\.menu\.'; then
       parent_id="$(echo "$NAME" | sed 's/\.menu\..*//g')"
-      local menu_identifier
       menu_identifier="$(echo "$NAME" | sed 's/.*\.menu\.//g')"
       if echo "$menu_identifier" | grep -q '\.'; then
         menu_id="$(echo "$menu_identifier" | cut -d. -f1)"
@@ -332,7 +328,6 @@ case "$SENDER" in
     ;;
   front_app_switched)
     sketchybar --set "$NAME" background.drawing=off popup.drawing=off
-    local app_icon
 
     if test -n "$ICON_MAP_SCRIPT"; then
       app_icon="$("$ICON_MAP_SCRIPT" "$INFO")"
