@@ -43,33 +43,41 @@ is_exact() {
 
 _OUTPUT=" "
 output() {
-  if test -z "$_OUTPUT" -o "$_OUTPUT" = " "; then
+  if test -z "$_OUTPUT" -o "$_OUTPUT" = " " -o "$2" = "--force" -o "$2" = "-f"; then
     _OUTPUT="$1"
   fi
 }
 
-prefix() {
-  if has_prefix "$ITEM" "$1"; then
-    output "$2"
+set_output() {
+  _OUTPUT="$1"
+}
+
+_output_predicate() {
+  local predicate
+  predicate="$1"
+  local str
+  str="$2"
+  shift
+  shift
+  if "$predicate" "$ITEM" "$str"; then
+    output "$@"
   fi
+}
+
+prefix() {
+  _output_predicate has_prefix "$@"
 }
 
 suffix() {
-  if has_suffix "$ITEM" "$1"; then
-    output "$2"
-  fi
+  _output_predicate has_suffix "$@"
 }
 
 contains() {
-  if is_contains "$ITEM" "$1"; then
-    output "$2"
-  fi
+  _output_predicate is_contains "$@"
 }
 
 exact() {
-  if is_exact "$ITEM" "$1"; then
-    output "$2"
-  fi
+  _output_predicate is_exact "$@"
 }
 
 # Standard Menu
@@ -129,7 +137,9 @@ case "$MENU" in
     ;;
   View)
     exact "Show Tab Bar" ""
+    exact "Hide Tab Bar" ""
     exact "Show All Tabs" ""
+    exact "Hide All Tabs" ""
 
     exact "Enter Full Screen" "􂂟"
     ;;
@@ -170,6 +180,78 @@ case "$APP" in
       "$APP"|1)
         prefix "Empty Trash" "􀈑"
         ;;
+      File)
+        exact "New Finder Window" "􀏇"
+        exact "New Folder" "􀤰"
+        exact "New Smart Folder" "􀣋"
+        exact "New Tab" "􀐇"
+        exact "Open" "􀄔"
+        exact "Open and Close Window" "􀄔"
+        exact "Close Window" "􀆄"
+        exact "Close All" "􀏍"
+
+        exact "Get Info" "􀅴"
+        exact "Show Inspector" "􀅴"
+        exact "Rename" "􀈊"
+        prefix "Compress" "􀤧"
+        exact "Duplicate" "􀐇"
+        exact "Duplicate Exactly" "􀐇"
+        exact "Make Alias" "􀉐"
+        prefix "Quick Look" "􀋭"
+        exact "Close Quick Look" "􀋭"
+        prefix "Slideshow" "􀊙"
+        exact "Print" "􂨖"
+
+        exact "Share…" "􀈂"
+        exact "Manage Shared File…" "􀉳"
+
+        exact "Show Original" "􁎱"
+        exact "Add to Sidebar" "􀋂"
+        exact "Add to Dock" "􀣿"
+
+        exact "Move to Trash" "􀜧"
+        exact "Delete Immediately…" "􀈑"
+        exact "Eject" "􀆥"
+
+        exact "Tags…" "􀋡"
+
+        exact "Find" "􀊫"
+        ;;
+      Edit)
+        prefix "Move Item Here" "􀈕"
+        prefix "Paste" "􀉃"
+
+        exact "Show Clipboard" "􀟹"
+        ;;
+      View)
+        exact "as Icons" "􀇷"
+        exact "as List" "􀋲"
+        exact "as Columns" "􀏟"
+        exact "as Gallery" "􀏡"
+
+        exact "Use Groups" "􀓙"
+        exact "Sort By" "􀄬"
+        exact "Clean Up" "􀇸"
+        exact "Clean Up Selection" "􀇸"
+        exact "Clean Up by" " "
+
+        exact "Hide Sidebar" "􀏚"
+        exact "Show Sidebar" "􀏚"
+        exact "Hide Preview" "􀏛"
+        exact "Show Preview" "􀏛"
+
+        exact "Hide Toolbar" ""
+        exact "Show Toolbar" ""
+        exact "Hide Path Bar" ""
+        exact "Show Path Bar" ""
+        exact "Hide Status Bar" ""
+        exact "Show Status Bar" ""
+
+        exact "Customize Toolbar…" "􀎕"
+
+        exact "Show View Options" "􀣋"
+        exact "Show Preview Options" " "
+        ;;
       Go)
         exact "Back" "􀯶"
         exact "Forward" "􀯻"
@@ -199,6 +281,14 @@ case "$APP" in
         ;;
       Window)
         exact "Cycle Through Windows" "􁉽"
+
+        output "􀏜"
+
+        exact "Show Progress Window" " " --force
+        ;;
+      Help)
+        exact "Mac User Guide" "􁜾"
+        exact "Tips for Your Mac" "􀛭"
         ;;
     esac
     ;;
