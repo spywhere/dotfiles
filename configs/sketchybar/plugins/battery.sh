@@ -38,18 +38,26 @@ fi
 if test -z "$REMAINING"; then
   sketchybar --animate sin 10 \
     --set "$NAME.status" \
-    label.color=0x00ffffff \
+    label.color.alpha=0 \
     --set "$NAME" \
     label.y_offset=0 \
     label.font.size=13 \
     label.width=35 \
     label.color="$LABEL_COLOR"
 else
+  local y_offset
+  y_offset="-5"
+  if test "$(sketchybar --query "$NAME" | jq -r '.label.y_offset')" != "$y_offset"; then
+    y_offset="label.y_offset=$y_offset"
+  else
+    y_offset=""
+  fi
+
   sketchybar --animate sin 10 \
     --set "$NAME.status" \
     label.color="$LABEL_COLOR" \
     --set "$NAME" \
-    label.y_offset=-5 \
+    "$y_offset" \
     label.font.size=8 \
     label.width=30 \
     label.color="$LABEL_COLOR"
