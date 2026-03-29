@@ -206,7 +206,7 @@ create_popup() {
 
   create_menu_margin "$parent_id" "$menu_id"
   menu_items_var="menuBar.menus['$menu_id'].menuItems"
-  item_names="$(fetch_menu "$menu_items_var.name().map((item,index)=>({name:item,index}))" | jq '(to_entries|map(select(.value.name!=null))) as $e|.[($e|first.key):($e|last.key+1)]|map(@base64)|.[]')"
+  item_names="$(fetch_menu "$menu_items_var.name().map((item,index)=>({name:item,index}))" | jq '(to_entries|map(select(.value.name!=null))) as $e|.[($e|first.key):($e|last.key+1)]|map(@base64).[]')"
   if test "$CHECK_FOR_DISABLED_MENU_ITEM" = "on"; then
     item_enabled="$(fetch_menu "$menu_items_var.enabled()" | jq 'map(@base64)')"
   fi
@@ -251,6 +251,7 @@ create_menu() {
   sketchybar --add item "$item_id" left --move "$item_id" after "$reference_id"
   update_item_for_popup "$item_id" \
     icon.drawing=off \
+    display=active \
     label="$label" \
     label.font="$MENU_BAR_FONT" \
     label.color.alpha=0 \

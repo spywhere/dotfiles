@@ -3,34 +3,41 @@
 sketchybar --add event aerospace_workspace_change
 sketchybar --add event aerospace_mode_change
 
-sketchybar --add item aerospace_mode left \
-  --subscribe aerospace_mode aerospace_mode_change \
-  --set aerospace_mode icon="􀤊" \
+# service mode icon
+sketchybar --add item aerospace.mode left \
+  --subscribe aerospace.mode aerospace_mode_change \
+  --set aerospace.mode \
+  icon="􀤊" \
   script="$CONFIG_DIR/plugins/aerospace.sh" \
   drawing=off
 
-for sid in $(aerospace list-workspaces --all); do
-  monitor=$(aerospace list-windows --workspace "$sid" --format "%{monitor-appkit-nsscreen-screens-id}")
+sketchybar --add item aerospace left \
+  --subscribe aerospace aerospace_workspace_change display_change system_woke front_app_switched \
+  --set aerospace \
+  drawing=off \
+  script="$CONFIG_DIR/plugins/aerospace.sh"
 
-  if [ -z "$monitor" ]; then
-    monitor="1"
-  fi
+workspaces="$(aerospace list-workspaces --all --json --format '%{workspace}%{monitor-appkit-nsscreen-screens-id}%{workspace-is-focused}%{workspace-is-visible}' | jq 'map(@base64).[]')"
+for workspace64 in $workspaces; do
+  workspace="$(echo "$workspace64" | jq -r '@base64d|fromjson|.workspace')"
+  focused="$(echo "$workspace64" | jq -r '@base64d|fromjson|.["workspace-is-focused"]')"
+  visible="$(echo "$workspace64" | jq -r '@base64d|fromjson|.["workspace-is-visible"]')"
+  display="$(echo "$workspace64" | jq -r '@base64d|fromjson|.["monitor-appkit-nsscreen-screens-id"]')"
 
-  sketchybar --add item space."$sid" left \
-    --subscribe space."$sid" aerospace_workspace_change display_change system_woke front_app_switched mouse.entered mouse.exited \
-    --set space."$sid" \
-    display="$monitor" \
-    icon="$sid" \
-    background.drawing=on \
-    background.height=25 \
-    background.corner_radius=5 \
-    label.font="sketchybar-app-font:Regular:16.0" \
-    label.drawing=on \
-    click_script="aerospace workspace $sid" \
-    script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+  item_id="aerospace.workspace.$workspace"
+
+  sketchybar --add item "$item_id" left \
+    --subscribe "$item_id" aerospace_workspace_change display_change system_woke front_app_switched \
+    --set "$item_id" \
+    icon.width=0 \
+    label.width=0 \
+    display="$display" \
+    script="$CONFIG_DIR/plugins/aerospace.sh" \
+    click_script="aerospace workspace $workspace"
 done
 
-sketchybar --add item space_separator left \
-  --set space_separator icon="|" \
-  label.drawing=off \
-  background.drawing=off
+sketchybar --add bracket aerospace.bar '/aerospace.workspace.*/' \
+           --set aerospace.bar \
+           background.color=0x20ffffff \
+           background.corner_radius=25 \
+           background.height=25
