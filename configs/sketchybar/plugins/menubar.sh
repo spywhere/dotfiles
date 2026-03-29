@@ -201,7 +201,7 @@ create_popup() {
   # sketchybar --animate sin 10 \
   #   --set "/$parent_id\.menu\..*/" \
   #   label.color.alpha=0
-  sketchybar --remove "/$parent_id\.menu\..*/"
+  sketchybar --remove "/$parent_id\..*/"
 
   create_menu_margin "$parent_id" "$menu_id"
   menu_items_var="menuBar.menus['$menu_id'].menuItems"
@@ -261,7 +261,7 @@ create_menu() {
     --set "$item_id" \
     label.color.alpha=1
 
-  create_popup "$parent_id.menu.$menu" "$menu" &
+  create_popup "$item_id" "$label" &
 }
 
 update_item_for_popup() {
@@ -295,8 +295,8 @@ populate_menus() {
   for menu64 in $(fetch_menu "menuBar.menus.name()" | jq "map(@base64)|.[2:].[]"); do
     menu="$(echo "$menu64" | jq -r '@base64d')"
 
-    create_menu "$parent_id.menu.$menu" "$menu" "$last_id" &
-    last_id="$parent_id.menu.$menu"
+    create_menu "$parent_id.$INFO.menu.$menu" "$menu" "$last_id" &
+    last_id="$parent_id.$INFO.menu.$menu"
   done
 }
 
