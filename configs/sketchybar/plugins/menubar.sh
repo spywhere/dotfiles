@@ -131,6 +131,8 @@ create_menu_item() {
     background.height="$MENU_ITEM_HEIGHT" \
     background.padding_left="$MENU_ITEM_MARGIN" \
     background.padding_right="$MENU_ITEM_MARGIN" \
+    background.color="$MENU_ITEM_ACCENT_COLOR" \
+    background.color.alpha=0 \
     label.padding_left="$label_padding" \
     label.padding_right="$MENU_ITEM_PADDING" \
     background.corner_radius="$MENU_ITEM_CORNER_RADIUS" \
@@ -191,6 +193,12 @@ create_popup() {
   menu_id="$2"
   shift
   shift
+
+  # Limitation: Cannot animate before removal
+  #   'sleep' would break the rendering here
+  # sketchybar --animate sin 10 \
+  #   --set "/$parent_id\.menu\..*/" \
+  #   label.color.alpha=0
   sketchybar --remove "/$parent_id\.menu\..*/"
 
   create_menu_margin "$parent_id" "$menu_id"
@@ -235,10 +243,14 @@ create_menu() {
     icon.drawing=off \
     label="$label" \
     label.font="$MENU_BAR_FONT" \
+    label.color.alpha=0 \
     label.padding_left="$MENU_BAR_PADDING" \
     label.padding_right="$MENU_BAR_PADDING" \
     script="$CONFIG_DIR/plugins/menubar.sh" \
-    --subscribe "$item_id" mouse.clicked
+    --subscribe "$item_id" mouse.clicked \
+    --animate sin 10 \
+    --set "$item_id" \
+    label.color.alpha=1
 
   create_popup "$parent_id.menu.$menu" "$menu" &
 }
@@ -281,10 +293,10 @@ populate_menus() {
 
 case "$SENDER" in
   mouse.entered)
-    sketchybar --set "$NAME" background.color="$MENU_ITEM_ACCENT_COLOR"
+    sketchybar --set "$NAME" background.color.alpha=1
     ;;
   mouse.exited)
-    sketchybar --set "$NAME" background.color=0x00000000
+    sketchybar --set "$NAME" background.color.alpha=0
     ;;
   mouse.clicked)
     local parent_id
@@ -323,8 +335,10 @@ case "$SENDER" in
         ;;
       front_app|application|app)
         update_item_for_popup "$NAME" \
-          label="$INFO" \
-          icon="$app_icon"
+          icon="$app_icon" \
+          --animate sin 10 \
+          --set "$NAME" \
+          label="$INFO"
         create_popup "$NAME" "1" &
         ;;
     esac
