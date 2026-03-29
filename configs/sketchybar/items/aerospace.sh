@@ -5,7 +5,7 @@ sketchybar --add event aerospace_mode_change
 
 sketchybar --add item aerospace_mode left \
   --subscribe aerospace_mode aerospace_mode_change \
-  --set aerospace_mode icon="" \
+  --set aerospace_mode icon="􀤊" \
   script="$CONFIG_DIR/plugins/aerospace.sh" \
   drawing=off
 
@@ -22,12 +22,9 @@ for sid in $(aerospace list-workspaces --all); do
     display="$monitor" \
     icon="$sid" \
     background.drawing=on \
-    label.font="sketchybar-app-font:Regular:16.0" \
-    background.color="$ACCENT_COLOR" \
-    icon.color="$BACKGROUND" \
-    label.color="$BACKGROUND" \
-    background.corner_radius=5 \
     background.height=25 \
+    background.corner_radius=5 \
+    label.font="sketchybar-app-font:Regular:16.0" \
     label.drawing=on \
     click_script="aerospace workspace $sid" \
     script="$CONFIG_DIR/plugins/aerospace.sh $sid"

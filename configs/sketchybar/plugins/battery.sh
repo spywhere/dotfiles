@@ -57,10 +57,10 @@ else
     --set "$NAME.status" \
     label.color="$LABEL_COLOR" \
     --set "$NAME" \
-    "$y_offset" \
     label.font.size=8 \
     label.width=30 \
-    label.color="$LABEL_COLOR"
+    label.color="$LABEL_COLOR" \
+    "$y_offset"
 
   sketchybar --set "$NAME.status" label="$REMAINING"
 fi
