@@ -506,6 +506,9 @@ function icon_map() {
   "Zulip")
     icon_result=":zulip:"
     ;;
+  "Self Service+")
+    icon_result=":cloud:"
+    ;;
   *)
     icon_result=":default:"
     ;;
