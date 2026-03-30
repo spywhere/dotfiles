@@ -169,15 +169,15 @@ on-mode-changed = [
     r = ['flatten-workspace-tree', 'mode main'] # reset layout
     f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 
-    alt-shift-1 = 'move-node-to-workspace 1'
-    alt-shift-2 = 'move-node-to-workspace 2'
-    alt-shift-3 = 'move-node-to-workspace 3'
-    alt-shift-4 = 'move-node-to-workspace 4'
-    alt-shift-5 = 'move-node-to-workspace 5'
-    alt-shift-6 = 'move-node-to-workspace 6'
-    alt-shift-7 = 'move-node-to-workspace 7'
-    alt-shift-8 = 'move-node-to-workspace 8'
-    alt-shift-9 = 'move-node-to-workspace 9'
+    alt-shift-1 = ['move-node-to-workspace 1', 'mode main']
+    alt-shift-2 = ['move-node-to-workspace 2', 'mode main']
+    alt-shift-3 = ['move-node-to-workspace 3', 'mode main']
+    alt-shift-4 = ['move-node-to-workspace 4', 'mode main']
+    alt-shift-5 = ['move-node-to-workspace 5', 'mode main']
+    alt-shift-6 = ['move-node-to-workspace 6', 'mode main']
+    alt-shift-7 = ['move-node-to-workspace 7', 'mode main']
+    alt-shift-8 = ['move-node-to-workspace 8', 'mode main']
+    alt-shift-9 = ['move-node-to-workspace 9', 'mode main']
 
     alt-shift-f = ['exec-and-forget bash "$(dirname "$(aerospace config --config-path)")/toggle-gap.sh" 30', 'mode main']
 
