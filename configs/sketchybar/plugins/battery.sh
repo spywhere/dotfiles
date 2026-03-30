@@ -33,16 +33,25 @@ esac
 if test -n "$CHARGING"; then
   ICON="􀢋"
   LABEL_COLOR=0xff00aaff
+
+  if test "$REMAINING" = "0:00"; then
+    REMAINING=""
+  fi
 fi
 
 if test -z "$REMAINING"; then
+  WIDTH=40
+  if test "$PERCENTAGE" = "100"; then
+    WIDTH=45
+  fi
+
   sketchybar --animate sin 10 \
     --set "$NAME.status" \
     label.color.alpha=0 \
     --set "$NAME" \
     label.y_offset=0 \
     label.font.size=13 \
-    label.width=35 \
+    label.width="$WIDTH" \
     label.color="$LABEL_COLOR"
 else
   y_offset="-5"
