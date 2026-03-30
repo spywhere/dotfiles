@@ -15,17 +15,17 @@ update_windows_for_workspace() {
   local focused
   focused="$(aerospace list-workspaces --focused --format "%{workspace}")"
   local windows
-  windows="$(aerospace list-windows --workspace "$1" --json --format '%{workspace-is-visible}%{app-name}' | jq 'map(@base64).[]')"
+  windows="$(aerospace list-windows --workspace "$1" --json --format '%{workspace-is-visible}%{app-name}%{window-id}' | jq 'sort_by(."window-id")|map(@base64).[]')"
   local visible
-  visible=$(echo "$windows" | head -n1 | jq -r '@base64d|fromjson|.["workspace-is-visible"]')
+  visible=$(echo "$windows" | head -n1 | jq -r '@base64d|fromjson|."workspace-is-visible"')
   local icon_padding
   icon_padding=0
   local icons
   local window
   for window64 in $windows; do
     local app
-    app="$(echo "$window64" | jq -r '@base64d|fromjson|.["app-name"]')"
-    icons="$("$CONFIG_DIR/plugins/icon_map.sh" "$app")"
+    app="$(echo "$window64" | jq -r '@base64d|fromjson|."app-name"')"
+    icons="$icons$("$CONFIG_DIR/plugins/icon_map.sh" "$app")"
   done
   if test -n "$icons"; then
     icon_padding=4
@@ -82,7 +82,7 @@ case "$NAME" in
     last_id=""
     for workspace64 in $workspaces; do
       workspace="$(echo "$workspace64" | jq -r '@base64d|fromjson|.workspace')"
-      display="$(echo "$workspace64" | jq -r '@base64d|fromjson|.["monitor-appkit-nsscreen-screens-id"]')"
+      display="$(echo "$workspace64" | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"')"
 
       item_id="aerospace.workspace.$workspace"
 
