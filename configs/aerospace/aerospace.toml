@@ -140,11 +140,11 @@ on-mode-changed = [
     alt-t = 'exec-and-forget open /Applications/Ghostty.app'
     alt-m = 'exec-and-forget open /System/Applications/Music.app'
     alt-o = [
-      'exec-and-forget open "/Applications/Microsoft Outlook.app"',
-      'exec-and-forget open "/Applications/Proton Mail.app"'
+      'exec-and-forget bash -c "osascript -e \"tell application \\\"Microsoft Outlook\\\" to activate\" || open \"/Applications/Microsoft Outlook.app\""',
+      'exec-and-forget bash -c "osascript -e \"tell application \\\"Proton Mail\\\" to activate\" || open \"/Applications/Proton Mail.app\""',
     ]
     alt-c = 'exec-and-forget bash -c "osascript -e \"tell application \\\"Microsoft Teams\\\" to activate\" || open \"/Applications/Microsoft Teams.app\""'
-    alt-s = 'exec-and-forget open /Applications/Slack.app'
+    alt-s = 'exec-and-forget bash -c "osascript -e \"tell application \\\"Slack\\\" to activate\" || open \"/Applications/Slack.app\""'
 
     alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
     alt-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
