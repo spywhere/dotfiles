@@ -167,9 +167,9 @@ on-mode-changed = [
     esc = ['reload-config', 'mode main']
     r = ['flatten-workspace-tree', 'mode main'] # reset layout
     f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
-    backspace = ['close-all-windows-but-current', 'mode main']
 
     alt-shift-tab = ['move-workspace-to-monitor --wrap-around next', 'mode main']
+    alt-shift-f = ['exec-and-forget bash "$(dirname "$(aerospace config --config-path)")/toggle-gap.sh" 30', 'mode main']
 
     alt-shift-h = ['join-with left', 'mode main']
     alt-shift-j = ['join-with down', 'mode main']
