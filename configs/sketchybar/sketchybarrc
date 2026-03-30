@@ -46,7 +46,7 @@ items battery
 # items weather
 # items timemachine
 items trash
-items slack
+items app_badge
 items events
 
 sketchybar --hotload true
