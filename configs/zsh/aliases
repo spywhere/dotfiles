@@ -127,38 +127,8 @@ else
   }
 fi
 
-# function aliases
-alias search_prs=search_github
-alias search_issues=search_github
-
 # Container Engine
-alias p="podman"
 alias d="docker"
-
-# github cli - issues
-alias iscl="gh issue close"
-alias isc="gh issue create"
-alias isl="gh issue list"
-alias isr="gh issue reopen"
-alias iss="gh issue status"
-alias isv="gh issue view"
-
-# github cli - pull requests
-alias pra="gh pr checks"
-alias prc="gh pr create"
-alias prch="gh pr checks"
-alias prcl="gh pr close"
-alias prco="gh pr checkout"
-alias prd="gh pr diff"
-alias prl="gh pr list"
-alias prm="gh pr merge"
-alias prr="gh pr review"
-alias prs="gh pr status"
-alias prv="gh pr view"
-
-# github cli - custom commands
-alias prcm="tkcm"
-alias iscm="tkcm"
 
 unalias vol >/dev/null 2>/dev/null
 if test "$(uname)" = "Darwin"; then
