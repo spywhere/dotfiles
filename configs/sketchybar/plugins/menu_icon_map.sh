@@ -118,6 +118,7 @@ case "$MENU" in
     ;;
   File)
     exact "Close" "􀆄"
+    exact "Close All" "􀏍"
     exact "Close All Windows" "􀏍"
     ;;
   Edit)
@@ -127,6 +128,8 @@ case "$MENU" in
     exact "Cut" "􀉈"
     prefix "Copy" "􀉁"
     exact "Paste" "􀉃"
+    exact "Paste and Match Style" "􀉃"
+    exact "Delete" "􀈑"
     exact "Select All" "􀂔"
     exact "Deselect All" "􀂔"
 
@@ -165,9 +168,15 @@ case "$MENU" in
     exact "Arrange in Front" "􃑷"
 
     suffix "Move Window Back to Mac" "􀙗"
-    if has_prefix "$ITEM" "Move to" && has_suffix "$ITEM" "iPad"; then
-      output "􀥔"
+    if has_prefix "$ITEM" "Move to"; then
+      if has_suffix "$ITEM" "iPad"; then
+        output "􀥔"
+      else
+        output "􀢹"
+      fi
     fi
+
+    output "􀏜"
     ;;
   Help)
     prefix "Send $APP Feedback" ""
