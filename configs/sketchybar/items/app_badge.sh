@@ -17,5 +17,5 @@ sketchybar --add item outlook right \
            icon.font.size=18 \
            icon.padding_right=0 \
            update_freq=60 \
-           script="$CONFIG_DIR/plugins/app_badge.sh 'Microsoft Outlook' 0xff20ccee" \
+           script="$CONFIG_DIR/plugins/app_badge.sh 'Microsoft Outlook' 0xff99ccff" \
            --subscribe outlook front_app_switched
