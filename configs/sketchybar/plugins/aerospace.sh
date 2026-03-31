@@ -19,9 +19,11 @@ update_windows_for_workspace() {
   local focused
   focused="$(aerospace list-workspaces --focused --format "%{workspace}")"
   local windows
-  windows="$(aerospace list-windows --workspace "$1" --json --format '%{workspace-is-visible}%{app-name}%{window-id}' | jq 'sort_by(."window-id")|map(@base64).[]')"
+  windows="$(aerospace list-windows --workspace "$1" --json --format '%{workspace-is-visible}%{app-name}%{window-id}%{monitor-appkit-nsscreen-screens-id}' | jq 'sort_by(."window-id")|map(@base64).[]')"
   local visible
   visible=$(echo "$windows" | head -n1 | jq -r '@base64d|fromjson|."workspace-is-visible"')
+  local display
+  display=$(echo "$windows" | head -n1 | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"')
   local icon_padding
   icon_padding=0
   local icons
@@ -48,6 +50,7 @@ update_windows_for_workspace() {
              width=dynamic \
              icon.width=dynamic \
              label.width=dynamic \
+             display="$display" \
              icon.padding_left=8 \
              icon.padding_right="$icon_padding" \
              icon="$1" \
