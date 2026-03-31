@@ -318,7 +318,7 @@ function icon_map() {
     icon_result=":orion:"
     ;;
   "Microsoft Outlook")
-    icon_result=":mail:"
+    icon_result=":microsoft_outlook:"
     ;;
   "Pages" | "Pages 文稿")
     icon_result=":pages:"
