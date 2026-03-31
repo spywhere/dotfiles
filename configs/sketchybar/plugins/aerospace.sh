@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if test -z "$NAME"; then
+  NAME="$1"
+fi
+
 update_mode() {
   local mode
   mode=$(aerospace list-modes --current)
@@ -81,11 +85,12 @@ case "$NAME" in
   *)
     workspaces="$(aerospace list-workspaces --all --json --format '%{workspace}%{monitor-appkit-nsscreen-screens-id}' | jq 'map(@base64).[]')"
     last_id=""
+    update_bracket="no"
     for workspace64 in $workspaces; do
       workspace="$(echo "$workspace64" | jq -r '@base64d|fromjson|.workspace')"
       display="$(echo "$workspace64" | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"')"
 
-      item_id="aerospace.workspace.$workspace"
+      item_id="$NAME.workspace.$workspace"
 
       item_display="$(sketchybar --query "$item_id" | jq -r '.bounding_rects|to_entries|map(select((.value.origin|min)+(.value.size|min)>0).key)|first')"
       if ! sketchybar --query "$item_id"; then
@@ -102,17 +107,20 @@ case "$NAME" in
           sketchybar --move "$item_id" after "$last_id"
         fi
 
-        sketchybar --remove aerospace.bar \
-          --add bracket aerospace.bar '/aerospace.workspace.*/' \
-          --set aerospace.bar \
-          background.color=0x20ffffff \
-          background.corner_radius=25 \
-          background.height=25
+        update_bracket="yes"
       fi
 
       if test "display-$display" = "$item_display"; then
         last_id="$item_id"
       fi
     done
+    if test "$update_bracket" = "yes"; then
+      sketchybar --remove "$NAME.bar" \
+        --add bracket "$NAME.bar" "/$NAME.workspace.*/" \
+        --set "$NAME.bar" \
+        background.color=0x20ffffff \
+        background.corner_radius=25 \
+        background.height=25
+    fi
     ;;
 esac

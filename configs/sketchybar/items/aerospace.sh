@@ -17,10 +17,4 @@ sketchybar --add item aerospace left \
   drawing=off \
   script="$CONFIG_DIR/plugins/aerospace.sh"
 
-"$CONFIG_DIR/plugins/aerospace.sh"
-
-sketchybar --add bracket aerospace.bar '/aerospace.workspace.*/' \
-           --set aerospace.bar \
-           background.color=0x20ffffff \
-           background.corner_radius=25 \
-           background.height=25
+"$CONFIG_DIR/plugins/aerospace.sh" aerospace
