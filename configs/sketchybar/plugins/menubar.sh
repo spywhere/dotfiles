@@ -3,6 +3,14 @@
 # Turn on/off checking for disabled menu items
 #   Turning this off may improve the rendering performance
 CHECK_FOR_DISABLED_MENU_ITEM="on"
+# Turn on/off lazy rendering for menu items
+#   When on, only render menu items when the menu is opened
+# Considering turn it on if you have a lot of menu items or notice lag when switching between apps
+LAZY_RENDERING="off"
+# Render menu item on the specific display
+#   <empty> = all displays
+#   active  = only active display
+MENU_DISPLAY="active"
 
 # A script that accepts a menu title as an input
 #   Returns an icon for the menu, or empty string for no icon
@@ -202,7 +210,7 @@ create_popup() {
   # sketchybar --animate sin 10 \
   #   --set "/$parent_id\.menu\..*/" \
   #   label.color.alpha=0
-  sketchybar --remove "/$parent_id\..*/"
+  sketchybar --remove "/$parent_id\.menu\..*/"
 
   create_menu_margin "$parent_id" "$menu_id"
   menu_items_var="menuBar.menus['$menu_id'].menuItems"
@@ -251,7 +259,7 @@ create_menu() {
   sketchybar --add item "$item_id" left --move "$item_id" after "$reference_id"
   update_item_for_popup "$item_id" \
     icon.drawing=off \
-    display=active \
+    display="$MENU_DISPLAY" \
     label="$label" \
     label.font="$MENU_BAR_FONT" \
     label.color.alpha=0 \
@@ -263,7 +271,9 @@ create_menu() {
     --set "$item_id" \
     label.color.alpha=1
 
-  create_popup "$item_id" "$label" &
+  if test "$LAZY_RENDERING" = "off"; then
+    create_popup "$item_id" "$label" &
+  fi
 }
 
 update_item_for_popup() {
@@ -292,6 +302,9 @@ populate_menus() {
   local parent_id
   parent_id="$1"
   shift
+
+  sketchybar --remove "/$parent_id\..*/"
+
   local last_id
   last_id="$parent_id"
   for menu64 in $(fetch_menu "menuBar.menus.name()" | jq "map(@base64)|.[2:].[]"); do
@@ -322,6 +335,21 @@ case "$SENDER" in
     fi
 
     if test -z "$item_id"; then
+      if test "$LAZY_RENDERING" = "on"; then
+        case "$NAME" in
+          apple|apple.logo)
+            create_popup "$NAME" "0" &
+            ;;
+          front_app|application|app)
+            create_popup "$NAME" "1" &
+            ;;
+          *)
+            if test -n "$menu_identifier"; then
+              create_popup "$NAME" "$menu_identifier" &
+            fi
+            ;;
+        esac
+      fi
       sketchybar --set "$NAME" background.drawing=toggle popup.drawing=toggle
     else
       sketchybar --set "$parent_id" background.drawing=off popup.drawing=off
@@ -339,7 +367,9 @@ case "$SENDER" in
     case "$NAME" in
       apple|apple.logo)
         update_item_for_popup "$NAME"
-        create_popup "$NAME" "0" &
+        if test "$LAZY_RENDERING" = "off"; then
+          create_popup "$NAME" "0" &
+        fi
         ;;
       front_app|application|app)
         update_item_for_popup "$NAME" \
@@ -347,7 +377,9 @@ case "$SENDER" in
           --animate sin 10 \
           --set "$NAME" \
           label="$INFO"
-        create_popup "$NAME" "1" &
+        if test "$LAZY_RENDERING" = "off"; then
+          create_popup "$NAME" "1" &
+        fi
         ;;
     esac
 
