@@ -44,17 +44,25 @@ on-mode-changed = [
     4 = ['secondary', 'sidecar', 'built-in']
     5 = ['secondary', 'sidecar', 'built-in']
     6 = ['secondary', 'sidecar', 'built-in']
-    chat = ['secondary', 'sidecar', 'built-in']
-    music = ['secondary', 'sidecar', 'built-in']
 
 [[on-window-detected]]
     if.app-id = 'com.tinyspeck.slackmacgap'
-    run = 'move-node-to-workspace chat'
+    run = [
+      'move-node-to-workspace chat',
+      'move-workspace-to-monitor --workspace chat secondary sidecar main'
+    ]
 
 [[on-window-detected]]
     if.app-id = 'com.microsoft.Outlook'
     run = [
       'move-node-to-workspace mail',
+      'move-workspace-to-monitor --workspace mail secondary sidecar main'
+    ]
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.Music'
+    run = [
+      'move-node-to-workspace music',
       'move-workspace-to-monitor --workspace mail secondary sidecar main'
     ]
 
@@ -71,10 +79,6 @@ on-mode-changed = [
       'move-node-to-workspace torrent',
       'move-workspace-to-monitor --workspace torrent main'
     ]
-
-[[on-window-detected]]
-    if.app-id = 'com.apple.Music'
-    run = 'move-node-to-workspace music'
 
 [[on-window-detected]]
     if.app-id = 'com.microsoft.teams2'
