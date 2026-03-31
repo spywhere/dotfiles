@@ -60,6 +60,7 @@ case "$NAME" in
     update_mode "$NAME"
     ;;
   *.workspace.*)
+    # shellcheck disable=SC2001
     current_workspace="$(echo "$NAME" | sed 's/^.*\.workspace\.//g')"
 
     has_workspace="no"
