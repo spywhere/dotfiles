@@ -212,7 +212,7 @@ function icon_map() {
   "Keyboard Maestro")
     icon_result=":keyboard_maestro:"
     ;;
-  "Keynote" | "Keynote 讲演")
+  "Keynote" | "Keynote 讲演" | "Google Slides")
     icon_result=":keynote:"
     ;;
   "kitty")
@@ -302,7 +302,7 @@ function icon_map() {
   "Nova")
     icon_result=":nova:"
     ;;
-  "Numbers" | "Numbers 表格")
+  "Numbers" | "Numbers 表格" | "Google Sheets")
     icon_result=":numbers:"
     ;;
   "Obsidian")
@@ -323,7 +323,7 @@ function icon_map() {
   "Microsoft Outlook")
     icon_result=":microsoft_outlook:"
     ;;
-  "Pages" | "Pages 文稿")
+  "Pages" | "Pages 文稿" | "Google Docs")
     icon_result=":pages:"
     ;;
   "Parallels Desktop")
