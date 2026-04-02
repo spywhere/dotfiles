@@ -18,12 +18,14 @@ update_mode() {
 update_windows_for_workspace() {
   local focused
   focused="$(aerospace list-workspaces --focused --format "%{workspace}")"
-  local windows
-  windows="$(aerospace list-windows --workspace "$1" --json --format '%{workspace-is-visible}%{app-name}%{window-id}%{monitor-appkit-nsscreen-screens-id}' | jq 'sort_by(."window-id")|map(@base64).[]')"
+  local workspace
+  workspace="$(aerospace list-workspaces --all --json --format '%{workspace}%{workspace-is-visible}%{monitor-appkit-nsscreen-screens-id}' | jq --arg id "$1" 'map(select(.workspace==$id))|first|@base64')"
   local visible
-  visible=$(echo "$windows" | head -n1 | jq -r '@base64d|fromjson|."workspace-is-visible"')
+  visible=$(echo "$workspace" | jq -r '@base64d|fromjson|."workspace-is-visible"//false')
   local display
-  display=$(echo "$windows" | head -n1 | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"')
+  display=$(echo "$workspace" | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"//"active"')
+  local windows
+  windows="$(aerospace list-windows --workspace "$1" --json --format '%{app-name}%{window-id}' | jq 'sort_by(."window-id")|map(@base64).[]')"
   local icon_padding
   icon_padding=0
   local icons
@@ -91,17 +93,17 @@ case "$NAME" in
     update_bracket="no"
     for workspace64 in $workspaces; do
       workspace="$(echo "$workspace64" | jq -r '@base64d|fromjson|.workspace')"
-      display="$(echo "$workspace64" | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"')"
+      display="$(echo "$workspace64" | jq -r '@base64d|fromjson|."monitor-appkit-nsscreen-screens-id"//"active"')"
 
       item_id="$NAME.workspace.$workspace"
 
-      item_display="$(sketchybar --query "$item_id" | jq -r '.bounding_rects|to_entries|map(select((.value.origin|min)+(.value.size|min)>0).key)|first')"
-      if ! sketchybar --query "$item_id"; then
+      existing_item="$(sketchybar --query "$item_id")"
+      if test $? -ne 0 ; then
         sketchybar --add item "$item_id" left \
           --subscribe "$item_id" aerospace_workspace_change display_change system_woke front_app_switched \
           --set "$item_id" \
-          icon.width=dynamic \
-          label.width=dynamic \
+          icon.width=0 \
+          label.width=0 \
           display="$display" \
           script="$CONFIG_DIR/plugins/aerospace.sh" \
           click_script="aerospace workspace $workspace"
@@ -111,6 +113,9 @@ case "$NAME" in
         fi
 
         update_bracket="yes"
+        item_display=""
+      else
+        item_display="$(echo "$existing_item" | jq -r '.bounding_rects|to_entries|map(select((.value.origin|min)+(.value.size|min)>0).key)|first')"
       fi
 
       if test "display-$display" = "$item_display"; then
