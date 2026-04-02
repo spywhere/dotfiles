@@ -1,7 +1,8 @@
 #!/bin/bash
 
 PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
-CHARGING="$(pmset -g batt | grep 'AC Power')"
+USE_AC="$(pmset -g batt | grep 'AC Power')"
+NOT_CHARGING="$(pmset -g batt | grep 'not charging')"
 REMAINING="$(pmset -g batt | grep -Eo "\d+:\d+ remaining" | cut -d' ' -f1)"
 
 if test -z "$PERCENTAGE"; then
@@ -30,11 +31,15 @@ case "${PERCENTAGE}" in
   ;;
 esac
 
-if test -n "$CHARGING"; then
+ALIGN="left"
+if test -n "$USE_AC"; then
   ICON="􀢋"
   LABEL_COLOR=0xff00aaff
 
-  if test "$REMAINING" = "0:00"; then
+  if test -n "$NOT_CHARGING"; then
+    REMAINING="􀊅"
+    ALIGN="center"
+  elif test "$REMAINING" = "0:00"; then
     REMAINING=""
   fi
 fi
@@ -48,6 +53,7 @@ if test -z "$REMAINING"; then
   sketchybar --animate sin 10 \
     --set "$NAME.status" \
     label.color.alpha=0 \
+    label.align="$ALIGN" \
     --set "$NAME" \
     label.y_offset=0 \
     label.font.size=13 \
@@ -64,6 +70,7 @@ else
   sketchybar --animate sin 10 \
     --set "$NAME.status" \
     label.color="$LABEL_COLOR" \
+    label.align="$ALIGN" \
     --set "$NAME" \
     label.font.size=8 \
     label.width=30 \
