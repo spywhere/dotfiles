@@ -609,6 +609,12 @@ _try_git() {
 _try_run_install() {
   if test "$HAS_INSTALLER" -eq 0; then
     clone "$INSTALLER_REPO_URL" "$INSTALLER_DIR" "installer into $INSTALLER_DIR" --branch "$INSTALLER_REPO_BRANCH"
+
+    if test "$INSTALLER_DIR" = "$HOME/$DOTFILES"; then
+      # update local copy status if both installer and dotfiles directory
+      #   is the same
+      HAS_LOCAL_COPY=1
+    fi
   fi
 
   # Run local script when install remotely
