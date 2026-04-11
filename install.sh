@@ -5,6 +5,7 @@ set -e
 if test -z "$REPO_NAME"; then
   REPO_NAME="spywhere/dotfiles"
   INSTALLER_DIR="$HOME/.dots"
+  INSTALLER_REPO_BRANCH="main"
 fi
 
 ########################
