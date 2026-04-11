@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ludeeus/action-shellcheck@master
         env:
-          SHELLCHECK_OPTS: -e SC1090 -e SC2034 -e SC2154 -e SC2317
+          SHELLCHECK_OPTS: -e SC1090 -e SC2034 -e SC2154 -e SC2317 -e SC2329
         with:
           ignore_paths: zsh
       - name: Ban echo

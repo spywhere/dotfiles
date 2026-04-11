@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
+has_app 'Osaurus'
 has_executable 'osaurus'
 
-use_brew formula 'osaurus'
+use_brew cask 'osaurus'
