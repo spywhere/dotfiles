@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
-# neovim rebuild dependencies
-use_apt 'pkg-config'
-use_brew formula 'pkg-config'
+optional
+has_app 'Latest'
+
+use_brew cask 'latest'

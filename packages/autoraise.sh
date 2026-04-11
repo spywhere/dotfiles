@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Zen Browser'
+has_app 'AutoRaise'
 
-use_brew cask 'zen-browser'
+use_brew cask 'dimentium/autoraise/autoraiseapp'

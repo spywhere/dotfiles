@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_executable 'ninja'
+optional
+has_app 'Mist'
 
-# neovim rebuild dependencies
-use_apt 'ninja-build'
+use_brew cask 'mist'

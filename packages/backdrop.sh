@@ -11,5 +11,6 @@ then
   exit 1
 fi
 
-# neovim rebuild dependencies
-use_apt 'm4'
+has_app 'Backdrop'
+
+use_brew cask 'backdrop'

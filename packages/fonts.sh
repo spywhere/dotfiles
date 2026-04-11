@@ -11,5 +11,5 @@ then
   exit 1
 fi
 
-use_brew cask 'font-sketchybar-app-font'
 use_brew cask 'font-jetbrains-mono-nerd-font'
+use_brew cask 'font-sketchybar-app-font'

@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_executable 'autoconf'
+optional
+has_app 'Zen Browser'
 
-# neovim rebuild dependencies
-use_apt 'autoconf'
+use_brew cask 'zen'

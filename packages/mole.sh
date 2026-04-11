@@ -11,5 +11,6 @@ then
   exit 1
 fi
 
-# neovim rebuild dependencies
-use_apt 'gettext'
+has_executable 'mole'
+
+use_brew formula 'mole'

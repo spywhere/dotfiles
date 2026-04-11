@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'libtool'
+has_executable 'ifstat'
 
-# neovim rebuild dependencies
-use_apt 'libtool-bin'
+use_brew formula 'ifstat'

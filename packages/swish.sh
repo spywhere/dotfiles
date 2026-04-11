@@ -11,5 +11,7 @@ then
   exit 1
 fi
 
-# neovim rebuild dependencies
-use_apt 'unzip'
+optional
+has_app 'Swish'
+
+use_brew cask 'swish'

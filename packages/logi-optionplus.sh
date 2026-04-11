@@ -11,6 +11,7 @@ then
   exit 1
 fi
 
-# neovim rebuild dependencies
 optional
-use_apt 'libssl-dev'
+has_app 'Logi Options+'
+
+use_brew cask 'logi-options+'

@@ -11,8 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'automake'
+has_executable 'gallery-dl'
 
-# neovim rebuild dependencies
-use_apt 'automake'
-use_brew formula 'automake'
+use_brew formula 'gallery-dl'
