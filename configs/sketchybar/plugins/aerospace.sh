@@ -6,12 +6,12 @@ fi
 
 update_mode() {
   local mode
-  mode=$(aerospace list-modes --current)
+  mode="$(aerospace list-modes --current)"
 
-  if [ "$mode" == "main" ]; then
-    sketchybar --set "$1" drawing=off
-  else
+  if test "$mode" = "service"; then
     sketchybar --set "$1" drawing=on
+  else
+    sketchybar --set "$1" drawing=off
   fi
 }
 
