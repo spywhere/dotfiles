@@ -105,23 +105,6 @@ setup_macos() {
   ################
   config "com.apple.TimeMachine" "DoNotOfferNewDisksForBackup" true
 
-  ############
-  # Touchbar #
-  ############
-  config "com.apple.controlstrip" "FullCustomized" \
-    "com.apple.system.group.brightness" \
-    "com.apple.system.mission-control" \
-    "com.apple.system.launchpad" \
-    "com.apple.system.group.keyboard-brightness" \
-    "com.apple.system.group.media" \
-    "com.apple.system.group.volume" \
-    "com.apple.system.screen-lock"
-  config "com.apple.controlstrip" "MiniCustomized" \
-    "com.apple.system.brightness" \
-    "com.apple.system.volume" \
-    "com.apple.system.mute" \
-    "com.apple.system.input-menu"
-
   ########
   # Dock #
   ########
@@ -130,6 +113,8 @@ setup_macos() {
   config "com.apple.dock" "show-process-indicators" true
   config "com.apple.dock" "mru-spaces" false
   config "com.apple.dock" "show-recents" false
+
+  # killall Dock
 
   ##########
   # Finder #
@@ -338,6 +323,11 @@ setup_config() {
     setup_macos
 
     step "Setting up LaunchAgents..."
+    if ! test -d "$HOME/Library/LaunchAgents"; then
+      cmd mkdir -p "$HOME/Library/LaunchAgents"
+    fi
+    step "  - qutebrowser-cleanup"
+    raw_copy "supports/mac/launchd/me.spywhere.qutebrowser-cleanup.plist" "Library/LaunchAgents/me.spywhere.qutebrowser-cleanup.plist"
     step "  - restart"
     raw_copy "supports/mac/launchd/me.spywhere.restart.plist" "Library/LaunchAgents/me.spywhere.restart.plist"
   fi
