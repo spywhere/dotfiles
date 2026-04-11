@@ -194,10 +194,16 @@ use_dpkg() {
 has_app() {
   return 0
 }
+_has_app() {
+  return 1
+}
 
 # has_screensaver <name>
 has_screensaver() {
   return 0
+}
+_has_screensaver() {
+  return 1
 }
 
 # use_brow <package>

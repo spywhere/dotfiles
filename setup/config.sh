@@ -13,6 +13,31 @@ fi
 
 add_setup 'setup_config'
 
+dock_add_app() {
+    if _has_app "$1"; then
+        step "  - $1 added to the Dock"
+
+        config "com.apple.dock" persistent-apps -array-add "<dict>
+            <key>tile-data</key>
+            <dict>
+                <key>file-data</key>
+                <dict>
+                    <key>_CFURLString</key>
+                    <string>/Applications/$1.app</string>
+                    <key>_CFURLStringType</key>
+                    <integer>0</integer>
+                </dict>
+            </dict>
+        </dict>"
+    else
+        warn "$1 is not found"
+    fi
+}
+
+dock_clear_apps() {
+  config "com.apple.dock" "persistent-apps"
+}
+
 setup_macos() {
   ##########
   # System #
@@ -114,7 +139,14 @@ setup_macos() {
   config "com.apple.dock" "mru-spaces" false
   config "com.apple.dock" "show-recents" false
 
-  # killall Dock
+  dock_clear_apps
+
+  add_app_to_dock "qutebrowser"
+  add_app_to_dock "Proton Mail"
+  add_app_to_dock "Ghostty"
+  add_app_to_dock "Agenda"
+
+  cmd killall Dock
 
   ##########
   # Finder #

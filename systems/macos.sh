@@ -114,8 +114,16 @@ has_app_installed() {
   fi
 }
 
+_has_app() {
+  test -d "/Applications/$1.app"
+}
+
 has_app() {
   has_directory "/Applications/$1.app"
+}
+
+_has_screensaver() {
+  test -d "$HOME/Library/Screen Savers/$1.saver"
 }
 
 has_screensaver() {
@@ -354,8 +362,12 @@ _config() {
   shift
   shift
   _config__rest=0
+  _config__operation="write"
 
-  if test "$#" -eq 1; then
+  if test "$#" -eq 0; then
+    _config__operation="delete"
+    _config__rest=2
+  elif test "$#" -eq 1; then
     _config__type="-string"
     _config__value="$1"
   else
@@ -363,33 +375,35 @@ _config() {
     _config__rest=1
   fi
 
-  case "$1" in
-    true | false)
-      _config__type="-bool"
-      ;;
-    [0-9]*.[0-9]*)
-      _config__type="-float"
-      ;;
-    [0-9]*)
-      _config__type="-int"
-      ;;
-    -*)
-      _config__type="$1"
-      shift
-      _config__rest=1
-      ;;
-  esac
+  if test -n "$1"; then
+    case "$1" in
+      true | false)
+        _config__type="-bool"
+        ;;
+      [0-9]*.[0-9]*)
+        _config__type="-float"
+        ;;
+      [0-9]*)
+        _config__type="-int"
+        ;;
+      -*)
+        _config__rest=2
+        ;;
+    esac
+  fi
 
   if test "$_config__rest" -eq 0; then
-    "$_config__callback" "$_config__name" "$_config__key" "$_config__type" "$_config__value"
+    "$_config__callback" "$_config__operation" "$_config__name" "$_config__key" "$_config__type" "$_config__value"
+  elif test "$_config__rest" -eq 1; then
+    "$_config__callback" "$_config__operation" "$_config__name" "$_config__key" "$_config__type" "$@"
   else
-    "$_config__callback" "$_config__name" "$_config__key" "$_config__type" "$@"
+    "$_config__callback" "$_config__operation" "$_config__name" "$_config__key" "$@"
   fi
 }
 
 config() {
   config__callback() {
-    cmd defaults write "$@"
+    cmd defaults "$@"
   }
   _config config__callback "$@"
 }
@@ -399,7 +413,7 @@ sudo_config() {
   shift
 
   sudo_config__callback() {
-    sudo_cmd defaults write "$@"
+    sudo_cmd defaults "$@"
   }
   _config sudo_config__callback "/Library/Preferences/$1" "$@"
 }
