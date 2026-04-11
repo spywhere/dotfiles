@@ -4,7 +4,6 @@ local registry = require('lib.registry')
 registry.defer_first(function ()
     bindings.map.normal('gD', { 'vim.lsp.buf.declaration()' })
     bindings.map.normal('gd', { 'vim.lsp.buf.definition()' })
-    bindings.map.normal('K', { 'vim.lsp.buf.hover()' })
     bindings.map.normal('gi', { 'vim.lsp.buf.implementation()' })
     bindings.map.normal('ga', { 'vim.lsp.buf.code_action()' })
     -- conflicted with tmux navigator, try using through 'gk' instead
