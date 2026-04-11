@@ -217,6 +217,9 @@ setup_config() {
   step "  - editorconfig"
   raw_link .editorconfig .editorconfig
 
+  step "  - gallery-dl"
+  link gallery-dl/ .config/gallery-dl
+
   step "  - ghostty"
   link ghostty/ .config/ghostty
 

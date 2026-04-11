@@ -1,0 +1,7 @@
+{
+  "extractor": {
+    "instagram": {
+      "include": "posts,stories,reels,highlights"
+    }
+  }
+}
