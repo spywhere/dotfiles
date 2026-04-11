@@ -4,10 +4,7 @@ set -e
 
 if test -z "$REPO_NAME"; then
   REPO_NAME="spywhere/dotfiles"
-
-  if test -f "$(dirname "$0")/systems/base.sh"; then
-    INSTALLER_DIR="$(dirname "$0")"
-  fi
+  INSTALLER_DIR="$HOME/.dots"
 fi
 
 ########################
