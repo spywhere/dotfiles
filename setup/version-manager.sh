@@ -20,7 +20,6 @@ require 'lib-bz'
 require 'lib-ffi'
 require 'lib-readline'
 require 'lib-sqlite'
-require 'lib-ssl'
 require 'lib-zlib'
 
 add_setup 'setup_version_manager'
