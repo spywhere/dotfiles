@@ -108,11 +108,19 @@ install_nix() {
 }
 
 main() {
+  if test -z "$1"; then
+    echo "usage: $0 <profile>"
+    exit 1
+  fi
+
   if is_mac; then
     install_rosetta
   fi
 
   install_nix
+
+  # TODO: Add nix to path
+  # sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin/master#darwin-rebuild -- switch --flake "$(pwd)#$1"
 }
 
 main "$@"
