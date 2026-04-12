@@ -42,7 +42,7 @@ items controlcenter
 items network
 items cpu
 items battery
-# items weather
+items weather
 items timemachine
 items trash
 items app_badge
