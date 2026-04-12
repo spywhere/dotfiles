@@ -39,7 +39,6 @@ items menubar
 items clock
 items controlcenter
 # items more
-# items istats
 items network
 items cpu
 items battery
