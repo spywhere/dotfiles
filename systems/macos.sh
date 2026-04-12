@@ -133,7 +133,7 @@ has_screensaver() {
 wait_for_app_store() {
   wait_for_app_store__last_check=""
   # try for 5 minutes
-  wait_for_app_store__timer="$(( "$(date +%s)" + 300 ))"
+  wait_for_app_store__timer="$(( $(date +%s) + 300 ))"
   while ! has_app_installed && test "$(date +%s)" -lt "$wait_for_app_store__timer"; do
     printf "%s%s\r" "$esc_yellow==> ACTION REQUIRED$esc_reset: Please sign in into App Store and install some apps..." "$wait_for_app_store__last_check"
     sleep 5
