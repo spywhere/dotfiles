@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 tm_pref() {
   plutil -extract "$1" raw "/Library/Preferences/com.apple.TimeMachine.plist"

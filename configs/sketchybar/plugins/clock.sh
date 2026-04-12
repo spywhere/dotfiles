@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 clock_separator=" "
 if test "$(( $(date '+%S') % 2 ))" -eq 0; then
