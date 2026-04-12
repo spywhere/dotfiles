@@ -141,10 +141,10 @@ setup_macos() {
 
   dock_clear_apps
 
-  add_app_to_dock "qutebrowser"
-  add_app_to_dock "Proton Mail"
-  add_app_to_dock "Ghostty"
-  add_app_to_dock "Agenda"
+  dock_add_app "qutebrowser"
+  dock_add_app "Proton Mail"
+  dock_add_app "Ghostty"
+  dock_add_app "Agenda"
 
   cmd killall Dock
 
