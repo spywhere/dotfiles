@@ -100,7 +100,7 @@ case "$NAME" in
       existing_item="$(sketchybar --query "$item_id")"
       if test $? -ne 0 ; then
         sketchybar --add item "$item_id" left \
-          --subscribe "$item_id" aerospace_workspace_change display_change system_woke front_app_switched \
+          --subscribe "$item_id" aerospace_workspace_change space_windows_change display_change system_woke front_app_switched \
           --set "$item_id" \
           icon.width=0 \
           label.width=0 \
