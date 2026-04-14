@@ -81,6 +81,10 @@ update_status() {
   if test "$(sketchybar --query timemachine | jq -r .icon.value)" = "$icon"; then
     icon="􀖋"
   fi
+  volume_icon="􀤝"
+  if test -n "$(tm_pref "Destinations.$tm_last_destination.NetworkURL")"; then
+    volume_icon="􀩯"
+  fi
   update_freq=2
   case "$tm_phase" in
     FindingBackupVol)
@@ -153,6 +157,7 @@ update_status() {
       y_offset=-18 \
       slider.background.drawing=on \
       --set "$1.icon" \
+      icon="$volume_icon" \
       y_offset=10 \
       --set "$1.volume" \
       y_offset=18 \
@@ -171,6 +176,7 @@ update_status() {
       y_offset=-30 \
       slider.background.drawing=off \
       --set "$1.icon" \
+      icon="$volume_icon" \
       y_offset=0 \
       --set "$1.volume" \
       y_offset=8 \

@@ -19,7 +19,6 @@ sketchybar --add item timemachine.icon popup.timemachine \
            --set timemachine.icon \
            width=0 \
            icon.padding_left=12 \
-           icon="􀩯" \
            icon.font="SF Pro:Semibold:24" \
            icon.color=0xffa4a6aa
 
