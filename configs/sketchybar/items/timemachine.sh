@@ -5,7 +5,6 @@ sketchybar --add item timemachine right \
            icon.font.size=12 \
            label.font="SF Pro:Bold:10" \
            script="$CONFIG_DIR/plugins/timemachine.sh" \
-           popup.drawing=on \
            popup.horizontal=on \
            popup.topmost=on \
            popup.background.drawing=on \
@@ -52,7 +51,6 @@ sketchybar --add item timemachine.action popup.timemachine \
            --set timemachine.action \
            width=15 \
            padding_left=-35 \
-           padding_right=20 \
            icon.padding_left=0 \
            icon.padding_right=0 \
            icon.font="SF Pro:Semibold:15" \

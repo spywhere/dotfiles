@@ -152,34 +152,36 @@ update_status() {
       --set "$1.progress" \
       y_offset=-18 \
       slider.background.drawing=on \
-      --animate sin 10 \
-      --set "$1" \
-      popup.height=60 \
       --set "$1.icon" \
       y_offset=10 \
       --set "$1.volume" \
       y_offset=18 \
       --set "$1.storage" \
       y_offset=0 \
+      --animate sin 10 \
+      --set "$1" \
+      popup.height=60 \
       --set "$1.action" \
       y_offset=8 \
+      padding_right=20 \
       icon="􀛷"
   else
     sketchybar \
       --set "$1.progress" \
       y_offset=-30 \
       slider.background.drawing=off \
-      --animate sin 10 \
-      --set "$1" \
-      popup.height=40 \
       --set "$1.icon" \
       y_offset=0 \
       --set "$1.volume" \
       y_offset=8 \
       --set "$1.storage" \
       y_offset=-10 \
+      --animate sin 10 \
+      --set "$1" \
+      popup.height=40 \
       --set "$1.action" \
       y_offset=0 \
+      padding_right=10 \
       icon="􀊄"
   fi
 
