@@ -1,5 +1,4 @@
 local registry = require('lib.registry')
-local bindings = require('lib.bindings')
 
 registry.install {
   'nvim-treesitter/nvim-treesitter',
@@ -16,10 +15,7 @@ registry.install {
     end
   end,
   config = function ()
-    require('nvim-treesitter').setup {
-      auto_install = true,
-      sync_install = fn.has('linux') == 1,
-    }
+    require('nvim-treesitter').setup {}
 
     local ensure_installed = {
       'bash', 'c', 'c_sharp', 'cpp', 'dockerfile', 'dot', 'graphql',
@@ -40,11 +36,11 @@ registry.install {
       -- Enable treesitter highlighting and disable regex syntax
       pcall(vim.treesitter.start)
 
-      -- Enable treesitter-based indentation
-      vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-    end)
+      -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      -- vim.wo.foldmethod = 'expr'
 
-    -- bindings.set('foldmethod', 'expr')
-    -- bindings.set('foldexpr', 'nvim_treesitter#foldexpr()')
+      -- Enable treesitter-based indentation
+      -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end)
   end
 }
