@@ -8,100 +8,204 @@ to_timestamp() {
   date -j -f '%FT%TZ' "$1" +%s
 }
 
-has_last_failed() {
+human_readable() {
+  local abbrevs=(
+      $((10 ** 18)):ZB
+      $((10 ** 15)):EB
+      $((10 ** 12)):TB
+      $((10 ** 9)):GB
+      $((10 ** 6)):MB
+      $((10 ** 3)):KB
+      1:B
+  )
+
+  for item in "${abbrevs[@]}"; do
+      local factor="${item%:*}"
+      local abbrev="${item#*:}"
+      if test "$1" -ge "${factor}"; then
+          echo "$1" "$factor" "$abbrev" | awk '{printf "%.2f %s", $1 / $2, $3}'
+          return
+      fi
+  done
+
+  echo "0 B"
+}
+
+get_last_destination() {
   if ! test -n "$(command -v plutil)"; then
-    return 1
+    return
   fi
   tm_last_destination="$(tm_pref LastDestinationID)"
   if test "$?" -ne 0; then
-    return 1
+    return
   fi
   tm_count_destinations="$(tm_pref Destinations)"
   index=0
-  tm_last_failed=0
   while test "$index" -lt "$tm_count_destinations"; do
     tm_destination_id="$(tm_pref "Destinations.$index.DestinationID")"
 
-    if test "$tm_destination_id" != "$tm_last_destination"; then
-      index="$(( index + 1))"
-      continue
+    if test "$tm_destination_id" = "$tm_last_destination"; then
+      echo "$index"
+      return
     fi
-
-    tm_count_attempts="$(tm_pref "Destinations.$index.AttemptDates")"
-    tm_count_snapshots="$(tm_pref "Destinations.$index.SnapshotDates")"
-
-    tm_last_attempt="$(to_timestamp "$(tm_pref "Destinations.$index.AttemptDates.$(( tm_count_attempts - 1 ))")")"
-    tm_last_snapshot="$(to_timestamp "$(tm_pref "Destinations.$index.SnapshotDates.$(( tm_count_snapshots - 1 ))")")"
-
-    if test "$tm_last_snapshot" -lt "$tm_last_attempt"; then
-      return 0
-    fi
-
     index="$(( index + 1))"
   done
+}
+
+has_last_failed() {
+  if test -z "$1"; then
+    return 1
+  fi
+
+  tm_count_attempts="$(tm_pref "Destinations.$1.AttemptDates")"
+  tm_count_snapshots="$(tm_pref "Destinations.$1.SnapshotDates")"
+
+  tm_last_attempt="$(to_timestamp "$(tm_pref "Destinations.$1.AttemptDates.$(( tm_count_attempts - 1 ))")")"
+  tm_last_snapshot="$(to_timestamp "$(tm_pref "Destinations.$1.SnapshotDates.$(( tm_count_snapshots - 1 ))")")"
+
+  if test "$tm_last_snapshot" -lt "$tm_last_attempt"; then
+    return 0
+  fi
 
   return 1
 }
 
-tm_status="$(tmutil status)"
-tm_phase="$(echo "$tm_status" | grep BackupPhase | grep -Eo "\w+;" | cut -d';' -f1)"
+update_status() {
+  tm_status="$(tmutil status)"
+  tm_phase="$(echo "$tm_status" | grep BackupPhase | grep -Eo "\w+;" | cut -d';' -f1)"
+  tm_last_destination="$(get_last_destination)"
 
-tm_percent=""
-# icon="􀊯"
-icon="􀖊"
-if test "$(sketchybar --query timemachine | jq -r .icon.value)" = "$icon"; then
-  # icon="􂣼"
-  icon="􀖋"
-fi
-update_freq=2
-case "$tm_phase" in
-  FindingBackupVol)
-    tm_phase="Finding"
+  tm_percent_raw="0"
+  tm_percent=""
+  icon="􀖊"
+  if test "$(sketchybar --query timemachine | jq -r .icon.value)" = "$icon"; then
+    icon="􀖋"
+  fi
+  update_freq=2
+  case "$tm_phase" in
+    FindingBackupVol)
+      tm_phase="Finding"
+      ;;
+    Starting)
+      ;;
+    MountingDiskImage)
+      tm_phase="Mounting"
+      ;;
+    PreparingSourceVolumes)
+      tm_phase="Preparing"
+      ;;
+    FindingChanges)
+      tm_phase="Changes"
+      tm_progress=" $(echo "$tm_status" | grep FractionOfProgressBar | grep -Eo "\d+(\.\d+)?")%"
+      tm_done=" $(echo "$tm_status" | grep FractionDone | grep -Eo "\d+(\.\d+)?")%"
+      tm_percent_raw="$(echo "$tm_progress" "$tm_done" | awk '{printf "%d\n" , ($1 * $2) * 100}' )"
+      tm_percent=" $tm_percent_raw%"
+      ;;
+    Copying)
+      tm_progress=" $(echo "$tm_status" | grep FractionOfProgressBar | grep -Eo "\d+(\.\d+)?")%"
+      tm_done=" $(echo "$tm_status" | grep 'Percent =' | grep -Eo "\d+(\.\d+)?(e\-\d+)?")%"
+      tm_percent_raw="$(echo "$tm_progress" "$tm_done" | awk '{printf "%d\n" , ((1.0 - $1) + ($1 * $2)) * 100}' )"
+      tm_percent=" $tm_percent_raw%"
+      ;;
+    Finishing)
+      tm_percent_raw="95"
+      tm_percent=" $tm_percent_raw%"
+      ;;
+    Stopping)
+      tm_percent_raw="95"
+      tm_percent=" $tm_percent_raw%"
+      ;;
+    ThinningPreBackup)
+      tm_phase="Preparing"
+      ;;
+    ThinningPostBackup|LazyThinning)
+      tm_phase="Thinning"
+      tm_percent_raw="98"
+      tm_percent=" $tm_percent_raw%"
     ;;
-  Starting)
-    ;;
-  MountingDiskImage)
-    tm_phase="Mounting"
-    ;;
-  PreparingSourceVolumes)
-    tm_phase="Preparing"
-    ;;
-  FindingChanges)
-    tm_phase="Changes"
-    tm_progress=" $(echo "$tm_status" | grep FractionOfProgressBar | grep -Eo "\d+(\.\d+)?")%"
-    tm_done=" $(echo "$tm_status" | grep FractionDone | grep -Eo "\d+(\.\d+)?")%"
-    tm_percent=" $(echo "$tm_progress" "$tm_done" | awk '{printf "%d\n" , ($1 * $2) * 100}' )%"
-    ;;
-  Copying)
-    tm_progress=" $(echo "$tm_status" | grep FractionOfProgressBar | grep -Eo "\d+(\.\d+)?")%"
-    tm_done=" $(echo "$tm_status" | grep 'Percent =' | grep -Eo "\d+(\.\d+)?(e\-\d+)?")%"
-    tm_percent=" $(echo "$tm_progress" "$tm_done" | awk '{printf "%d\n" , ((1.0 - $1) + ($1 * $2)) * 100}' )%"
-    ;;
-  Finishing)
-    tm_percent=" 95%"
-    ;;
-  Stopping)
-    tm_percent=" 95%"
-    ;;
-  ThinningPreBackup)
-    tm_phase="Preparing"
-    ;;
-  ThinningPostBackup|LazyThinning)
-    tm_phase="Thinning"
-    tm_percent=" 98%"
-  ;;
-  *)
-    if has_last_failed; then
-      icon="􀱨"
+    *)
+      if has_last_failed "$tm_last_destination"; then
+        icon="􀱨"
+      else
+        icon="􀣔"
+      fi
+      update_freq=10
+      ;;
+  esac
+
+  sketchybar --animate sin 10 \
+    --set "$1" \
+    icon="$icon" \
+    label="$tm_phase$tm_percent" \
+    update_freq="$update_freq"
+
+  if test -n "$tm_last_destination"; then
+    storage_used="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesUsed")")"
+    storage_available="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesAvailable")")"
+    sketchybar \
+      --set "$1.volume" label="$(tm_pref "Destinations.$tm_last_destination.LastKnownVolumeName")" \
+      --set "$1.storage" label="$storage_used used, $storage_available free"
+  fi
+
+  if test -n "$tm_phase"; then
+    sketchybar \
+      --set "$1.progress" \
+      y_offset=-18 \
+      slider.background.drawing=on \
+      --animate sin 10 \
+      --set "$1" \
+      popup.height=60 \
+      --set "$1.icon" \
+      y_offset=10 \
+      --set "$1.volume" \
+      y_offset=18 \
+      --set "$1.storage" \
+      y_offset=0 \
+      --set "$1.action" \
+      y_offset=8 \
+      icon="􀛷"
+  else
+    sketchybar \
+      --set "$1.progress" \
+      y_offset=-30 \
+      slider.background.drawing=off \
+      --animate sin 10 \
+      --set "$1" \
+      popup.height=40 \
+      --set "$1.icon" \
+      y_offset=0 \
+      --set "$1.volume" \
+      y_offset=8 \
+      --set "$1.storage" \
+      y_offset=-10 \
+      --set "$1.action" \
+      y_offset=0 \
+      icon="􀊄"
+  fi
+
+  sketchybar --animate sin 10 \
+    --set "$1.progress" \
+    slider.percentage="$tm_percent_raw" \
+    slider.knob="$tm_phase$tm_percent"
+}
+
+case "$NAME" in
+  *.action)
+    if test -n "$tm_phase"; then
+      tmutil stopbackup
+      sketchybar --set "$NAME" icon="􀊄"
     else
-      icon="􀣔"
+      tmutil startbackup
+      sketchybar --set "$NAME" icon="􀛷"
     fi
-    update_freq=10
+    ;;
+  *)
+    case "$SENDER" in
+      mouse.clicked)
+        sketchybar --set "$NAME" popup.drawing=toggle
+        ;;
+    esac
+
+    update_status "$NAME"
     ;;
 esac
-
-sketchybar --animate sin 10 \
-  --set "$NAME" \
-  icon="$icon" \
-  label="$tm_phase$tm_percent" \
-  update_freq="$update_freq"
