@@ -32,8 +32,12 @@ sketchybar --default "${default[@]}"
 
 ## Left Items
 items apple
+
+# items switcher
+# switcher aerospace menubar
+
 items aerospace
-items menubar
+# items menubar
 
 ## Right Items
 items clock
