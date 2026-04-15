@@ -73,7 +73,7 @@ has_last_failed() {
 update_status() {
   tm_status="$(tmutil status)"
   tm_phase="$(echo "$tm_status" | grep BackupPhase | grep -Eo "\w+;" | cut -d';' -f1)"
-  tm_last_destination="$(get_last_destination)"
+  tm_last_destination="$2"
 
   tm_percent_raw="0"
   tm_percent=""
@@ -137,19 +137,20 @@ update_status() {
       ;;
   esac
 
-  sketchybar --animate sin 10 \
+  sketchybar \
+    --set "$1" \
+    drawing=on \
+    --animate sin 10 \
     --set "$1" \
     icon="$icon" \
     label="$tm_phase$tm_percent" \
     update_freq="$update_freq"
 
-  if test -n "$tm_last_destination"; then
-    storage_used="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesUsed")")"
-    storage_available="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesAvailable")")"
-    sketchybar \
-      --set "$1.volume" label="$(tm_pref "Destinations.$tm_last_destination.LastKnownVolumeName")" \
-      --set "$1.storage" label="$storage_used used, $storage_available free"
-  fi
+  storage_used="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesUsed")")"
+  storage_available="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesAvailable")")"
+  sketchybar \
+    --set "$1.volume" label="$(tm_pref "Destinations.$tm_last_destination.LastKnownVolumeName")" \
+    --set "$1.storage" label="$storage_used used, $storage_available free"
 
   if test -n "$tm_phase"; then
     sketchybar \
@@ -208,12 +209,18 @@ case "$NAME" in
     fi
     ;;
   *)
+    tm_last_destination="$(get_last_destination)"
+
+    if test -z "$tm_last_destination"; then
+      exit
+    fi
+
     case "$SENDER" in
       mouse.clicked)
         sketchybar --set "$NAME" popup.drawing=toggle
         ;;
     esac
 
-    update_status "$NAME"
+    update_status "$NAME" "$tm_last_destination"
     ;;
 esac

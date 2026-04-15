@@ -2,6 +2,7 @@
 
 sketchybar --add item timemachine right \
            --set timemachine \
+           drawing=off \
            icon.font.size=12 \
            label.font="SF Pro:Bold:10" \
            script="$CONFIG_DIR/plugins/timemachine.sh" \
@@ -12,7 +13,7 @@ sketchybar --add item timemachine right \
            popup.background.corner_radius=8 \
            popup.background.color=0xff282d33 \
            popup.background.border_color=0x40ffffff \
-           update_freq=10 \
+           update_freq=3600 \
            --subscribe timemachine mouse.clicked
 
 sketchybar --add item timemachine.icon popup.timemachine \
