@@ -68,12 +68,6 @@ case "$NAME" in
   *.mode)
     update_mode "$NAME"
     ;;
-  *.display-event)
-    aerospace move-workspace-to-monitor --workspace chat secondary sidecar main
-    if test "$(whoami)" != "spywhere"; then
-      aerospace move-workspace-to-monitor --workspace mail secondary sidecar main
-    fi
-    ;;
   *.workspace.*)
     # shellcheck disable=SC2001
     current_workspace="$(echo "$NAME" | sed 's/^.*\.workspace\.//g')"
@@ -136,11 +130,5 @@ case "$NAME" in
         background.corner_radius=25 \
         background.height=25
     fi
-
-    sketchybar --add item "$NAME.display-event" left \
-      --subscribe "$item_id" display_change \
-      --set "$NAME.display-event" \
-      script="$CONFIG_DIR/plugins/aerospace.sh" \
-      drawing=off
     ;;
 esac
