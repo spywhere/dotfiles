@@ -170,6 +170,7 @@ on-mode-changed = [
 
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
+    alt-shift-r = ['reload-config', 'exec-and-forget sketchybar --reload', 'mode main']
     r = ['flatten-workspace-tree', 'mode main'] # reset layout
     f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 
