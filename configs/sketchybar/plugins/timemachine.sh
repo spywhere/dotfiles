@@ -81,6 +81,12 @@ update_status() {
   if test "$(sketchybar --query timemachine | jq -r .icon.value)" = "$icon"; then
     icon="􀖋"
   fi
+  result_icon=""
+  result_alpha=0
+  if test -n "$(tm_pref "Destinations.$tm_last_destination.RESULT")"; then
+    result_icon="􀇿"
+    result_alpha=1
+  fi
   volume_icon="􀤝"
   if test -n "$(tm_pref "Destinations.$tm_last_destination.NetworkURL")"; then
     volume_icon="􀩯"
@@ -155,8 +161,10 @@ update_status() {
   if test -n "$tm_phase"; then
     sketchybar \
       --set "$1.progress" \
+      padding_left=-60 \
       y_offset=-18 \
       slider.background.drawing=on \
+      slider.width=300 \
       --set "$1.icon" \
       icon="$volume_icon" \
       y_offset=10 \
@@ -167,6 +175,11 @@ update_status() {
       --animate sin 10 \
       --set "$1" \
       popup.height=60 \
+      --set "$1.result" \
+      y_offset=8 \
+      icon="􀴽" \
+      icon.color=0xffa4a6aa \
+      icon.color.alpha=1 \
       --set "$1.action" \
       y_offset=8 \
       padding_right=20 \
@@ -174,8 +187,10 @@ update_status() {
   else
     sketchybar \
       --set "$1.progress" \
+      padding_left=0 \
       y_offset=-30 \
       slider.background.drawing=off \
+      slider.width=240 \
       --set "$1.icon" \
       icon="$volume_icon" \
       y_offset=0 \
@@ -186,6 +201,11 @@ update_status() {
       --animate sin 10 \
       --set "$1" \
       popup.height=40 \
+      --set "$1.result" \
+      y_offset=0 \
+      icon="$result_icon" \
+      icon.color=0xffff4747 \
+      icon.color.alpha="$result_alpha" \
       --set "$1.action" \
       y_offset=0 \
       padding_right=10 \
@@ -199,6 +219,13 @@ update_status() {
 }
 
 case "$NAME" in
+  *.icon)
+    sketchybar --animate sin 3 --set "$NAME" icon.color.alpha=0.5 icon.color.alpha=1
+    open "x-apple.systempreferences:com.apple.Time-Machine-Settings.extension"
+    ;;
+  *.result)
+    sketchybar --set "$NAME" popup.drawing=toggle
+    ;;
   *.action)
     if test -n "$tm_phase"; then
       tmutil stopbackup
