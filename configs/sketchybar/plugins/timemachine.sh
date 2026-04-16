@@ -104,6 +104,9 @@ update_status() {
     PreparingSourceVolumes)
       tm_phase="Preparing"
       ;;
+    DeletingOldBackup)
+      tm_phase="Cleaning"
+      ;;
     FindingChanges)
       tm_phase="Changes"
       tm_progress=" $(echo "$tm_status" | grep FractionOfProgressBar | grep -Eo "\d+(\.\d+)?")%"
