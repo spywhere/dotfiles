@@ -216,6 +216,14 @@ update_status() {
     --set "$1.progress" \
     slider.percentage="$tm_percent_raw" \
     slider.knob="$tm_phase$tm_percent"
+
+  time_hide="$(sketchybar --query "$1.icon" | jq -r '.label.value')"
+  if test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
+    sketchybar \
+      --set "$1.result" popup.drawing=off \
+      --set "$1" popup.drawing=off \
+      --set "$NAME.icon" label=
+  fi
 }
 
 case "$NAME" in
@@ -229,10 +237,16 @@ case "$NAME" in
   *.action)
     if test -n "$tm_phase"; then
       tmutil stopbackup
-      sketchybar --set "$NAME" icon="􀊄"
+      sketchybar \
+        --set "$NAME" icon="􀊄" \
+        --animate sin 3 \
+        --set "$NAME" icon.color.alpha=0.5 icon.color.alpha=1
     else
       tmutil startbackup
-      sketchybar --set "$NAME" icon="􀛷"
+      sketchybar \
+        --set "$NAME" icon="􀛷" \
+        --animate sin 3 \
+        --set "$NAME" icon.color.alpha=0.5 icon.color.alpha=1
     fi
     ;;
   *)
@@ -244,7 +258,10 @@ case "$NAME" in
 
     case "$SENDER" in
       mouse.clicked)
-        sketchybar --set "$NAME" popup.drawing=toggle
+        sketchybar \
+          --set "$NAME.result" popup.drawing=off \
+          --set "$NAME" popup.drawing=toggle \
+          --set "$NAME.icon" label="$(echo "$(date +%s)" | awk '{print $1 + 10}')"
         ;;
     esac
 
