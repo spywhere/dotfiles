@@ -39,6 +39,15 @@ sketchybar --add item timemachine.storage popup.timemachine \
            label.font="SF Pro:Bold:10" \
            label.color=0xffa4a6aa
 
+sketchybar --add item timemachine.size popup.timemachine \
+           --set timemachine.size \
+           width=0 \
+           icon.drawing=off \
+           label.align=right \
+           label.width=250 \
+           label.font="SF Pro:Bold:10" \
+           label.color=0xffa4a6aa
+
 sketchybar --add slider timemachine.progress popup.timemachine \
            --subscribe timemachine.progress mouse.clicked \
            --set timemachine.progress \

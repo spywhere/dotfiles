@@ -75,6 +75,10 @@ update_status() {
   tm_phase="$(echo "$tm_status" | grep BackupPhase | grep -Eo "\w+;" | cut -d';' -f1)"
   tm_last_destination="$2"
 
+  progress_draw="off"
+  progress_multi=0
+  size_multi=0
+  action_icon="􀊄"
   tm_percent_raw="0"
   tm_percent=""
   icon="􀖊"
@@ -82,10 +86,10 @@ update_status() {
     icon="􀖋"
   fi
   result_icon=""
-  result_alpha=0
+  result_color="0x00a4a6aa"
   if test -n "$(tm_pref "Destinations.$tm_last_destination.RESULT")"; then
+    result_color="0xffff4747"
     result_icon="􀇿"
-    result_alpha=1
   fi
   volume_icon="􀤝"
   if test -n "$(tm_pref "Destinations.$tm_last_destination.NetworkURL")"; then
@@ -119,6 +123,11 @@ update_status() {
       tm_done=" $(echo "$tm_status" | grep 'Percent =' | grep -Eo "\d+(\.\d+)?(e\-\d+)?")%"
       tm_percent_raw="$(echo "$tm_progress" "$tm_done" | awk '{printf "%d\n" , ((1.0 - $1) + ($1 * $2)) * 100}' )"
       tm_percent=" $tm_percent_raw%"
+
+      tm_files="$(echo "$tm_status" | grep 'files =' | grep -Eo "\d+")"
+      tm_bytes="$(echo "$tm_status" | grep 'bytes =' | grep -Eo "\d+")"
+      sketchybar --set "$1.size" label="$(printf "%'d" "$tm_files") Files ($(human_readable "$tm_bytes"))"
+      size_multi=1
       ;;
     Finishing)
       tm_percent_raw="95"
@@ -146,79 +155,54 @@ update_status() {
       ;;
   esac
 
-  sketchybar \
-    --set "$1" \
-    drawing=on \
-    --animate sin 10 \
-    --set "$1" \
-    icon="$icon" \
-    label="$tm_phase$tm_percent" \
-    update_freq="$update_freq"
+  if test -n "$tm_phase"; then
+    progress_draw="on"
+    progress_multi=1
+
+    result_color="0xffa4a6aa"
+    result_icon="􀴽"
+    action_icon="􀛷"
+  fi
 
   storage_used="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesUsed")")"
   storage_available="$(human_readable "$(tm_pref "Destinations.$tm_last_destination.BytesAvailable")")"
+
   sketchybar \
+    --set "$1" \
+    drawing=on \
+    update_freq="$update_freq" \
     --set "$1.volume" label="$(tm_pref "Destinations.$tm_last_destination.LastKnownVolumeName")" \
-    --set "$1.storage" label="$storage_used used, $storage_available free"
-
-  if test -n "$tm_phase"; then
-    sketchybar \
-      --set "$1.progress" \
-      padding_left=-60 \
-      y_offset=-18 \
-      slider.background.drawing=on \
-      slider.width=300 \
-      --set "$1.icon" \
-      icon="$volume_icon" \
-      y_offset=10 \
-      --set "$1.volume" \
-      y_offset=18 \
-      --set "$1.storage" \
-      y_offset=0 \
-      --animate sin 10 \
-      --set "$1" \
-      popup.height=60 \
-      --set "$1.result" \
-      y_offset=8 \
-      icon="􀴽" \
-      icon.color=0xffa4a6aa \
-      icon.color.alpha=1 \
-      --set "$1.action" \
-      y_offset=8 \
-      padding_right=20 \
-      icon="􀛷"
-  else
-    sketchybar \
-      --set "$1.progress" \
-      padding_left=0 \
-      y_offset=-30 \
-      slider.background.drawing=off \
-      slider.width=240 \
-      --set "$1.icon" \
-      icon="$volume_icon" \
-      y_offset=0 \
-      --set "$1.volume" \
-      y_offset=8 \
-      --set "$1.storage" \
-      y_offset=-10 \
-      --animate sin 10 \
-      --set "$1" \
-      popup.height=40 \
-      --set "$1.result" \
-      y_offset=0 \
-      icon="$result_icon" \
-      icon.color=0xffff4747 \
-      icon.color.alpha="$result_alpha" \
-      --set "$1.action" \
-      y_offset=0 \
-      padding_right=10 \
-      icon="􀊄"
-  fi
-
-  sketchybar --animate sin 10 \
+    --set "$1.storage" label="$storage_used used, $storage_available free" \
+    --animate sin 10 \
     --set "$1.progress" \
+    padding_left=$(( -60 * progress_multi )) \
+    y_offset=$(( -30 + 12 * progress_multi + 10 * size_multi )) \
+    slider.background.drawing="$progress_draw" \
+    slider.width=$(( 240 + 60 * progress_multi )) \
     slider.percentage="$tm_percent_raw" \
-    slider.knob="$tm_phase$tm_percent"
+    slider.knob="$tm_phase$tm_percent" \
+    --set "$1.icon" \
+    icon="$volume_icon" \
+    y_offset=$(( 0 + 10 * progress_multi + 10 * size_multi )) \
+    --set "$1.volume" \
+    y_offset=$(( 8 + 10 * progress_multi + 10 * size_multi )) \
+    --set "$1.storage" \
+    y_offset=$(( -10 + 10 * progress_multi + 10 * size_multi )) \
+    --set "$1" \
+    icon="$icon" \
+    label="$tm_phase$tm_percent" \
+    popup.height=$(( 40 + 20 * progress_multi + 20 * size_multi )) \
+    --set "$1.size" \
+    y_offset=$(( -25 )) \
+    label.color.alpha="$size_multi" \
+    --set "$1.result" \
+    y_offset=$(( 0 + 10 * progress_multi + 10 * size_multi )) \
+    icon="$result_icon" \
+    icon.color="$result_color" \
+    --set "$1.action" \
+    y_offset=$(( 0 + 10 * progress_multi + 10 * size_multi )) \
+    padding_right=$(( 10 + 10 * progress_multi )) \
+    icon="$action_icon"
 
   time_hide="$(sketchybar --query "$1.icon" | jq -r '.label.value')"
   if test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
@@ -264,7 +248,7 @@ case "$NAME" in
         sketchybar \
           --set "$NAME.result" popup.drawing=off \
           --set "$NAME" popup.drawing=toggle \
-          --set "$NAME.icon" label="$(echo "$(date +%s)" | awk '{print $1 + 10}')"
+          --set "$NAME.icon" label="$(echo "$(date +%s)" | awk '{print $1 + 60}')"
         ;;
     esac
 
