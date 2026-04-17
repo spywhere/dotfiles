@@ -23,4 +23,4 @@ add_app_badge() {
 
 add_app_badge slack Slack 󰒱 0xffeed49f 0xffed8796
 add_app_badge protonmail 'Proton Mail' 􀍛 0xff99ccff
-add_app_badge outlook 'Microsoft Outlook' 􀍛 0xff99cc
+add_app_badge outlook 'Microsoft Outlook' 􀍛 0xff99ccff
