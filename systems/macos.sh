@@ -107,7 +107,7 @@ has_login_app_store() {
 }
 
 has_app_installed() {
-  if test "$(mas list | wc -l)" -gt 0; then
+  if test "$(mas list 2>/dev/null | wc -l)" -gt 0; then
     return 0
   else
     return 1
@@ -141,20 +141,22 @@ wait_for_app_store() {
   done
   if ! has_app_installed; then
     warn "App Store sign in timed out                                                                  "
+    return 1
   elif test -n "$wait_for_app_store__last_check"; then
     info "App Store signed in                                                                          "
   fi
+  return 0
 }
 
 run_mas() {
   if ! has_cmd mas; then
-    error "Failed: \"mas\" command cannot be found, eventhough it pass the checks. This might indicate some issue"
+    error "Failed: \"mas\" command cannot be found, even though it pass the checks. This might indicate some issue"
     quit 1
   fi
 
-  wait_for_app_store
-
-  cmd mas install "$@"
+  if wait_for_app_store; then
+    cmd mas install "$@"
+  fi
 }
 
 update() {
