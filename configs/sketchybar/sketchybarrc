@@ -9,7 +9,7 @@ items() {
   done
 }
 
-sketchybar --bar position=top height=30 blur_radius=30 color=0x40000000 padding_left=0
+sketchybar --bar position=top height=30 notch_display_height=33 blur_radius=30 color=0x40000000 padding_left=0
 
 default=(
   padding_left=0
