@@ -279,9 +279,9 @@ setup_macos() {
 
   step "Setting up computer name to '$setup_macos__computer_name'"
   sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
-  step "Setting up host name to '$setup_macos__computer_name'"
+  step "Setting up host name to '$setup_macos__host_name'"
   sudo_cmd scutil --set HostName "$setup_macos__host_name"
-  step "Setting up local host name to '$setup_macos__computer_name'"
+  step "Setting up local host name to '$setup_macos__host_name'"
   sudo_cmd scutil --set LocalHostName "$setup_macos__host_name"
   step "Setting up SMB server description to '$setup_macos__computer_name'"
   sudo_config "SystemConfiguration/com.apple.smb.server" "ServerDescription" "$setup_macos__computer_name"
