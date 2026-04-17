@@ -3,7 +3,6 @@
 sketchybar --add item timemachine right \
            --set timemachine \
            drawing=off \
-           icon.font.size=12 \
            label.font="SF Pro:Bold:10" \
            script="$CONFIG_DIR/plugins/timemachine.sh" \
            popup.horizontal=on \
