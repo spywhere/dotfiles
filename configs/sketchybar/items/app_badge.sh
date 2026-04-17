@@ -16,7 +16,7 @@ add_app_badge() {
                icon.font.size=18 \
                icon.padding_right=0 \
                update_freq=60 \
-               script="$CONFIG_DIR/plugins/app_badge.sh '$app_name' $@" \
+               script="$CONFIG_DIR/plugins/app_badge.sh '$app_name' $*" \
                --subscribe "$identifier" front_app_switched
   fi
 }

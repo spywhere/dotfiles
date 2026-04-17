@@ -248,7 +248,7 @@ case "$NAME" in
         sketchybar \
           --set "$NAME.result" popup.drawing=off \
           --set "$NAME" popup.drawing=toggle \
-          --set "$NAME.icon" label="$(echo "$(date +%s)" | awk '{print $1 + 60}')"
+          --set "$NAME.icon" label="$(date +%s | awk '{print $1 + 60}')"
         ;;
     esac
 
