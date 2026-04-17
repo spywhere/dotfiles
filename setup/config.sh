@@ -175,7 +175,7 @@ setup_macos() {
   config "com.apple.dock" "mru-spaces" false
   config "com.apple.dock" "show-recents" false
   config "com.apple.dock" "magnification" true
-  config "com.apple.dock" "large-size" 64
+  config "com.apple.dock" "largesize" 64
   config "com.apple.dock" "tilesize" 32
 
   # Hot Corners
