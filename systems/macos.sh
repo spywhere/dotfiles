@@ -257,7 +257,7 @@ install_packages() {
       step "Installing mas for App Store installation..."
       run_brew formula mas
     fi
-    wait_for_app_store
+    wait_for_app_store || true
   fi
 
   if test -n "$install_packages__nativefier_packages"; then
