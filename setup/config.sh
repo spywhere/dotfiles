@@ -11,11 +11,11 @@ then
   exit 1
 fi
 
-add_setup 'setup_config'
+add_setup 'setup_config' 'config'
 
 if test "$OSKIND" = "macos" && has_profile -work; then
-  add_setup 'setup_macos'
-  add_setup 'setup_launchagents'
+  add_setup 'setup_macos' 'macos-config'
+  add_setup 'setup_launchagents' 'macos-launchagents'
 fi
 
 dock_add_app() {
@@ -274,13 +274,17 @@ setup_macos() {
   ###########
   # Network #
   ###########
-  if has_profile -ci; then
-    setup_macos__computer_name="$(whoami)'s$(system_profiler SPHardwareDataType 2>/dev/null | grep 'Model Name' | cut -d: -f2-)"
-    sudo_config "SystemConfiguration/com.apple.smb.server" "ServerDescription" "$setup_macos__computer_name"
-    sudo_cmd scutil --set LocalHostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
-    sudo_cmd scutil --set HostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
-    sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
-  fi
+  setup_macos__computer_name="$(whoami)'s$(system_profiler SPHardwareDataType 2>/dev/null | grep 'Model Name' | cut -d: -f2-)"
+  setup_macos__host_name="$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z0-9 ]//g' | sed 's/ /-/g')"
+
+  step "Setting up computer name to '$setup_macos__computer_name'"
+  sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
+  step "Setting up host name to '$setup_macos__computer_name'"
+  sudo_cmd scutil --set HostName "$setup_macos__host_name"
+  step "Setting up local host name to '$setup_macos__computer_name'"
+  sudo_cmd scutil --set LocalHostName "$setup_macos__host_name"
+  step "Setting up SMB server description to '$setup_macos__computer_name'"
+  sudo_config "SystemConfiguration/com.apple.smb.server" "ServerDescription" "$setup_macos__computer_name"
 
   add_post_install_message "Be sure to restart the computer once for changes to take effect"
 }
