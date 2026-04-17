@@ -257,11 +257,13 @@ setup_macos() {
   ###########
   # Network #
   ###########
-  setup_macos__computer_name="$(whoami)'s$(system_profiler SPHardwareDataType 2>/dev/null | grep 'Model Name' | cut -d: -f2-)"
-  sudo_config "SystemConfiguration/com.apple.smb.server" "ServerDescription" "$setup_macos__computer_name"
-  sudo_cmd scutil --set LocalHostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
-  sudo_cmd scutil --set HostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
-  sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
+  if has_profile -ci; then
+    setup_macos__computer_name="$(whoami)'s$(system_profiler SPHardwareDataType 2>/dev/null | grep 'Model Name' | cut -d: -f2-)"
+    sudo_config "SystemConfiguration/com.apple.smb.server" "ServerDescription" "$setup_macos__computer_name"
+    sudo_cmd scutil --set LocalHostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
+    sudo_cmd scutil --set HostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
+    sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
+  fi
 
   add_post_install_message "Be sure to restart the computer once for changes to take effect"
 }
