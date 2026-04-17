@@ -43,10 +43,15 @@ setup_macos() {
   # System #
   ##########
   config "NSGlobalDomain" "AppleInterfaceStyle" "Dark"
+  config "NSGlobalDomain" "_HIHideMenuBar" true
+  config "NSGlobalDomain" "AppleMenuBarVisibleInFullscreen" false
+  config "NSGlobalDomain" "SLSMenuBarUseBlurredAppearance" true
   # config "NSGlobalDomain" "AppleShowScrollBars" "Automatic"
   config "NSGlobalDomain" "NSQuitAlwaysKeepsWindows" true
   config "NSGlobalDomain" "AppleShowAllExtensions" true
   config "NSGlobalDomain" "WebKitDeveloperExtras" true
+
+  config "com.apple.WindowManager" "EnableStandardClickToShowDesktop" false
 
   #############
   # Languages #
@@ -71,7 +76,18 @@ setup_macos() {
   ############
   config "NSGlobalDomain" "com.apple.trackpad.forceClick" 0
   config "NSGlobalDomain" "com.apple.mouse.tapBehavior" 1
-  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "Clicking" 1
+
+  config "com.apple.AppleMultitouchTrackpad" "Clicking" true
+  config "com.apple.AppleMultitouchTrackpad" "TrackpadRightClick" true
+  config "com.apple.AppleMultitouchTrackpad" "ForceSuppressed" true
+  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "Clicking" true
+  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "TrackpadRightClick" true
+  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "ForceSuppressed" true
+
+  config "com.apple.AppleMultitouchMouse" "Clicking" true
+  config "com.apple.AppleMultitouchMouse" "MouseButtonMode" "TwoButton"
+  config "com.apple.driver.AppleBluetoothMultitouch.mouse" "Clicking" true
+  config "com.apple.driver.AppleBluetoothMultitouch.mouse" "MouseButtonMode" "TwoButton"
 
   ############
   # Keyboard #
@@ -79,6 +95,8 @@ setup_macos() {
   config "NSGlobalDomain" "ApplePressAndHoldEnabled" false
   config "NSGlobalDomain" "InitialKeyRepeat" 25
   config "NSGlobalDomain" "KeyRepeat" 2
+
+  config "com.apple.hitoolbox" "AppleFnUsageType" 1
 
   ################
   # Text editing #
@@ -133,11 +151,21 @@ setup_macos() {
   ########
   # Dock #
   ########
+  config "com.apple.dock" "autohide" true
   config "com.apple.dock" "expose-group-apps" true
   config "com.apple.dock" "minimize-to-application" true
   config "com.apple.dock" "show-process-indicators" true
   config "com.apple.dock" "mru-spaces" false
   config "com.apple.dock" "show-recents" false
+  config "com.apple.dock" "magnification" true
+  config "com.apple.dock" "large-size" 64
+  config "com.apple.dock" "tilesize" 32
+
+  # Hot Corners
+  config "com.apple.dock" "wvous-tl-corner" 1
+  config "com.apple.dock" "wvous-bl-corner" 1
+  config "com.apple.dock" "wvous-tr-corner" 1
+  config "com.apple.dock" "wvous-br-corner" 1
 
   dock_clear_apps
 
@@ -182,9 +210,23 @@ setup_macos() {
   ##############
   # Clock Menu #
   ##############
-  config "com.apple.menuextra.clock" "DateFormat" "EEE d MMM  HH:mm"
   config "com.apple.menuextra.clock" "FlashDateSeparators" true
   config "com.apple.menuextra.clock" "Show24Hour" true
+  config "com.apple.menuextra.clock" "ShowDate" 1
+  config "com.apple.menuextra.clock" "ShowDayOfWeek" true
+
+  ##################
+  # Control Center #
+  ##################
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Battery" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "BatteryShowPercentage" true
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "FocusModes" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "NowPlaying" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Sound" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Spotlight" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "TimeMachine" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Weather" 8
+  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "WiFi" 8
 
   ###########
   # Sidecar #
@@ -207,6 +249,7 @@ setup_macos() {
   # Login window #
   ################
   # Show IP / Host / OS version / etc. when click the clock in login window
+  # sudo_config "com.apple.loginwindow" "LoginwindowText" "Hello!\\nDon't forget to update this message."
   sudo_config "com.apple.loginwindow" "AdminHostInfo" "HostName"
   sudo_config "com.apple.loginwindow" "GuestEnabled" false
   sudo_config "com.apple.loginwindow" "showInputMenu" true
@@ -214,8 +257,10 @@ setup_macos() {
   ###########
   # Network #
   ###########
-  setup_macos__computer_name="$(whoami)'s $(sysctl -n hw.model | sed 's/[0-9,]*$//g' | sed 's/Pro$/ Pro/g' | sed 's/Air$/ Air/g')"
+  setup_macos__computer_name="$(whoami)'s$(system_profiler SPHardwareDataType 2>/dev/null | grep 'Model Name' | cut -d: -f2-)"
+  sudo_config "SystemConfiguration/com.apple.smb.server" "ServerDescription" "$setup_macos__computer_name"
   sudo_cmd scutil --set LocalHostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
+  sudo_cmd scutil --set HostName "$(printf '%s' "$setup_macos__computer_name" | sed 's/[^a-zA-Z ]//g' | sed 's/ /-/g')"
   sudo_cmd scutil --set ComputerName "$setup_macos__computer_name"
 
   add_post_install_message "Be sure to restart the computer once for changes to take effect"
