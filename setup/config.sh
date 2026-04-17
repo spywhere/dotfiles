@@ -218,15 +218,15 @@ setup_macos() {
   ##################
   # Control Center #
   ##################
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Battery" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "BatteryShowPercentage" true
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "FocusModes" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "NowPlaying" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Sound" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Spotlight" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "TimeMachine" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "Weather" 8
-  config "~/Library/Preferences/ByHost/com.apple.controlcenter" "WiFi" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "Battery" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "BatteryShowPercentage" true
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "FocusModes" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "NowPlaying" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "Sound" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "Spotlight" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "TimeMachine" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "Weather" 8
+  config "$HOME/Library/Preferences/ByHost/com.apple.controlcenter" "WiFi" 8
 
   ###########
   # Sidecar #
