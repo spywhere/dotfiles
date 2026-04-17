@@ -13,6 +13,11 @@ fi
 
 add_setup 'setup_config'
 
+if test "$OSKIND" = "macos" && has_profile -work; then
+  add_setup 'setup_macos'
+  add_setup 'setup_launchagents'
+fi
+
 dock_add_app() {
     if _has_app "$1"; then
         step "  - $1 added to the Dock"
@@ -38,7 +43,19 @@ dock_clear_apps() {
   config "com.apple.dock" "persistent-apps"
 }
 
+setup_launchagents() {
+  step "Setting up LaunchAgents..."
+  if ! test -d "$HOME/Library/LaunchAgents"; then
+    cmd mkdir -p "$HOME/Library/LaunchAgents"
+  fi
+  step "  - qutebrowser-cleanup"
+  raw_copy "supports/mac/launchd/me.spywhere.qutebrowser-cleanup.plist" "Library/LaunchAgents/me.spywhere.qutebrowser-cleanup.plist"
+  step "  - restart"
+  raw_copy "supports/mac/launchd/me.spywhere.restart.plist" "Library/LaunchAgents/me.spywhere.restart.plist"
+}
+
 setup_macos() {
+  step "Setting up system configurations..."
   ##########
   # System #
   ##########
@@ -399,18 +416,4 @@ setup_config() {
 
   step "  - zsh"
   link zsh/zshrc .zshrc
-
-  if test "$OSKIND" = "macos" && has_profile -work; then
-    step "Setting up system configurations..."
-    setup_macos
-
-    step "Setting up LaunchAgents..."
-    if ! test -d "$HOME/Library/LaunchAgents"; then
-      cmd mkdir -p "$HOME/Library/LaunchAgents"
-    fi
-    step "  - qutebrowser-cleanup"
-    raw_copy "supports/mac/launchd/me.spywhere.qutebrowser-cleanup.plist" "Library/LaunchAgents/me.spywhere.qutebrowser-cleanup.plist"
-    step "  - restart"
-    raw_copy "supports/mac/launchd/me.spywhere.restart.plist" "Library/LaunchAgents/me.spywhere.restart.plist"
-  fi
 }
