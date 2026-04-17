@@ -43,6 +43,7 @@ items cpu
 items battery
 items weather
 items timemachine
+items transmission
 items trash
 items app_badge
 items events
