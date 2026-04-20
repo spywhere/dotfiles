@@ -1,5 +1,14 @@
 #!/bin/bash
 
+tm_pref() {
+  plutil -extract "$1" raw "/Library/Preferences/com.apple.TimeMachine.plist"
+}
+
+tm_count_destinations="$(tm_pref Destinations)"
+if test -z "$tm_count_destinations" || test "$tm_count_destinations" -eq 0; then
+  exit 0
+fi
+
 sketchybar --add item timemachine right \
            --set timemachine \
            drawing=off \
