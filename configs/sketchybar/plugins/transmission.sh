@@ -48,17 +48,29 @@ readable_size() {
 }
 
 create_torrent_item() {
-  name="$1"
-  size_left="$2"
-  total="$3"
-  trail="$4"
-  icon="􀈅"
+  status="$1"
+  name="$2"
+  size_left="$3"
+  total="$4"
+  trail="$5"
+  icon="􀈃"
   size_done="$(( total - size_left ))"
   percent_done="$(echo "$size_done" "$total" | awk '{printf "%.2f", $1 / $2 * 100}')"
 
-  if test "$size_left" = "0"; then
-    icon="􀈃"
-  fi
+  case "$status" in
+    1|2)
+      # queued/check
+      icon="􂰶"
+      ;;
+    3|4)
+      # queued/download
+      icon="􀈅"
+      ;;
+    5|6)
+      # queued/seed
+      icon="􀈃"
+      ;;
+  esac
 
   count
   sketchybar \
@@ -112,6 +124,7 @@ update_items() {
   active=""
   for torrent64 in $torrents; do
     torrent_name="$(echo "$torrent64" | jq -r '@base64d|fromjson|.name')"
+    torrent_status="$(echo "$torrent64" | jq -r '@base64d|fromjson|.status')"
 
     torrent_size_left="$(echo "$torrent64" | jq -r '@base64d|fromjson|.left_until_done')"
     torrent_total="$(echo "$torrent64" | jq -r '@base64d|fromjson|.size_when_done')"
@@ -122,24 +135,31 @@ update_items() {
     torrent_upload="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_upload')"
 
     torrent_trail=""
-    if test "$torrent_size_left" = "0"; then
-      torrent_trail=" ($torrent_ratio)"
-      if test "$torrent_upload" -gt 0; then
-        torrent_trail="$torrent_trail 􀄨 $(readable_size "$torrent_upload")/s"
-        if test -z "$active"; then
-          active="up"
+    case "$torrent_status" in
+      3|4)
+        # queued/download
+        if test "$torrent_eta" -ge 0; then
+          torrent_trail=" ($(readable_time "$torrent_eta"))"
         fi
-      fi
-    else
-      torrent_trail=" ($(readable_time "$torrent_eta"))"
-      if test "$torrent_download" -gt 0; then
-        torrent_trail="$torrent_trail 􀄩 $(readable_size "$torrent_download")/s"
-        if test "$active" != "down"; then
-          active="down"
+        if test "$torrent_download" -gt 0; then
+          torrent_trail="$torrent_trail 􀄩 $(readable_size "$torrent_download")/s"
+          if test "$active" != "down"; then
+            active="down"
+          fi
         fi
-      fi
-    fi
-    create_torrent_item "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
+        ;;
+      5|6)
+        # queued/seed
+        torrent_trail=" ($(printf '%.4f' "$torrent_ratio"))"
+        if test "$torrent_upload" -gt 0; then
+          torrent_trail="$torrent_trail 􀄨 $(readable_size "$torrent_upload")/s"
+          if test -z "$active"; then
+            active="up"
+          fi
+        fi
+        ;;
+    esac
+    create_torrent_item "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
   done
 
   if test -n "$active"; then
