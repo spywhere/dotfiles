@@ -197,12 +197,24 @@ wttr() {
   echo "$(wwo_icon "$wwo_code" "$time_of_day")" "$temp"
 }
 
+ipwhois() {
+  data="$(curl --fail-early -m 2 -fsSL 'ipwho.is' 2>/dev/null)"
+  lat_data="$(echo "$data" | jq -r '.latitude')"
+  lon_data="$(echo "$data" | jq -r '.longitude')"
+  echo "lat: $lat_data, lon: $lon_data" >&2
+  echo "latitude=$lat_data&longitude=$lon_data"
+}
+
+ip_api() {
+  data="$(curl --fail-early -m 2 -fsSL 'ip-api.com/json' 2>/dev/null)"
+  lat_data="$(echo "$data" | jq -r '.lat')"
+  lon_data="$(echo "$data" | jq -r '.lon')"
+  echo "lat: $lat_data, lon: $lon_data" >&2
+  echo "latitude=$lat_data&longitude=$lon_data"
+}
+
 open_meteo() {
-  loc_data="$(curl --fail-early -m 2 -fsSL 'https://ipinfo.io')"
-  loc_data="$(echo "$loc_data" | jq -r '.loc')"
-  lat_data="$(echo "$loc_data" | cut -d',' -f1)"
-  lon_data="$(echo "$loc_data" | cut -d',' -f2)"
-  data="$(curl --fail-early -m 2 -fsSL "https://api.open-meteo.com/v1/forecast?latitude=$lat_data&longitude=$lon_data&current=weather_code,is_day,apparent_temperature&timezone=GMT" 2>/dev/null)"
+  data="$(curl --fail-early -m 2 -fsSL "https://api.open-meteo.com/v1/forecast?$(ipwhois)&current=weather_code,is_day,apparent_temperature&timezone=GMT" 2>/dev/null)"
   wmo_code="$(echo "$data" | jq -r '.current.weather_code')"
   day="$(echo "$data" | jq -r '.current.is_day')"
   temp="$(echo "$data" | jq -r '.current.apparent_temperature')"
@@ -219,6 +231,8 @@ open_meteo() {
 weather_data="$(open_meteo)"
 icon="$(echo "$weather_data" | cut -d' ' -f1)"
 temp="$(echo "$weather_data" | cut -d' ' -f2)"
+
+echo "$icon $temp" >&2
 
 sketchybar --animate sin 10 \
   --set "$NAME" \
