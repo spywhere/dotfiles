@@ -35,8 +35,6 @@ items aerospace
 # items menubar
 
 ## Right Items
-items display_monitor
-
 items clock
 items controlcenter
 # items more
@@ -48,6 +46,7 @@ items timemachine
 items transmission
 items trash
 items app_badge
+items display_monitor
 items events
 
 sketchybar --hotload true
