@@ -33,9 +33,10 @@ items apple
 
 items aerospace
 # items menubar
-items display_monitor
 
 ## Right Items
+items display_monitor
+
 items clock
 items controlcenter
 # items more
