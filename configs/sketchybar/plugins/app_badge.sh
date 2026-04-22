@@ -1,12 +1,12 @@
 #!/bin/bash
 
 STATUS_LABEL=$(lsappinfo info -only StatusLabel "$1")
-DRAWING="on"
+WIDTH="dynamic"
 if [[ $STATUS_LABEL =~ \"label\"=\"([^\"]*)\" ]]; then
   LABEL="${BASH_REMATCH[1]}"
 
   if [[ $LABEL == "" ]]; then
-    DRAWING="off"
+    WIDTH="0"
   elif [[ $LABEL == "•" ]]; then
     if test -n "$2"; then
       ICON_COLOR="$2"
@@ -29,4 +29,6 @@ else
   exit 0
 fi
 
-sketchybar --set "$NAME" drawing="$DRAWING" label="$LABEL" icon.color="$ICON_COLOR"
+sketchybar --set "$NAME" label="$LABEL" \
+  --animate sin 10 \
+  --set "$NAME" icon.width="$WIDTH" label.width="$WIDTH" icon.color="$ICON_COLOR"

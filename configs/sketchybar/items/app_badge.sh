@@ -11,10 +11,11 @@ add_app_badge() {
   if test -d "/Applications/$app_name.app"; then
     sketchybar --add item "$identifier" right \
                --set "$identifier" \
-               drawing=off \
                icon="$icon" \
+               icon.width=0 \
                icon.font.size=18 \
                icon.padding_right=0 \
+               label.width=0 \
                update_freq=60 \
                script="$CONFIG_DIR/plugins/app_badge.sh '$app_name' $*" \
                --subscribe "$identifier" front_app_switched
