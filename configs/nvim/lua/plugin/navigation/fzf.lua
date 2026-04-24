@@ -71,6 +71,11 @@ registry.install {
     bindings.map.normal('<leader>f', fuzzy('live_grep', {
       exec_empty_query = true
     }))
+    local defaults = require('fzf-lua').defaults.grep.rg_opts
+    bindings.map.normal('<leader>F', fuzzy('live_grep', {
+      exec_empty_query = true,
+      rg_opts = '--no-ignore ' .. defaults
+    }))
 
     if registry.experiment('explorer').is_not('tree') then
       local cmd = (function()
