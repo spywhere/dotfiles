@@ -22,6 +22,8 @@ configs/qutebrowser/quickmarks
 configs/qutebrowser/greasemonkey/_*
 configs/ssh/**
 !configs/ssh/config
+configs/transmission/**
+!configs/transmission/settings.json
 configs/w3m/cookie
 configs/w3m/history
 .deps

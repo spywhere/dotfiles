@@ -406,6 +406,11 @@ setup_config() {
   step "  - tmux"
   link tmux/tmux.conf .tmux.conf
 
+  step "  - transmission"
+  if test "$OSKIND" = "macos"; then
+    link transmission/ "Library/Application Support/transmission"
+  fi
+
   if ! test -f "$HOME/.wakatime.cfg"; then
     # copy instead as file can contain a secret
     step "  - wakatime"

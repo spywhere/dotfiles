@@ -1,0 +1,6 @@
+{
+  "download_queue_size": 20,
+  "lpd_enabled": true,
+  "ratio_limit_enabled": true,
+  "torrent_complete_verify_enabled": true
+}

@@ -101,7 +101,7 @@ create_torrent_item() {
     slider.background.drawing=on \
     slider.background.height=5 \
     slider.background.corner_radius=3 \
-    slider.percentage=$(echo "$percent_done" | awk '{printf "%d", $1}') \
+    slider.percentage="$(echo "$percent_done" | awk '{printf "%d", $1}')" \
     slider.highlight_color=0xff2e4c77 \
     slider.knob.font="SF Pro:Bold:10" \
     slider.knob.color=0xffb4b6bb \
@@ -118,6 +118,7 @@ update_items() {
   total_torrents="$(echo "$torrents" | jq -sr 'length')"
 
   if test "$total_torrents" = "0"; then
+    # shellcheck disable=SC2153
     sketchybar --set "$NAME" drawing=off popup.drawing=off update_freq=60
     sketchybar --remove "/$NAME\.torrent.*/"
     return
