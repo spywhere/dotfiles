@@ -191,6 +191,8 @@ update_status() {
     --set "$1" \
     icon="$icon" \
     label="$tm_phase$tm_percent" \
+    label.padding_left=$(( 4 * progress_multi )) \
+    label.padding_right=$(( 4 * progress_multi )) \
     popup.height=$(( 40 + 20 * progress_multi + 20 * size_multi )) \
     --set "$1.size" \
     y_offset=$(( -25 )) \
