@@ -116,11 +116,17 @@ create_torrent_item() {
 update_items() {
   torrents="$(transmission-remote -j -l | jq '.result.torrents|map(@base64)|.[]')"
   total_torrents="$(echo "$torrents" | jq -sr 'length')"
+
+  if test "$total_torrents" = "0"; then
+    sketchybar --set "$NAME" drawing=off popup.drawing=off update_freq=60
+    sketchybar --remove "/$NAME\.torrent.*/"
+    return
+  fi
+
   total_items="$(sketchybar --query bar | jq --arg name "$NAME" '.items|map(select(startswith("\($name).torrent") and endswith("name")))|length')"
   if test "$total_items" -gt "$total_torrents"; then
     sketchybar --remove "/$NAME\.torrent.*/"
   fi
-  update_freq=60
   active=""
   for torrent64 in $torrents; do
     torrent_name="$(echo "$torrent64" | jq -r '@base64d|fromjson|.name')"
@@ -162,40 +168,40 @@ update_items() {
     create_torrent_item "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
   done
 
-  if test -n "$active"; then
-    update_freq=2
-  fi
-
+  item_data="$(sketchybar --query "$NAME")"
+  current_icon="$(echo "$item_data" | jq -r .icon.value)"
+  draw_popup="$(echo "$item_data" | jq -r .popup.drawing)"
   icon="􀁾"
   if test "$active" = "down"; then
     icon="􀁸"
-    if test "$(sketchybar --query "$NAME" | jq -r .icon.value)" = "$icon"; then
+    if test "$current_icon" = "$icon"; then
       icon="􀁹"
     fi
   elif test "$active" = "up"; then
     icon="􀁶"
-    if test "$(sketchybar --query "$NAME" | jq -r .icon.value)" = "$icon"; then
+    if test "$current_icon" = "$icon"; then
       icon="􀁷"
     fi
   fi
 
-  draw=on
-  if test "$total_torrents" = "0"; then
-    draw=off
-    sketchybar --set "$NAME" popup.drawing=off
-  fi
-
   sketchybar \
     --set "$NAME" \
-    drawing="$draw" \
+    drawing=on \
     icon="$icon" \
-    label="$total_torrents" \
-    update_freq="$update_freq"
+    label="$total_torrents"
+
+  if test -n "$active"; then
+    sketchybar --set "$NAME" update_freq=2
+  elif test "$draw_popup" = "off"; then
+    sketchybar \
+      --set "$NAME" update_freq=60 \
+      --set "$NAME.metadata" label=
+  fi
 
   time_hide="$(sketchybar --query "$NAME.metadata" | jq -r '.label.value')"
   if test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
     sketchybar \
-      --set "$NAME" popup.drawing=off \
+      --set "$NAME" popup.drawing=off update_freq=60 \
       --set "$NAME.metadata" label=
   fi
 }
