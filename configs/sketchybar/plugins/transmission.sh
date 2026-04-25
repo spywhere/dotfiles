@@ -114,7 +114,7 @@ create_torrent_item() {
 }
 
 update_items() {
-  torrents="$(transmission-remote -j -l | jq '.result.torrents|map(@base64)|.[]')"
+  torrents="$(transmission-remote -j -l | jq '.result.torrents|map(.+{completion: (.size_when_done-.left_until_done)/.size_when_done})|sort_by(.completion,-.id)|reverse|map(@base64)|.[]')"
   total_torrents="$(echo "$torrents" | jq -sr 'length')"
 
   if test "$total_torrents" = "0"; then
