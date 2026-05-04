@@ -93,6 +93,10 @@ on-mode-changed = [
     if.app-id = 'com.colliderli.iina'
     run = 'layout floating'
 
+[[on-window-detected]]
+    if.app-id = 'com.aone.keka'
+    run = 'layout floating'
+
 [mode.main.binding]
 
     # All possible keys:
