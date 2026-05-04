@@ -279,6 +279,10 @@ case "$NAME" in
   *)
     case "$SENDER" in
       mouse.clicked)
+        sketchybar \
+          --animate sin 3 \
+          --set "$NAME" icon.color.alpha=0.5 icon.color.alpha=1 label.color.alpha=0.5 label.color.alpha=1
+
         populate_items "$NAME"
 
         sketchybar \

@@ -250,7 +250,9 @@ case "$NAME" in
         sketchybar \
           --set "$NAME.result" popup.drawing=off \
           --set "$NAME" popup.drawing=toggle \
-          --set "$NAME.icon" label="$(date +%s | awk '{print $1 + 60}')"
+          --set "$NAME.icon" label="$(date +%s | awk '{print $1 + 60}')" \
+          --animate sin 3 \
+          --set "$NAME" icon.color.alpha=0.5 icon.color.alpha=1
         ;;
     esac
 
