@@ -1,10 +1,5 @@
 #!/bin/bash
 
-COUNT=0
-count() {
-  COUNT=$(( COUNT + 1 ))
-}
-
 readable_time() {
   local abbrevs=(
       $((60 * 60 * 24)):days
@@ -48,13 +43,16 @@ readable_size() {
 }
 
 create_torrent_item() {
-  status="$1"
-  name="$2"
-  size_left="$3"
-  total="$4"
-  trail="$5"
-  icon="􀈃"
-  size_done="$(( total - size_left ))"
+  local parent_name="$1"
+  local id="$2"
+  local status="$3"
+  local name="$4"
+  local size_left="$5"
+  local total="$6"
+  local trail="$7"
+  local icon="􀈃"
+  local size_done="$(( total - size_left ))"
+  local percent_done
   percent_done="$(echo "$size_done" "$total" | awk '{printf "%.2f", $1 / $2 * 100}')"
 
   case "$status" in
@@ -72,17 +70,16 @@ create_torrent_item() {
       ;;
   esac
 
-  count
   sketchybar \
-    --add item "transmission.torrent.$COUNT" popup.transmission \
-    --set "transmission.torrent.$COUNT" \
+    --add item "$parent_name.torrent.$id" popup.transmission \
+    --set "$parent_name.torrent.$id" \
     background.drawing=on \
     background.height=1 \
     background.border_width=1 \
     background.border_color=0x40ffffff \
     label.width=350 \
-    --add item "transmission.torrent.$COUNT.name" popup.transmission \
-    --set "transmission.torrent.$COUNT.name" \
+    --add item "$parent_name.torrent.$id.name" popup.transmission \
+    --set "$parent_name.torrent.$id.name" \
     scroll_texts=on \
     background.drawing=on \
     background.height=25 \
@@ -90,9 +87,8 @@ create_torrent_item() {
     label.max_chars=45 \
     label.scroll_duration=600 \
     label.padding_left=25 \
-    --add slider "transmission.torrent.$COUNT.progress" popup.transmission \
-    --set "transmission.torrent.$COUNT.progress" \
-    background.drawing=on \
+    --add slider "$parent_name.torrent.$id.progress" popup.transmission \
+    --set "$parent_name.torrent.$id.progress" \
     icon="$icon" \
     icon.padding_left=10 \
     icon.padding_right=10 \
@@ -105,43 +101,60 @@ create_torrent_item() {
     slider.highlight_color=0xff2e4c77 \
     slider.knob.font="SF Pro:Bold:10" \
     slider.knob.color=0xffb4b6bb \
-    --add item "transmission.torrent.$COUNT.info" popup.transmission \
-    --set "transmission.torrent.$COUNT.info" \
+    --add item "$parent_name.torrent.$id.info" popup.transmission \
+    --set "$parent_name.torrent.$id.info" \
     background.drawing=on \
     background.height=25 \
     label="$(readable_size "$size_done") / $(readable_size "$total")$trail" \
     label.padding_left=25
 }
 
-update_items() {
+update_torrent_menu() {
+  local name="$1"
+  sketchybar --set "$name" label="$(date +%s)"
+}
+
+update_item_and_popup() {
+  local name="$1"
+  local torrents
   torrents="$(transmission-remote -j -l | jq '.result.torrents|map(.+{completion: (.size_when_done-.left_until_done)/.size_when_done})|sort_by(.completion,-.id)|reverse|map(@base64)|.[]')"
+  local total_torrents
   total_torrents="$(echo "$torrents" | jq -sr 'length')"
 
   if test "$total_torrents" = "0"; then
-    # shellcheck disable=SC2153
-    sketchybar --set "$NAME" drawing=off popup.drawing=off update_freq=60
-    sketchybar --remove "/$NAME\.torrent.*/"
+    sketchybar --remove "/$name\.torrent.*/"
     return
   fi
 
-  total_items="$(sketchybar --query bar | jq --arg name "$NAME" '.items|map(select(startswith("\($name).torrent") and endswith("name")))|length')"
+  local total_items
+  total_items="$(sketchybar --query bar | jq --arg name "$name" '.items|map(select(startswith("\($name).torrent") and endswith("name")))|length')"
   if test "$total_items" -gt "$total_torrents"; then
-    sketchybar --remove "/$NAME\.torrent.*/"
+    sketchybar --remove "/$name\.torrent.*/"
   fi
-  active=""
+  local active=""
   for torrent64 in $torrents; do
+    local torrent_id
+    torrent_id="$(echo "$torrent64" | jq -r '@base64d|fromjson|.id')"
+    local torrent_name
     torrent_name="$(echo "$torrent64" | jq -r '@base64d|fromjson|.name')"
+    local torrent_status
     torrent_status="$(echo "$torrent64" | jq -r '@base64d|fromjson|.status')"
 
+    local torrent_size_left
     torrent_size_left="$(echo "$torrent64" | jq -r '@base64d|fromjson|.left_until_done')"
+    local torrent_total
     torrent_total="$(echo "$torrent64" | jq -r '@base64d|fromjson|.size_when_done')"
 
+    local torrent_eta
     torrent_eta="$(echo "$torrent64" | jq -r '@base64d|fromjson|.eta')"
+    local torrent_ratio
     torrent_ratio="$(echo "$torrent64" | jq -r '@base64d|fromjson|.upload_ratio')"
+    local torrent_download
     torrent_download="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_download')"
+    local torrent_upload
     torrent_upload="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_upload')"
 
-    torrent_trail=""
+    local torrent_trail=""
     case "$torrent_status" in
       3|4)
         # queued/download
@@ -166,13 +179,16 @@ update_items() {
         fi
         ;;
     esac
-    create_torrent_item "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
+    create_torrent_item "$name" "$torrent_id" "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
   done
 
-  item_data="$(sketchybar --query "$NAME")"
+  local item_data
+  item_data="$(sketchybar --query "$name")"
+  local current_icon
   current_icon="$(echo "$item_data" | jq -r .icon.value)"
+  local draw_popup
   draw_popup="$(echo "$item_data" | jq -r .popup.drawing)"
-  icon="􀁾"
+  local icon="􀁾"
   if test "$active" = "down"; then
     icon="􀁸"
     if test "$current_icon" = "$icon"; then
@@ -186,34 +202,45 @@ update_items() {
   fi
 
   sketchybar \
-    --set "$NAME" \
+    --set "$name" \
     drawing=on \
     icon="$icon" \
     label="$total_torrents"
 
   if test -n "$active"; then
-    sketchybar --set "$NAME" update_freq=2
+    sketchybar --set "$name" update_freq=2
   elif test "$draw_popup" = "off"; then
     sketchybar \
-      --set "$NAME" update_freq=60 \
-      --set "$NAME.metadata" label=
+      --set "$name" update_freq=60 \
+      --set "/$name\.torrent\.*/" update_freq=0 \
+      --set "$name.metadata" label=
   fi
 
-  time_hide="$(sketchybar --query "$NAME.metadata" | jq -r '.label.value')"
+  local time_hide
+  time_hide="$(sketchybar --query "$name.metadata" | jq -r '.label.value')"
   if test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
     sketchybar \
-      --set "$NAME" popup.drawing=off update_freq=60 \
-      --set "$NAME.metadata" label=
+      --set "$name" popup.drawing=off update_freq=60 \
+      --set "$name.metadata" label=
   fi
 }
 
-case "$SENDER" in
-  mouse.clicked)
-    sketchybar \
-      --set "$NAME" popup.drawing=toggle update_freq=2 \
-      --set "$NAME.metadata" label="$(date +%s | awk '{print $1 + 60}')"
-    exit
+# shellcheck disable=SC2153
+case "$NAME" in
+  *.torrent.*)
+    ;;
+  *.metadata)
+    ;;
+  *)
+    case "$SENDER" in
+      mouse.clicked)
+        sketchybar \
+          --set "$NAME" popup.drawing=toggle update_freq=2 \
+          --set "$NAME.metadata" label="$(date +%s | awk '{print $1 + 60}')"
+        exit
+        ;;
+    esac
+
+    update_item_and_popup "$NAME"
     ;;
 esac
-
-update_items

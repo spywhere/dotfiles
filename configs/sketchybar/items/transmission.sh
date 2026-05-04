@@ -4,7 +4,6 @@ if test -n "$(command -v transmission-remote)"; then
   sketchybar --add item transmission right \
     --set transmission \
     drawing=off \
-    icon=􀁾 \
     update_freq=60 \
     script="$CONFIG_DIR/plugins/transmission.sh" \
     popup.topmost=on \
