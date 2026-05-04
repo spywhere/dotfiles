@@ -44,12 +44,66 @@ readable_size() {
 
 create_torrent_item() {
   local parent_name="$1"
-  local id="$2"
-  local status="$3"
-  local name="$4"
-  local size_left="$5"
-  local total="$6"
-  local trail="$7"
+  shift
+  local separator="$1"
+  shift
+  local id="$1"
+  shift
+  local status="$1"
+  shift
+  local name="$1"
+  shift
+
+  sketchybar \
+    --add item "$parent_name.torrent.$id" popup.transmission \
+    --set "$parent_name.torrent.$id" \
+    background.drawing="$separator" \
+    background.height=1 \
+    background.border_width=1 \
+    background.border_color=0x40ffffff \
+    label.width=350 \
+    script="$CONFIG_DIR/plugins/transmission.sh" \
+    --add item "$parent_name.torrent.$id.name" popup.transmission \
+    --set "$parent_name.torrent.$id.name" \
+    scroll_texts=on \
+    background.drawing=on \
+    background.height=25 \
+    label="$name" \
+    label.max_chars=45 \
+    label.scroll_duration=600 \
+    label.padding_left=25 \
+    --add slider "$parent_name.torrent.$id.progress" popup.transmission \
+    --set "$parent_name.torrent.$id.progress" \
+    icon.padding_left=10 \
+    icon.padding_right=10 \
+    slider.width=250 \
+    slider.background.drawing=on \
+    slider.background.height=5 \
+    slider.background.corner_radius=3 \
+    slider.highlight_color=0xff2e4c77 \
+    slider.knob.font="SF Pro:Bold:10" \
+    slider.knob.color=0xffb4b6bb \
+    --add item "$parent_name.torrent.$id.info" popup.transmission \
+    --set "$parent_name.torrent.$id.info" \
+    background.drawing=on \
+    background.height=25 \
+    label.padding_left=25
+
+  update_torrent_item "$parent_name" "$id" "$status" "$@"
+}
+
+update_torrent_item() {
+  local parent_name="$1"
+  shift
+  local id="$1"
+  shift
+  local status="$1"
+  shift
+  local size_left="$1"
+  shift
+  local total="$1"
+  shift
+  local trail="$1"
   local icon="􀈃"
   local size_done="$(( total - size_left ))"
   local percent_done
@@ -71,47 +125,12 @@ create_torrent_item() {
   esac
 
   sketchybar \
-    --add item "$parent_name.torrent.$id" popup.transmission \
-    --set "$parent_name.torrent.$id" \
-    background.drawing=on \
-    background.height=1 \
-    background.border_width=1 \
-    background.border_color=0x40ffffff \
-    label.width=350 \
-    --add item "$parent_name.torrent.$id.name" popup.transmission \
-    --set "$parent_name.torrent.$id.name" \
-    scroll_texts=on \
-    background.drawing=on \
-    background.height=25 \
-    label="$name" \
-    label.max_chars=45 \
-    label.scroll_duration=600 \
-    label.padding_left=25 \
-    --add slider "$parent_name.torrent.$id.progress" popup.transmission \
     --set "$parent_name.torrent.$id.progress" \
     icon="$icon" \
-    icon.padding_left=10 \
-    icon.padding_right=10 \
     label="$percent_done%" \
-    slider.width=250 \
-    slider.background.drawing=on \
-    slider.background.height=5 \
-    slider.background.corner_radius=3 \
     slider.percentage="$(echo "$percent_done" | awk '{printf "%d", $1}')" \
-    slider.highlight_color=0xff2e4c77 \
-    slider.knob.font="SF Pro:Bold:10" \
-    slider.knob.color=0xffb4b6bb \
-    --add item "$parent_name.torrent.$id.info" popup.transmission \
     --set "$parent_name.torrent.$id.info" \
-    background.drawing=on \
-    background.height=25 \
-    label="$(readable_size "$size_done") / $(readable_size "$total")$trail" \
-    label.padding_left=25
-}
-
-update_torrent_menu() {
-  local name="$1"
-  sketchybar --set "$name" label="$(date +%s)"
+    label="$(readable_size "$size_done") / $(readable_size "$total")$trail"
 }
 
 update_item_and_popup() {
@@ -132,6 +151,7 @@ update_item_and_popup() {
     sketchybar --remove "/$name\.torrent.*/"
   fi
   local active=""
+  local separator="off"
   for torrent64 in $torrents; do
     local torrent_id
     torrent_id="$(echo "$torrent64" | jq -r '@base64d|fromjson|.id')"
@@ -179,7 +199,8 @@ update_item_and_popup() {
         fi
         ;;
     esac
-    create_torrent_item "$name" "$torrent_id" "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
+    create_torrent_item "$name" "$separator" "$torrent_id" "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
+    separator="on"
   done
 
   local item_data
