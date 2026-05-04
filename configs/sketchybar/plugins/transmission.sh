@@ -42,16 +42,61 @@ readable_size() {
   echo "0 B"
 }
 
+parse_torrent() {
+  local callback="$1"
+  local torrent64="$2"
+
+  local name
+  name="$(echo "$torrent64" | jq -r '@base64d|fromjson|.name')"
+  local id
+  id="$(echo "$torrent64" | jq -r '@base64d|fromjson|.id')"
+  local status
+  status="$(echo "$torrent64" | jq -r '@base64d|fromjson|.status')"
+
+  local size_left
+  size_left="$(echo "$torrent64" | jq -r '@base64d|fromjson|.left_until_done')"
+  local total
+  total="$(echo "$torrent64" | jq -r '@base64d|fromjson|.size_when_done')"
+
+  local eta
+  eta="$(echo "$torrent64" | jq -r '@base64d|fromjson|.eta')"
+  local ratio
+  ratio="$(echo "$torrent64" | jq -r '@base64d|fromjson|.upload_ratio')"
+  local download_rate
+  download_rate="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_download')"
+  local upload_rate
+  upload_rate="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_upload')"
+
+  local trail=""
+  case "$status" in
+    3|4)
+      # queued/download
+      if test "$eta" -ge 0; then
+        trail=" ($(readable_time "$eta"))"
+      fi
+      if test "$download_rate" -gt 0; then
+        trail="$trail 􀄩 $(readable_size "$download_rate")/s"
+      fi
+      ;;
+    5|6)
+      # queued/seed
+      trail=" ($(printf '%.4f' "$ratio"))"
+      if test "$upload_rate" -gt 0; then
+        trail="$trail 􀄨 $(readable_size "$upload_rate")/s"
+      fi
+      ;;
+  esac
+  "$callback" "$name" "$id" "$status" "$size_left" "$total" "$trail"
+}
+
 create_torrent_item() {
   local parent_name="$1"
   shift
   local separator="$1"
   shift
-  local id="$1"
-  shift
-  local status="$1"
-  shift
   local name="$1"
+  shift
+  local id="$1"
   shift
 
   sketchybar \
@@ -89,7 +134,7 @@ create_torrent_item() {
     background.height=25 \
     label.padding_left=25
 
-  update_torrent_item "$parent_name" "$id" "$status" "$@"
+  update_torrent_item "$parent_name" "$id" "$@"
 }
 
 update_torrent_item() {
@@ -133,78 +178,58 @@ update_torrent_item() {
     label="$(readable_size "$size_done") / $(readable_size "$total")$trail"
 }
 
-update_item_and_popup() {
-  local name="$1"
+update_torrent_menu() {
+  local item_name
+  # shellcheck disable=SC2001
+  item_name="$(echo "$1" | sed 's/\.torrent\..*$//g')"
+  local torrent64
+  # shellcheck disable=SC2001
+  torrent64="$(transmission-remote -j -t "$(echo "$1" | sed 's/^.*\.torrent\.//g')" -i | jq '.result.torrents|first//""|@base64')"
+
+  update_torrent_menu_callback() {
+    shift # remove name
+    update_torrent_item "$item_name" "$@"
+  }
+
+  if test -z "$torrent64" -o "$torrent64" = '""'; then
+    sketchybar --remove "$1" --remove "/$1\..*/"
+  else
+    parse_torrent update_torrent_menu_callback "$torrent64"
+  fi
+}
+
+populate_items() {
+  local item_name="$1"
   local torrents
   torrents="$(transmission-remote -j -l | jq '.result.torrents|map(.+{completion: (.size_when_done-.left_until_done)/.size_when_done})|sort_by(.completion,-.id)|reverse|map(@base64)|.[]')"
-  local total_torrents
-  total_torrents="$(echo "$torrents" | jq -sr 'length')"
 
-  if test "$total_torrents" = "0"; then
-    sketchybar --remove "/$name\.torrent.*/"
-    return
-  fi
-
-  local total_items
-  total_items="$(sketchybar --query bar | jq --arg name "$name" '.items|map(select(startswith("\($name).torrent") and endswith("name")))|length')"
-  if test "$total_items" -gt "$total_torrents"; then
-    sketchybar --remove "/$name\.torrent.*/"
-  fi
-  local active=""
   local separator="off"
   for torrent64 in $torrents; do
-    local torrent_id
-    torrent_id="$(echo "$torrent64" | jq -r '@base64d|fromjson|.id')"
-    local torrent_name
-    torrent_name="$(echo "$torrent64" | jq -r '@base64d|fromjson|.name')"
-    local torrent_status
-    torrent_status="$(echo "$torrent64" | jq -r '@base64d|fromjson|.status')"
+    # shellcheck disable=SC2329
+    populate_items_callback() {
+      local id="$2"
 
-    local torrent_size_left
-    torrent_size_left="$(echo "$torrent64" | jq -r '@base64d|fromjson|.left_until_done')"
-    local torrent_total
-    torrent_total="$(echo "$torrent64" | jq -r '@base64d|fromjson|.size_when_done')"
+      if ! sketchybar --query "$item_name.torrent.$id"; then
+        create_torrent_item "$item_name" "$separator" "$@"
+      fi
+    }
 
-    local torrent_eta
-    torrent_eta="$(echo "$torrent64" | jq -r '@base64d|fromjson|.eta')"
-    local torrent_ratio
-    torrent_ratio="$(echo "$torrent64" | jq -r '@base64d|fromjson|.upload_ratio')"
-    local torrent_download
-    torrent_download="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_download')"
-    local torrent_upload
-    torrent_upload="$(echo "$torrent64" | jq -r '@base64d|fromjson|.rate_upload')"
-
-    local torrent_trail=""
-    case "$torrent_status" in
-      3|4)
-        # queued/download
-        if test "$torrent_eta" -ge 0; then
-          torrent_trail=" ($(readable_time "$torrent_eta"))"
-        fi
-        if test "$torrent_download" -gt 0; then
-          torrent_trail="$torrent_trail 􀄩 $(readable_size "$torrent_download")/s"
-          if test "$active" != "down"; then
-            active="down"
-          fi
-        fi
-        ;;
-      5|6)
-        # queued/seed
-        torrent_trail=" ($(printf '%.4f' "$torrent_ratio"))"
-        if test "$torrent_upload" -gt 0; then
-          torrent_trail="$torrent_trail 􀄨 $(readable_size "$torrent_upload")/s"
-          if test -z "$active"; then
-            active="up"
-          fi
-        fi
-        ;;
-    esac
-    create_torrent_item "$name" "$separator" "$torrent_id" "$torrent_status" "$torrent_name" "$torrent_size_left" "$torrent_total" "$torrent_trail"
+    parse_torrent populate_items_callback "$torrent64"
     separator="on"
   done
+}
+
+update_item() {
+  local item_name="$1"
+  local torrents
+  torrents="$(transmission-remote -j -l | jq '.result.torrents|length as $total|reduce .[] as $item ({up:0,down:0};{up:.up+$item.rate_upload,down:.down+$item.rate_download})|{total:$total,active: if .down > 0 then "down" elif .up > 0 then "up" else "" end}|@base64')"
+  local total_torrents
+  total_torrents="$(echo "$torrents" | jq -r '@base64d|fromjson|.total')"
+  local active
+  active="$(echo "$torrents" | jq -r '@base64d|fromjson|.active')"
 
   local item_data
-  item_data="$(sketchybar --query "$name")"
+  item_data="$(sketchybar --query "$item_name")"
   local current_icon
   current_icon="$(echo "$item_data" | jq -r .icon.value)"
   local draw_popup
@@ -223,45 +248,50 @@ update_item_and_popup() {
   fi
 
   sketchybar \
-    --set "$name" \
+    --set "$item_name" \
     drawing=on \
     icon="$icon" \
     label="$total_torrents"
 
   if test -n "$active"; then
-    sketchybar --set "$name" update_freq=2
+    sketchybar --set "$item_name" update_freq=2
   elif test "$draw_popup" = "off"; then
     sketchybar \
-      --set "$name" update_freq=60 \
-      --set "/$name\.torrent\.*/" update_freq=0 \
-      --set "$name.metadata" label=
+      --set "$item_name" update_freq=60 \
+      --set "/$item_name\.torrent\.*/" update_freq=0 \
+      --set "$item_name.metadata" label=
   fi
 
   local time_hide
-  time_hide="$(sketchybar --query "$name.metadata" | jq -r '.label.value')"
+  time_hide="$(sketchybar --query "$item_name.metadata" | jq -r '.label.value')"
   if test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
     sketchybar \
-      --set "$name" popup.drawing=off update_freq=60 \
-      --set "$name.metadata" label=
+      --set "$item_name" popup.drawing=off update_freq=60 \
+      --set "/$item_name\.torrent\.*/" update_freq=0 \
+      --set "$item_name.metadata" label=
   fi
 }
 
 # shellcheck disable=SC2153
 case "$NAME" in
   *.torrent.*)
+    update_torrent_menu "$NAME"
     ;;
   *.metadata)
     ;;
   *)
     case "$SENDER" in
       mouse.clicked)
+        populate_items "$NAME"
+
         sketchybar \
           --set "$NAME" popup.drawing=toggle update_freq=2 \
+          --set "/$NAME\.torrent\.*/" update_freq=2 \
           --set "$NAME.metadata" label="$(date +%s | awk '{print $1 + 60}')"
         exit
         ;;
     esac
 
-    update_item_and_popup "$NAME"
+    update_item "$NAME"
     ;;
 esac
