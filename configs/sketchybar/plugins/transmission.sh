@@ -255,18 +255,15 @@ update_item() {
 
   if test -n "$active"; then
     sketchybar --set "$item_name" update_freq=2
-  elif test "$draw_popup" = "off"; then
-    sketchybar \
-      --set "$item_name" update_freq=60 \
-      --set "/$item_name\.torrent\.*/" update_freq=0 \
-      --set "$item_name.metadata" label=
+  else
+    sketchybar --set "$item_name" update_freq=60
   fi
 
   local time_hide
   time_hide="$(sketchybar --query "$item_name.metadata" | jq -r '.label.value')"
-  if test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
+  if test "$draw_popup" = "off" || test -n "$time_hide" -a "$(date +%s)" -gt "$time_hide"; then
     sketchybar \
-      --set "$item_name" popup.drawing=off update_freq=60 \
+      --set "$item_name" popup.drawing=off \
       --set "/$item_name\.torrent\.*/" update_freq=0 \
       --set "$item_name.metadata" label=
   fi
