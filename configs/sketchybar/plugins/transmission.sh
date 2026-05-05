@@ -173,9 +173,11 @@ update_torrent_item() {
     --set "$parent_name.torrent.$id.progress" \
     icon="$icon" \
     label="$percent_done%" \
-    slider.percentage="$(echo "$percent_done" | awk '{printf "%d", $1}')" \
     --set "$parent_name.torrent.$id.info" \
-    label="$(readable_size "$size_done") / $(readable_size "$total")$trail"
+    label="$(readable_size "$size_done") / $(readable_size "$total")$trail" \
+    --animate sin 10 \
+    --set "$parent_name.torrent.$id.progress" \
+    slider.percentage="$(echo "$percent_done" | awk '{printf "%d", $1}')"
 }
 
 update_torrent_menu() {
