@@ -224,7 +224,7 @@ populate_items() {
 update_item() {
   local item_name="$1"
   local torrents
-  torrents="$(transmission-remote -j -l | jq '.result.torrents|length as $total|reduce .[] as $item ({up:0,down:0};{up:.up+$item.rate_upload,down:.down+$item.rate_download})|{total:$total,active: if .down > 0 then "down" elif .up > 0 then "up" else "" end}|@base64')"
+  torrents="$(transmission-remote -j -l | jq '.result.torrents|{total:length,active:((first(.[]|select(.rate_download>0)|"down")//(first(.[]|select(.rate_upload>0))|"up")//""))}|@base64')"
   local total_torrents
   total_torrents="$(echo "$torrents" | jq -r '@base64d|fromjson|.total')"
   local active
