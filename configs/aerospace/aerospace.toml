@@ -33,8 +33,8 @@ on-mode-changed = [
     inner.horizontal = 0
     inner.vertical =   0
     outer.left =       0
-    outer.bottom =     0
-    outer.top =        [{ monitor.built-in = 0 }, 30]
+    outer.bottom =     [{ monitor.built-in = -1 }, 0]
+    outer.top =        [{ monitor.built-in = 1 }, 30]
     outer.right =      0
 
 [workspace-to-monitor-force-assignment]
