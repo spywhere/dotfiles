@@ -230,6 +230,13 @@ update_item() {
   local active
   active="$(echo "$torrents" | jq -r '@base64d|fromjson|.active')"
 
+  if test "$total_torrents" = "0"; then
+    sketchybar \
+      --remove "/$item_name\.torrent.*/" \
+      --set "$item_name" drawing=off popup.drawing=off update_freq=60
+    return
+  fi
+
   local item_data
   item_data="$(sketchybar --query "$item_name")"
   local current_icon
