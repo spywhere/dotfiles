@@ -90,6 +90,10 @@ on-mode-changed = [
     run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
+    if.app-id = 'com.apple.iphonesimulator'
+    run = 'layout tiling'
+
+[[on-window-detected]]
     if.app-id = 'com.colliderli.iina'
     run = 'layout floating'
 
