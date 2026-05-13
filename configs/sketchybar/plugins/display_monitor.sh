@@ -26,10 +26,10 @@ case "$SENDER" in
     current_hash="$(calculate_hash "$(sketchybar --query displays)")"
 
     if test "$previous_hash" != "$current_hash"; then
-      sketchybar --set "$NAME" label="$current_hash" icon.drawing=on update_freq=5
       if compare_hash "$previous_hash" "$current_hash"; then
-        sleep 5 && bash "$(dirname "$CONFIG_DIR")/aerospace/reorganize-workspaces.sh"
+        sleep 2 && bash "$(dirname "$CONFIG_DIR")/aerospace/reorganize-workspaces.sh"
       fi
+      sketchybar --set "$NAME" label="$current_hash" icon.drawing=on update_freq=5
     fi
     ;;
   forced)
