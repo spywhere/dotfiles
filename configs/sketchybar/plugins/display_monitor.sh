@@ -1,18 +1,40 @@
 #!/bin/bash
 
+calculate_hash() {
+  current_size="$(echo "$1" | jq -r length)"
+  # current_hash="$(echo "$1" | md5sum)"
+
+  echo "$current_size"
+  # echo "$current_size:$current_hash"
+}
+
+compare_hash() {
+  # If we switched from
+  #   1 to more displays: return true
+  #   back to 1 display: return false
+  test "$2" -gt 1 -a "$1" != "$2"
+}
+
+if test "$1" = "hash"; then
+  calculate_hash "$(sketchybar --query displays)"
+  exit 0
+fi
+
 case "$SENDER" in
   display_change)
-    current_displays="$(sketchybar --query "$NAME" | jq -r .label.value)"
-    updated_displays="$(sketchybar --query displays | sha512)"
+    previous_hash="$(sketchybar --query "$NAME" | jq -r .label.value)"
+    current_hash="$(calculate_hash "$(sketchybar --query displays)")"
 
-    if test "$current_displays" != "$updated_displays"; then
-      bash "$(dirname "$CONFIG_DIR")/aerospace/reorganize-workspaces.sh"
-      sketchybar --set "$NAME" label="$updated_displays" icon.drawing=on
+    if test "$previous_hash" != "$current_hash"; then
+      sketchybar --set "$NAME" label="$current_hash" icon.drawing=on update_freq=5
+      if compare_hash "$previous_hash" "$current_hash"; then
+        sleep 5 && bash "$(dirname "$CONFIG_DIR")/aerospace/reorganize-workspaces.sh"
+      fi
     fi
     ;;
   forced)
     ;;
   *)
-    sketchybar --set "$NAME" icon.drawing=off
+    sketchybar --set "$NAME" icon.drawing=off update_freq=0
     ;;
 esac
