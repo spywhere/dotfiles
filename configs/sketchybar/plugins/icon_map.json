@@ -1,0 +1,3447 @@
+[
+    {
+        "iconName": ":ableton:",
+        "appNames": [
+            "Live"
+        ]
+    },
+    {
+        "iconName": ":acrobat:",
+        "appNames": [
+            "Acrobat"
+        ]
+    },
+    {
+        "iconName": ":activity_monitor:",
+        "appNames": [
+            "Activity Monitor",
+            "Aktivitätsanzeige",
+            "Монітор активності",
+            "Монитор активности"
+        ]
+    },
+    {
+        "iconName": ":activitywatch:",
+        "appNames": [
+            "aw-tauri"
+        ]
+    },
+    {
+        "iconName": ":actual:",
+        "appNames": [
+            "Actual"
+        ]
+    },
+    {
+        "iconName": ":adobe_bridge:",
+        "appNames": [
+            "Adobe Bridge*"
+        ]
+    },
+    {
+        "iconName": ":affine:",
+        "appNames": [
+            "AFFiNE"
+        ]
+    },
+    {
+        "iconName": ":affinity:",
+        "appNames": [
+            "Affinity"
+        ]
+    },
+    {
+        "iconName": ":affinity_designer:",
+        "appNames": [
+            "Affinity Designer"
+        ]
+    },
+    {
+        "iconName": ":affinity_designer_2:",
+        "appNames": [
+            "Affinity Designer 2"
+        ]
+    },
+    {
+        "iconName": ":affinity_photo:",
+        "appNames": [
+            "Affinity Photo"
+        ]
+    },
+    {
+        "iconName": ":affinity_photo_2:",
+        "appNames": [
+            "Affinity Photo 2"
+        ]
+    },
+    {
+        "iconName": ":affinity_publisher:",
+        "appNames": [
+            "Affinity Publisher"
+        ]
+    },
+    {
+        "iconName": ":affinity_publisher_2:",
+        "appNames": [
+            "Affinity Publisher 2"
+        ]
+    },
+    {
+        "iconName": ":airmail:",
+        "appNames": [
+            "Airmail"
+        ]
+    },
+    {
+        "iconName": ":airport_utility:",
+        "appNames": [
+            "AirPort Utility"
+        ]
+    },
+    {
+        "iconName": ":airvpn:",
+        "appNames": [
+            "AirVPN",
+            "Eddie"
+        ]
+    },
+    {
+        "iconName": ":alacritty:",
+        "appNames": [
+            "Alacritty"
+        ]
+    },
+    {
+        "iconName": ":alfred:",
+        "appNames": [
+            "Alfred"
+        ]
+    },
+    {
+        "iconName": ":alttab:",
+        "appNames": [
+            "AltTab"
+        ]
+    },
+    {
+        "iconName": ":amnezia_vpn:",
+        "appNames": [
+            "AmneziaVPN"
+        ]
+    },
+    {
+        "iconName": ":android:",
+        "appNames": [
+            "BlueStacks",
+            "HD-MultiInstanceManager"
+        ]
+    },
+    {
+        "iconName": ":android_messages:",
+        "appNames": [
+            "Android Messages"
+        ]
+    },
+    {
+        "iconName": ":android_studio:",
+        "appNames": [
+            "Android Studio"
+        ]
+    },
+    {
+        "iconName": ":anki:",
+        "appNames": [
+            "Anki"
+        ]
+    },
+    {
+        "iconName": ":antigravity:",
+        "appNames": [
+            "Antigravity"
+        ]
+    },
+    {
+        "iconName": ":anydesk:",
+        "appNames": [
+            "AnyDesk"
+        ]
+    },
+    {
+        "iconName": ":anytype:",
+        "appNames": [
+            "Anytype"
+        ]
+    },
+    {
+        "iconName": ":apiark:",
+        "appNames": [
+            "ApiArk"
+        ]
+    },
+    {
+        "iconName": ":apifox:",
+        "appNames": [
+            "Apifox"
+        ]
+    },
+    {
+        "iconName": ":app_eraser:",
+        "appNames": [
+            "App Eraser"
+        ]
+    },
+    {
+        "iconName": ":app_store:",
+        "appNames": [
+            "App Store"
+        ]
+    },
+    {
+        "iconName": ":apple_books:",
+        "appNames": [
+            "Apple Books",
+            "Books",
+            "Bücher"
+        ]
+    },
+    {
+        "iconName": ":apple_configurator:",
+        "appNames": [
+            "Apple Configurator"
+        ]
+    },
+    {
+        "iconName": ":apple_tv:",
+        "appNames": [
+            "TV"
+        ]
+    },
+    {
+        "iconName": ":arc:",
+        "appNames": [
+            "Arc"
+        ]
+    },
+    {
+        "iconName": ":arduino:",
+        "appNames": [
+            "Arduino",
+            "Arduino IDE"
+        ]
+    },
+    {
+        "iconName": ":aseprite:",
+        "appNames": [
+            "Aseprite"
+        ]
+    },
+    {
+        "iconName": ":atom:",
+        "appNames": [
+            "Atom"
+        ]
+    },
+    {
+        "iconName": ":audacity:",
+        "appNames": [
+            "Audacity"
+        ]
+    },
+    {
+        "iconName": ":audio_midi_setup:",
+        "appNames": [
+            "Audio MIDI Setup"
+        ]
+    },
+    {
+        "iconName": ":automator:",
+        "appNames": [
+            "Automator"
+        ]
+    },
+    {
+        "iconName": ":azahar:",
+        "appNames": [
+            "Azahar"
+        ]
+    },
+    {
+        "iconName": ":backblaze:",
+        "appNames": [
+            "Backblaze",
+            "Backblaze Downloader",
+            "Backblaze Restore"
+        ]
+    },
+    {
+        "iconName": ":baidunetdisk:",
+        "appNames": [
+            "BaiduNetdisk",
+            "百度网盘"
+        ]
+    },
+    {
+        "iconName": ":balena_etcher:",
+        "appNames": [
+            "balenaEtcher"
+        ]
+    },
+    {
+        "iconName": ":bambu_studio:",
+        "appNames": [
+            "Bambu Studio"
+        ]
+    },
+    {
+        "iconName": ":bank:",
+        "appNames": [
+            "MoneyMoney"
+        ]
+    },
+    {
+        "iconName": ":basecamp:",
+        "appNames": [
+            "Basecamp",
+            "Basecamp.app"
+        ]
+    },
+    {
+        "iconName": ":battle_net:",
+        "appNames": [
+            "Battle.net"
+        ]
+    },
+    {
+        "iconName": ":bazaar:",
+        "appNames": [
+            "Bazaar"
+        ]
+    },
+    {
+        "iconName": ":bazecor:",
+        "appNames": [
+            "Bazecor"
+        ]
+    },
+    {
+        "iconName": ":bbedit:",
+        "appNames": [
+            "BBEdit"
+        ]
+    },
+    {
+        "iconName": ":bear:",
+        "appNames": [
+            "Bear"
+        ]
+    },
+    {
+        "iconName": ":beekeeper_studio:",
+        "appNames": [
+            "Beekeeper Studio"
+        ]
+    },
+    {
+        "iconName": ":beeper:",
+        "appNames": [
+            "Beeper",
+            "Beeper Desktop"
+        ]
+    },
+    {
+        "iconName": ":bettertouchtool:",
+        "appNames": [
+            "BetterTouchTool"
+        ]
+    },
+    {
+        "iconName": ":bilibili:",
+        "appNames": [
+            "Bilibili",
+            "哔哩哔哩"
+        ]
+    },
+    {
+        "iconName": ":bit_warden:",
+        "appNames": [
+            "Bitwarden"
+        ]
+    },
+    {
+        "iconName": ":blender:",
+        "appNames": [
+            "Blender"
+        ]
+    },
+    {
+        "iconName": ":blitzit:",
+        "appNames": [
+            "Blitzit"
+        ]
+    },
+    {
+        "iconName": ":bluetooth:",
+        "appNames": [
+            "Bluetooth File Exchange",
+            "Bluetooth"
+        ]
+    },
+    {
+        "iconName": ":bluos_controller:",
+        "appNames": [
+            "BluOS Controller"
+        ]
+    },
+    {
+        "iconName": ":book:",
+        "appNames": [
+            "Calibre",
+            "Книги"
+        ]
+    },
+    {
+        "iconName": ":bookmark:",
+        "appNames": [
+            "YABA",
+            "Anybox",
+            "URL Manager Pro"
+        ]
+    },
+    {
+        "iconName": ":brainfm:",
+        "appNames": [
+            "Brain.fm"
+        ]
+    },
+    {
+        "iconName": ":brave_browser:",
+        "appNames": [
+            "Brave Browser"
+        ]
+    },
+    {
+        "iconName": ":broadcasts:",
+        "appNames": [
+            "Broadcasts"
+        ]
+    },
+    {
+        "iconName": ":bruno:",
+        "appNames": [
+            "Bruno"
+        ]
+    },
+    {
+        "iconName": ":burn:",
+        "appNames": [
+            "Burn"
+        ]
+    },
+    {
+        "iconName": ":burp_suite:",
+        "appNames": [
+            "Burp Suite*"
+        ]
+    },
+    {
+        "iconName": ":busycal:",
+        "appNames": [
+            "BusyCal"
+        ]
+    },
+    {
+        "iconName": ":calculator:",
+        "appNames": [
+            "Calculator",
+            "Calculette",
+            "Rechner",
+            "Калькулятор"
+        ]
+    },
+    {
+        "iconName": ":calendar:",
+        "appNames": [
+            "Calendar",
+            "日历",
+            "Fantastical",
+            "Cron",
+            "Amie",
+            "Calendrier",
+            "カレンダー",
+            "Notion Calendar",
+            "Kalender",
+            "Календар",
+            "Календарь"
+        ]
+    },
+    {
+        "iconName": ":calibre:",
+        "appNames": [
+            "calibre"
+        ]
+    },
+    {
+        "iconName": ":capacities:",
+        "appNames": [
+            "Capacities"
+        ]
+    },
+    {
+        "iconName": ":caprine:",
+        "appNames": [
+            "Caprine"
+        ]
+    },
+    {
+        "iconName": ":chatgpt_atlas:",
+        "appNames": [
+            "ChatGPT Atlas"
+        ]
+    },
+    {
+        "iconName": ":cherry_studio:",
+        "appNames": [
+            "Cherry Studio"
+        ]
+    },
+    {
+        "iconName": ":chess:",
+        "appNames": [
+            "Chess",
+            "The Enemy Within"
+        ]
+    },
+    {
+        "iconName": ":chime:",
+        "appNames": [
+            "Amazon Chime"
+        ]
+    },
+    {
+        "iconName": ":choosy:",
+        "appNames": [
+            "Choosy"
+        ]
+    },
+    {
+        "iconName": ":cisco_anyconnect:",
+        "appNames": [
+            "Cisco AnyConnect Secure Mobility Client",
+            "Cisco Secure Client"
+        ]
+    },
+    {
+        "iconName": ":citra:",
+        "appNames": [
+            "Citra"
+        ]
+    },
+    {
+        "iconName": ":citrix:",
+        "appNames": [
+            "Citrix Workspace",
+            "Citrix Viewer"
+        ]
+    },
+    {
+        "iconName": ":classin:",
+        "appNames": [
+            "ClassIn"
+        ]
+    },
+    {
+        "iconName": ":claude:",
+        "appNames": [
+            "Claude"
+        ]
+    },
+    {
+        "iconName": ":click_up:",
+        "appNames": [
+            "ClickUp"
+        ]
+    },
+    {
+        "iconName": ":clion:",
+        "appNames": [
+            "CLion"
+        ]
+    },
+    {
+        "iconName": ":clock:",
+        "appNames": [
+            "Clock"
+        ]
+    },
+    {
+        "iconName": ":coconut_battery:",
+        "appNames": [
+            "coconutBattery"
+        ]
+    },
+    {
+        "iconName": ":code:",
+        "appNames": [
+            "Code",
+            "Code - Insiders",
+            "Electron"
+        ]
+    },
+    {
+        "iconName": ":codex:",
+        "appNames": [
+            "Codex"
+        ]
+    },
+    {
+        "iconName": ":cold_turkey_blocker:",
+        "appNames": [
+            "Cold Turkey Blocker"
+        ]
+    },
+    {
+        "iconName": ":color_picker:",
+        "appNames": [
+            "Color Picker",
+            "数码测色计",
+            "Кольоромір",
+            "Цифровой колориметр",
+            "Digital Color Meter"
+        ]
+    },
+    {
+        "iconName": ":comet:",
+        "appNames": [
+            "Comet"
+        ]
+    },
+    {
+        "iconName": ":comet_browser:",
+        "appNames": [
+            "Comet"
+        ]
+    },
+    {
+        "iconName": ":conductor:",
+        "appNames": [
+            "Conductor"
+        ]
+    },
+    {
+        "iconName": ":console:",
+        "appNames": [
+            "Console"
+        ]
+    },
+    {
+        "iconName": ":contacts:",
+        "appNames": [
+            "Contacts"
+        ]
+    },
+    {
+        "iconName": ":copilot:",
+        "appNames": [
+            "Copilot"
+        ]
+    },
+    {
+        "iconName": ":coteditor:",
+        "appNames": [
+            "CotEditor"
+        ]
+    },
+    {
+        "iconName": ":craft:",
+        "appNames": [
+            "Craft"
+        ]
+    },
+    {
+        "iconName": ":creative_cloud:",
+        "appNames": [
+            "Creative Cloud"
+        ]
+    },
+    {
+        "iconName": ":crossover:",
+        "appNames": [
+            "CrossOver"
+        ]
+    },
+    {
+        "iconName": ":cubase:",
+        "appNames": [
+            "Cubase",
+            "Cubase Pro"
+        ]
+    },
+    {
+        "iconName": ":curseforge:",
+        "appNames": [
+            "CurseForge"
+        ]
+    },
+    {
+        "iconName": ":cursor:",
+        "appNames": [
+            "Cursor"
+        ]
+    },
+    {
+        "iconName": ":cypress:",
+        "appNames": [
+            "Cypress"
+        ]
+    },
+    {
+        "iconName": ":daisy_disk:",
+        "appNames": [
+            "DaisyDisk"
+        ]
+    },
+    {
+        "iconName": ":dash:",
+        "appNames": [
+            "Dash"
+        ]
+    },
+    {
+        "iconName": ":datagrip:",
+        "appNames": [
+            "DataGrip"
+        ]
+    },
+    {
+        "iconName": ":dataspell:",
+        "appNames": [
+            "DataSpell"
+        ]
+    },
+    {
+        "iconName": ":davinciresolve:",
+        "appNames": [
+            "DaVinci Resolve"
+        ]
+    },
+    {
+        "iconName": ":dbeaver:",
+        "appNames": [
+            "DBeaver"
+        ]
+    },
+    {
+        "iconName": ":deepl:",
+        "appNames": [
+            "DeepL"
+        ]
+    },
+    {
+        "iconName": ":deepseek:",
+        "appNames": [
+            "DeepSeek"
+        ]
+    },
+    {
+        "iconName": ":deezer:",
+        "appNames": [
+            "Deezer"
+        ]
+    },
+    {
+        "iconName": ":default:",
+        "appNames": [
+            "Default"
+        ]
+    },
+    {
+        "iconName": ":default_folder_x:",
+        "appNames": [
+            "Default Folder X"
+        ]
+    },
+    {
+        "iconName": ":deluge:",
+        "appNames": [
+            "Deluge"
+        ]
+    },
+    {
+        "iconName": ":deno:",
+        "appNames": [
+            "deno"
+        ]
+    },
+    {
+        "iconName": ":desktop:",
+        "appNames": [
+            "CleanMyMac X"
+        ]
+    },
+    {
+        "iconName": ":devonthink3:",
+        "appNames": [
+            "DEVONthink 3",
+            "DEVONthink"
+        ]
+    },
+    {
+        "iconName": ":dexcom:",
+        "appNames": [
+            "Dexcom"
+        ]
+    },
+    {
+        "iconName": ":dia:",
+        "appNames": [
+            "Dia"
+        ]
+    },
+    {
+        "iconName": ":dictionary:",
+        "appNames": [
+            "Dictionary"
+        ]
+    },
+    {
+        "iconName": ":dingtalk:",
+        "appNames": [
+            "DingTalk",
+            "钉钉",
+            "阿里钉"
+        ]
+    },
+    {
+        "iconName": ":discord:",
+        "appNames": [
+            "Discord",
+            "Discord Canary",
+            "Discord PTB"
+        ]
+    },
+    {
+        "iconName": ":disk_utility:",
+        "appNames": [
+            "Disk Utility"
+        ]
+    },
+    {
+        "iconName": ":docker:",
+        "appNames": [
+            "Docker",
+            "Docker Desktop"
+        ]
+    },
+    {
+        "iconName": ":dollar:",
+        "appNames": [
+            "GrandTotal",
+            "Receipts"
+        ]
+    },
+    {
+        "iconName": ":dolphin:",
+        "appNames": [
+            "Dolphin"
+        ]
+    },
+    {
+        "iconName": ":dorico:",
+        "appNames": [
+            "Dorico",
+            "Dorico Pro"
+        ]
+    },
+    {
+        "iconName": ":dota2:",
+        "appNames": [
+            "Dota2"
+        ]
+    },
+    {
+        "iconName": ":doublecmd:",
+        "appNames": [
+            "Double Commander"
+        ]
+    },
+    {
+        "iconName": ":downie:",
+        "appNames": [
+            "Downie 4"
+        ]
+    },
+    {
+        "iconName": ":drafts:",
+        "appNames": [
+            "Drafts"
+        ]
+    },
+    {
+        "iconName": ":draw_io:",
+        "appNames": [
+            "draw.io"
+        ]
+    },
+    {
+        "iconName": ":dropbox:",
+        "appNames": [
+            "Dropbox"
+        ]
+    },
+    {
+        "iconName": ":dropover:",
+        "appNames": [
+            "Dropover"
+        ]
+    },
+    {
+        "iconName": ":dsm:",
+        "appNames": [
+            "DSM"
+        ]
+    },
+    {
+        "iconName": ":dvd_player:",
+        "appNames": [
+            "DVD Player"
+        ]
+    },
+    {
+        "iconName": ":ea:",
+        "appNames": [
+            "EA app"
+        ]
+    },
+    {
+        "iconName": ":eagle:",
+        "appNames": [
+            "Eagle"
+        ]
+    },
+    {
+        "iconName": ":element:",
+        "appNames": [
+            "Element"
+        ]
+    },
+    {
+        "iconName": ":emacs:",
+        "appNames": [
+            "Emacs"
+        ]
+    },
+    {
+        "iconName": ":epic_games:",
+        "appNames": [
+            "Epic Games Launcher"
+        ]
+    },
+    {
+        "iconName": ":eudic:",
+        "appNames": [
+            "EuDic"
+        ]
+    },
+    {
+        "iconName": ":evernote_legacy:",
+        "appNames": [
+            "Evernote Legacy"
+        ]
+    },
+    {
+        "iconName": ":face_time:",
+        "appNames": [
+            "FaceTime",
+            "FaceTime 通话"
+        ]
+    },
+    {
+        "iconName": ":feedback_assistant:",
+        "appNames": [
+            "Feedback Assistant"
+        ]
+    },
+    {
+        "iconName": ":feishu:",
+        "appNames": [
+            "Feishu",
+            "飞书",
+            "飞书会议"
+        ]
+    },
+    {
+        "iconName": ":figma:",
+        "appNames": [
+            "Figma"
+        ]
+    },
+    {
+        "iconName": ":filebot:",
+        "appNames": [
+            "FileBot"
+        ]
+    },
+    {
+        "iconName": ":filezilla:",
+        "appNames": [
+            "FileZilla"
+        ]
+    },
+    {
+        "iconName": ":final_cut_pro:",
+        "appNames": [
+            "Final Cut Pro"
+        ]
+    },
+    {
+        "iconName": ":finamp:",
+        "appNames": [
+            "Finamp"
+        ]
+    },
+    {
+        "iconName": ":find_my:",
+        "appNames": [
+            "Find My",
+            "Локатор",
+            "Локатор"
+        ]
+    },
+    {
+        "iconName": ":finder:",
+        "appNames": [
+            "Finder",
+            "访达",
+            "Bloom"
+        ]
+    },
+    {
+        "iconName": ":firefox:",
+        "appNames": [
+            "Firefox"
+        ]
+    },
+    {
+        "iconName": ":firefox_developer_edition:",
+        "appNames": [
+            "Firefox Developer Edition",
+            "Firefox Nightly"
+        ]
+    },
+    {
+        "iconName": ":flaresolverr:",
+        "appNames": [
+            "Flaresolverr"
+        ]
+    },
+    {
+        "iconName": ":floorp:",
+        "appNames": [
+            "Floorp"
+        ]
+    },
+    {
+        "iconName": ":flstudio:",
+        "appNames": [
+            "FL Studio"
+        ]
+    },
+    {
+        "iconName": ":fluxer:",
+        "appNames": [
+            "Fluxer"
+        ]
+    },
+    {
+        "iconName": ":fmod:",
+        "appNames": [
+            "FMOD Studio"
+        ]
+    },
+    {
+        "iconName": ":folx:",
+        "appNames": [
+            "Folx"
+        ]
+    },
+    {
+        "iconName": ":font_book:",
+        "appNames": [
+            "Font Book"
+        ]
+    },
+    {
+        "iconName": ":foobar2000:",
+        "appNames": [
+            "foobar2000"
+        ]
+    },
+    {
+        "iconName": ":fork:",
+        "appNames": [
+            "Fork"
+        ]
+    },
+    {
+        "iconName": ":forklift:",
+        "appNames": [
+            "ForkLift"
+        ]
+    },
+    {
+        "iconName": ":foxit_reader:",
+        "appNames": [
+            "Foxit PDF Reader"
+        ]
+    },
+    {
+        "iconName": ":freecad:",
+        "appNames": [
+            "FreeCAD"
+        ]
+    },
+    {
+        "iconName": ":freeform:",
+        "appNames": [
+            "Freeform"
+        ]
+    },
+    {
+        "iconName": ":freetube:",
+        "appNames": [
+            "FreeTube"
+        ]
+    },
+    {
+        "iconName": ":fsnotes:",
+        "appNames": [
+            "FSNotes"
+        ]
+    },
+    {
+        "iconName": ":fusion:",
+        "appNames": [
+            "Fusion"
+        ]
+    },
+    {
+        "iconName": ":games:",
+        "appNames": [
+            "Games"
+        ]
+    },
+    {
+        "iconName": ":gear:",
+        "appNames": [
+            "System Preferences",
+            "System Settings",
+            "系统设置",
+            "Réglages Système",
+            "システム設定",
+            "Systemeinstellungen",
+            "System­einstellungen",
+            "Системні параметри",
+            "Системные настройки"
+        ]
+    },
+    {
+        "iconName": ":gemini:",
+        "appNames": [
+            "Gemini",
+            "Google Gemini"
+        ]
+    },
+    {
+        "iconName": ":ghostty:",
+        "appNames": [
+            "Ghostty"
+        ]
+    },
+    {
+        "iconName": ":gimp:",
+        "appNames": [
+            "GIMP"
+        ]
+    },
+    {
+        "iconName": ":git_hub:",
+        "appNames": [
+            "GitHub Desktop"
+        ]
+    },
+    {
+        "iconName": ":gitkraken:",
+        "appNames": [
+            "GitKraken"
+        ]
+    },
+    {
+        "iconName": ":godot:",
+        "appNames": [
+            "Godot"
+        ]
+    },
+    {
+        "iconName": ":gog_galaxy:",
+        "appNames": [
+            "GOG Galaxy"
+        ]
+    },
+    {
+        "iconName": ":goland:",
+        "appNames": [
+            "GoLand"
+        ]
+    },
+    {
+        "iconName": ":goodlinks:",
+        "appNames": [
+            "GoodLinks"
+        ]
+    },
+    {
+        "iconName": ":goodnotes:",
+        "appNames": [
+            "Goodnotes"
+        ]
+    },
+    {
+        "iconName": ":google_chat:",
+        "appNames": [
+            "Google Chat"
+        ]
+    },
+    {
+        "iconName": ":google_chrome:",
+        "appNames": [
+            "Chromium",
+            "Google Chrome",
+            "Google Chrome Canary"
+        ]
+    },
+    {
+        "iconName": ":google_drive:",
+        "appNames": [
+            "Google Drive"
+        ]
+    },
+    {
+        "iconName": ":grammarly:",
+        "appNames": [
+            "Grammarly Editor"
+        ]
+    },
+    {
+        "iconName": ":granola:",
+        "appNames": [
+            "Granola"
+        ]
+    },
+    {
+        "iconName": ":grapher:",
+        "appNames": [
+            "Grapher"
+        ]
+    },
+    {
+        "iconName": ":grayjay:",
+        "appNames": [
+            "Grayjay"
+        ]
+    },
+    {
+        "iconName": ":hammerspoon:",
+        "appNames": [
+            "Hammerspoon"
+        ]
+    },
+    {
+        "iconName": ":handbrake:",
+        "appNames": [
+            "HandBrake"
+        ]
+    },
+    {
+        "iconName": ":hazel:",
+        "appNames": [
+            "Hazel"
+        ]
+    },
+    {
+        "iconName": ":hbo_max:",
+        "appNames": [
+            "HBO Max"
+        ]
+    },
+    {
+        "iconName": ":helium:",
+        "appNames": [
+            "Helium"
+        ]
+    },
+    {
+        "iconName": ":hex_fiend:",
+        "appNames": [
+            "Hex Fiend"
+        ]
+    },
+    {
+        "iconName": ":home:",
+        "appNames": [
+            "Home"
+        ]
+    },
+    {
+        "iconName": ":home_assistant:",
+        "appNames": [
+            "Home Assistant"
+        ]
+    },
+    {
+        "iconName": ":hyper:",
+        "appNames": [
+            "Hyper"
+        ]
+    },
+    {
+        "iconName": ":hyperkey:",
+        "appNames": [
+            "Hyperkey"
+        ]
+    },
+    {
+        "iconName": ":ia_writer:",
+        "appNames": [
+            "iA Writer"
+        ]
+    },
+    {
+        "iconName": ":ice_cubes:",
+        "appNames": [
+            "Ice Cubes"
+        ]
+    },
+    {
+        "iconName": ":idea:",
+        "appNames": [
+            "IntelliJ IDEA"
+        ]
+    },
+    {
+        "iconName": ":iina:",
+        "appNames": [
+            "IINA"
+        ]
+    },
+    {
+        "iconName": ":illustrator:",
+        "appNames": [
+            "Adobe Illustrator*",
+            "Illustrator"
+        ]
+    },
+    {
+        "iconName": ":image_playground:",
+        "appNames": [
+            "Image Playground"
+        ]
+    },
+    {
+        "iconName": ":imhex:",
+        "appNames": [
+            "ImHex"
+        ]
+    },
+    {
+        "iconName": ":indesign:",
+        "appNames": [
+            "Adobe InDesign*",
+            "InDesign"
+        ]
+    },
+    {
+        "iconName": ":infuse:",
+        "appNames": [
+            "Infuse"
+        ]
+    },
+    {
+        "iconName": ":inkdrop:",
+        "appNames": [
+            "Inkdrop"
+        ]
+    },
+    {
+        "iconName": ":inkscape:",
+        "appNames": [
+            "Inkscape"
+        ]
+    },
+    {
+        "iconName": ":insomnia:",
+        "appNames": [
+            "Insomnia"
+        ]
+    },
+    {
+        "iconName": ":instapaper:",
+        "appNames": [
+            "Instapaper"
+        ]
+    },
+    {
+        "iconName": ":iphone_mirroring:",
+        "appNames": [
+            "iPhone Mirroring"
+        ]
+    },
+    {
+        "iconName": ":iris:",
+        "appNames": [
+            "Iris"
+        ]
+    },
+    {
+        "iconName": ":iterm:",
+        "appNames": [
+            "iTerm",
+            "iTerm2"
+        ]
+    },
+    {
+        "iconName": ":izotope:",
+        "appNames": [
+            "Product Portal",
+            "iZotope RX 9",
+            "iZotope RX 10",
+            "iZotope RX 11",
+            "iZotope RX 12",
+            "iZotope Ozone 9",
+            "iZotope Ozone 10",
+            "iZotope Ozone 11",
+            "iZotope Ozone 12"
+        ]
+    },
+    {
+        "iconName": ":jane_reader:",
+        "appNames": [
+            "Jane Reader"
+        ]
+    },
+    {
+        "iconName": ":jdownloader:",
+        "appNames": [
+            "JDownloader",
+            "JDownloader2",
+            "Uninstall JDownloader"
+        ]
+    },
+    {
+        "iconName": ":jellyfin:",
+        "appNames": [
+            "Jellyfin Media Player"
+        ]
+    },
+    {
+        "iconName": ":jellyseer:",
+        "appNames": [
+            "Jellyseer"
+        ]
+    },
+    {
+        "iconName": ":jetbrains_gateway:",
+        "appNames": [
+            "JetBrains Gateway"
+        ]
+    },
+    {
+        "iconName": ":jetbrains_toolbox:",
+        "appNames": [
+            "JetBrains Toolbox"
+        ]
+    },
+    {
+        "iconName": ":joplin:",
+        "appNames": [
+            "Joplin"
+        ]
+    },
+    {
+        "iconName": ":journal:",
+        "appNames": [
+            "Journal"
+        ]
+    },
+    {
+        "iconName": ":juxtatext:",
+        "appNames": [
+            "JuxtaText"
+        ]
+    },
+    {
+        "iconName": ":kakaotalk:",
+        "appNames": [
+            "카카오톡",
+            "KakaoTalk"
+        ]
+    },
+    {
+        "iconName": ":kakoune:",
+        "appNames": [
+            "Kakoune"
+        ]
+    },
+    {
+        "iconName": ":karabiner_elements:",
+        "appNames": [
+            "Karabiner-Elements Settings",
+            "Karabiner-Elements"
+        ]
+    },
+    {
+        "iconName": ":karabiner_elements_event_viewer:",
+        "appNames": [
+            "Karabiner-EventViewer"
+        ]
+    },
+    {
+        "iconName": ":kee_pass_x_c:",
+        "appNames": [
+            "KeePassXC"
+        ]
+    },
+    {
+        "iconName": ":keyboard_maestro:",
+        "appNames": [
+            "Keyboard Maestro"
+        ]
+    },
+    {
+        "iconName": ":keychain_access:",
+        "appNames": [
+            "Keychain Access"
+        ]
+    },
+    {
+        "iconName": ":keynote:",
+        "appNames": [
+            "Keynote",
+            "Keynote 讲演"
+        ]
+    },
+    {
+        "iconName": ":kicad:",
+        "appNames": [
+            "KiCad"
+        ]
+    },
+    {
+        "iconName": ":kiro:",
+        "appNames": [
+            "Kiro"
+        ]
+    },
+    {
+        "iconName": ":kitty:",
+        "appNames": [
+            "kitty"
+        ]
+    },
+    {
+        "iconName": ":kodi:",
+        "appNames": [
+            "Kodi"
+        ]
+    },
+    {
+        "iconName": ":krita:",
+        "appNames": [
+            "krita"
+        ]
+    },
+    {
+        "iconName": ":languagetool_for_desktop:",
+        "appNames": [
+            "LanguageTool for Desktop"
+        ]
+    },
+    {
+        "iconName": ":league_of_legends:",
+        "appNames": [
+            "League of Legends"
+        ]
+    },
+    {
+        "iconName": ":libre_wolf:",
+        "appNames": [
+            "LibreWolf"
+        ]
+    },
+    {
+        "iconName": ":libreoffice:",
+        "appNames": [
+            "LibreOffice"
+        ]
+    },
+    {
+        "iconName": ":lidarr:",
+        "appNames": [
+            "Lidarr"
+        ]
+    },
+    {
+        "iconName": ":lightroom:",
+        "appNames": [
+            "Adobe Lightroom"
+        ]
+    },
+    {
+        "iconName": ":lightroomclassic:",
+        "appNames": [
+            "Lightroom Classic"
+        ]
+    },
+    {
+        "iconName": ":line:",
+        "appNames": [
+            "LINE"
+        ]
+    },
+    {
+        "iconName": ":linear:",
+        "appNames": [
+            "Linear"
+        ]
+    },
+    {
+        "iconName": ":little_snitch:",
+        "appNames": [
+            "Little Snitch",
+            "Little Snitch Network Monitor"
+        ]
+    },
+    {
+        "iconName": ":little_snitch_mini:",
+        "appNames": [
+            "Little Snitch Mini*"
+        ]
+    },
+    {
+        "iconName": ":lm_studio:",
+        "appNames": [
+            "LM Studio"
+        ]
+    },
+    {
+        "iconName": ":lobehub:",
+        "appNames": [
+            "LobeHub"
+        ]
+    },
+    {
+        "iconName": ":localsend:",
+        "appNames": [
+            "LocalSend"
+        ]
+    },
+    {
+        "iconName": ":logicpro:",
+        "appNames": [
+            "Logic Pro"
+        ]
+    },
+    {
+        "iconName": ":logseq:",
+        "appNames": [
+            "Logseq"
+        ]
+    },
+    {
+        "iconName": ":lulu:",
+        "appNames": [
+            "LuLu"
+        ]
+    },
+    {
+        "iconName": ":maccy_clip:",
+        "appNames": [
+            "Maccy"
+        ]
+    },
+    {
+        "iconName": ":macforge:",
+        "appNames": [
+            "MacForge"
+        ]
+    },
+    {
+        "iconName": ":macpass:",
+        "appNames": [
+            "MacPass"
+        ]
+    },
+    {
+        "iconName": ":mactracker:",
+        "appNames": [
+            "Mactracker"
+        ]
+    },
+    {
+        "iconName": ":magnifier:",
+        "appNames": [
+            "Magnifier"
+        ]
+    },
+    {
+        "iconName": ":mail:",
+        "appNames": [
+            "Canary Mail",
+            "HEY",
+            "Mail",
+            "Mailspring",
+            "MailMate",
+            "Superhuman",
+            "Spark",
+            "Spark Mail",
+            "邮件",
+            "メール",
+            "Пошта",
+            "Почта"
+        ]
+    },
+    {
+        "iconName": ":makemkv:",
+        "appNames": [
+            "MakeMKV"
+        ]
+    },
+    {
+        "iconName": ":mamp:",
+        "appNames": [
+            "MAMP",
+            "MAMP PRO"
+        ]
+    },
+    {
+        "iconName": ":maps:",
+        "appNames": [
+            "Maps",
+            "Google Maps",
+            "マップ",
+            "Karten",
+            "Карти",
+            "Карты"
+        ]
+    },
+    {
+        "iconName": ":marked_2:",
+        "appNames": [
+            "Marked 2"
+        ]
+    },
+    {
+        "iconName": ":marta:",
+        "appNames": [
+            "Marta"
+        ]
+    },
+    {
+        "iconName": ":matlab:",
+        "appNames": [
+            "Matlab",
+            "MATLAB |MATLABWindow",
+            "MATLAB_R2024b",
+            "MATLAB_R2024a",
+            "MATLAB_R2023b",
+            "MATLAB_R2023a",
+            "MATLAB_R2022b",
+            "MATLAB_R2022a",
+            "MATLAB_R2021b",
+            "MATLAB_R2021a"
+        ]
+    },
+    {
+        "iconName": ":mattermost:",
+        "appNames": [
+            "Mattermost"
+        ]
+    },
+    {
+        "iconName": ":mediainfo:",
+        "appNames": [
+            "MediaInfo"
+        ]
+    },
+    {
+        "iconName": ":meet:",
+        "appNames": [
+            "Google Meet"
+        ]
+    },
+    {
+        "iconName": ":mega:",
+        "appNames": [
+            "MEGA"
+        ]
+    },
+    {
+        "iconName": ":messages:",
+        "appNames": [
+            "Messages",
+            "信息",
+            "Nachrichten",
+            "メッセージ",
+            "Повідомлення",
+            "Сообщения"
+        ]
+    },
+    {
+        "iconName": ":messenger:",
+        "appNames": [
+            "Messenger"
+        ]
+    },
+    {
+        "iconName": ":microsoft_edge:",
+        "appNames": [
+            "Microsoft Edge"
+        ]
+    },
+    {
+        "iconName": ":microsoft_excel:",
+        "appNames": [
+            "Microsoft Excel"
+        ]
+    },
+    {
+        "iconName": ":microsoft_outlook:",
+        "appNames": [
+            "Microsoft Outlook"
+        ]
+    },
+    {
+        "iconName": ":microsoft_power_point:",
+        "appNames": [
+            "Microsoft PowerPoint"
+        ]
+    },
+    {
+        "iconName": ":microsoft_remote_desktop:",
+        "appNames": [
+            "Microsoft Remote Desktop"
+        ]
+    },
+    {
+        "iconName": ":microsoft_teams:",
+        "appNames": [
+            "Microsoft Teams",
+            "Microsoft Teams (work or school)"
+        ]
+    },
+    {
+        "iconName": ":microsoft_word:",
+        "appNames": [
+            "Microsoft Word"
+        ]
+    },
+    {
+        "iconName": ":migaku:",
+        "appNames": [
+            "Migaku"
+        ]
+    },
+    {
+        "iconName": ":mimestream:",
+        "appNames": [
+            "Mimestream"
+        ]
+    },
+    {
+        "iconName": ":min_browser:",
+        "appNames": [
+            "Min"
+        ]
+    },
+    {
+        "iconName": ":minecraft:",
+        "appNames": [
+            "Minecraft",
+            "Minecraft Launcher"
+        ]
+    },
+    {
+        "iconName": ":miro:",
+        "appNames": [
+            "Miro"
+        ]
+    },
+    {
+        "iconName": ":mongodb:",
+        "appNames": [
+            "MongoDB Compass*"
+        ]
+    },
+    {
+        "iconName": ":moonlight:",
+        "appNames": [
+            "Moonlight"
+        ]
+    },
+    {
+        "iconName": ":motrix:",
+        "appNames": [
+            "Motrix"
+        ]
+    },
+    {
+        "iconName": ":movist_pro:",
+        "appNames": [
+            "Movist Pro"
+        ]
+    },
+    {
+        "iconName": ":mpv:",
+        "appNames": [
+            "mpv"
+        ]
+    },
+    {
+        "iconName": ":mqttx:",
+        "appNames": [
+            "MQTTX"
+        ]
+    },
+    {
+        "iconName": ":mtga:",
+        "appNames": [
+            "MTGA"
+        ]
+    },
+    {
+        "iconName": ":mullvad_browser:",
+        "appNames": [
+            "Mullvad Browser"
+        ]
+    },
+    {
+        "iconName": ":mullvad_vpn:",
+        "appNames": [
+            "Mullvad VPN"
+        ]
+    },
+    {
+        "iconName": ":musehub:",
+        "appNames": [
+            "MuseHub"
+        ]
+    },
+    {
+        "iconName": ":musescore:",
+        "appNames": [
+            "MuseScore",
+            "MuseScore 4",
+            "MuseScore Studio"
+        ]
+    },
+    {
+        "iconName": ":music:",
+        "appNames": [
+            "Music",
+            "音乐",
+            "Musique",
+            "ミュージック",
+            "Musik",
+            "Chromatix",
+            "Музика",
+            "Музыка"
+        ]
+    },
+    {
+        "iconName": ":native_instruments:",
+        "appNames": [
+            "Native Access"
+        ]
+    },
+    {
+        "iconName": ":navicat:",
+        "appNames": [
+            "Navicat Premium"
+        ]
+    },
+    {
+        "iconName": ":neovide:",
+        "appNames": [
+            "Neovide",
+            "neovide"
+        ]
+    },
+    {
+        "iconName": ":neovim:",
+        "appNames": [
+            "Neovim",
+            "neovim",
+            "nvim"
+        ]
+    },
+    {
+        "iconName": ":netease_music:",
+        "appNames": [
+            "网易云音乐",
+            "NetEaseMusic"
+        ]
+    },
+    {
+        "iconName": ":netflix:",
+        "appNames": [
+            "Netflix"
+        ]
+    },
+    {
+        "iconName": ":netnewswire:",
+        "appNames": [
+            "NetNewsWire"
+        ]
+    },
+    {
+        "iconName": ":neumann:",
+        "appNames": [
+            "MA 1 - Automatic Monitor Alignment"
+        ]
+    },
+    {
+        "iconName": ":news:",
+        "appNames": [
+            "News"
+        ]
+    },
+    {
+        "iconName": ":nextcloud:",
+        "appNames": [
+            "Nextcloud"
+        ]
+    },
+    {
+        "iconName": ":nicotine_plus:",
+        "appNames": [
+            "Nicotine+"
+        ]
+    },
+    {
+        "iconName": ":nimble_commander:",
+        "appNames": [
+            "Nimble Commander",
+            "NimbleCommander-Unsigned"
+        ]
+    },
+    {
+        "iconName": ":noodl:",
+        "appNames": [
+            "Noodl",
+            "Noodl Editor"
+        ]
+    },
+    {
+        "iconName": ":nord_vpn:",
+        "appNames": [
+            "NordVPN"
+        ]
+    },
+    {
+        "iconName": ":notability:",
+        "appNames": [
+            "Notability"
+        ]
+    },
+    {
+        "iconName": ":notes:",
+        "appNames": [
+            "Notes",
+            "备忘录",
+            "メモ",
+            "Notizen",
+            "Нотатки",
+            "Заметки"
+        ]
+    },
+    {
+        "iconName": ":notion:",
+        "appNames": [
+            "Notion"
+        ]
+    },
+    {
+        "iconName": ":notion_mail:",
+        "appNames": [
+            "Notion Mail"
+        ]
+    },
+    {
+        "iconName": ":nova:",
+        "appNames": [
+            "Nova"
+        ]
+    },
+    {
+        "iconName": ":numbers:",
+        "appNames": [
+            "Numbers",
+            "Numbers 表格"
+        ]
+    },
+    {
+        "iconName": ":nvalt:",
+        "appNames": [
+            "nvALT"
+        ]
+    },
+    {
+        "iconName": ":nvidia_geforce_now:",
+        "appNames": [
+            "Nvidia GeForce Now",
+            "GeForceNOW"
+        ]
+    },
+    {
+        "iconName": ":nzbget:",
+        "appNames": [
+            "Nzbget"
+        ]
+    },
+    {
+        "iconName": ":obsidian:",
+        "appNames": [
+            "Obsidian"
+        ]
+    },
+    {
+        "iconName": ":obsstudio:",
+        "appNames": [
+            "OBS"
+        ]
+    },
+    {
+        "iconName": ":ollama:",
+        "appNames": [
+            "Ollama"
+        ]
+    },
+    {
+        "iconName": ":omni_disk_sweeper:",
+        "appNames": [
+            "OmniDiskSweeper"
+        ]
+    },
+    {
+        "iconName": ":omni_focus:",
+        "appNames": [
+            "OmniFocus"
+        ]
+    },
+    {
+        "iconName": ":one_password:",
+        "appNames": [
+            "1Password"
+        ]
+    },
+    {
+        "iconName": ":onedrive:",
+        "appNames": [
+            "OneDrive"
+        ]
+    },
+    {
+        "iconName": ":open_video_downloader:",
+        "appNames": [
+            "Open Video Downloader"
+        ]
+    },
+    {
+        "iconName": ":openai:",
+        "appNames": [
+            "ChatGPT"
+        ]
+    },
+    {
+        "iconName": ":openai_translator:",
+        "appNames": [
+            "OpenAI Translator"
+        ]
+    },
+    {
+        "iconName": ":openemu:",
+        "appNames": [
+            "OpenEmu"
+        ]
+    },
+    {
+        "iconName": ":openvpn_connect:",
+        "appNames": [
+            "OpenVPN Connect"
+        ]
+    },
+    {
+        "iconName": ":opera:",
+        "appNames": [
+            "Opera"
+        ]
+    },
+    {
+        "iconName": ":orbstack:",
+        "appNames": [
+            "OrbStack"
+        ]
+    },
+    {
+        "iconName": ":orcaslicer:",
+        "appNames": [
+            "OrcaSlicer"
+        ]
+    },
+    {
+        "iconName": ":orion:",
+        "appNames": [
+            "Orion",
+            "Orion RC"
+        ]
+    },
+    {
+        "iconName": ":overcast:",
+        "appNames": [
+            "Overcast"
+        ]
+    },
+    {
+        "iconName": ":overleaf:",
+        "appNames": [
+            "Overleaf",
+            "ShareLaTeX"
+        ]
+    },
+    {
+        "iconName": ":overseer:",
+        "appNames": [
+            "Overseer",
+            "Seer"
+        ]
+    },
+    {
+        "iconName": ":pages:",
+        "appNames": [
+            "Pages",
+            "Pages 文稿"
+        ]
+    },
+    {
+        "iconName": ":parallels:",
+        "appNames": [
+            "Parallels Desktop"
+        ]
+    },
+    {
+        "iconName": ":parcel:",
+        "appNames": [
+            "Parcel"
+        ]
+    },
+    {
+        "iconName": ":parsec:",
+        "appNames": [
+            "Parsec"
+        ]
+    },
+    {
+        "iconName": ":passepartout:",
+        "appNames": [
+            "Passepartout"
+        ]
+    },
+    {
+        "iconName": ":password_depot:",
+        "appNames": [
+            "Password Depot"
+        ]
+    },
+    {
+        "iconName": ":passwords:",
+        "appNames": [
+            "Passwords",
+            "Passwörter",
+            "Паролі",
+            "Пароли"
+        ]
+    },
+    {
+        "iconName": ":pcsx2:",
+        "appNames": [
+            "PCSX2"
+        ]
+    },
+    {
+        "iconName": ":pdf_expert:",
+        "appNames": [
+            "PDF Expert"
+        ]
+    },
+    {
+        "iconName": ":pearcleaner:",
+        "appNames": [
+            "Pearcleaner"
+        ]
+    },
+    {
+        "iconName": ":perplexity:",
+        "appNames": [
+            "Perplexity",
+            "Perplexity AI"
+        ]
+    },
+    {
+        "iconName": ":pgadmin:",
+        "appNames": [
+            "pgAdmin 4"
+        ]
+    },
+    {
+        "iconName": ":phoenix_slides:",
+        "appNames": [
+            "Phoenix Slides"
+        ]
+    },
+    {
+        "iconName": ":phone:",
+        "appNames": [
+            "Phone"
+        ]
+    },
+    {
+        "iconName": ":photos:",
+        "appNames": [
+            "Photos",
+            "Fotos",
+            "Фото"
+        ]
+    },
+    {
+        "iconName": ":photoshop:",
+        "appNames": [
+            "Adobe Photoshop*"
+        ]
+    },
+    {
+        "iconName": ":php_storm:",
+        "appNames": [
+            "PhpStorm"
+        ]
+    },
+    {
+        "iconName": ":pihole:",
+        "appNames": [
+            "Pi-hole Remote"
+        ]
+    },
+    {
+        "iconName": ":pine:",
+        "appNames": [
+            "Pine"
+        ]
+    },
+    {
+        "iconName": ":pixelmator_pro:",
+        "appNames": [
+            "Pixelmator Pro"
+        ]
+    },
+    {
+        "iconName": ":play:",
+        "appNames": [
+            "Play"
+        ]
+    },
+    {
+        "iconName": ":plex:",
+        "appNames": [
+            "Plex"
+        ]
+    },
+    {
+        "iconName": ":plexamp:",
+        "appNames": [
+            "Plexamp"
+        ]
+    },
+    {
+        "iconName": ":plezy:",
+        "appNames": [
+            "Plezy"
+        ]
+    },
+    {
+        "iconName": ":podcasts:",
+        "appNames": [
+            "Podcasts",
+            "播客",
+            "Подкасти",
+            "Подкасты"
+        ]
+    },
+    {
+        "iconName": ":pomodone:",
+        "appNames": [
+            "PomoDone App"
+        ]
+    },
+    {
+        "iconName": ":postman:",
+        "appNames": [
+            "Postman"
+        ]
+    },
+    {
+        "iconName": ":premiere:",
+        "appNames": [
+            "Premiere",
+            "Adobe Premiere",
+            "Adobe Premiere Pro 2024"
+        ]
+    },
+    {
+        "iconName": ":preview:",
+        "appNames": [
+            "Preview",
+            "预览",
+            "Skim",
+            "zathura",
+            "Aperçu",
+            "プレビュー",
+            "Vorschau",
+            "Оглядач",
+            "Просмотр"
+        ]
+    },
+    {
+        "iconName": ":print_center:",
+        "appNames": [
+            "Print Center",
+            "Druckzentrale"
+        ]
+    },
+    {
+        "iconName": ":pro_tools:",
+        "appNames": [
+            "Pro Tools"
+        ]
+    },
+    {
+        "iconName": ":problem_reporter:",
+        "appNames": [
+            "Problem Reporter"
+        ]
+    },
+    {
+        "iconName": ":proton_mail:",
+        "appNames": [
+            "Proton Mail",
+            "Proton Mail Bridge"
+        ]
+    },
+    {
+        "iconName": ":proton_vpn:",
+        "appNames": [
+            "Proton VPN",
+            "ProtonVPN"
+        ]
+    },
+    {
+        "iconName": ":prowlarr:",
+        "appNames": [
+            "Prowlarr"
+        ]
+    },
+    {
+        "iconName": ":proxyman:",
+        "appNames": [
+            "Proxyman"
+        ]
+    },
+    {
+        "iconName": ":prusaslicer:",
+        "appNames": [
+            "PrusaSlicer",
+            "SuperSlicer"
+        ]
+    },
+    {
+        "iconName": ":ps_remote_play:",
+        "appNames": [
+            "PS Remote Play"
+        ]
+    },
+    {
+        "iconName": ":pycharm:",
+        "appNames": [
+            "PyCharm"
+        ]
+    },
+    {
+        "iconName": ":qbittorrent:",
+        "appNames": [
+            "qBittorrent"
+        ]
+    },
+    {
+        "iconName": ":qbz:",
+        "appNames": [
+            "QBZ"
+        ]
+    },
+    {
+        "iconName": ":qgis:",
+        "appNames": [
+            "QGIS"
+        ]
+    },
+    {
+        "iconName": ":qlmarkdown:",
+        "appNames": [
+            "QLMarkdown"
+        ]
+    },
+    {
+        "iconName": ":qobuz:",
+        "appNames": [
+            "Qobuz"
+        ]
+    },
+    {
+        "iconName": ":qq:",
+        "appNames": [
+            "QQ"
+        ]
+    },
+    {
+        "iconName": ":qqmusic:",
+        "appNames": [
+            "QQ音乐",
+            "QQMusic"
+        ]
+    },
+    {
+        "iconName": ":quantumult_x:",
+        "appNames": [
+            "Quantumult X"
+        ]
+    },
+    {
+        "iconName": ":quark:",
+        "appNames": [
+            "Quark",
+            "夸克"
+        ]
+    },
+    {
+        "iconName": ":quicktime:",
+        "appNames": [
+            "QuickTime Player"
+        ]
+    },
+    {
+        "iconName": ":quip:",
+        "appNames": [
+            "Quip"
+        ]
+    },
+    {
+        "iconName": ":qute_browser:",
+        "appNames": [
+            "qutebrowser"
+        ]
+    },
+    {
+        "iconName": ":radarr:",
+        "appNames": [
+            "Radarr"
+        ]
+    },
+    {
+        "iconName": ":raindrop_io:",
+        "appNames": [
+            "Raindrop.io"
+        ]
+    },
+    {
+        "iconName": ":raspberry_pi:",
+        "appNames": [
+            "Raspberry Pi Imager",
+            "Raspberry Pi Connect"
+        ]
+    },
+    {
+        "iconName": ":raycast:",
+        "appNames": [
+            "Raycast"
+        ]
+    },
+    {
+        "iconName": ":reeder5:",
+        "appNames": [
+            "Reeder"
+        ]
+    },
+    {
+        "iconName": ":rekordbox:",
+        "appNames": [
+            "rekordbox"
+        ]
+    },
+    {
+        "iconName": ":remind_me_faster:",
+        "appNames": [
+            "Remind Faster"
+        ]
+    },
+    {
+        "iconName": ":reminders:",
+        "appNames": [
+            "Reminders",
+            "提醒事项",
+            "Rappels",
+            "リマインダー",
+            "Erinnerungen",
+            "Нагадування",
+            "Напоминания"
+        ]
+    },
+    {
+        "iconName": ":rename_my_tv_series:",
+        "appNames": [
+            "RenameMyTVSeries",
+            "Rename My TV Series"
+        ]
+    },
+    {
+        "iconName": ":replit:",
+        "appNames": [
+            "Replit"
+        ]
+    },
+    {
+        "iconName": ":repo_prompt:",
+        "appNames": [
+            "Repo Prompt"
+        ]
+    },
+    {
+        "iconName": ":resilio_sync:",
+        "appNames": [
+            "Resilio Sync"
+        ]
+    },
+    {
+        "iconName": ":rider:",
+        "appNames": [
+            "Rider",
+            "JetBrains Rider"
+        ]
+    },
+    {
+        "iconName": ":rio:",
+        "appNames": [
+            "Rio"
+        ]
+    },
+    {
+        "iconName": ":roblox:",
+        "appNames": [
+            "Roblox"
+        ]
+    },
+    {
+        "iconName": ":royaltsx:",
+        "appNames": [
+            "Royal TSX"
+        ]
+    },
+    {
+        "iconName": ":rstudio:",
+        "appNames": [
+            "RStudio"
+        ]
+    },
+    {
+        "iconName": ":rustdesk:",
+        "appNames": [
+            "RustDesk"
+        ]
+    },
+    {
+        "iconName": ":sabnzbd:",
+        "appNames": [
+            "SABnzbd"
+        ]
+    },
+    {
+        "iconName": ":safari:",
+        "appNames": [
+            "Safari",
+            "Safari浏览器",
+            "Safari Technology Preview"
+        ]
+    },
+    {
+        "iconName": ":screencap:",
+        "appNames": [
+            "Screencap"
+        ]
+    },
+    {
+        "iconName": ":scribus:",
+        "appNames": [
+            "Scribus"
+        ]
+    },
+    {
+        "iconName": ":script_debugger:",
+        "appNames": [
+            "Script Debugger"
+        ]
+    },
+    {
+        "iconName": ":script_editor:",
+        "appNames": [
+            "Script Editor"
+        ]
+    },
+    {
+        "iconName": ":seafile:",
+        "appNames": [
+            "Seafile"
+        ]
+    },
+    {
+        "iconName": ":sequel_ace:",
+        "appNames": [
+            "Sequel Ace"
+        ]
+    },
+    {
+        "iconName": ":sequel_pro:",
+        "appNames": [
+            "Sequel Pro"
+        ]
+    },
+    {
+        "iconName": ":session:",
+        "appNames": [
+            "Session"
+        ]
+    },
+    {
+        "iconName": ":setapp:",
+        "appNames": [
+            "Setapp"
+        ]
+    },
+    {
+        "iconName": ":sf_symbols:",
+        "appNames": [
+            "SF Symbols",
+            "SF Symbole",
+            "SF-Symbole"
+        ]
+    },
+    {
+        "iconName": ":shapr3d:",
+        "appNames": [
+            "Shapr3D"
+        ]
+    },
+    {
+        "iconName": ":shortcuts:",
+        "appNames": [
+            "Shortcuts",
+            "Команди",
+            "Команды"
+        ]
+    },
+    {
+        "iconName": ":sibelius:",
+        "appNames": [
+            "Sibelius"
+        ]
+    },
+    {
+        "iconName": ":signal:",
+        "appNames": [
+            "Signal"
+        ]
+    },
+    {
+        "iconName": ":sioyek:",
+        "appNames": [
+            "sioyek"
+        ]
+    },
+    {
+        "iconName": ":sketch:",
+        "appNames": [
+            "Sketch"
+        ]
+    },
+    {
+        "iconName": ":skype:",
+        "appNames": [
+            "Skype"
+        ]
+    },
+    {
+        "iconName": ":slack:",
+        "appNames": [
+            "Slack"
+        ]
+    },
+    {
+        "iconName": ":smartgit:",
+        "appNames": [
+            "SmartGit"
+        ]
+    },
+    {
+        "iconName": ":snippetslab:",
+        "appNames": [
+            "SnippetsLab"
+        ]
+    },
+    {
+        "iconName": ":solidtime:",
+        "appNames": [
+            "solidtime"
+        ]
+    },
+    {
+        "iconName": ":sonarr:",
+        "appNames": [
+            "Sonarr"
+        ]
+    },
+    {
+        "iconName": ":sourcetree:",
+        "appNames": [
+            "Sourcetree"
+        ]
+    },
+    {
+        "iconName": ":spark:",
+        "appNames": [
+            "Spark Desktop"
+        ]
+    },
+    {
+        "iconName": ":sparkle:",
+        "appNames": [
+            "Sparkle"
+        ]
+    },
+    {
+        "iconName": ":spotify:",
+        "appNames": [
+            "Spotify"
+        ]
+    },
+    {
+        "iconName": ":spotlight:",
+        "appNames": [
+            "Spotlight"
+        ]
+    },
+    {
+        "iconName": ":steam:",
+        "appNames": [
+            "Steam",
+            "Steam Helper"
+        ]
+    },
+    {
+        "iconName": ":stickies:",
+        "appNames": [
+            "Stickies"
+        ]
+    },
+    {
+        "iconName": ":stocks:",
+        "appNames": [
+            "Stocks"
+        ]
+    },
+    {
+        "iconName": ":stremio:",
+        "appNames": [
+            "Stremio"
+        ]
+    },
+    {
+        "iconName": ":studio_3t:",
+        "appNames": [
+            "Studio 3T"
+        ]
+    },
+    {
+        "iconName": ":sublime_merge:",
+        "appNames": [
+            "Sublime Merge"
+        ]
+    },
+    {
+        "iconName": ":sublime_text:",
+        "appNames": [
+            "Sublime Text"
+        ]
+    },
+    {
+        "iconName": ":summoners_war:",
+        "appNames": [
+            "Summoners War"
+        ]
+    },
+    {
+        "iconName": ":superproductivity:",
+        "appNames": [
+            "superProductivity"
+        ]
+    },
+    {
+        "iconName": ":surfshark:",
+        "appNames": [
+            "Surfshark"
+        ]
+    },
+    {
+        "iconName": ":swift_playground:",
+        "appNames": [
+            "Swift Playground"
+        ]
+    },
+    {
+        "iconName": ":synergy:",
+        "appNames": [
+            "Synergy"
+        ]
+    },
+    {
+        "iconName": ":system_information:",
+        "appNames": [
+            "System Information",
+            "System Profiler"
+        ]
+    },
+    {
+        "iconName": ":t3chat:",
+        "appNames": [
+            "T3 Chat"
+        ]
+    },
+    {
+        "iconName": ":tabby:",
+        "appNames": [
+            "Tabby"
+        ]
+    },
+    {
+        "iconName": ":tableplus:",
+        "appNames": [
+            "TablePlus"
+        ]
+    },
+    {
+        "iconName": ":tailscale:",
+        "appNames": [
+            "Tailscale"
+        ]
+    },
+    {
+        "iconName": ":tana:",
+        "appNames": [
+            "Tana"
+        ]
+    },
+    {
+        "iconName": ":tautulli:",
+        "appNames": [
+            "Tautulli"
+        ]
+    },
+    {
+        "iconName": ":team_speak:",
+        "appNames": [
+            "TeamSpeak 3"
+        ]
+    },
+    {
+        "iconName": ":teamviewer:",
+        "appNames": [
+            "TeamViewer"
+        ]
+    },
+    {
+        "iconName": ":telegram:",
+        "appNames": [
+            "Telegram"
+        ]
+    },
+    {
+        "iconName": ":terminal:",
+        "appNames": [
+            "Terminal",
+            "终端",
+            "ターミナル",
+            "Термінал",
+            "Терминал"
+        ]
+    },
+    {
+        "iconName": ":termius:",
+        "appNames": [
+            "Termius"
+        ]
+    },
+    {
+        "iconName": ":testflight:",
+        "appNames": [
+            "TestFlight"
+        ]
+    },
+    {
+        "iconName": ":text:",
+        "appNames": [
+            "Typora"
+        ]
+    },
+    {
+        "iconName": ":textedit:",
+        "appNames": [
+            "TextEdit"
+        ]
+    },
+    {
+        "iconName": ":things:",
+        "appNames": [
+            "Microsoft To Do",
+            "Things"
+        ]
+    },
+    {
+        "iconName": ":thunderbird:",
+        "appNames": [
+            "Thunderbird",
+            "Thunderbird Daily"
+        ]
+    },
+    {
+        "iconName": ":tick_tick:",
+        "appNames": [
+            "TickTick"
+        ]
+    },
+    {
+        "iconName": ":tidal:",
+        "appNames": [
+            "TIDAL"
+        ]
+    },
+    {
+        "iconName": ":tigervnc:",
+        "appNames": [
+            "TigerVNC"
+        ]
+    },
+    {
+        "iconName": ":time_machine:",
+        "appNames": [
+            "Time Machine",
+            "TimeMachineEditor",
+            "TheTimeMachineMechanic"
+        ]
+    },
+    {
+        "iconName": ":timery:",
+        "appNames": [
+            "Timery"
+        ]
+    },
+    {
+        "iconName": ":timingapp:",
+        "appNames": [
+            "Timing"
+        ]
+    },
+    {
+        "iconName": ":tinyrdm:",
+        "appNames": [
+            "Tiny RDM"
+        ]
+    },
+    {
+        "iconName": ":tips:",
+        "appNames": [
+            "Tips"
+        ]
+    },
+    {
+        "iconName": ":todoist:",
+        "appNames": [
+            "Todoist"
+        ]
+    },
+    {
+        "iconName": ":toggl_track:",
+        "appNames": [
+            "Toggl Track"
+        ]
+    },
+    {
+        "iconName": ":tor_browser:",
+        "appNames": [
+            "Tor Browser"
+        ]
+    },
+    {
+        "iconName": ":tot:",
+        "appNames": [
+            "Tot"
+        ]
+    },
+    {
+        "iconName": ":tower:",
+        "appNames": [
+            "Tower"
+        ]
+    },
+    {
+        "iconName": ":trading_view:",
+        "appNames": [
+            "TradingView"
+        ]
+    },
+    {
+        "iconName": ":transmission:",
+        "appNames": [
+            "Transmission"
+        ]
+    },
+    {
+        "iconName": ":transmit:",
+        "appNames": [
+            "Transmit"
+        ]
+    },
+    {
+        "iconName": ":trello:",
+        "appNames": [
+            "Trello"
+        ]
+    },
+    {
+        "iconName": ":twingate:",
+        "appNames": [
+            "Twingate"
+        ]
+    },
+    {
+        "iconName": ":twitter:",
+        "appNames": [
+            "Tweetbot",
+            "Twitter"
+        ]
+    },
+    {
+        "iconName": ":ugreen-nas:",
+        "appNames": [
+            "UGREEN NAS"
+        ]
+    },
+    {
+        "iconName": ":unity:",
+        "appNames": [
+            "Unity",
+            "Unity Hub"
+        ]
+    },
+    {
+        "iconName": ":usenapp:",
+        "appNames": [
+            "Usenapp"
+        ]
+    },
+    {
+        "iconName": ":utm:",
+        "appNames": [
+            "UTM"
+        ]
+    },
+    {
+        "iconName": ":veracrypt:",
+        "appNames": [
+            "VeraCrypt"
+        ]
+    },
+    {
+        "iconName": ":vesktop:",
+        "appNames": [
+            "Vesktop"
+        ]
+    },
+    {
+        "iconName": ":viber:",
+        "appNames": [
+            "Viber"
+        ]
+    },
+    {
+        "iconName": ":vim:",
+        "appNames": [
+            "MacVim",
+            "Vim",
+            "VimR"
+        ]
+    },
+    {
+        "iconName": ":virtualbox:",
+        "appNames": [
+            "VirtualBox"
+        ]
+    },
+    {
+        "iconName": ":visual_studio:",
+        "appNames": [
+            "Visual Studio"
+        ]
+    },
+    {
+        "iconName": ":vivaldi:",
+        "appNames": [
+            "Vivaldi"
+        ]
+    },
+    {
+        "iconName": ":vlc:",
+        "appNames": [
+            "VLC"
+        ]
+    },
+    {
+        "iconName": ":vmware_fusion:",
+        "appNames": [
+            "VMware Fusion"
+        ]
+    },
+    {
+        "iconName": ":voice_memos:",
+        "appNames": [
+            "Voice Memos"
+        ]
+    },
+    {
+        "iconName": ":vorta:",
+        "appNames": [
+            "Vorta"
+        ]
+    },
+    {
+        "iconName": ":vscodium:",
+        "appNames": [
+            "VSCodium"
+        ]
+    },
+    {
+        "iconName": ":warp:",
+        "appNames": [
+            "Warp"
+        ]
+    },
+    {
+        "iconName": ":waveterm:",
+        "appNames": [
+            "Wave"
+        ]
+    },
+    {
+        "iconName": ":weather:",
+        "appNames": [
+            "Weather",
+            "Wetter",
+            "Погода"
+        ]
+    },
+    {
+        "iconName": ":web_storm:",
+        "appNames": [
+            "WebStorm"
+        ]
+    },
+    {
+        "iconName": ":webtorrent:",
+        "appNames": [
+            "WebTorrent"
+        ]
+    },
+    {
+        "iconName": ":webull:",
+        "appNames": [
+            "Webull Desktop"
+        ]
+    },
+    {
+        "iconName": ":wechat:",
+        "appNames": [
+            "微信",
+            "WeChat"
+        ]
+    },
+    {
+        "iconName": ":wecom:",
+        "appNames": [
+            "企业微信",
+            "WeCom"
+        ]
+    },
+    {
+        "iconName": ":wezterm:",
+        "appNames": [
+            "WezTerm",
+            "wezterm-gui"
+        ]
+    },
+    {
+        "iconName": ":whats_app:",
+        "appNames": [
+            "WhatsApp",
+            "‎WhatsApp"
+        ]
+    },
+    {
+        "iconName": ":windows_app:",
+        "appNames": [
+            "Windows App"
+        ]
+    },
+    {
+        "iconName": ":wireguard:",
+        "appNames": [
+            "WireGuard"
+        ]
+    },
+    {
+        "iconName": ":xbox:",
+        "appNames": [
+            "xemu"
+        ]
+    },
+    {
+        "iconName": ":xcode:",
+        "appNames": [
+            "Xcode"
+        ]
+    },
+    {
+        "iconName": ":xmind:",
+        "appNames": [
+            "XMind"
+        ]
+    },
+    {
+        "iconName": ":yaak:",
+        "appNames": [
+            "Yaak"
+        ]
+    },
+    {
+        "iconName": ":yandex_browser:",
+        "appNames": [
+            "Yandex Browser ",
+            "Yandex Browser",
+            "Yandex"
+        ]
+    },
+    {
+        "iconName": ":yandex_music:",
+        "appNames": [
+            "Yandex Music"
+        ]
+    },
+    {
+        "iconName": ":yazi:",
+        "appNames": [
+            "Yazi",
+            "yazi"
+        ]
+    },
+    {
+        "iconName": ":youtube:",
+        "appNames": [
+            "YouTube"
+        ]
+    },
+    {
+        "iconName": ":youtube_music:",
+        "appNames": [
+            "YouTube Music"
+        ]
+    },
+    {
+        "iconName": ":yubico:",
+        "appNames": [
+            "Yubico Authenticator",
+            "YubiKey Manager"
+        ]
+    },
+    {
+        "iconName": ":yuque:",
+        "appNames": [
+            "Yuque",
+            "语雀"
+        ]
+    },
+    {
+        "iconName": ":z_library:",
+        "appNames": [
+            "Z-Library"
+        ]
+    },
+    {
+        "iconName": ":zed:",
+        "appNames": [
+            "Zed"
+        ]
+    },
+    {
+        "iconName": ":zen_browser:",
+        "appNames": [
+            "Zen",
+            "Zen Browser",
+            "Twilight"
+        ]
+    },
+    {
+        "iconName": ":zeplin:",
+        "appNames": [
+            "Zeplin"
+        ]
+    },
+    {
+        "iconName": ":zoom:",
+        "appNames": [
+            "zoom.us"
+        ]
+    },
+    {
+        "iconName": ":zotero:",
+        "appNames": [
+            "Zotero"
+        ]
+    },
+    {
+        "iconName": ":zulip:",
+        "appNames": [
+            "Zulip"
+        ]
+    }
+]
