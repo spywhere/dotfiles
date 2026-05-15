@@ -1,7 +1,15 @@
 {
   "extractor": {
+    "skip": "abort:10",
+
     "instagram": {
       "include": "posts,stories,reels,highlights"
+    },
+    "twitter": {
+      "sleep-request": "6.9-10.1",
+      "sleep": "1.0-1.5",
+      "logout": true,
+      "unavailable": true
     }
   }
 }
