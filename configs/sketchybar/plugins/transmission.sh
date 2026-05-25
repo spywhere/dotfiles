@@ -154,6 +154,10 @@ update_torrent_item() {
   local percent_done
   percent_done="$(echo "$size_done" "$total" | awk '{printf "%.2f", $1 / $2 * 100}')"
 
+  if test -z "$percent_done"; then
+    percent_done="-/-"
+  fi
+
   case "$status" in
     1|2)
       # queued/check
@@ -203,7 +207,7 @@ update_torrent_menu() {
 populate_items() {
   local item_name="$1"
   local torrents
-  torrents="$(transmission-remote -j -l | jq '.result.torrents|map(.+{completion: (.size_when_done-.left_until_done)/.size_when_done})|sort_by(.completion,-.id)|reverse|map(@base64)|.[]')"
+  torrents="$(transmission-remote -j -l | jq '.result.torrents|map(.+{completion: if .size_when_done<=0then -1 else (.size_when_done-.left_until_done)/.size_when_done end})|sort_by(.completion,-.id)|reverse|map(@base64)|.[]')"
 
   local separator="off"
   for torrent64 in $torrents; do
