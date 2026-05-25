@@ -118,9 +118,9 @@ case "$NAME" in
         item_display="$(echo "$existing_item" | jq -r '.bounding_rects|to_entries|map(select((.value.origin|min)+(.value.size|min)>0).key)|first')"
       fi
 
-      if test "display-$display" = "$item_display"; then
+      # if test "display-$display" = "$item_display"; then
         last_id="$item_id"
-      fi
+      # fi
     done
     if test "$update_bracket" = "yes"; then
       sketchybar --remove "$NAME.bar" \
