@@ -243,6 +243,14 @@ open_meteo() {
 }
 
 weather_data="$(open_meteo || wttr)"
+
+if test -z "$weather_data"; then
+  sketchybar --set "$NAME" \
+    drawing=off \
+    update_freq=60
+  exit
+fi
+
 icon="$(echo "$weather_data" | cut -d' ' -f1)"
 temp="$(echo "$weather_data" | cut -d' ' -f2)"
 
@@ -250,5 +258,7 @@ echo "$icon $temp" >&2
 
 sketchybar --animate sin 10 \
   --set "$NAME" \
+  drawing=on \
   icon="$icon" \
-  label="$temp"
+  label="$temp" \
+  update_freq=600
