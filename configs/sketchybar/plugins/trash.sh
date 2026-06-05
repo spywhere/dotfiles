@@ -5,6 +5,14 @@ PROMPT="Are you sure you want to permanently erase the items in the Trash?\n\nYo
 CANCEL_BUTTON="Cancel"
 DEFAULT_BUTTON="Empty Trash"
 
+TRASH_ITEMS="$(osascript -l JavaScript -e 'Application("Finder").trash.items.length')"
+if test "$TRASH_ITEMS" -le 0; then
+  sketchybar --set "$NAME" drawing=off
+  exit
+fi
+
+sketchybar --set "$NAME" drawing=on label="$TRASH_ITEMS"
+
 if test "$SENDER" = "mouse.clicked"; then
   if test "$MODIFIER" = "none"; then
     prompt_script="var app=Application.currentApplication();app.includeStandardAdditions=true;app.displayDialog('$PROMPT', {buttons: ['$CANCEL_BUTTON', '$DEFAULT_BUTTON'], defaultButton: 2, withIcon: Path('$ICON')});"
@@ -15,12 +23,4 @@ if test "$SENDER" = "mouse.clicked"; then
   else
     osascript -l JavaScript -e 'Application("Finder").trash.open();'
   fi
-  exit
-fi
-
-TRASH_ITEMS="$(osascript -l JavaScript -e 'Application("Finder").trash.items.length')"
-if test "$TRASH_ITEMS" -gt 0; then
-  sketchybar --set "$NAME" drawing=on label="$TRASH_ITEMS"
-else
-  sketchybar --set "$NAME" drawing=off
 fi
