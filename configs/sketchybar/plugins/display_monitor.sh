@@ -1,6 +1,9 @@
 #!/bin/bash
 
 calculate_hash() {
+  if test -z "$1"; then
+    return 1
+  fi
   current_size="$(echo "$1" | jq -r length)"
   # current_hash="$(echo "$1" | md5sum)"
 
@@ -17,13 +20,19 @@ compare_hash() {
 
 if test "$1" = "hash"; then
   calculate_hash "$(sketchybar --query displays)"
-  exit 0
+  exit $?
 fi
 
 case "$SENDER" in
   display_change)
     previous_hash="$(sketchybar --query "$NAME" | jq -r .label.value)"
+    if test -z "$previous_hash"; then
+      exit
+    fi
     current_hash="$(calculate_hash "$(sketchybar --query displays)")"
+    if test $? -ne 0 || test -z "$current_hash"; then
+      exit
+    fi
 
     if test "$previous_hash" != "$current_hash"; then
       if compare_hash "$previous_hash" "$current_hash"; then
