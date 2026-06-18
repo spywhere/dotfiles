@@ -2,7 +2,7 @@
 
 if test -n "$(command -v brew)"; then
   brew update
-  brew upgrade
+  brew upgrade -y
   brew cleanup
 fi
 

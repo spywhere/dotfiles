@@ -80,6 +80,7 @@ _run_intel_brew() {
 
 _run_brew() {
   export HOMEBREW_NO_ANALYTICS=1
+  export HOMEBREW_NO_ASK=1
   run_brew__brew_path="/usr/local/Homebrew/bin"
   run_brew__executable=""
   if has_flag "apple-silicon"; then
