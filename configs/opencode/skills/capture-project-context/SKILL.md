@@ -15,6 +15,14 @@ This is not about documenting what you just did. It is about extracting durable
 knowledge — things that will still be true and still be useful the next time
 someone works in this project.
 
+## Delegation ownership
+
+Only the primary/Lead agent may use this skill to delegate capture. If a
+subagent encounters project-specific or global learning, it must report the
+candidate and supporting findings, decisions, commands, conventions, and
+destination project to Lead. Subagents must not invoke `context-capture` or
+`kb-writer`.
+
 ## When to apply this skill
 
 Apply this at natural completion points:
@@ -62,11 +70,11 @@ is context, convention, or a fact.
 ## What does NOT belong here
 
 - Knowledge that applies globally across all projects → goes to the KB instead
-  (invoke the `kb-writer` sub-agent via the `kb` skill)
+  (the primary/Lead agent invokes `kb-writer` via the `kb` skill)
 - Knowledge that is already in the existing AGENTS.md or an existing skill
 - Ephemeral state: current ticket status, who is working on what, etc.
 
-## How to act
+## How the primary/Lead agent acts
 
 1. Announce to the user what you intend to capture and why:
    > "I'm capturing [what] to [AGENTS.md / a new skill: slug] — [one sentence why]"
