@@ -16,6 +16,12 @@ configs/nvim/plugged
 configs/nvim/plugin/packer_compiled.lua
 configs/nvim/lazy-lock.json
 configs/opencode/**
+!configs/opencode/agents
+!configs/opencode/agents/**
+!configs/opencode/kb
+!configs/opencode/kb/knowledge-base-meta.html
+!configs/opencode/skills
+!configs/opencode/skills/**
 !configs/opencode/opencode.json
 configs/qutebrowser/bookmarks
 configs/qutebrowser/quickmarks
