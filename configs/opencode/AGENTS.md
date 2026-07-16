@@ -6,14 +6,17 @@ At the start of every session, load the `kb` skill. This gives you your knowledg
 index — a map of everything you have learned before. Consult it before rediscovering
 how to do something you may have already figured out.
 
+The primary/Lead agent owns final knowledge assessment and capture delegation.
 At the end of every completed implementation or non-trivial investigation-only
-session, assess durable, non-obvious knowledge in this order:
+session, it must assess durable, non-obvious knowledge in this order:
 1. Project-specific knowledge belongs in that project's context.
 2. Cross-project knowledge belongs in the global KB.
 3. If nothing useful was learned, capture nothing.
 
-Always assess project context before the cross-project KB so repository-specific
-commands, conventions, decisions, and gotchas are routed correctly.
+The primary/Lead agent must assess project context before the cross-project KB
+so repository-specific commands, conventions, decisions, and gotchas are routed
+correctly. Subagents must not invoke `context-capture` or `kb-writer`; they may
+only report candidate project-specific or global learnings to Lead.
 
 ## Working Style
 
