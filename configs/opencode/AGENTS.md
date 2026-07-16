@@ -2,9 +2,10 @@
 
 ## Knowledge Base
 
-At the start of every session, load the `kb` skill. This gives you your knowledge
-index — a map of everything you have learned before. Consult it before rediscovering
-how to do something you may have already figured out.
+At the start of every session, the primary/Lead agent must load the `kb` skill
+and consult its knowledge index before rediscovering prior work. Subagents must
+not independently load the skill or use its capture instructions; they report
+candidate project-specific or global learnings to Lead.
 
 The primary/Lead agent owns final knowledge assessment and capture delegation.
 At the end of every completed implementation or non-trivial investigation-only
