@@ -1,5 +1,5 @@
 ---
-description: Writes and updates project-specific context files — AGENTS.md and .agents/skills/ — after the primary agent identifies knowledge worth persisting. Invoked by the primary agent via the capture-project-context skill.
+description: Writes and updates project-specific context files — AGENTS.md and .agents/skills/ — after the primary agent identifies knowledge worth persisting. Invoked directly by the primary agent.
 mode: subagent
 permission:
   read: allow
@@ -7,9 +7,9 @@ permission:
   grep: allow
   edit: allow
   bash:
+    "*": deny
     "ls *": allow
     "mkdir *": allow
-    "*": deny
 ---
 
 # Context Capture

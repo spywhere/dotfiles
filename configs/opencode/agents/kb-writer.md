@@ -24,8 +24,20 @@ You will be given:
 - **content** — the knowledge to record (steps, commands, examples, notes)
 - **action** — either `create` (new entry) or `update` (update existing)
 - **existing_file** — (only for `update`) the filename of the entry to update
+- **project_root** — the source project, used to verify routing
 
 ## Your process
+
+### Routing guard
+
+Before reading or writing KB entries, determine whether the proposed knowledge
+is cross-project. If it is clearly specific to one repository — including its
+commands, layout, architecture, conventions, setup, or local decisions — do
+not write anything. Return a rejection that tells the caller to reroute the
+material to `context-capture` with the destination `project_root`.
+
+Only durable knowledge reusable across projects is eligible for the global KB.
+If routing is ambiguous, reject rather than risk storing project context here.
 
 ### For `create`
 
@@ -97,6 +109,8 @@ Sections are optional. Use semantic HTML throughout: `<ol>`/`<ul>` for lists,
 ## Constraints
 
 - Write only to `~/.config/opencode/kb/`. Do not touch any other path.
+- Never write clearly project-specific material; reject and reroute it to
+  `context-capture`.
 - Do not create duplicate entries. Check existing titles and descriptions first.
 - Do not remove content that was not part of your update.
 - Keep entries factual and concise. These are reference notes for an AI agent,

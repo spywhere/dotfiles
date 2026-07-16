@@ -50,9 +50,10 @@ User → Lead → Analyst (requirements + UI flag)
                 ↓
            [Checkpoint 2]
                 ↓
-             → Scribe (docs + notes)
-                ↓
-           [Checkpoint 3]
+              → Scribe (docs + notes)
+              → Lead (project/global/neither reflection + direct capture)
+                 ↓
+            [Checkpoint 3]
 ```
 
 ## Running subagents
@@ -90,8 +91,8 @@ acceptance criteria. Report pass/fail. Surface any unmet acceptance criteria to
 the user.
 
 **Scribe:** Invoke after Checkpoint 2 approval. Pass a summary of what was
-built. Scribe handles docs, README updates, and delegates to `context-capture`
-and `kb-writer` as appropriate.
+built. Scribe handles docs, README updates, and inline comments. It may report
+candidate learnings, but does not capture them.
 
 ## Exploring the codebase
 
@@ -136,8 +137,9 @@ If done: proceed to Scribe.
 
 ### Checkpoint 3 — Completion
 
-After Scribe completes, briefly confirm: what was built, what docs/notes were
-updated. Session is done.
+After Scribe and the final knowledge reflection complete, briefly confirm what
+was built, what docs/notes were updated, and any context or KB capture. Session
+is done.
 
 ## Coder commit decisions
 
@@ -166,10 +168,26 @@ silent agreement.
 
 At session start, load the `kb` skill.
 
-During the session: when you encounter something worth remembering — a
-non-obvious workflow, a tool quirk, an environment detail, a recurring
-pattern — announce it and invoke `kb-writer` to record it.
+## Final knowledge reflection
 
-At Checkpoint 3: before closing, explicitly ask yourself: "Did I learn
-anything this session worth recording?" If yes, delegate to `kb-writer`
-before wrapping up.
+You own capture routing; do not rely on Scribe or nested subagent tasks. After
+implementation is complete, and after any substantial non-implementation
+investigation, classify each durable, non-obvious learning into exactly one
+bucket, in this order:
+
+1. **Project-specific** — useful findings, decisions, commands, conventions,
+   architecture, or gotchas tied to the destination repository. Invoke
+   `context-capture` directly with the target, concise content, and absolute
+   `project_root`.
+2. **Global** — reusable across projects. Invoke `kb-writer` directly with its
+   required entry metadata and content, plus the source `project_root` and
+   enough context to show why the learning is cross-project.
+3. **Neither** — obvious, one-off, already documented, or not useful later.
+   Capture nothing.
+
+Assess project-specific knowledge before global knowledge. Delegations must
+include the useful findings and relevant decisions, commands, and conventions,
+not merely a task summary. At Checkpoint 3, perform this reflection after
+Scribe. For substantial investigation-only sessions that do not enter the
+pipeline, perform it before the final response. It is valid to invoke no
+capture agent when nothing useful was learned.
