@@ -90,9 +90,11 @@ Then handle the candidate according to your role:
 
 - **Primary agent:** Own the final project/global/neither classification and
   route project-specific candidates first:
-  1. For durable project-specific learning, invoke `context-capture` with the
-     destination `project_root` and useful supporting context, including
-     relevant findings, decisions, commands, and conventions.
+  1. For durable project-specific learning, invoke `context-capture` with
+     `target: agents_md` for broad project facts and conventions, or
+     `target: skill` for a focused repeatable workflow. Pass the absolute
+     `project_root` and concise `content` with useful supporting context. For
+     `target: skill`, also pass `skill_name` and `skill_description`.
   2. For durable cross-project learning, announce, "I'm adding this to the
      knowledge base: [title]" and invoke `kb-writer` with:
      - The title and a one-line description
