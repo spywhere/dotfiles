@@ -82,28 +82,34 @@ future sessions, first distinguish project-specific information from durable,
 cross-project knowledge:
 
 - Project-specific commands, conventions, architecture, setup, and decisions
-  are not global KB content. Report them to the primary agent for
-  `context-capture` routing.
-- Cross-project knowledge may qualify for the global KB.
+  are not global KB content. They route through `context-capture`.
+- Durable cross-project knowledge may qualify for the global KB and routes
+  through `kb-writer`.
 
 Then handle the candidate according to your role:
 
-- **Primary agent:** Own the final project/global/neither classification. For
-  global KB content, announce, "I'm adding this to the knowledge base: [title]"
-  and invoke `kb-writer` with:
-   - The title and a one-line description
-   - Relevant tags (comma-separated)
-   - The priority: `high` (frequently needed or critical), `normal` (default),
-     or `low` (edge case or rarely needed)
-   - The full content to record (steps, commands, examples, context)
-   - Whether this is a new entry or an update to an existing one (include the
-     existing filename if updating)
+- **Primary agent:** Own the final project/global/neither classification and
+  route project-specific candidates first:
+  1. For durable project-specific learning, invoke `context-capture` with the
+     destination `project_root` and useful supporting context, including
+     relevant findings, decisions, commands, and conventions.
+  2. For durable cross-project learning, announce, "I'm adding this to the
+     knowledge base: [title]" and invoke `kb-writer` with:
+     - The title and a one-line description
+     - Relevant tags (comma-separated)
+     - The priority: `high` (frequently needed or critical), `normal` (default),
+       or `low` (edge case or rarely needed)
+     - The full content to record (steps, commands, examples, context)
+     - Whether this is a new entry or an update to an existing one (include the
+       existing filename if updating)
+  3. For neither, capture nothing.
 - **Subagent:** Do not invoke `kb-writer` or `context-capture`. Report candidate
   global and project-specific learnings to the primary agent with supporting
   context so it can classify and route them.
 
-No agent writes KB files directly. Only the primary agent delegates creates or
-updates to `kb-writer`.
+The primary agent and ordinary subagents never edit KB files directly. Only the
+primary agent delegates creates or updates, and the explicitly delegated
+`kb-writer` is the authorized writer.
 
 ## What qualifies as knowledge worth recording
 
