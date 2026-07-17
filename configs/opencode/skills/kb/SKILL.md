@@ -1,6 +1,6 @@
 ---
 name: kb
-description: Load this skill at the start of every session to access your long-term knowledge base — a persistent memory of workflows, tools, environment details, and patterns discovered in past sessions. Use it to look up what you have done before rather than rediscovering it. Use it to record new knowledge for future sessions.
+description: Every agent loads this skill at the start of every session to consult the long-term knowledge base before rediscovering prior work. The primary agent may delegate global KB writes; subagents have read access and report candidate learnings upward.
 ---
 
 # Knowledge Base
@@ -14,11 +14,10 @@ a process — that would otherwise be rediscovered from scratch.
 
 This is not documentation for the user. It is memory for you.
 
-## On load: build your index and surface stale entries
+## On load: build the lightweight index
 
-When you load this skill, do two things:
-
-**1. Read the KB directory listing and build your mental index:**
+Every agent must load this skill at the start of every session. Read the KB
+directory listing and build a lightweight mental index:
 
 ```
 ~/.config/opencode/kb/
@@ -34,16 +33,22 @@ For each `.html` file found, extract from its `<head>`:
 Hold this index in mind for the session. Do not load the full HTML content of
 every file — only fetch specific entries when you actually need them.
 
-**2. Surface stale entries:**
+### Stale entries
 
 Check the `updated` date of each entry. If any entry has not been updated in
-180 days or more, briefly inform the user:
+180 days or more, handle the observation according to your role:
+
+- **Primary agent:** Briefly inform the user:
 
 > "N KB entries haven't been updated in 6+ months: [title1], [title2], ...
 > Worth reviewing when you get a chance."
 
-State this once, do not repeat it. Do not delete or alter these entries.
-The user decides what to do with them.
+- **Subagent:** Do not surface the notice to the user. Report the stale entry
+  titles and dates to the primary agent with enough context for it to decide
+  whether to notify the user.
+
+State or report this once, do not repeat it. Do not delete or alter stale
+entries merely because of their age.
 
 ## During work: consult before rediscovering
 
@@ -58,22 +63,34 @@ When multiple entries are relevant, fetch `high` priority entries before
 ## Reactive cleanup: update when something is wrong
 
 When you use a KB entry during work and observe that the recorded behavior
-does not match reality — a command fails, a path is wrong, a process has
-changed — do the following immediately:
+does not match reality — a command fails, a path is wrong, or a process has
+changed — handle it according to your role:
 
-1. Announce: "The KB entry '[title]' appears to be outdated. Updating it."
-2. Invoke the `kb-writer` sub-agent to update the entry with the correct
-   information, noting what changed and why.
+- **Primary agent:** Announce, "The KB entry '[title]' appears to be outdated.
+  Updating it." Then invoke `kb-writer` to update the entry with the correct
+  information, noting what changed and why.
+- **Subagent:** Do not invoke `kb-writer` or announce an update to the user.
+  Report the outdated behavior, observed replacement, evidence, and affected
+  entry to the primary agent.
 
 Do not silently leave incorrect entries in place.
 
-## When you learn something new: record it
+## When you learn something new: route it
 
 When you discover something non-trivial that would be useful to remember in
-future sessions, do the following:
+future sessions, first distinguish project-specific information from durable,
+cross-project knowledge:
 
-1. Announce to the user: "I'm adding this to the knowledge base: [title]"
-2. Invoke the `kb-writer` sub-agent with:
+- Project-specific commands, conventions, architecture, setup, and decisions
+  are not global KB content. Report them to the primary agent for
+  `context-capture` routing.
+- Cross-project knowledge may qualify for the global KB.
+
+Then handle the candidate according to your role:
+
+- **Primary agent:** Own the final project/global/neither classification. For
+  global KB content, announce, "I'm adding this to the knowledge base: [title]"
+  and invoke `kb-writer` with:
    - The title and a one-line description
    - Relevant tags (comma-separated)
    - The priority: `high` (frequently needed or critical), `normal` (default),
@@ -81,8 +98,12 @@ future sessions, do the following:
    - The full content to record (steps, commands, examples, context)
    - Whether this is a new entry or an update to an existing one (include the
      existing filename if updating)
+- **Subagent:** Do not invoke `kb-writer` or `context-capture`. Report candidate
+  global and project-specific learnings to the primary agent with supporting
+  context so it can classify and route them.
 
-Do not write KB files directly. Always delegate to `kb-writer`.
+No agent writes KB files directly. Only the primary agent delegates creates or
+updates to `kb-writer`.
 
 ## What qualifies as knowledge worth recording
 
