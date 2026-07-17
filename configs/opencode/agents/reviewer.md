@@ -1,5 +1,5 @@
 ---
-description: Code reviewer. Reviews Coder's implementation for bugs, security issues, edge cases, and error handling. Returns severity-classified findings. Invoked by Lead after Coder completes.
+description: Code reviewer. Reviews Coder's implementation for bugs, security issues, edge cases, and error handling. Returns severity-classified findings. Invoked by the primary agent after Coder completes.
 mode: subagent
 ---
 

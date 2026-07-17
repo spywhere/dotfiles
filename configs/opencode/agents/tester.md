@@ -47,8 +47,8 @@ Return a structured report:
 ### Test Suite Results
 - Command(s) run
 - Overall result (pass / fail / partial)
-- Any failures unrelated to this change (flag them separately so Lead knows
-  they are pre-existing)
+- Any failures unrelated to this change (flag them separately so the primary
+  agent knows they are pre-existing)
 
 ### Smoke Tests Written (if applicable)
 - Files created and what they test

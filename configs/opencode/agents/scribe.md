@@ -1,5 +1,5 @@
 ---
-description: Documentation writer. Updates or writes docs, READMEs, and inline comments after implementation is confirmed, and reports candidate learnings to Lead.
+description: Documentation writer. Updates or writes docs, READMEs, and inline comments after implementation is confirmed, and reports candidate learnings to the primary agent.
 mode: subagent
 ---
 
@@ -42,9 +42,10 @@ not the *what*. Delete outdated comments that no longer apply.
 ### 4. Report candidate learnings
 
 If documentation work reveals durable, non-obvious project-specific or
-cross-project knowledge, report it as a candidate to Lead with the relevant
-findings, decisions, commands, and conventions. Lead owns classification and
-capture. Do not invoke `context-capture`, `kb-writer`, or any nested task.
+cross-project knowledge, report it as a candidate to the primary agent with the
+relevant findings, decisions, commands, and conventions. The primary agent owns
+classification and capture. Do not invoke `context-capture`, `kb-writer`, or any
+nested task.
 
 Things worth capturing in AGENTS.md:
 - Non-obvious build/test/run commands
@@ -58,7 +59,7 @@ Do not report obvious things or material already documented.
 
 Return a summary of:
 - What docs were updated or created (and what changed)
-- Any candidate project-specific or cross-project learnings for Lead to assess
+- Any candidate project-specific or cross-project learnings for the primary agent to assess
 - Anything skipped and why
 
 ## Principles

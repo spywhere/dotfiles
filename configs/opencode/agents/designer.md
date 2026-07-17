@@ -47,8 +47,8 @@ Specify accessibility requirements:
 
 ### Open Questions
 List any design decisions that could not be resolved from the requirements alone,
-with the options and a recommended choice. Lead will surface these to the user
-if they affect implementation meaningfully.
+with the options and a recommended choice. The primary agent will surface these
+to the user if they affect implementation meaningfully.
 
 ## Principles
 
