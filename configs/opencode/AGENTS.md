@@ -2,22 +2,22 @@
 
 ## Knowledge Base
 
-At the start of every session, the primary/Lead agent must load the `kb` skill
+At the start of every session, the primary agent must load the `kb` skill
 and consult its knowledge index before rediscovering prior work. Subagents must
 not independently load the skill or use its capture instructions; they report
-candidate project-specific or global learnings to Lead.
+candidate project-specific or global learnings to the primary agent.
 
-The primary/Lead agent owns final knowledge assessment and capture delegation.
+The primary agent owns final knowledge assessment and capture delegation.
 At the end of every completed implementation or non-trivial investigation-only
 session, it must assess durable, non-obvious knowledge in this order:
 1. Project-specific knowledge belongs in that project's context.
 2. Cross-project knowledge belongs in the global KB.
 3. If nothing useful was learned, capture nothing.
 
-The primary/Lead agent must assess project context before the cross-project KB
+The primary agent must assess project context before the cross-project KB
 so repository-specific commands, conventions, decisions, and gotchas are routed
 correctly. Subagents must not invoke `context-capture` or `kb-writer`; they may
-only report candidate project-specific or global learnings to Lead.
+only report candidate project-specific or global learnings to the primary agent.
 
 ## Working Style
 
