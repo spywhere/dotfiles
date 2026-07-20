@@ -1,0 +1,25 @@
+onboarding = false
+
+[theme]
+name = "one-dark"
+auto_switch = false
+
+[ui]
+sidebar_collapsed_mode = "hidden"
+prompt_new_tab_name = false
+
+[ui.toast]
+delivery = "herdr"
+
+[keys]
+prefix = "ctrl+a"
+
+split_vertical = "prefix+|"
+split_horizontal = "prefix+minus"
+
+new_workspace = "prefix+w"
+previous_workspace = "shift+up"
+next_workspace = "shift+down"
+
+previous_tab = "shift+left"
+next_tab = "shift+right"

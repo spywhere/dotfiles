@@ -114,7 +114,7 @@ allow_tmux() {
   fi
 
   # nested tmux or zellij
-  if test -n "$TMUX" || test -n "$ZELLIJ"; then
+  if test -n "$TMUX" || test -n "$ZELLIJ" || test -n "$HERDR_ENV"; then
     return 1
   fi
 
@@ -130,7 +130,10 @@ allow_tmux() {
 }
 
 if allow_tmux; then
-  if test -n "$(command -v zellij)" && exp_is bB zellij; then
+  if test -n "$(command -v herdr)" && exp_is bB herdr; then
+    command herdr
+    exit
+  elif test -n "$(command -v zellij)" && exp_is bB zellij; then
     ZELLIJ_AUTO_ATTACH=true
     ZELLIJ_AUTO_EXIT=true
     . <(zellij setup --generate-auto-start zsh)
@@ -206,3 +209,4 @@ setup_cmd jj util completion zsh
 setup_cmd gh completion -s zsh
 setup_cmd deno completions bash
 setup_cmd zoxide init zsh
+setup_cmd herdr completion zsh

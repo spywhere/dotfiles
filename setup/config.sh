@@ -336,6 +336,9 @@ setup_config() {
   step "  - github"
   link github/ .config/github
 
+  step "  - herdr"
+  link herdr/ .config/herdr
+
   step "  - htop"
   link htop/ .config/htop
 
