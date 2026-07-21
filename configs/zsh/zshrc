@@ -100,7 +100,6 @@ allow_terminal() {
       return 0
       ;;
     *)
-      break
       ;;
   esac
 
@@ -113,8 +112,13 @@ allow_tmux() {
     return 1
   fi
 
-  # nested tmux or zellij
+  # nested tmux
   if test -n "$TMUX" || test -n "$ZELLIJ" || test -n "$HERDR_ENV"; then
+    return 1
+  fi
+
+  # running inside Okca ADE
+  if test -n "$OKCA_APP_VESRION"; then
     return 1
   fi
 
