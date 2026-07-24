@@ -1,0 +1,6 @@
+group = "Personal"
+name = ".dots"
+working_dir = "~/.dots"
+
+[[tabs]]
+name = "1"

@@ -21,5 +21,29 @@ new_workspace = "prefix+w"
 previous_workspace = "shift+up"
 next_workspace = "shift+down"
 
+new_worktree = ["prefix+n", "prefix+g"]
+open_worktree = "prefix+o"
+open_notification_target = "prefix+shift+o"
+
 previous_tab = "shift+left"
 next_tab = "shift+right"
+
+goto = "prefix+shift+g"
+
+[[keys.command]]
+key = "cmd+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"
+description = "herdr-reviewr: toggle reviewer"
+
+[[keys.command]]
+key = "prefix+up"
+type = "plugin_action"
+command = "cloudmanic.herdr-plus.projects"
+description = "herdr-plus: projects"
+
+[[keys.command]]
+key = "prefix+down"
+type = "plugin_action"
+command = "cloudmanic.herdr-plus.quick-actions"
+description = "herdr-plus: quick actions"
