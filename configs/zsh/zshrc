@@ -136,7 +136,15 @@ allow_tmux() {
 if allow_tmux; then
   if test -n "$(command -v herdr)" && exp_is bB herdr; then
     command herdr
-    exit
+    if test $? -eq 0; then
+      exit
+    fi
+    echo "Try restarting server..."
+    command herdr server stop
+    command herdr
+    if test $? -eq 0; then
+      exit
+    fi
   elif test -n "$(command -v zellij)" && exp_is bB zellij; then
     ZELLIJ_AUTO_ATTACH=true
     ZELLIJ_AUTO_EXIT=true
