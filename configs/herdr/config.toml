@@ -5,6 +5,7 @@ name = "one-dark"
 auto_switch = false
 
 [ui]
+sidebar_start_collapsed = true
 sidebar_collapsed_mode = "hidden"
 prompt_new_tab_name = false
 
