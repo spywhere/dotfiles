@@ -56,7 +56,10 @@ def list_workspaces_json(fmt):
     result = _run(
         ["aerospace", "list-workspaces", "--all", "--json", "--format", fmt]
     )
-    return json.loads(result.stdout)
+    try:
+        return json.loads(result.stdout)
+    except ValueError:
+        return []
 
 
 def list_focused_workspace():
@@ -72,7 +75,10 @@ def list_windows_json(ws, fmt):
     result = _run(
         ["aerospace", "list-windows", "--workspace", ws, "--json", "--format", fmt]
     )
-    windows = json.loads(result.stdout)
+    try:
+        windows = json.loads(result.stdout)
+    except ValueError:
+        return []
     return sorted(windows, key=lambda w: _window_sort_key(w.get("window-id")))
 
 
@@ -162,9 +168,13 @@ def reconcile(bar, name):
         # Always update last_id (replicates the shell's commented-out display comparison).
         last_id = item_id
     if update_bracket:
-        bar.remove("{}.bar".format(name))
-        bar.add_bracket("{}.bar".format(name), "/{}.workspace.*/".format(name))
-        bar.item("{}.bar".format(name)).set(
+        bracket_id = "{}.bar".format(name)
+        try:
+            bar.remove(bracket_id)
+        except SketchyBar.Error:
+            pass
+        bar.add_bracket(bracket_id, "/{}.workspace.*/".format(name))
+        bar.item(bracket_id).set(
             {
                 "background.color": "0x20ffffff",
                 "background.corner_radius": 25,
