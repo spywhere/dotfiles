@@ -33,6 +33,33 @@ def icon_for(app):
     return ":default:"
 
 
+# Maps SketchyBar property names (as passed to --set) to the dotted path
+# used in the JSON returned by ``--query``. The query JSON stores the icon
+# text under ``icon.value``, the label text under ``label.value``, and the
+# display under ``geometry.display`` rather than under the bare key.
+_QUERY_PATHS = {
+    "icon.color.alpha": "icon.color.alpha",
+    "label.color.alpha": "label.color.alpha",
+    "label": "label.value",
+    "icon.padding_right": "icon.padding_right",
+    "label.padding_left": "label.padding_left",
+    "display": "geometry.display",
+}
+
+
+def _get_nested(data, dotted_key):
+    """Traverse a dotted key path in a nested dict, return None if any key missing."""
+    keys = dotted_key.split(".")
+    value = data
+    for key in keys:
+        if not isinstance(value, dict):
+            return None
+        value = value.get(key)
+        if value is None:
+            return None
+    return value
+
+
 def _run(cmd):
     """Run an external command, returning CompletedProcess (check=True, capture stdout, text)."""
     return subprocess.run(cmd, check=True, capture_output=True, text=True)
@@ -109,24 +136,59 @@ def update_windows_for_workspace(bar, name, ws):
         color_alpha = "0.4"
     else:
         color_alpha = "0.2"
+
     item = bar.item(name)
-    item.animate("sin", 10).set(
-        {
-            "width": "dynamic",
-            "icon.width": "dynamic",
-            "label.width": "dynamic",
-            "display": display,
-            "icon.padding_left": 8,
-            "icon.padding_right": icon_padding,
-            "icon": ws,
-            "icon.color.alpha": color_alpha,
-            "label": icons,
-            "label.font": "sketchybar-app-font:Regular:16",
-            "label.padding_left": icon_padding,
-            "label.padding_right": 8,
-            "label.color.alpha": color_alpha,
-        }
-    )
+
+    # Query current state to diff against. On query failure (item doesn't
+    # exist yet), fall back to a full property set.
+    try:
+        current = item.query()
+    except SketchyBar.QueryError:
+        item.animate("sin", 10).set(
+            {
+                "width": "dynamic",
+                "icon.width": "dynamic",
+                "label.width": "dynamic",
+                "display": display,
+                "icon.padding_left": 8,
+                "icon.padding_right": icon_padding,
+                "icon": ws,
+                "icon.color.alpha": color_alpha,
+                "label": icons,
+                "label.font": "sketchybar-app-font:Regular:16",
+                "label.padding_left": icon_padding,
+                "label.padding_right": 8,
+                "label.color.alpha": color_alpha,
+            }
+        )
+        return
+
+    # Compute desired values for properties that can change.
+    desired = {
+        "icon.color.alpha": str(color_alpha),
+        "label.color.alpha": str(color_alpha),
+        "label": icons,
+        "icon.padding_right": str(icon_padding),
+        "label.padding_left": str(icon_padding),
+        "display": str(display),
+    }
+
+    # Diff against current state — only emit changed properties.
+    changed = {}
+    for key, value in desired.items():
+        current_value = _get_nested(current, _QUERY_PATHS.get(key, key))
+        if str(current_value) != str(value):
+            changed[key] = value
+
+    # Width properties trigger re-measure; only emit if the label or
+    # padding changed (i.e. the item's size actually needs to change).
+    if "label" in changed or "icon.padding_right" in changed:
+        changed["width"] = "dynamic"
+        changed["icon.width"] = "dynamic"
+        changed["label.width"] = "dynamic"
+
+    if changed:
+        item.animate("sin", 10).set(changed)
 
 
 def reconcile(bar, name):
