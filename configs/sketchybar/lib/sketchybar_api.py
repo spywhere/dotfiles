@@ -43,6 +43,8 @@ class SketchyBar:
                 )
 
         def _serialize(self, properties, kwargs):
+            # Dotted SketchyBar keys (e.g. "icon.font.size") go in the
+            # properties dict; plain kwargs are passed as-is.
             if properties and any(key in kwargs for key in properties):
                 raise ValueError(
                     "duplicate key between properties and kwargs"
@@ -190,6 +192,12 @@ class SketchyBar:
         return item
 
     def item(self, identifier):
+        """Reference an existing item without emitting --add.
+
+        Use this from plugins to bind to items created by setup scripts.
+        The item is bound to this bar so set(), subscribe(), query(), etc.
+        work without re-adding it.
+        """
         if identifier in self._items:
             return self._items[identifier]
         new_item = self.Item(identifier)
@@ -201,12 +209,49 @@ class SketchyBar:
         return self.Animation(self, curve, duration)
 
     def python_plugin(self, path):
+        """Return a shell-quoted ``python3 <path>`` string for SketchyBar's ``script=``."""
         if not os.path.isabs(path):
             path = os.path.join(self._config_dir, path)
         return "{} {}".format(
             shlex.quote(self._python_executable),
             shlex.quote(path),
         )
+
+    def add_event(self, name):
+        """Register a custom SketchyBar event. Emits --add event <name>. Returns self."""
+        self._execute(["--add", "event", name])
+        return self
+
+    def add_bracket(self, name, regex):
+        """Add a bracket grouping items matching <regex> (passed verbatim, e.g. '/foo.*/').
+
+        Emits --add bracket <name> <regex>. Returns self.
+        """
+        self._execute(["--add", "bracket", name, regex])
+        return self
+
+    def move(self, item, *, after=None, before=None):
+        """Move an item after/before another. Pass exactly one of after/before.
+
+        Accepts an Item or a string id. Returns self.
+        """
+        if (after is None) == (before is None):
+            raise ValueError("exactly one of 'after' or 'before' is required")
+        identifier = item.identifier if isinstance(item, SketchyBar.Item) else item
+        other = after if after is not None else before
+        other_id = other.identifier if isinstance(other, SketchyBar.Item) else other
+        direction = "after" if after is not None else "before"
+        self._execute(["--move", identifier, direction, other_id])
+        return self
+
+    def remove(self, target):
+        """Remove an item or bracket. Accepts an Item or a string id (brackets are strings).
+
+        Emits --remove <id>. Returns self.
+        """
+        identifier = target.identifier if isinstance(target, SketchyBar.Item) else target
+        self._execute(["--remove", identifier])
+        return self
 
     def _execute(self, args, check=True, **kwargs):
         command = [self._executable] + args

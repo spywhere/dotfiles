@@ -47,7 +47,7 @@ items apple
 # items switcher
 # switcher aerospace menubar
 
-items aerospace
+items_py aerospace
 # items menubar
 
 ## Right Items
