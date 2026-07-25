@@ -208,9 +208,11 @@ def main():
             if sender == "aerospace_workspace_change":
                 # Only the prev and focused workspaces change on a workspace
                 # switch; other workspace items skip to avoid mass re-render.
+                # If the trigger didn't provide the env vars, fall through to a
+                # full update rather than skipping silently.
                 focused = os.environ.get("FOCUSED_WORKSPACE", "")
                 prev = os.environ.get("PREV_WORKSPACE", "")
-                if current != focused and current != prev:
+                if (focused or prev) and current != focused and current != prev:
                     return
             elif sender == "front_app_switched":
                 # Only the focused workspace's window list is affected by a
