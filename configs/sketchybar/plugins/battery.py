@@ -1,32 +1,24 @@
 #!/usr/bin/env python3
 
-import subprocess
+"""SketchyBar battery plugin — reads pmset and updates battery items."""
+
 import os
 import re
+import subprocess
 import sys
-import shutil
 
 PMSET = "/usr/bin/pmset"
 
-def run_sketchybar_command(*args):
-    """Executes a sketchybar command."""
-    executable = shutil.which("sketchybar")
-    if not executable:
-        print("sketchybar executable not found.", file=sys.stderr)
-        return
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+LIB_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "lib")
+if LIB_DIR not in sys.path:
+    sys.path.insert(0, LIB_DIR)
 
-    command = [executable, *args]
-    try:
-        subprocess.run(command, check=True, capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing sketchybar command: {' '.join(command)}", file=sys.stderr)
-        print(f"Stderr: {e.stderr}", file=sys.stderr)
-        print(f"Stdout: {e.stdout}", file=sys.stderr)
-    except FileNotFoundError:
-        print(f"'{executable}' command not found. Is SketchyBar installed and in PATH?", file=sys.stderr)
+from sketchybar_api import SketchyBar
 
-def battery_state() -> dict | None:
-    """Parses battery status using pmset."""
+
+def battery_state():
+    """Parse pmset output and return battery state dict or None."""
     result = subprocess.run(
         [PMSET, "-g", "batt"],
         check=False,
@@ -49,107 +41,95 @@ def battery_state() -> dict | None:
         "remaining": remaining_match.group(1) if remaining_match else "",
     }
 
-def get_battery_icon_and_color(state: dict) -> tuple[str, str, str, str]:
-    """Determines icon, color, remaining indicator, and alignment."""
-    percentage = int(state["percentage"])
-    use_ac = state["use_ac"]
-    not_charging = state["not_charging"]
-    remaining = state["remaining"]
 
-    icon = ""
-    label_color = "0xffffffff"
-    remaining_indicator = ""
-    align = "left"
-
-    if use_ac:
-        icon = "􀢋"  # Plug icon
-        label_color = "0xff00aaff" # Blue for AC power
-        if not_charging:
-            remaining_indicator = "􀊅" # Exclamation mark for not charging
-            align = "center"
-        elif percentage == 100: # Full charge, no time remaining
-            remaining_indicator = ""
-            align = "left"
-        else:
-            # If AC power and charging, we might not show remaining time,
-            # or we could show "Charging..." if pmset provides that info.
-            # For now, we'll keep it empty if not specifically "not charging".
-            remaining_indicator = ""
-            align = "left"
-    else: # Battery
-        if 90 <= percentage <= 100:
-            icon = "􀛨" # Full battery
-            label_color = "0xffffffff"
-        elif 60 <= percentage <= 89:
-            icon = "􀺸" # 75% battery
-            label_color = "0xffffffff"
-        elif 30 <= percentage <= 59:
-            icon = "􀺶" # 50% battery
-            label_color = "0xffffcc66" # Yellow
-        elif 10 <= percentage <= 29:
-            icon = "􀛩" # 25% battery
-            label_color = "0xffff9933" # Orange
-        else: # 0-9%
-            icon = "􀛪" # Empty battery
-            label_color = "0xffff6666" # Red
-        
-        # Remaining time is for battery, not AC
-        if remaining and remaining != "0:00":
-            remaining_indicator = remaining
-            align = "center" # Center align if showing time
-        else:
-            align = "left" # Default align if no remaining time
-
-    return icon, label_color, remaining_indicator, align
+def icon_and_color(percentage):
+    """Return (icon, color) for a discharging battery."""
+    pct = int(percentage)
+    if 90 <= pct <= 100:
+        return "\U001006e8", "0xffffffff"
+    if 60 <= pct <= 89:
+        return "\U00100eb8", "0xffffffff"
+    if 30 <= pct <= 59:
+        return "\U00100eb6", "0xffffcc66"
+    if 10 <= pct <= 29:
+        return "\U001006e9", "0xffff9933"
+    return "\U001006ea", "0xffff6666"
 
 
 def main():
     state = battery_state()
     if state is None:
-        print("Could not get battery state.", file=sys.stderr)
         return
 
-    name = os.environ.get("NAME", "")
+    percentage = state["percentage"]
+    use_ac = state["use_ac"]
+    not_charging = state["not_charging"]
+    remaining = state["remaining"]
+
+    name = os.environ.get("NAME")
     if not name:
-        print("NAME environment variable not set.", file=sys.stderr)
         return
 
-    percentage_str = state["percentage"]
-    percentage = int(percentage_str)
-    
-    icon, label_color, remaining_indicator, align = get_battery_icon_and_color(state)
+    bar = SketchyBar()
+    battery = bar.item(name)
+    status = bar.item("{}.status".format(name))
 
-    percentage_label = f"{percentage_str}%"
-
-    # Update the main battery item with icon and percentage
-    run_sketchybar_command("--set", name, f"icon={icon}", f"label={percentage_label}", f"label_color={label_color}", f"label_align={align}")
-
-    # Update the status item (often used for remaining time or specific icons)
-    status_item_name = f"{name}.status"
-    if remaining_indicator:
-        # If there's a remaining indicator (like time or "not charging" icon), set it
-        run_sketchybar_command("--set", status_item_name, f"label={remaining_indicator}", f"label_color={label_color}", f"label_align={align}")
+    # Determine icon, color, and alignment
+    align = "left"
+    if use_ac:
+        icon = "\U0010088b"
+        color = "0xff00aaff"
+        if not_charging:
+            remaining = "\U00100285"
+            align = "center"
+        elif remaining == "0:00":
+            remaining = ""
     else:
-        # Clear the status item label if no indicator is needed, or set to empty
-        # This might depend on how the .status item is configured in items/battery.py
-        # For now, we'll clear it as a safe default to ensure no stale data shows.
-        run_sketchybar_command("--set", status_item_name, "label=")
+        icon, color = icon_and_color(percentage)
 
-    # Handle special cases for when AC is plugged in and not charging, or fully charged.
-    # This logic might need refinement based on the exact desired behavior and item config.
-    if state["use_ac"] and state["not_charging"]:
-        # Specific setting for AC power and not charging
-        run_sketchybar_command("--set", name, "label_color=0xff00aaff") # Ensure blue for AC
-    elif percentage == 100 and not state["use_ac"]:
-        # If fully charged on battery, ensure correct icon/color (already handled by get_battery_icon_and_color)
-        pass
-    elif not state["use_ac"] and remaining_indicator == "􀊅":
-        # If on battery and showing "not charging" indicator, ensure correct color
-        run_sketchybar_command("--set", status_item_name, "label_color=0xffff6666") # Red for not charging warning
+    # Layout and animation
+    if not remaining:
+        # One-line layout: fade out status, enlarge main label
+        width = 45 if percentage == "100" else 40
+        with bar.animate("sin", 10) as anim:
+            anim.set(
+                status,
+                {"label.color.alpha": 0, "label.align": align},
+            )
+            anim.set(
+                battery,
+                {
+                    "label.y_offset": 0,
+                    "label.font.size": 13,
+                    "label.width": width,
+                    "label.color": color,
+                },
+            )
+    else:
+        # Two-line layout: show remaining in status, compact main label
+        battery_props = {
+            "label.font.size": 8,
+            "label.width": 30,
+            "label.color": color,
+        }
+        if str(battery.get("label.y_offset")) != "-5":
+            battery_props["label.y_offset"] = -5
+
+        with bar.animate("sin", 10) as anim:
+            anim.set(
+                status,
+                {"label.color": color, "label.align": align},
+            )
+            anim.set(battery, battery_props)
+        status.set(label=remaining)
+
+    # Final icon and percentage
+    battery.set(icon=icon, label="{}%".format(percentage))
+
 
 if __name__ == "__main__":
     try:
         main()
     except (OSError, RuntimeError) as error:
-        print(f"battery plugin: {error}", file=sys.stderr)
+        print("battery plugin: {}".format(error), file=sys.stderr)
         sys.exit(1)
