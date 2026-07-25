@@ -97,7 +97,7 @@ def update_windows_for_workspace(bar, name, ws):
     if record is None:
         return
     visible = bool(record.get("workspace-is-visible", False))
-    display = record.get("monitor-appkit-nsscreen-screens-id", "active")
+    display = record.get("monitor-appkit-nsscreen-screens-id") or "active"
     windows = list_windows_json(ws, "%{app-name}%{window-id}")
     icons = "".join(icon_for(w.get("app-name", "")) for w in windows)
     icon_padding = 4 if icons else 0
@@ -134,7 +134,7 @@ def reconcile(bar, name):
     update_bracket = False
     for record in records:
         workspace = record.get("workspace")
-        display = record.get("monitor-appkit-nsscreen-screens-id", "active")
+        display = record.get("monitor-appkit-nsscreen-screens-id") or "active"
         item_id = "{}.workspace.{}".format(name, workspace)
         exists = True
         try:
@@ -165,6 +165,7 @@ def reconcile(bar, name):
             if last_id:
                 bar.move(item_id, after=last_id)
             update_bracket = True
+        update_windows_for_workspace(bar, item_id, workspace)
         # Always update last_id (replicates the shell's commented-out display comparison).
         last_id = item_id
     if update_bracket:
