@@ -201,10 +201,26 @@ def main():
             update_mode(bar, name)
         elif ".workspace." in name:
             current = name.rsplit(".workspace.", 1)[-1]
-            if current in list_workspaces_all():
-                update_windows_for_workspace(bar, name, current)
-            else:
+            if current not in list_workspaces_all():
                 bar.remove(name)
+                return
+            sender = os.environ.get("SENDER", "")
+            if sender == "aerospace_workspace_change":
+                # Only the prev and focused workspaces change on a workspace
+                # switch; other workspace items skip to avoid mass re-render.
+                focused = os.environ.get("FOCUSED_WORKSPACE", "")
+                prev = os.environ.get("PREV_WORKSPACE", "")
+                if current != focused and current != prev:
+                    return
+            elif sender == "front_app_switched":
+                # Only the focused workspace's window list is affected by a
+                # front app switch.
+                focused = list_focused_workspace()
+                if current != focused:
+                    return
+            # space_windows_change, display_change, system_woke, and unknown/
+            # absent sender: fall through to a full update.
+            update_windows_for_workspace(bar, name, current)
         else:
             reconcile(bar, name)
     except FileNotFoundError:
