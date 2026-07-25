@@ -74,6 +74,10 @@ class SketchyBar:
 
         def query(self):
             self._require_bound()
+            if self._bar._dry_run:
+                raise SketchyBar.QueryError(
+                    "dry-run: item '{}' does not exist".format(self._identifier)
+                )
             try:
                 result = self._bar._execute(
                     ["--query", self._identifier],
@@ -159,8 +163,12 @@ class SketchyBar:
     def __init__(self, executable=None, config_dir=None, python_executable=None):
         self._items = {}
 
+        self._dry_run = os.environ.get("SKETCHYBAR_DRY_RUN") == "1"
+
         if executable is not None:
             self._executable = executable
+        elif self._dry_run and shutil.which("sketchybar") is None:
+            self._executable = "sketchybar"
         else:
             self._executable = shutil.which("sketchybar")
             if self._executable is None:
@@ -171,7 +179,10 @@ class SketchyBar:
         else:
             self._config_dir = os.environ.get("CONFIG_DIR")
             if not self._config_dir:
-                raise self.Error("CONFIG_DIR is not set")
+                if self._dry_run:
+                    self._config_dir = os.getcwd()
+                else:
+                    raise self.Error("CONFIG_DIR is not set")
 
         self._python_executable = python_executable or sys.executable
 
@@ -255,6 +266,12 @@ class SketchyBar:
 
     def _execute(self, args, check=True, **kwargs):
         command = [self._executable] + args
+        if self._dry_run:
+            quoted = " ".join(shlex.quote(str(a)) for a in command)
+            print(quoted)
+            return subprocess.CompletedProcess(
+                args=command, returncode=0, stdout="", stderr=""
+            )
         try:
             return subprocess.run(command, check=check, **kwargs)
         except FileNotFoundError:
