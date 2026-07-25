@@ -9,6 +9,22 @@ items() {
   done
 }
 
+items_py() {
+  local python3_path
+  python3_path="$(command -v python3)"
+  if test -z "$python3_path"; then
+    echo "sketchybarrc: python3 was not found in PATH" >&2
+    return 1
+  fi
+
+  while test -n "$1"; do
+    if test -f "$CONFIG_DIR/items/$1.py"; then
+      CONFIG_DIR="$CONFIG_DIR" "$python3_path" "$CONFIG_DIR/items/$1.py"
+    fi
+    shift
+  done
+}
+
 sketchybar --bar position=top height=30 notch_display_height=33 blur_radius=30 color=0x40000000 padding_left=0
 
 default=(
@@ -40,7 +56,7 @@ items controlcenter
 # items more
 items network
 items cpu
-items battery
+items_py battery
 items weather
 items timemachine
 items transmission

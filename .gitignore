@@ -53,3 +53,5 @@ configs/w3m/history
 Brewfile.lock.json
 Session.vim
 !.tool-versions
+
+__pycache__/
