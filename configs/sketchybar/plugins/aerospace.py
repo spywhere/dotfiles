@@ -169,7 +169,7 @@ def reconcile(bar, name):
             if last_id:
                 bar.move(item_id, after=last_id)
             update_bracket = True
-        update_windows_for_workspace(bar, item_id, workspace)
+            update_windows_for_workspace(bar, item_id, workspace)
         # Always update last_id (replicates the shell's commented-out display comparison).
         last_id = item_id
     if update_bracket:
