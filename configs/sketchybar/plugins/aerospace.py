@@ -35,15 +35,15 @@ def icon_for(app):
 
 # Maps SketchyBar property names (as passed to --set) to the dotted path
 # used in the JSON returned by ``--query``. The query JSON stores the icon
-# text under ``icon.value``, the label text under ``label.value``, and the
-# display under ``geometry.display`` rather than under the bare key.
+# text under ``icon.value`` and the label text under ``label.value``.
+# ``icon.color`` and ``label.color`` are flat hex strings in the query JSON
+# (e.g. ``0x33ffffff``), so their ``.alpha`` cannot be diffed cheaply; they
+# are always emitted by ``update_windows_for_workspace`` instead. ``display``
+# is set once during ``reconcile`` and never re-emitted here.
 _QUERY_PATHS = {
-    "icon.color.alpha": "icon.color.alpha",
-    "label.color.alpha": "label.color.alpha",
     "label": "label.value",
     "icon.padding_right": "icon.padding_right",
     "label.padding_left": "label.padding_left",
-    "display": "geometry.display",
 }
 
 
@@ -124,9 +124,6 @@ def update_windows_for_workspace(bar, name, ws):
     if record is None:
         return
     visible = bool(record.get("workspace-is-visible", False))
-    display = record.get("monitor-appkit-nsscreen-screens-id")
-    if display is None or display is False:
-        display = "active"
     windows = list_windows_json(ws, "%{app-name}%{window-id}")
     icons = "".join(icon_for(w.get("app-name", "")) for w in windows)
     icon_padding = 4 if icons else 0
@@ -149,7 +146,6 @@ def update_windows_for_workspace(bar, name, ws):
                 "width": "dynamic",
                 "icon.width": "dynamic",
                 "label.width": "dynamic",
-                "display": display,
                 "icon.padding_left": 8,
                 "icon.padding_right": icon_padding,
                 "icon": ws,
@@ -163,19 +159,23 @@ def update_windows_for_workspace(bar, name, ws):
         )
         return
 
-    # Compute desired values for properties that can change.
-    desired = {
+    # Color alpha is always emitted: it is the primary purpose of the
+    # update, almost always changes on a workspace switch, and parsing the
+    # flat hex color string from --query to diff it is fragile.
+    changed = {
         "icon.color.alpha": str(color_alpha),
         "label.color.alpha": str(color_alpha),
+    }
+
+    # Diff the remaining properties against current state — only emit
+    # changed ones. ``str()`` comparison tolerates int-vs-string ambiguity
+    # in the query JSON (e.g. padding comes back as an integer).
+    diffable = {
         "label": icons,
         "icon.padding_right": str(icon_padding),
         "label.padding_left": str(icon_padding),
-        "display": str(display),
     }
-
-    # Diff against current state — only emit changed properties.
-    changed = {}
-    for key, value in desired.items():
+    for key, value in diffable.items():
         current_value = _get_nested(current, _QUERY_PATHS.get(key, key))
         if str(current_value) != str(value):
             changed[key] = value

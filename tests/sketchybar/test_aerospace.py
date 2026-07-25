@@ -3,6 +3,10 @@
 These tests do not require a running SketchyBar or the aerospace CLI. They
 mock ``subprocess.run`` (for aerospace) and ``SketchyBar._execute`` (for
 sketchybar) and assert which properties the plugin emits on re-render.
+
+The mock ``--query`` JSON mirrors the real SketchyBar query format: ``icon``
+and ``label`` are dicts whose ``color`` is a flat hex string (e.g.
+``0x33ffffff``), and there is no ``geometry`` dict.
 """
 
 import importlib.util
@@ -127,11 +131,15 @@ def _run_update(
 
 
 # Canned query states -------------------------------------------------------
+#
+# Real SketchyBar --query format: ``icon.color`` / ``label.color`` are flat
+# hex strings (``0xffffffff`` = alpha 1.0 focused, ``0x66ffffff`` = alpha 0.4
+# visible, ``0x33ffffff`` = alpha 0.2 hidden). There is no ``geometry`` dict.
 
 # Unfocused ws 3 with one qutebrowser window, visible on display 1.
 STATE_UNFOCUSED_QB = {
     "icon": {
-        "color": {"alpha": "0.2"},
+        "color": "0x33ffffff",
         "value": "3",
         "width": 20,
         "padding_right": 4,
@@ -142,16 +150,15 @@ STATE_UNFOCUSED_QB = {
         "width": 29,
         "padding_left": 4,
         "padding_right": 8,
-        "color": {"alpha": "0.2"},
+        "color": "0x33ffffff",
         "font": "sketchybar-app-font:Regular:16",
     },
-    "geometry": {"display": "1"},
 }
 
 # Focused ws 3 with one qutebrowser window.
 STATE_FOCUSED_QB = {
     "icon": {
-        "color": {"alpha": "1"},
+        "color": "0xffffffff",
         "value": "3",
         "width": 20,
         "padding_right": 4,
@@ -162,16 +169,15 @@ STATE_FOCUSED_QB = {
         "width": 29,
         "padding_left": 4,
         "padding_right": 8,
-        "color": {"alpha": "1"},
+        "color": "0xffffffff",
         "font": "sketchybar-app-font:Regular:16",
     },
-    "geometry": {"display": "1"},
 }
 
 # Empty label, collapsed paddings (no windows), not focused.
 STATE_EMPTY = {
     "icon": {
-        "color": {"alpha": "0.2"},
+        "color": "0x33ffffff",
         "value": "3",
         "width": 13,
         "padding_right": 0,
@@ -182,16 +188,15 @@ STATE_EMPTY = {
         "width": 9,
         "padding_left": 0,
         "padding_right": 8,
-        "color": {"alpha": "0.2"},
+        "color": "0x33ffffff",
         "font": "sketchybar-app-font:Regular:16",
     },
-    "geometry": {"display": "1"},
 }
 
 # Ghostty label, expanded paddings, not focused.
 STATE_GHOSTTY = {
     "icon": {
-        "color": {"alpha": "0.2"},
+        "color": "0x33ffffff",
         "value": "3",
         "width": 30,
         "padding_right": 4,
@@ -202,10 +207,9 @@ STATE_GHOSTTY = {
         "width": 30,
         "padding_left": 4,
         "padding_right": 8,
-        "color": {"alpha": "0.2"},
+        "color": "0x33ffffff",
         "font": "sketchybar-app-font:Regular:16",
     },
-    "geometry": {"display": "1"},
 }
 
 
@@ -220,6 +224,8 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
         ]
 
     # Scenario 1: workspace switch — becomes focused (only color changes).
+    # Color alpha is always emitted; label/paddings are unchanged so no
+    # width re-measure is emitted.
     def test_becomes_focused_only_color_changes(self):
         records = self._records(visible=True, display="1")
         windows = {"3": [{"app-name": "qutebrowser", "window-id": 100}]}
@@ -270,7 +276,8 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
         self.assertEqual(props["icon.color.alpha"], "0.2")
         self.assertEqual(props["label.color.alpha"], "0.2")
 
-    # Scenario 3: window opened (label changes, color does not).
+    # Scenario 3: window opened (label changes). Emits the diffed label/
+    # padding props, the always-on color props, and width re-measure = 7.
     def test_window_opened_label_changes(self):
         records = self._records(visible=False, display="1")
         windows = {"3": [{"app-name": "Ghostty", "window-id": 200}]}
@@ -288,6 +295,8 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
                 "label",
                 "icon.padding_right",
                 "label.padding_left",
+                "icon.color.alpha",
+                "label.color.alpha",
                 "width",
                 "icon.width",
                 "label.width",
@@ -296,12 +305,12 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
         self.assertEqual(props["label"], ":ghostty:")
         self.assertEqual(props["icon.padding_right"], "4")
         self.assertEqual(props["label.padding_left"], "4")
+        self.assertEqual(props["icon.color.alpha"], "0.2")
+        self.assertEqual(props["label.color.alpha"], "0.2")
         self.assertEqual(props["width"], "dynamic")
         self.assertEqual(props["icon.width"], "dynamic")
         self.assertEqual(props["label.width"], "dynamic")
         forbidden = [
-            "icon.color.alpha",
-            "label.color.alpha",
             "display",
             "icon",
             "icon.padding_left",
@@ -329,6 +338,8 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
                 "label",
                 "icon.padding_right",
                 "label.padding_left",
+                "icon.color.alpha",
+                "label.color.alpha",
                 "width",
                 "icon.width",
                 "label.width",
@@ -337,12 +348,14 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
         self.assertEqual(props["label"], "")
         self.assertEqual(props["icon.padding_right"], "0")
         self.assertEqual(props["label.padding_left"], "0")
+        self.assertEqual(props["icon.color.alpha"], "0.2")
+        self.assertEqual(props["label.color.alpha"], "0.2")
         self.assertEqual(props["width"], "dynamic")
         self.assertEqual(props["icon.width"], "dynamic")
         self.assertEqual(props["label.width"], "dynamic")
 
-    # Scenario 5: nothing changed — no update emitted.
-    def test_nothing_changed_emits_nothing(self):
+    # Scenario 5: nothing changed — only the always-on color props emitted.
+    def test_nothing_changed_emits_only_color(self):
         records = self._records(visible=True, display="1")
         windows = {"3": [{"app-name": "qutebrowser", "window-id": 100}]}
         captured = _run_update(
@@ -351,12 +364,30 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
             records=records,
             windows_by_ws=windows,
         )
-        self.assertIsNone(_extract_set_props(captured))
-        for argv in captured:
-            self.assertNotIn("--set", argv)
-            self.assertNotIn("--animate", argv)
+        props = _extract_set_props(captured)
+        self.assertIsNotNone(props)
+        self.assertEqual(
+            set(props.keys()), {"icon.color.alpha", "label.color.alpha"}
+        )
+        self.assertEqual(props["icon.color.alpha"], "1")
+        self.assertEqual(props["label.color.alpha"], "1")
+        forbidden = [
+            "width",
+            "icon.width",
+            "label.width",
+            "label",
+            "display",
+            "icon",
+            "icon.padding_right",
+            "icon.padding_left",
+            "label.padding_left",
+            "label.font",
+            "label.padding_right",
+        ]
+        for key in forbidden:
+            self.assertNotIn(key, props)
 
-    # Scenario 6: initial creation (query fails) — full 14-property set.
+    # Scenario 6: initial creation (query fails) — full 12-property set.
     def test_initial_creation_emits_full_set(self):
         records = self._records(visible=True, display="1")
         windows = {"3": [{"app-name": "qutebrowser", "window-id": 100}]}
@@ -373,7 +404,6 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
             "width",
             "icon.width",
             "label.width",
-            "display",
             "icon.padding_left",
             "icon.padding_right",
             "icon",
@@ -385,10 +415,9 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
             "label.color.alpha",
         }
         self.assertEqual(set(props.keys()), expected_keys)
-        self.assertEqual(len(props), 13)
+        self.assertEqual(len(props), 12)
         self.assertEqual(props["icon"], "3")
         self.assertEqual(props["label"], ":qute_browser:")
-        self.assertEqual(props["display"], "1")
         self.assertEqual(props["icon.color.alpha"], "1")
         self.assertEqual(props["label.color.alpha"], "1")
         self.assertEqual(props["icon.padding_right"], "4")
@@ -399,21 +428,8 @@ class UpdateWindowsForWorkspaceTests(unittest.TestCase):
         self.assertEqual(props["width"], "dynamic")
         self.assertEqual(props["icon.width"], "dynamic")
         self.assertEqual(props["label.width"], "dynamic")
-
-    # Scenario 7: display changed (workspace moved to another monitor).
-    def test_display_changed_emits_only_display(self):
-        records = self._records(visible=True, display="2")
-        windows = {"3": [{"app-name": "qutebrowser", "window-id": 100}]}
-        captured = _run_update(
-            STATE_FOCUSED_QB,
-            focused="3",
-            records=records,
-            windows_by_ws=windows,
-        )
-        props = _extract_set_props(captured)
-        self.assertIsNotNone(props)
-        self.assertEqual(set(props.keys()), {"display"})
-        self.assertEqual(props["display"], "2")
+        # display is intentionally NOT emitted by update_windows_for_workspace.
+        self.assertNotIn("display", props)
 
 
 if __name__ == "__main__":
