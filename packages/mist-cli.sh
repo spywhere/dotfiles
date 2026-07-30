@@ -11,7 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Charles'
+has_executable 'mist'
 
-profile work
-use_brew cask 'charles'
+use_brew formula 'mist-cli'

@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-optional
-has_app 'Latest'
+has_app 'Steam'
 
-use_brew cask 'latest'
+optional
+use_brew cask 'steam'

@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_app 'Backdrop'
+has_app 'Claude'
 
-use_brew cask 'backdrop'
+use_brew cask 'claude'

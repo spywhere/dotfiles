@@ -11,8 +11,6 @@ then
   exit 1
 fi
 
-optional
-has_app 'AlDente'
+has_app 'MacMD Viewer'
 
-profile -work
-use_brew cask 'aldente'
+use_brew cask 'macmd-viewer'
