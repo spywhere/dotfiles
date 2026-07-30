@@ -60,6 +60,7 @@ items_py battery
 items weather
 items timemachine
 items transmission
+items usage_limit
 items trash
 items caffeinate
 items app_badge

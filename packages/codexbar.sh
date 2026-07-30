@@ -11,6 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'pi'
+has_executable 'codexbar'
 
-use_brew formula 'pi-coding-agent'
+use_brew cask 'codexbar'
