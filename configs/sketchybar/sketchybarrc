@@ -19,7 +19,7 @@ items_py() {
 
   while test -n "$1"; do
     if test -f "$CONFIG_DIR/items/$1.py"; then
-      CONFIG_DIR="$CONFIG_DIR" "$python3_path" "$CONFIG_DIR/items/$1.py"
+      "$python3_path" "$CONFIG_DIR/items/$1.py"
     fi
     shift
   done
