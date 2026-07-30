@@ -13,4 +13,4 @@ fi
 
 has_executable 'diffnav'
 
-use_brew formula 'dlvhdr/formulae/diffnav'
+use_brew formula 'diffnav'
