@@ -74,6 +74,14 @@ label_for_percent() {
   fi
 }
 
+width_for_percent() {
+  if test "$1" -eq 0 -o "$2" -eq 0; then
+    echo 35
+  else
+    echo 30
+  fi
+}
+
 async_update() {
   data="$(codexbar usage --json | jq 'first|{session:{percent:(100-.usage.primary.usedPercent),timer:(.usage.primary.resetsAt|fromdate-now|floor)},weekly:{percent:(100-.usage.secondary.usedPercent),timer:(.usage.secondary.resetsAt|fromdate-now|floor)}}')"
 
@@ -81,10 +89,20 @@ async_update() {
   SESSION_TIMER="$(echo "$data" | jq -r ".session.timer")"
   WEEKLY_PERCENTAGE="$(echo "$data" | jq -r '.weekly.percent')"
   WEEKLY_TIMER="$(echo "$data" | jq -r ".weekly.timer")"
+  WIDTH="$(width_for_percent "$SESSION_PERCENTAGE" "$WEEKLY_PERCENTAGE")"
 
   sketchybar \
-    --set "$NAME.session" icon="$(icon_for_percent "$SESSION_PERCENTAGE")" icon.color="$(color_for_percent "$SESSION_PERCENTAGE")" label="$(label_for_percent "$SESSION_PERCENTAGE" "$(readable_time "$SESSION_TIMER")")" \
-    --set "$NAME" label="$(label_for_percent "$WEEKLY_PERCENTAGE" "$(readable_time "$WEEKLY_TIMER")")"
+    --set "$NAME.session" \
+    icon="$(icon_for_percent "$SESSION_PERCENTAGE")" \
+    icon.color="$(color_for_percent "$SESSION_PERCENTAGE")" \
+    label="$(label_for_percent "$SESSION_PERCENTAGE" "$(readable_time "$SESSION_TIMER")")" \
+    --set "$NAME" \
+    label="$(label_for_percent "$WEEKLY_PERCENTAGE" "$(readable_time "$WEEKLY_TIMER")")" \
+    --animate sin 10 \
+    --set "$NAME.session" \
+    label.width="$WIDTH" \
+    --set "$NAME" \
+    label.width="$WIDTH"
 }
 
 async_update &
