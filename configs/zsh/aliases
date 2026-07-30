@@ -11,6 +11,10 @@ alias gaap="gaa --patch"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 
+alias gd="hunk diff"
+alias gds="hunk diff --staged"
+alias gsh="hunk show"
+
 alias gig="git ignore"
 alias glig="git local-ignore"
 
