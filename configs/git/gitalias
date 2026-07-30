@@ -9,3 +9,6 @@
   no-untrack = "config --local status.showUntrackedFiles no"
   show-untrack = "config --local --unset status.showUntrackedFiles"
   st = "status -sb -unormal"
+  d = "diff"
+  ds = "diff --staged"
+  sh = "show"
