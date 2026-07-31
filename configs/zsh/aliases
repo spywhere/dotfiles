@@ -11,9 +11,11 @@ alias gaap="gaa --patch"
 alias glgfp="glg --first-parent"
 alias glggfp="glgg --first-parent"
 
-alias gd="hunk diff"
-alias gds="hunk diff --staged"
-alias gsh="hunk show"
+if test -n "$(command -v hunk)"; then
+  alias gd="hunk diff"
+  alias gds="hunk diff --staged"
+  alias gsh="hunk show"
+fi
 
 alias gig="git ignore"
 alias glig="git local-ignore"
