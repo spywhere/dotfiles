@@ -134,7 +134,9 @@ else
 fi
 
 # Container Engine
-alias d="docker"
+if test -n "$(command -v docker)"; then
+  alias d="docker"
+fi
 
 unalias vol >/dev/null 2>/dev/null
 if test "$(uname)" = "Darwin"; then
@@ -146,18 +148,29 @@ else
 fi
 
 # tmux
-alias tmux="tmux -2"
+if test -n "$(command -v tmux)"; then
+  alias tmux="tmux -2"
+fi
 
 # nvim
-alias vi="nvim"
-alias vim="nvim"
-alias n="nvim"
-alias vi-profile="nvim-profile"
-alias vim-profile="nvim-profile"
-alias nvim-profile="nvim --startuptime vim.log -c 'qa!' && cat vim.log && rm -f vim.log"
+if test -n "$(command -v nvim)"; then
+  alias vi="nvim"
+  alias vim="nvim"
+  alias n="nvim"
+  alias vi-profile="nvim-profile"
+  alias vim-profile="nvim-profile"
+  alias nvim-profile="nvim --startuptime vim.log -c 'qa!' && cat vim.log && rm -f vim.log"
+fi
 
 # lazygit
-alias lg="lazygit"
+if test -n "$(command -v lazygit)"; then
+  alias lg="lazygit"
+fi
+
+# opencode
+if test -n "$(command -v opencode)"; then
+  alias oc="opencode"
+fi
 
 # for opt + ← and opt + → to skip a word
 bindkey '^[[1;3C' forward-word
