@@ -381,6 +381,9 @@ setup_config() {
   step "  - opencode"
   link opencode/ .config/opencode
 
+  step "  - pi-coding-agent"
+  link pi/ .pi
+
   step "  - presenterm"
   if test "$OSKIND" = "macos"; then
     link presenterm/ "Library/Application Support/presenterm"

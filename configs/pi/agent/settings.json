@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "npm:pi-claude-auth",
+    "npm:pi-web-access",
+    "npm:pi-invisible-continue",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-voice"
+  ],
+  "theme": "dark",
+  "collapseChangelog": true,
+  "enableInstallTelemetry": false
+}

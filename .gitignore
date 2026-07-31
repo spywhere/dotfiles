@@ -38,6 +38,9 @@ configs/opencode/**
 !configs/opencode/skills
 !configs/opencode/skills/**
 !configs/opencode/opencode.json
+configs/pi/**
+!configs/pi/agent
+!configs/pi/agent/settings.json
 configs/qutebrowser/bookmarks
 configs/qutebrowser/quickmarks
 configs/qutebrowser/greasemonkey/_*
