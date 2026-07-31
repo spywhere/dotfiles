@@ -85,9 +85,9 @@ width_for_percent() {
 async_update() {
   data="$(codexbar usage --json | jq 'first|{session:{percent:.usage.primary.usedPercent,timer:(.usage.primary.resetsAt//(now|todate)|fromdate-now|floor)},weekly:{percent:.usage.secondary.usedPercent,timer:(.usage.secondary.resetsAt//(now|todate)|fromdate-now|floor)}}')"
 
-  SESSION_PERCENTAGE="$(echo "$data" | jq -r '.session.percent//""')"
+  SESSION_PERCENTAGE="$(echo "$data" | jq -r 'if .session.percent == null then "" else 100 - .session.percent end')"
   SESSION_TIMER="$(echo "$data" | jq -r ".session.timer")"
-  WEEKLY_PERCENTAGE="$(echo "$data" | jq -r '.weekly.percent//""')"
+  WEEKLY_PERCENTAGE="$(echo "$data" | jq -r 'if .weekly.percent == null then "" else 100 - .weekly.percent end')"
   WEEKLY_TIMER="$(echo "$data" | jq -r ".weekly.timer")"
   WIDTH="$(width_for_percent "$SESSION_PERCENTAGE" "$WEEKLY_PERCENTAGE")"
 
