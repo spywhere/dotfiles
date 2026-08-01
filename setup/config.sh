@@ -305,9 +305,9 @@ setup_config() {
   step "  - AeroSpace"
   link aerospace/ .config/aerospace
 
-  step "  - agent"
-  link agent/ .agents
-  link agent/AGENTS.md .claude/CLAUDE.md
+  step "  - agents"
+  link agents/ .agents
+  link agents/AGENTS.md .claude/CLAUDE.md
 
   step "  - Alacritty"
   link alacritty/alacritty.yml .alacritty.yml
@@ -390,8 +390,8 @@ setup_config() {
     cmd mkdir -p "$HOME/.config/opencode"
   fi
   link opencode/opencode.json .config/opencode/opencode.json
-  link agent/agents .config/opencode/agents
-  link agent/AGENTS.md .config/opencode/AGENTS.md
+  link agents/agents .config/opencode/agents
+  link agents/AGENTS.md .config/opencode/AGENTS.md
 
   step "  - pi-coding-agent"
   link pi/ .pi

@@ -7,7 +7,7 @@
     "external_directory": {
       "~/.config/opencode/**": "allow",
       "~/.dots/configs/opencode/**": "allow",
-      "~/.dots/configs/agent/**": "allow",
+      "~/.dots/configs/agents/**": "allow",
       "~/.agents/**": "allow",
       "*": "ask"
     }
