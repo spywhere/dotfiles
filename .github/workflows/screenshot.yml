@@ -21,21 +21,22 @@ jobs:
 
       - name: Perform Installation
         run: |
-          # Only link configs and install what the screenshot actually needs.
-          # The full package catalog includes dozens of casks/App Store apps
-          # (Bitwarden, Raycast, Cryptomator, ...) that need an interactive
-          # GUI/Keychain session and hang or fail outright on a CI runner.
+          # Skip everything package-wise except herdr and the nerd font --
+          # no screenshot in this job shows a GUI app, so there's no need for
+          # the rest of the catalog (casks, App Store apps, etc). Still runs
+          # setup/config.sh to link all the configs.
           sh install.sh --profile=ci -y \
-            no-app-store no-ssh no-custom \
-            no-macos-config no-macos-launchagents no-version-manager \
+            no-app-store no-ssh no-custom no-version-manager \
             no-package herdr fonts
 
       - name: Install screenshot-only tooling
         run: |
-          # neovim, tty-clock and neofetch are not part of this repo's
-          # package catalog (nvim is bring-your-own, the clock/neofetch
-          # panes are demo-only) -- vhs drives the terminal for capture.
-          brew install neovim tty-clock neofetch vhs
+          # neovim, tty-clock and fastfetch are not part of this repo's
+          # package catalog (nvim is bring-your-own, the clock/fetch panes
+          # are demo-only) -- vhs drives the terminal for capture. fastfetch
+          # is neofetch's actively maintained successor (neofetch itself was
+          # dropped from homebrew-core after being archived upstream).
+          brew install neovim tty-clock fastfetch vhs
 
       - name: Seed experiment flags
         run: |
