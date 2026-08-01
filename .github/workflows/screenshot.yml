@@ -1,0 +1,91 @@
+name: Setup Screenshot
+
+# Renders supports/screenshot/preview.png from the real dotfiles configs
+# (install the packages, run the setup, capture the actual herdr/nvim
+# session) and posts it to the PR description for review. First-pass,
+# evaluate-and-iterate job -- not yet wired into the README.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  screenshot:
+    name: Capture setup screenshot
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Perform Installation
+        run: |
+          sh install.sh --profile=ci -y
+
+      - name: Install screenshot-only tooling
+        run: |
+          # neovim, tty-clock and neofetch are not part of this repo's
+          # package catalog (nvim is bring-your-own, the clock/neofetch
+          # panes are demo-only) -- vhs drives the terminal for capture.
+          brew install neovim tty-clock neofetch vhs
+
+      - name: Seed experiment flags
+        run: |
+          # Fresh machines default to plain tmux with no file explorer;
+          # opt into the herdr + nvim-tree combo the screenshot should show.
+          printf 'explorer=tree\nherdr=b\n' > ~/.explist
+
+      - name: Bootstrap nvim plugins
+        run: |
+          nvim --headless "+Lazy! sync" +qa
+
+      - name: Render setup preview
+        env:
+          HERDR_CONFIG_PATH: ${{ runner.temp }}/herdr-screenshot-config.toml
+        run: |
+          cat configs/herdr/config.toml supports/screenshot/statusbar-overlay.toml \
+            > "$HERDR_CONFIG_PATH"
+          vhs supports/screenshot/dotfiles.tape
+
+      - name: Commit preview screenshot
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add supports/screenshot/preview.png
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore(ci): update setup screenshot preview"
+            git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update PR description
+        if: steps.commit.outputs.changed == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = { start: '<!-- setup-screenshot:start -->', end: '<!-- setup-screenshot:end -->' };
+            const imageUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${context.payload.pull_request.head.ref}/supports/screenshot/preview.png?t=${context.sha}`;
+            const section = `${marker.start}\n### Setup Preview (generated)\n![Setup Preview](${imageUrl})\n${marker.end}`;
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+
+            const body = pr.body || '';
+            const pattern = new RegExp(`${marker.start}[\\s\\S]*?${marker.end}`);
+            const nextBody = pattern.test(body)
+              ? body.replace(pattern, section)
+              : `${body}\n\n${section}`;
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: nextBody
+            });
