@@ -386,12 +386,7 @@ setup_config() {
   add_post_install_message "Run 'nvim' for the first time setup"
 
   step "  - opencode"
-  if ! test -d "$HOME/.config/opencode"; then
-    cmd mkdir -p "$HOME/.config/opencode"
-  fi
-  link opencode/opencode.json .config/opencode/opencode.json
-  link agents/agents .config/opencode/agents
-  link agents/AGENTS.md .config/opencode/AGENTS.md
+  link opencode/ .config/opencode
 
   step "  - pi-coding-agent"
   link pi/ .pi
