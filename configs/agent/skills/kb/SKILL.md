@@ -8,7 +8,7 @@ description: Every agent loads this skill at the start of every session to consu
 ## What this is
 
 The knowledge base (KB) is your long-term memory. It is a collection of HTML
-files at `~/.config/opencode/kb/`. Each file records something learned in a
+files at `~/.agents/kb/`. Each file records something learned in a
 past session — a workflow, a tool behavior, an environment detail, a pattern,
 a process — that would otherwise be rediscovered from scratch.
 
@@ -20,7 +20,7 @@ Every agent must load this skill at the start of every session. Read the KB
 directory listing and build a lightweight mental index:
 
 ```
-~/.config/opencode/kb/
+~/.agents/kb/
 ```
 
 For each `.html` file found, extract from its `<head>`:
