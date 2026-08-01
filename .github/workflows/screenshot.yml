@@ -21,7 +21,14 @@ jobs:
 
       - name: Perform Installation
         run: |
-          sh install.sh --profile=ci -y
+          # Only link configs and install what the screenshot actually needs.
+          # The full package catalog includes dozens of casks/App Store apps
+          # (Bitwarden, Raycast, Cryptomator, ...) that need an interactive
+          # GUI/Keychain session and hang or fail outright on a CI runner.
+          sh install.sh --profile=ci -y \
+            no-app-store no-ssh no-custom \
+            no-macos-config no-macos-launchagents no-version-manager \
+            no-package herdr fonts
 
       - name: Install screenshot-only tooling
         run: |
