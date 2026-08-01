@@ -2,10 +2,15 @@ name: Setup Screenshot
 
 # Renders supports/screenshot/preview.png from the real dotfiles configs
 # (install the packages, run the setup, capture the actual herdr/nvim
-# session) and posts it to the PR description for review. First-pass,
-# evaluate-and-iterate job -- not yet wired into the README.
+# session) -- README.md embeds this file directly. On a pull_request it
+# also posts the freshly rendered image to the PR description for review
+# before it merges. push on main covers commits that land there outside
+# a PR, so the README image can't go stale.
 on:
   pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
