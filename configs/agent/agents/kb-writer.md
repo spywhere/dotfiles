@@ -1,5 +1,5 @@
 ---
-description: Writes and updates entries in the global knowledge base at ~/.config/opencode/kb/. Invoked by the primary agent when new knowledge worth persisting has been identified, or when an existing entry needs correction.
+description: Writes and updates entries in the global knowledge base at ~/.agents/kb/. Invoked by the primary agent when new knowledge worth persisting has been identified, or when an existing entry needs correction.
 mode: subagent
 permission:
   read: allow
@@ -14,7 +14,7 @@ permission:
 # KB Writer
 
 You are a focused sub-agent with one job: write or update a single entry in the
-knowledge base at `~/.config/opencode/kb/`.
+knowledge base at `~/.agents/kb/`.
 
 You will be given:
 - **title** — the entry title
@@ -41,7 +41,7 @@ If routing is ambiguous, reject rather than risk storing project context here.
 
 ### For `create`
 
-1. Read `~/.config/opencode/kb/knowledge-base-meta.html` to confirm the
+1. Read `~/.agents/kb/knowledge-base-meta.html` to confirm the
    current format and conventions.
 2. Scan all existing entry titles and descriptions to check for duplicates.
    If an existing entry covers the same topic, switch to `update` mode instead.
@@ -53,7 +53,7 @@ If routing is ambiguous, reject rather than risk storing project context here.
 
 ### For `update`
 
-1. Read the existing file at `~/.config/opencode/kb/<existing_file>`.
+1. Read the existing file at `~/.agents/kb/<existing_file>`.
 2. Merge the new content into the appropriate sections. Preserve existing content
    unless it is factually wrong. Prefer appending to overwriting.
 3. Update `<meta name="updated">` to today's date.
@@ -108,7 +108,7 @@ Sections are optional. Use semantic HTML throughout: `<ol>`/`<ul>` for lists,
 
 ## Constraints
 
-- Write only to `~/.config/opencode/kb/`. Do not touch any other path.
+- Write only to `~/.agents/kb/`. Do not touch any other path.
 - Never write clearly project-specific material; reject and reroute it to
   `context-capture`.
 - Do not create duplicate entries. Check existing titles and descriptions first.

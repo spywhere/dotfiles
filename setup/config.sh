@@ -390,7 +390,6 @@ setup_config() {
     cmd mkdir -p "$HOME/.config/opencode"
   fi
   link opencode/opencode.json .config/opencode/opencode.json
-  link opencode/kb .config/opencode/kb
   link agent/agents .config/opencode/agents
   link agent/AGENTS.md .config/opencode/AGENTS.md
 
