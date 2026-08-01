@@ -1,6 +1,6 @@
 name: Setup Screenshot
 
-# Renders .github/screenshot/preview.png from the real dotfiles configs
+# Renders .github/screenshot.png from the real dotfiles configs
 # (install the packages, run the setup, capture the actual herdr/nvim
 # session) -- README.md embeds this file directly. On a pull_request it
 # also posts the freshly rendered image to the PR description for review
@@ -46,7 +46,7 @@ jobs:
             exit 0
           fi
 
-          last=$(git log -1 --format=%cI -- .github/screenshot/preview.png)
+          last=$(git log -1 --format=%cI -- .github/screenshot.png)
           if [ -z "$last" ]; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -125,7 +125,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .github/screenshot/preview.png
+          git add .github/screenshot.png
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -140,7 +140,7 @@ jobs:
         with:
           script: |
             const marker = { start: '<!-- setup-screenshot:start -->', end: '<!-- setup-screenshot:end -->' };
-            const imageUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${context.payload.pull_request.head.ref}/.github/screenshot/preview.png?t=${context.sha}`;
+            const imageUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${context.payload.pull_request.head.ref}/.github/screenshot.png?t=${context.sha}`;
             const section = `${marker.start}\n### Setup Preview (generated)\n![Setup Preview](${imageUrl})\n${marker.end}`;
 
             const { data: pr } = await github.rest.pulls.get({
