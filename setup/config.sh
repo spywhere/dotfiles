@@ -392,7 +392,6 @@ setup_config() {
   link opencode/opencode.json .config/opencode/opencode.json
   link opencode/kb .config/opencode/kb
   link agent/agents .config/opencode/agents
-  link agent/skills .config/opencode/skills
   link agent/AGENTS.md .config/opencode/AGENTS.md
 
   step "  - pi-coding-agent"
