@@ -15,8 +15,8 @@
 # works fine though, so that's used to get back to tab 1 instead.
 #
 # Run from the repo root: vhs supports/screenshot/dotfiles.tape
-# (renders into .github/screenshot/preview.png, alongside the workflow
-# that runs this -- README.md embeds it from there)
+# (renders into .github/screenshot.png, alongside the workflow that runs
+# this -- README.md embeds it from there)
 
 Output "dotfiles-screenshot.gif"
 
@@ -128,4 +128,4 @@ Sleep 300ms
 Type "opl"
 Sleep 1500ms
 
-Screenshot ".github/screenshot/preview.png"
+Screenshot ".github/screenshot.png"
