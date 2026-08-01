@@ -56,15 +56,17 @@ Enter
 Sleep 2s
 
 # Agent pane goes in its own tab, not a third stacked pane. new_tab
-# defaults to prefix+t; previous_tab/next_tab are plain shift+left/right
-# (no prefix), per configs/herdr/config.toml.
+# defaults to prefix+t; jump back to tab 1 with prefix+1 (same shape as
+# tmux window numbers) rather than shift+left, which vhs's tape parser
+# doesn't accept as a modifier combo with named/arrow keys.
 Ctrl+A
 Type "t"
 Sleep 500ms
 Type "opencode"
 Enter
 Sleep 3s
-Shift+Left
+Ctrl+A
+Type "1"
 Sleep 500ms
 
 # Back to the main (left) pane
