@@ -34,9 +34,10 @@ jobs:
           # opencode (for the agent pane demo) -- no screenshot in this job
           # shows a GUI app, so there's no need for the rest of the catalog
           # (casks, App Store apps, etc). Still runs setup/config.sh to link
-          # all the configs.
+          # all the configs. starship is a "custom" (non-brew, curl-installed)
+          # install, so it's kept -- panes should show the real prompt.
           sh install.sh --profile=ci -y \
-            no-app-store no-ssh no-custom no-version-manager \
+            no-app-store no-ssh no-version-manager \
             no-package herdr fonts opencode
 
       - name: Install screenshot-only tooling
