@@ -36,11 +36,12 @@ Type "tty-clock -c"
 Enter
 Sleep 500ms
 
-# Split that pane again for neofetch
+# Split that pane again for fastfetch (neofetch's successor -- neofetch was
+# dropped from homebrew-core after being archived upstream)
 Ctrl+A
 Type "-"
 Sleep 500ms
-Type "neofetch"
+Type "fastfetch"
 Enter
 Sleep 2s
 
