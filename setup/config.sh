@@ -298,9 +298,16 @@ setup_config() {
   if ! test -d "$HOME/.shrimp"; then
     cmd mkdir -p "$HOME/.shrimp"
   fi
+  if ! test -d "$HOME/.claude"; then
+    cmd mkdir -p "$HOME/.claude"
+  fi
 
   step "  - AeroSpace"
   link aerospace/ .config/aerospace
+
+  step "  - agent"
+  link agent/ .agents
+  link agent/AGENTS.md .claude/CLAUDE.md
 
   step "  - Alacritty"
   link alacritty/alacritty.yml .alacritty.yml
@@ -379,7 +386,14 @@ setup_config() {
   add_post_install_message "Run 'nvim' for the first time setup"
 
   step "  - opencode"
-  link opencode/ .config/opencode
+  if ! test -d "$HOME/.config/opencode"; then
+    cmd mkdir -p "$HOME/.config/opencode"
+  fi
+  link opencode/opencode.json .config/opencode/opencode.json
+  link opencode/kb .config/opencode/kb
+  link agent/agents .config/opencode/agents
+  link agent/skills .config/opencode/skills
+  link agent/AGENTS.md .config/opencode/AGENTS.md
 
   step "  - pi-coding-agent"
   link pi/ .pi
