@@ -118,7 +118,7 @@ jobs:
 
       - name: Render setup preview
         run: |
-          vhs .github/screenshot/dotfiles.tape
+          vhs supports/screenshot/dotfiles.tape
 
       - name: Commit preview screenshot
         id: commit

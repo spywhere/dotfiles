@@ -14,7 +14,9 @@
 # ("Expected shift character, got +") -- prefix+<N> jump-to-tab-by-number
 # works fine though, so that's used to get back to tab 1 instead.
 #
-# Run from the repo root: vhs .github/screenshot/dotfiles.tape
+# Run from the repo root: vhs supports/screenshot/dotfiles.tape
+# (renders into .github/screenshot/preview.png, alongside the workflow
+# that runs this -- README.md embeds it from there)
 
 Output "dotfiles-screenshot.gif"
 
