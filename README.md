@@ -4,7 +4,7 @@ A cross-platform, modular dotfiles for my personal setup
 
 Looking to use my dotfiles installer for your setup? Check out [installer](https://github.com/spywhere/dotfiles/tree/installer) branch.
 
-![Screen Shot](supports/screenshot/preview.png)
+![Screen Shot](.github/screenshot/preview.png)
 
 ## Build Status
 

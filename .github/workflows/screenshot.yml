@@ -1,11 +1,14 @@
 name: Setup Screenshot
 
-# Renders supports/screenshot/preview.png from the real dotfiles configs
+# Renders .github/screenshot/preview.png from the real dotfiles configs
 # (install the packages, run the setup, capture the actual herdr/nvim
 # session) -- README.md embeds this file directly. On a pull_request it
 # also posts the freshly rendered image to the PR description for review
-# before it merges. push on main covers commits that land there outside
-# a PR, so the README image can't go stale.
+# before it merges, and runs on every push to the PR branch with no extra
+# throttling. push on main covers commits that land there outside a PR,
+# so the README image can't go stale -- but main is gated to at most once
+# a day (see the `gate` job) since it's just keeping the README in sync,
+# not something under active review.
 on:
   pull_request:
   push:
@@ -22,8 +25,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  gate:
+    name: Check run policy
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.decide.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Decide whether to run
+        id: decide
+        run: |
+          # Only push (i.e. main, per the trigger above) is throttled --
+          # pull_request/workflow_dispatch always run, since those are
+          # actively being reviewed and should reflect every push.
+          if [ "${{ github.event_name }}" != "push" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last=$(git log -1 --format=%cI -- .github/screenshot/preview.png)
+          if [ -z "$last" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last_epoch=$(date -d "$last" +%s)
+          now_epoch=$(date -u +%s)
+          if [ $(( now_epoch - last_epoch )) -ge 86400 ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
   screenshot:
     name: Capture setup screenshot
+    needs: gate
+    if: needs.gate.outputs.should_run == 'true'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
@@ -78,14 +118,14 @@ jobs:
 
       - name: Render setup preview
         run: |
-          vhs supports/screenshot/dotfiles.tape
+          vhs .github/screenshot/dotfiles.tape
 
       - name: Commit preview screenshot
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add supports/screenshot/preview.png
+          git add .github/screenshot/preview.png
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -100,7 +140,7 @@ jobs:
         with:
           script: |
             const marker = { start: '<!-- setup-screenshot:start -->', end: '<!-- setup-screenshot:end -->' };
-            const imageUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${context.payload.pull_request.head.ref}/supports/screenshot/preview.png?t=${context.sha}`;
+            const imageUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${context.payload.pull_request.head.ref}/.github/screenshot/preview.png?t=${context.sha}`;
             const section = `${marker.start}\n### Setup Preview (generated)\n![Setup Preview](${imageUrl})\n${marker.end}`;
 
             const { data: pr } = await github.rest.pulls.get({

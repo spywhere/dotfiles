@@ -14,7 +14,7 @@
 # ("Expected shift character, got +") -- prefix+<N> jump-to-tab-by-number
 # works fine though, so that's used to get back to tab 1 instead.
 #
-# Run from the repo root: vhs supports/screenshot/dotfiles.tape
+# Run from the repo root: vhs .github/screenshot/dotfiles.tape
 
 Output "dotfiles-screenshot.gif"
 
@@ -126,4 +126,4 @@ Sleep 300ms
 Type "opl"
 Sleep 1500ms
 
-Screenshot "supports/screenshot/preview.png"
+Screenshot ".github/screenshot/preview.png"
