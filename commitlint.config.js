@@ -7,6 +7,7 @@ module.exports = {
     'scope-enum': [2, 'always', [
       'aerospace',
       'binaries',
+      'ci',
       'configs',
       'git',
       'install',

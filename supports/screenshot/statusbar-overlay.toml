@@ -1,0 +1,20 @@
+# Appended onto the real configs/herdr/config.toml at CI time only (see
+# .github/workflows/screenshot.yml) -- never linked or committed as part of
+# the actual dotfiles config. A CI runner has no music player, so the
+# "now playing" segment is a hardcoded stand-in matching the look of the
+# tmux now-playing widget in configs/tmux/tmux-status.conf; everything else
+# (host, branch, time) reflects the real runner.
+
+[ui.statusbar]
+enabled = true
+position = "bottom"
+bg = "#262626"
+fg = "#eceff4"
+
+left = '''
+#[fg=#f5bde6,bold] #{host_short} #[default] #[fg=#8aadf4]#{branch}#[default]
+'''
+
+right = '''
+#[fg=#8aadf4]▶ #[default]Daniel Gunnarsson - The Storm Inside [01:54/03:24]  #[fg=#f5bde6]%a %d %b, %H:%M#[default]
+'''
