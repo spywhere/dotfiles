@@ -45,13 +45,19 @@ jobs:
           # are demo-only) -- vhs drives the terminal for capture. fastfetch
           # is neofetch's actively maintained successor (neofetch itself was
           # dropped from homebrew-core after being archived upstream).
-          brew install neovim tty-clock fastfetch vhs
+          # lua-language-server is required for the LSP demo: configs/nvim's
+          # lua_ls setup only attaches if the binary is already on PATH, it
+          # doesn't auto-install via mason.
+          brew install neovim tty-clock fastfetch vhs lua-language-server
 
       - name: Seed experiment flags
         run: |
-          # Fresh machines default to plain tmux with no file explorer;
-          # opt into the herdr + nvim-tree combo the screenshot should show.
-          printf 'explorer=tree\nherdr=b\n' > ~/.explist
+          # Fresh machines default to no file explorer -- opt into nvim-tree.
+          # tmux=a disables zshrc's auto-launch race (it starts herdr/tmux
+          # while zinit is still finishing its first-run plugin bootstrap,
+          # which is unpredictably slow on a fresh CI shell); the tape drives
+          # `herdr` explicitly instead once the shell is confirmed ready.
+          printf 'explorer=tree\ntmux=a\n' > ~/.explist
 
       - name: Bootstrap nvim plugins
         run: |
