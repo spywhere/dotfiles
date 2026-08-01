@@ -12,12 +12,21 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: screenshot-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   screenshot:
     name: Capture setup screenshot
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          # pull_request defaults to checking out the synthetic merge ref
+          # in detached HEAD, which isn't a fast-forward of the real branch
+          # and makes the later `git push` back to the branch fail.
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Perform Installation
         run: |
