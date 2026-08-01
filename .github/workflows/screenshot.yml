@@ -1,14 +1,14 @@
 name: Setup Screenshot
 
-# Renders .github/screenshot.png from the real dotfiles configs
-# (install the packages, run the setup, capture the actual herdr/nvim
-# session) -- README.md embeds this file directly. On a pull_request it
-# also posts the freshly rendered image to the PR description for review
-# before it merges, and runs on every push to the PR branch with no extra
-# throttling. push on main covers commits that land there outside a PR,
-# so the README image can't go stale -- but main is gated to at most once
-# a day (see the `gate` job) since it's just keeping the README in sync,
-# not something under active review.
+# Renders .github/screenshot.png from the real dotfiles configs (install
+# the packages, run the setup, capture the actual herdr/nvim session) and
+# commits it back to the branch -- README.md embeds this file directly,
+# and GitHub's own PR "Files changed" view already renders a before/after
+# diff for it, so there's no separate PR-description step needed. Runs on
+# every push to a PR with no extra throttling. push on main covers commits
+# that land there outside a PR, so the README image can't go stale -- but
+# main is gated to at most once a day (see the `gate` job) since it's just
+# keeping the README in sync, not something under active review.
 on:
   pull_request:
   push:
@@ -18,7 +18,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: screenshot-${{ github.ref }}
@@ -121,43 +120,11 @@ jobs:
           vhs supports/screenshot/dotfiles.tape
 
       - name: Commit preview screenshot
-        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .github/screenshot.png
-          if git diff --cached --quiet; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
+          if ! git diff --cached --quiet; then
             git commit -m "chore(ci): update setup screenshot preview"
             git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
-            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Update PR description
-        if: steps.commit.outputs.changed == 'true' && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const marker = { start: '<!-- setup-screenshot:start -->', end: '<!-- setup-screenshot:end -->' };
-            const imageUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${context.payload.pull_request.head.ref}/.github/screenshot.png?t=${context.sha}`;
-            const section = `${marker.start}\n### Setup Preview (generated)\n![Setup Preview](${imageUrl})\n${marker.end}`;
-
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number
-            });
-
-            const body = pr.body || '';
-            const pattern = new RegExp(`${marker.start}[\\s\\S]*?${marker.end}`);
-            const nextBody = pattern.test(body)
-              ? body.replace(pattern, section)
-              : `${body}\n\n${section}`;
-
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              body: nextBody
-            });
