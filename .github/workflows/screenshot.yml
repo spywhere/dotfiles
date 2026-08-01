@@ -64,11 +64,7 @@ jobs:
           nvim --headless "+Lazy! sync" +qa
 
       - name: Render setup preview
-        env:
-          HERDR_CONFIG_PATH: ${{ runner.temp }}/herdr-screenshot-config.toml
         run: |
-          cat configs/herdr/config.toml supports/screenshot/statusbar-overlay.toml \
-            > "$HERDR_CONFIG_PATH"
           vhs supports/screenshot/dotfiles.tape
 
       - name: Commit preview screenshot
