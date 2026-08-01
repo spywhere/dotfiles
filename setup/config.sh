@@ -307,13 +307,15 @@ setup_config() {
 
   step "  - agents"
   link agents/ .agents
-  link agents/AGENTS.md .claude/CLAUDE.md
 
   step "  - Alacritty"
   link alacritty/alacritty.yml .alacritty.yml
 
   step "  - bat"
   link bat/ .config/bat
+
+  step "  - claude"
+  link agents/AGENTS.md .claude/CLAUDE.md
 
   step "  - code-server"
   link code-server/ .config/code-server
