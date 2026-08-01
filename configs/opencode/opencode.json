@@ -6,8 +6,6 @@
     "skill": "allow",
     "external_directory": {
       "~/.config/opencode/**": "allow",
-      "~/.dots/configs/opencode/**": "allow",
-      "~/.dots/configs/agents/**": "allow",
       "~/.agents/**": "allow",
       "*": "ask"
     }
