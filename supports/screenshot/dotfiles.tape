@@ -8,7 +8,7 @@
 #
 # Run from the repo root: vhs supports/screenshot/dotfiles.tape
 
-Output /tmp/dotfiles-screenshot.gif
+Output "dotfiles-screenshot.gif"
 
 Set Shell "zsh"
 Set FontFamily "JetBrainsMono Nerd Font"
@@ -45,4 +45,4 @@ Type "fastfetch"
 Enter
 Sleep 2s
 
-Screenshot supports/screenshot/preview.png
+Screenshot "supports/screenshot/preview.png"
