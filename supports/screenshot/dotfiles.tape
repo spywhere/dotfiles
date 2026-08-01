@@ -55,13 +55,17 @@ Type "clear && fastfetch"
 Enter
 Sleep 2s
 
-# Split once more for an agent pane
+# Agent pane goes in its own tab, not a third stacked pane. new_tab
+# defaults to prefix+t; previous_tab/next_tab are plain shift+left/right
+# (no prefix), per configs/herdr/config.toml.
 Ctrl+A
-Type "-"
+Type "t"
 Sleep 500ms
 Type "opencode"
 Enter
 Sleep 3s
+Shift+Left
+Sleep 500ms
 
 # Back to the main (left) pane
 Ctrl+A
