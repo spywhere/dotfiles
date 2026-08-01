@@ -1,14 +1,13 @@
 # Recreates the README setup screenshot from the real dotfiles configs.
 #
-# Assumes install.sh has already linked the configs, ~/.explist has
+# Assumes install.sh has already linked the configs, and ~/.explist has
 # explorer=tree (nvim-tree enabled) and tmux=a (disables zshrc's
 # auto-launch race -- it starts herdr while zinit is still finishing its
 # first-run plugin bootstrap on a fresh shell, which is unpredictably slow
-# in CI, so herdr is launched explicitly below instead), and
-# HERDR_CONFIG_PATH points at configs/herdr/config.toml plus
-# statusbar-overlay.toml. lua-language-server must already be on PATH (see
-# .github/workflows/screenshot.yml) since configs/nvim's lua_ls setup only
-# attaches if the binary already exists, it doesn't auto-install one.
+# in CI, so herdr is launched explicitly below instead). lua-language-server
+# must already be on PATH (see .github/workflows/screenshot.yml) since
+# configs/nvim's lua_ls setup only attaches if the binary already exists,
+# it doesn't auto-install one.
 #
 # Run from the repo root: vhs supports/screenshot/dotfiles.tape
 
@@ -64,16 +63,20 @@ Type "nvim configs/nvim/lua/lib/plugin-manager.lua"
 Enter
 Sleep 5s
 
+Escape
 Type ",e"
-Sleep 1s
+Sleep 1500ms
 
 # nvim-tree grabs focus on toggle -- move back to the buffer window
 Ctrl+W
 Type "l"
-Sleep 300ms
+Sleep 500ms
 
-# Demo the LSP: jump into a real vim.fn call and trigger signature help
-Type "/vim.fn.expand"
+# Demo the LSP: jump into a real call and trigger signature help. Uses
+# require(...) rather than a vim.fn.* call -- this config's lua_ls setup
+# doesn't point at Neovim's runtime library, so it has no signature info
+# for vim.* at all, but require() is a plain Lua global it always knows.
+Type "/require("
 Enter
 Sleep 300ms
 Type "f("
