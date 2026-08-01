@@ -49,8 +49,11 @@ jobs:
           # dropped from homebrew-core after being archived upstream).
           # lua-language-server is required for the LSP demo: configs/nvim's
           # lua_ls setup only attaches if the binary is already on PATH, it
-          # doesn't auto-install via mason.
-          brew install neovim tty-clock fastfetch vhs lua-language-server
+          # doesn't auto-install via mason. tree-sitter (the CLI) is needed
+          # too -- configs/nvim always tries to install ~20 parsers on
+          # startup, and without the CLI those fail with a blocking
+          # "Press ENTER to continue" prompt that eats later keystrokes.
+          brew install neovim tty-clock fastfetch vhs lua-language-server tree-sitter
 
       - name: Seed experiment flags
         run: |
@@ -62,7 +65,11 @@ jobs:
 
       - name: Bootstrap nvim plugins
         run: |
-          nvim --headless "+Lazy! sync" +qa
+          # TSUpdateSync blocks until treesitter parser installs finish --
+          # without it, those jobs would just get killed at +qa (headless
+          # nvim exiting doesn't let background jobs "finish later"), and
+          # the interactive session would hit the same failure again.
+          nvim --headless "+Lazy! sync" -c "TSUpdateSync" +qa
 
       - name: Render setup preview
         run: |

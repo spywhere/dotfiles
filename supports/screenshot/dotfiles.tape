@@ -4,13 +4,15 @@
 # tmux=a (disables zshrc's auto-launch race -- it starts herdr while zinit
 # is still finishing its first-run plugin bootstrap on a fresh shell, which
 # is unpredictably slow in CI, so herdr is launched explicitly below
-# instead). lua-language-server and opencode must already be on PATH (see
-# .github/workflows/screenshot.yml) since configs/nvim's lua_ls setup only
-# attaches if the binary already exists, it doesn't auto-install one.
+# instead). lua-language-server, tree-sitter and opencode must already be
+# on PATH (see .github/workflows/screenshot.yml).
 #
 # herdr's own CLI (tab create/rename --json) turned out not to support
 # --json on this install ("unknown option"), so tab setup below goes
-# through plain keybindings instead.
+# through plain keybindings instead. previous_tab/next_tab are shift+left/
+# right per config.toml, which vhs's tape parser can't send at all
+# ("Expected shift character, got +") -- prefix+<N> jump-to-tab-by-number
+# works fine though, so that's used to get back to tab 1 instead.
 #
 # Run from the repo root: vhs supports/screenshot/dotfiles.tape
 
@@ -44,30 +46,8 @@ Ctrl+A
 Type "b"
 Sleep 500ms
 
-# Tab 1 becomes the agent pane, tab 2 becomes the main nvim workspace --
-# creating a new tab focuses it, so we never have to switch "back" to tab 1
-# (previous_tab/next_tab are shift+left/right per config.toml, which vhs's
-# tape parser can't send at all: "Expected shift character, got +").
-
 # Name tab 1 (rename_tab is prefix+shift+t; Ctrl+U clears any pre-filled
 # text in the rename prompt before typing the new name).
-Ctrl+A
-Type "T"
-Sleep 500ms
-Ctrl+U
-Type "opencode"
-Enter
-Sleep 500ms
-
-Type "opencode"
-Enter
-Sleep 3s
-
-# New tab (prefix+c), auto-focused
-Ctrl+A
-Type "c"
-Sleep 1s
-
 Ctrl+A
 Type "T"
 Sleep 500ms
@@ -76,15 +56,10 @@ Type "neovim"
 Enter
 Sleep 500ms
 
-# Set up the surrounding panes first, then come back to the main pane last
-# so nvim/LSP get the most time to fully start up before the screenshot.
-
 # Split off a clock pane on the right (herdr prefix is ctrl+a, per config.toml)
 # -c centers the clock in the pane. tty-clock only supports the 8 basic
 # ANSI colors via -C (no truecolor/hex), so -C 4 (blue) is resolved against
-# the Set Theme palette above -- if herdr still overrides pane-content
-# colors with its own theme regardless, this won't match and needs a
-# different approach.
+# the Set Theme palette above.
 Ctrl+A
 Type "|"
 Sleep 500ms
@@ -116,6 +91,29 @@ Sleep 4s
 Type ":e configs/nvim/lua/lib/plugin-manager.lua"
 Enter
 Sleep 2s
+
+# Create the agent tab now (prefix+c, auto-focused) -- nvim/LSP keep
+# settling in the background on tab 1 while this happens, then prefix+1
+# jumps back to it right before the completion demo and screenshot.
+Ctrl+A
+Type "c"
+Sleep 1s
+
+Ctrl+A
+Type "T"
+Sleep 500ms
+Ctrl+U
+Type "opencode"
+Enter
+Sleep 500ms
+
+Type "opencode"
+Enter
+Sleep 3s
+
+Ctrl+A
+Type "1"
+Sleep 500ms
 
 # Demo autocomplete: search for the M.setup local (rather than a hardcoded
 # line number, so this keeps working if the file changes), open a new line
