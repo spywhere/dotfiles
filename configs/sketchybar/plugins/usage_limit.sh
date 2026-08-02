@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if ! test -n "$(command -v codexbar)"; then
-  sketchybar --set "$NAME.session" label="Required" label.width=45 \
-             --set "$NAME" label="codexbar" label.width=45
+  sketchybar --set "$NAME.session" drawing=on label="Required" label.width=45 \
+             --set "$NAME" drawing=on label="codexbar" label.width=45
   exit
 fi
 
@@ -100,11 +100,11 @@ async_update() {
   sketchybar \
     --set "$NAME.session" \
     drawing=on \
-    icon="$(icon_for_percent "$SESSION_PERCENTAGE")" \
-    icon.color="$(color_for_percent "$SESSION_PERCENTAGE")" \
     label="$(label_for_percent "$SESSION_PERCENTAGE" "$(readable_time "$SESSION_TIMER")")" \
     --set "$NAME" \
     drawing=on \
+    icon="$(icon_for_percent "$SESSION_PERCENTAGE")" \
+    icon.color="$(color_for_percent "$SESSION_PERCENTAGE")" \
     label="$(label_for_percent "$WEEKLY_PERCENTAGE" "$(readable_time "$WEEKLY_TIMER")")" \
     --animate sin 10 \
     --set "$NAME.session" \

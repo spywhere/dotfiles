@@ -13,7 +13,7 @@ sketchybar --add item usage right \
            drawing=off \
            update_freq=300 \
            script="$CONFIG_DIR/plugins/usage_limit.sh" \
-           icon.font="SF Pro:Regular:18" \
+           icon.font="SF Pro:Regular:16" \
            label.font.size=8 \
            label.y_offset=-5 \
            label.width=30
