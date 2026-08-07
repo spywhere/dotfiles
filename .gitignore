@@ -59,3 +59,7 @@ Session.vim
 !.tool-versions
 
 __pycache__/
+
+# Throwaway output of supports/screenshot/prime.tape -- vhs always writes a
+# gif, but that tape only exists to warm the setup up before recording.
+prime.gif
