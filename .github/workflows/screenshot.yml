@@ -174,26 +174,66 @@ jobs:
           # plain screenshot flow did.
           printf 'tmux=a\nno_wakatime=b\n' > ~/.explist
 
-      - name: Bootstrap nvim plugins
-        timeout-minutes: 20
+      - name: Write the priming script
         run: |
-          # Force a genuinely clean install -- install.sh links this
-          # checkout, but nvim's data dirs are not assumed to be pristine.
-          rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
-
-          # Plugin download works fine headless; the first-run work that
-          # does not is handled by the priming session below.
-          nvim --headless "+Lazy! sync" +qa
-
-          # The wait the priming session hands over to. It polls what the
-          # setup installs on first run -- treesitter parsers and mason's
-          # servers -- and quits nvim once both have settled, so the
-          # recording afterwards starts against an idle editor.
+          # Everything the priming session does, in one script it runs
+          # itself -- no keystrokes are typed at that nvim (see
+          # supports/screenshot/prime.tape for why that matters now that
+          # the plugin download happens there too).
           #
-          # Fixed path because a vhs tape cannot read the environment.
-          cat > /tmp/nvim-prime-wait.lua <<'LUA'
+          # Three phases: wait for lazy to finish installing plugins, open
+          # a lua buffer to bring the LSP path (and so mason) to life, then
+          # wait for treesitter's parsers and mason's servers to settle and
+          # quit, so the recording afterwards starts against an idle
+          # editor.
+          #
+          # Fixed paths because a vhs tape cannot read the environment.
+          cat > /tmp/nvim-prime.lua <<'LUA'
           local uv = vim.uv or vim.loop
           local out = '/tmp/nvim-prime-result.txt'
+          local logfile = '/tmp/nvim-prime-log.txt'
+
+          local waited, phase_waited = 0, 0
+          local phase = 'plugins'
+
+          -- Keep the message area roomy for the whole session. A hit-enter
+          -- prompt blocks this timer -- nothing scheduled runs while nvim
+          -- sits in vgetc() -- and there are no keystrokes coming to
+          -- dismiss one, so the session would hang until the tape's Wait
+          -- gives up. The tape's --cmd covers messages emitted during
+          -- init; this covers the rest of the session, and is reasserted
+          -- every tick because configs/nvim sets cmdheight to 0 or 1 in
+          -- its own startup pass (editor/appearance.lua) and plug.nvim
+          -- defers part of that well past the point --cmd applies.
+          local function keep_room ()
+            if vim.o.cmdheight < 5 then vim.o.cmdheight = 5 end
+            vim.o.more = false
+            vim.opt.shortmess:append('F')
+          end
+          keep_room()
+
+          local function note (line)
+            local f = io.open(logfile, 'a')
+            if not f then return end
+            f:write(('[%4ds %s] %s\n'):format(waited, phase, line))
+            f:close()
+          end
+
+          -- have/want over lazy's own resolved spec, so this counts what
+          -- this config actually asks for rather than a hardcoded number.
+          -- -1/-1 means lazy isn't up yet (plug.nvim curls itself down and
+          -- bootstraps the backend on a cold machine, so that's the normal
+          -- reading for the first few polls, not an error).
+          local function plugins ()
+            local ok, cfg = pcall(require, 'lazy.core.config')
+            if not ok or type(cfg.plugins) ~= 'table' then return -1, -1 end
+            local want, have = 0, 0
+            for _, p in pairs(cfg.plugins) do
+              want = want + 1
+              if p.dir and uv.fs_stat(p.dir) then have = have + 1 end
+            end
+            return have, want
+          end
 
           local function parsers ()
             local ok, cfg = pcall(require, 'nvim-treesitter.config')
@@ -212,27 +252,95 @@ jobs:
             return -1
           end
 
-          local last, stable, waited = '', 0, 0
+          -- Where lazy actually puts plugins. plug.nvim leaves the backend
+          -- root at lazy's own default, so the workflow has nothing to
+          -- hardcode -- it reads this back instead of guessing. (const.lua
+          -- defines a plugin_home global, but nothing wires it to the lazy
+          -- backend; asserting against it found an empty directory while
+          -- all 84 plugins were installed and working.)
+          local function root ()
+            local ok, cfg = pcall(require, 'lazy.core.config')
+            if not ok then return '?' end
+            if type(cfg.options) == 'table' and cfg.options.root then
+              return cfg.options.root
+            end
+            if type(cfg.plugins) == 'table' then
+              for _, p in pairs(cfg.plugins) do
+                if p.dir then return (p.dir:gsub('/[^/]+$', '')) end
+              end
+            end
+            return '?'
+          end
+
           local function finish (why)
+            local have, want = plugins()
             local f = io.open(out, 'w')
-            f:write(('parsers=%d mason=%d waited=%ds reason=%s\n'):format(
-              #parsers(), mason(), waited, why
-            ))
+            f:write((
+              'plugins=%d/%d parsers=%d mason=%d waited=%ds phase=%s ' ..
+              'reason=%s root=%s\n'
+            ):format(have, want, #parsers(), mason(), waited, phase, why, root()))
             f:write(table.concat(parsers(), ' ') .. '\n')
             f:close()
+            note('finish: ' .. why)
             vim.cmd('qa!')
+          end
+
+          local last, stable = '', 0
+          local function enter (next_phase)
+            note('-> ' .. next_phase)
+            phase = next_phase
+            phase_waited = 0
+            last, stable = '', 0
+          end
+
+          -- Through stdpath rather than a path relative to the shell's cwd:
+          -- ~/.config/nvim is the symlink install.sh laid down into this
+          -- checkout, so this resolves to the branch's own lsp.lua wherever
+          -- the session happens to start.
+          local function open_lua_buffer ()
+            local path = vim.fn.stdpath('config') .. '/lua/lib/lsp.lua'
+            local ok, err = pcall(vim.cmd.edit, path)
+            note(('edit %s -> %s'):format(path, ok and 'ok' or tostring(err)))
           end
 
           local timer = uv.new_timer()
           timer:start(3000, 3000, vim.schedule_wrap(function ()
+            waited = waited + 3
+            phase_waited = phase_waited + 3
+            keep_room()
+
+            if phase == 'plugins' then
+              local have, want = plugins()
+              local sig = ('%d/%d'):format(have, want)
+              if sig == last then stable = stable + 1 else stable = 0 end
+              if stable == 0 then note('plugins ' .. sig) end
+              last = sig
+
+              -- Every plugin in the spec has a directory, and that has held
+              -- for ~9s. The dwell matters because lazy clones straight
+              -- into the target directory, so a directory appearing is not
+              -- by itself proof the clone finished -- but a count that has
+              -- stopped moving while every entry is present is.
+              if want > 0 and have == want and stable >= 3 then
+                enter('lsp')
+                open_lua_buffer()
+                enter('settle')
+              elseif phase_waited >= 600 then
+                timer:stop()
+                finish('plugin-timeout')
+              end
+              return
+            end
+
             local np, nm = #parsers(), mason()
             local sig = ('%d/%d'):format(np, nm)
-            waited = waited + 3
             if sig == last then stable = stable + 1 else stable = 0 end
+            if stable == 0 then note('parsers/mason ' .. sig) end
             last = sig
             -- Settle only once both counts hold steady for ~45s, and never
-            -- before 120s: mason downloads nine servers over the network,
-            -- so an early lull says nothing about being finished.
+            -- before 120s in this phase: mason downloads nine servers over
+            -- the network, so an early lull says nothing about being
+            -- finished.
             --
             -- Both counts must also be non-zero. "Flat" is trivially true
             -- before anything has started, which is how the first run of
@@ -242,10 +350,10 @@ jobs:
             -- progress means a setup that genuinely installs nothing runs
             -- into the timeout below and reports it, instead of passing
             -- quietly.
-            if stable >= 15 and waited >= 120 and np > 0 and nm > 0 then
+            if stable >= 15 and phase_waited >= 120 and np > 0 and nm > 0 then
               timer:stop()
               finish('settled')
-            elseif waited >= 660 then
+            elseif phase_waited >= 660 then
               timer:stop()
               finish('timeout')
             end
@@ -253,11 +361,13 @@ jobs:
           LUA
 
       - name: Prime the setup in a real terminal
-        timeout-minutes: 20
+        timeout-minutes: 30
         run: |
-          # Do the first-run work once, for real, before recording anything.
+          # Do the whole first-run work once, for real, before recording
+          # anything -- plugin download included. This is the only cold
+          # start in the job.
           #
-          # This has to be a terminal session rather than `nvim --headless`:
+          # It has to be a terminal session rather than `nvim --headless`:
           # mason simply does not install headlessly. A bootstrap that
           # opened a lua buffer and waited 90s reported "mason=0 opened=lua"
           # with an empty package directory, and the servers then installed
@@ -269,24 +379,65 @@ jobs:
           # was rejected on purpose: the demo should show the real setup, so
           # CI pays the real setup cost instead of documenting a different
           # one. Only the demo-only tooling stays CI-specific.
+
+          # Force a genuinely clean install -- install.sh links this
+          # checkout, but nvim's data dirs are not assumed to be pristine.
+          # This covers the plugins too: plug.nvim leaves lazy's root at
+          # its default under ~/.local/share/nvim. (const.lua defines a
+          # plugin_home global pointing at configs/nvim/plugged, but
+          # nothing wires it to the lazy backend, so clearing it does
+          # nothing. Unused is not the same as deletable, though -- the
+          # demo's closing shot completes onto that global, so const.lua
+          # keeps it.)
+          rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
+
           # Don't let vhs's exit code decide this step. What matters here
-          # is the side effect on ~/.local/share/nvim, not the throwaway
-          # recording -- and vhs fails the whole invocation for reasons
-          # that say nothing about priming ("no frames" if the trailing
-          # Sleep is too short for the framerate, which is precisely how
-          # the first run of this died *after* priming had run fine, and
-          # took the diagnostics below down with it).
+          # is the side effect on disk, not the throwaway recording -- and
+          # vhs fails the whole invocation for reasons that say nothing
+          # about priming ("no frames" if the trailing Sleep is too short
+          # for the framerate, which is precisely how the first run of this
+          # died *after* priming had run fine, and took the diagnostics
+          # below down with it).
           vhs supports/screenshot/prime.tape || vhs_status=$?
 
           echo "--- priming result ---"
           cat /tmp/nvim-prime-result.txt || echo "(no result written)"
+          echo "--- priming log ---"
+          cat /tmp/nvim-prime-log.txt || echo "(no log written)"
+          echo "--- installed plugins ---"
+          lazy_root="$(sed -n 's/.*root=\([^ ]*\).*/\1/p' /tmp/nvim-prime-result.txt 2>/dev/null | head -1)"
+          echo "root: ${lazy_root:-(unknown)}"
+          ls "$lazy_root" 2>/dev/null | wc -l
           echo "--- mason packages on disk ---"
           ls ~/.local/share/nvim/mason/packages 2>/dev/null | tr '\n' ' ' || true
           echo
           echo "--- compiled parser objects ---"
           find ~/.local/share/nvim -name '*.so' -path '*parser*' 2>/dev/null | wc -l
 
-          # Fail loudly rather than recording a demo that will starve.
+          # Fail loudly rather than recording a demo that will starve. The
+          # log above is what says *where* it stalled -- it's the only
+          # record, now that a plugin-download failure surfaces as a
+          # timing-out session rather than a nonzero exit from
+          # `nvim --headless "+Lazy! sync"`.
+          #
+          # The script is the authority on whether the setup is ready, so
+          # assert on what it reported rather than on paths guessed out
+          # here -- reason=settled is only reachable once every plugin in
+          # lazy's spec is on disk *and* the parser and mason counts have
+          # both moved off zero and held steady. An earlier version of this
+          # counted files in a directory instead and failed a run in which
+          # everything had in fact installed correctly.
+          prime_line="$(head -1 /tmp/nvim-prime-result.txt 2>/dev/null || true)"
+          case "$prime_line" in
+            *reason=settled*)
+              echo "OK: $prime_line"
+              ;;
+            *)
+              echo "::error::priming did not settle -- ${prime_line:-no result written}. See the priming log above for the phase it stalled in."
+              exit 1
+              ;;
+          esac
+
           if [ -z "$(ls -A ~/.local/share/nvim/mason/packages 2>/dev/null)" ]; then
             echo "::error::mason installed nothing during priming, so the recording would do it on camera and starve the take"
             exit 1
