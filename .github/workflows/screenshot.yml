@@ -1,14 +1,14 @@
-name: Setup Screenshot
+name: Setup Screenshot & Demo
 
-# Renders .github/screenshot.png from the real dotfiles configs (install
-# the packages, run the setup, capture the actual herdr/nvim session) and
-# commits it back to the branch -- README.md embeds this file directly,
-# and GitHub's own PR "Files changed" view already renders a before/after
-# diff for it, so there's no separate PR-description step needed. Runs on
-# every push to a PR with no extra throttling. push on main covers commits
-# that land there outside a PR, so the README image can't go stale -- but
-# main is gated to at most once a day (see the `gate` job) since it's just
-# keeping the README in sync, not something under active review.
+# Renders .github/demo.gif from the real dotfiles configs (install the
+# packages, run the setup, record the actual herdr/nvim session) and
+# commits it back to the branch, where README.md embeds it directly. The
+# tape can also freeze a still screenshot from the same take; that's
+# currently off, since the README carries just the demo. Runs on every
+# push to a PR with no extra throttling. push on main covers commits that
+# land there outside a PR, so the README can't go stale -- but main is
+# gated to at most once a day (see the `gate` job) since it's just keeping
+# the README in sync, not something under active review.
 on:
   pull_request:
   push:
@@ -27,6 +27,13 @@ jobs:
   gate:
     name: Check run policy
     runs-on: ubuntu-latest
+    # The commit job below pushes straight back to the PR branch, which
+    # re-fires this workflow's own pull_request trigger for a commit that
+    # can't produce anything new (it's the render this very run just made).
+    # That redundant run was showing up stuck on "action_required" instead
+    # of just completing, so skip it outright instead of re-running (and
+    # re-approving) the whole macOS job for no reason.
+    if: github.actor != 'github-actions[bot]'
     outputs:
       should_run: ${{ steps.decide.outputs.should_run }}
     steps:
@@ -45,7 +52,10 @@ jobs:
             exit 0
           fi
 
-          last=$(git log -1 --format=%cI -- .github/screenshot.png)
+          # Keyed off the demo, since that's what this workflow renders --
+          # .github/screenshot.png is no longer regenerated, so its commit
+          # date would freeze and this throttle would never hold.
+          last=$(git log -1 --format=%cI -- .github/demo.gif)
           if [ -z "$last" ]; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -60,7 +70,7 @@ jobs:
           fi
 
   screenshot:
-    name: Capture setup screenshot
+    name: Capture setup screenshot & demo
     needs: gate
     if: needs.gate.outputs.should_run == 'true'
     runs-on: macos-latest
@@ -74,15 +84,47 @@ jobs:
 
       - name: Perform Installation
         run: |
+          # Run against this checkout instead of a fresh clone. install.sh
+          # resolves both the installer and every config source through
+          # $HOME/.dots (INSTALLER_DIR, and _sh_cmd in systems/base.sh),
+          # and clones the repo's *default branch* into it when that
+          # directory is missing. So on a PR the screenshot was rendering
+          # main's configs while opening this checkout's files -- a config
+          # change on the branch could not affect the capture at all.
+          # Pointing .dots at the workspace makes it the single source of
+          # truth; --local then refuses to fall back to cloning, so this
+          # fails loudly rather than silently reverting to main.
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.dots"
+
           # Skip everything package-wise except herdr, the nerd font and
           # opencode (for the agent pane demo) -- no screenshot in this job
           # shows a GUI app, so there's no need for the rest of the catalog
           # (casks, App Store apps, etc). Still runs setup/config.sh to link
           # all the configs. starship is a "custom" (non-brew, curl-installed)
           # install, so it's kept -- panes should show the real prompt.
-          sh install.sh --profile=ci -y \
+          sh install.sh --profile=ci -y --local \
             no-app-store no-ssh no-version-manager \
             no-package herdr fonts opencode
+
+      - name: Verify configs are linked from this checkout
+        run: |
+          # Guards the failure mode that made this job silently useless for
+          # reviewing config changes: when install.sh falls back to cloning
+          # $HOME/.dots itself, every linked config comes from the default
+          # branch and the capture stops reflecting the PR. That is not
+          # visible in the screenshot -- it just quietly shows the wrong
+          # tree -- so assert it here instead of trusting it.
+          resolved="$(readlink -f "$HOME/.config/nvim")"
+          echo "~/.config/nvim -> $resolved"
+          case "$resolved" in
+            "$GITHUB_WORKSPACE"/*)
+              echo "OK: linked from this checkout"
+              ;;
+            *)
+              echo "::error::~/.config/nvim resolves to $resolved, outside $GITHUB_WORKSPACE -- install.sh cloned its own copy, so the screenshot would render that tree instead of this branch"
+              exit 1
+              ;;
+          esac
 
       - name: Install screenshot-only tooling
         run: |
@@ -93,11 +135,27 @@ jobs:
           # dropped from homebrew-core after being archived upstream).
           # lua-language-server is required for the LSP demo: configs/nvim's
           # lua_ls setup only attaches if the binary is already on PATH, it
-          # doesn't auto-install via mason. tree-sitter (the CLI) is needed
+          # doesn't auto-install via mason. The tree-sitter CLI is needed
           # too -- configs/nvim always tries to install ~20 parsers on
-          # startup, and without the CLI those fail with a blocking
-          # "Press ENTER to continue" prompt that eats later keystrokes.
-          brew install neovim tty-clock fastfetch vhs lua-language-server tree-sitter
+          # startup, and without it those fail with a blocking "Press ENTER
+          # to continue" prompt that eats later keystrokes. `brew install
+          # tree-sitter` only pulls in libtree-sitter (the runtime library)
+          # -- the CLI is a separate formula, tree-sitter-cli (confirmed via
+          # a CI run where every single parser failed identically with
+          # "ENOENT: no such file or directory (cmd): 'tree-sitter'").
+          # fzf is needed for the tape's <C-p> file-finder step -- fzf-lua
+          # shells out to the real fzf binary, which this repo
+          # normally installs via mise (setup/version-manager.sh), but this
+          # job passes no-version-manager to install.sh, so it's otherwise
+          # missing here. Without it, <C-p> errors out and every keystroke
+          # meant for the picker's search box lands as raw keys in whatever
+          # nvim buffer is focused instead. fd and ripgrep are fzf-lua's
+          # file-listing/grep backends (normally installed as regular
+          # packages -- packages/fd.sh, packages/ripgrep.sh -- but this job
+          # passes no-package too); without either, the files picker opens
+          # with an empty result list instead of erroring, since fzf-lua
+          # has no further fallback once both are missing.
+          brew install neovim tty-clock fastfetch vhs lua-language-server tree-sitter-cli fzf fd ripgrep
 
       - name: Seed experiment flags
         run: |
@@ -105,23 +163,151 @@ jobs:
           # while zinit is still finishing its first-run plugin bootstrap,
           # which is unpredictably slow on a fresh CI shell); the tape drives
           # `herdr` explicitly instead once the shell is confirmed ready.
-          printf 'tmux=a\n' > ~/.explist
+          #
+          # no_wakatime=b skips vim-wakatime. There's no wakatime-cli or
+          # ~/.wakatime.cfg on a fresh runner, so it prints "API Key not
+          # found" on buffer changes; enough of those stack into a blocking
+          # "Press ENTER or type command to continue" prompt, and from there
+          # each scripted keystroke is spent dismissing the prompt instead
+          # of doing its job -- which is exactly what derailed the recording
+          # before, since the demo flow crosses far more buffers than the
+          # plain screenshot flow did.
+          printf 'tmux=a\nno_wakatime=b\n' > ~/.explist
 
       - name: Bootstrap nvim plugins
+        timeout-minutes: 20
         run: |
-          # TSUpdateSync blocks until treesitter parser installs finish --
-          # without it, those jobs would just get killed at +qa (headless
-          # nvim exiting doesn't let background jobs "finish later"), and
-          # the interactive session would hit the same failure again.
-          nvim --headless "+Lazy! sync" -c "TSUpdateSync" +qa
+          # Force a genuinely clean install -- install.sh links this
+          # checkout, but nvim's data dirs are not assumed to be pristine.
+          rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
 
-      - name: Render setup preview
+          # Plugin download works fine headless; the first-run work that
+          # does not is handled by the priming session below.
+          nvim --headless "+Lazy! sync" +qa
+
+          # The wait the priming session hands over to. It polls what the
+          # setup installs on first run -- treesitter parsers and mason's
+          # servers -- and quits nvim once both have settled, so the
+          # recording afterwards starts against an idle editor.
+          #
+          # Fixed path because a vhs tape cannot read the environment.
+          cat > /tmp/nvim-prime-wait.lua <<'LUA'
+          local uv = vim.uv or vim.loop
+          local out = '/tmp/nvim-prime-result.txt'
+
+          local function parsers ()
+            local ok, cfg = pcall(require, 'nvim-treesitter.config')
+            if not ok then return {} end
+            local ok2, list = pcall(cfg.get_installed)
+            return ok2 and list or {}
+          end
+
+          local function mason ()
+            local ok, reg = pcall(require, 'mason-registry')
+            if not ok then return -1 end
+            local ok2, names = pcall(function ()
+              return reg.get_installed_package_names()
+            end)
+            if ok2 and names then return #names end
+            return -1
+          end
+
+          local last, stable, waited = '', 0, 0
+          local function finish (why)
+            local f = io.open(out, 'w')
+            f:write(('parsers=%d mason=%d waited=%ds reason=%s\n'):format(
+              #parsers(), mason(), waited, why
+            ))
+            f:write(table.concat(parsers(), ' ') .. '\n')
+            f:close()
+            vim.cmd('qa!')
+          end
+
+          local timer = uv.new_timer()
+          timer:start(3000, 3000, vim.schedule_wrap(function ()
+            local np, nm = #parsers(), mason()
+            local sig = ('%d/%d'):format(np, nm)
+            waited = waited + 3
+            if sig == last then stable = stable + 1 else stable = 0 end
+            last = sig
+            -- Settle only once both counts hold steady for ~45s, and never
+            -- before 120s: mason downloads nine servers over the network,
+            -- so an early lull says nothing about being finished.
+            --
+            -- Both counts must also be non-zero. "Flat" is trivially true
+            -- before anything has started, which is how the first run of
+            -- this quit at exactly 120s -- the floor, to the second --
+            -- with nothing installed: it had been flat at 0/0 the whole
+            -- time and was only ever waiting out the clock. Requiring
+            -- progress means a setup that genuinely installs nothing runs
+            -- into the timeout below and reports it, instead of passing
+            -- quietly.
+            if stable >= 15 and waited >= 120 and np > 0 and nm > 0 then
+              timer:stop()
+              finish('settled')
+            elseif waited >= 660 then
+              timer:stop()
+              finish('timeout')
+            end
+          end))
+          LUA
+
+      - name: Prime the setup in a real terminal
+        timeout-minutes: 20
         run: |
+          # Do the first-run work once, for real, before recording anything.
+          #
+          # This has to be a terminal session rather than `nvim --headless`:
+          # mason simply does not install headlessly. A bootstrap that
+          # opened a lua buffer and waited 90s reported "mason=0 opened=lua"
+          # with an empty package directory, and the servers then installed
+          # themselves during the take instead -- which is what kept
+          # starving the first fzf picker while the second one, running
+          # after mason had finished, worked fine.
+          #
+          # Patching the config to skip mason in CI was the alternative, and
+          # was rejected on purpose: the demo should show the real setup, so
+          # CI pays the real setup cost instead of documenting a different
+          # one. Only the demo-only tooling stays CI-specific.
+          # Don't let vhs's exit code decide this step. What matters here
+          # is the side effect on ~/.local/share/nvim, not the throwaway
+          # recording -- and vhs fails the whole invocation for reasons
+          # that say nothing about priming ("no frames" if the trailing
+          # Sleep is too short for the framerate, which is precisely how
+          # the first run of this died *after* priming had run fine, and
+          # took the diagnostics below down with it).
+          vhs supports/screenshot/prime.tape || vhs_status=$?
+
+          echo "--- priming result ---"
+          cat /tmp/nvim-prime-result.txt || echo "(no result written)"
+          echo "--- mason packages on disk ---"
+          ls ~/.local/share/nvim/mason/packages 2>/dev/null | tr '\n' ' ' || true
+          echo
+          echo "--- compiled parser objects ---"
+          find ~/.local/share/nvim -name '*.so' -path '*parser*' 2>/dev/null | wc -l
+
+          # Fail loudly rather than recording a demo that will starve.
+          if [ -z "$(ls -A ~/.local/share/nvim/mason/packages 2>/dev/null)" ]; then
+            echo "::error::mason installed nothing during priming, so the recording would do it on camera and starve the take"
+            exit 1
+          fi
+
+          if [ -n "${vhs_status:-}" ]; then
+            echo "::warning::vhs exited ${vhs_status} on the priming tape, but the setup primed -- continuing"
+          fi
+
+      - name: Render setup demo & screenshot
+        run: |
+          # One tape, one herdr/nvim session. Driving two tapes/vhs
+          # invocations in the same job used to reattach to the same herdr
+          # server (it's a persistent multiplexer -- panes and the previous
+          # tape's nvim session stay alive across a detach), feeding the
+          # second tape's keystrokes into leftover state from the first.
           vhs supports/screenshot/dotfiles.tape
 
-      - name: Commit preview screenshot
+      - name: Commit preview demo
         uses: EndBug/add-and-commit@v10
         with:
-          add: .github/screenshot.png
+          add: .github/demo.gif
           default_author: github_actions
-          message: "chore(ci): update setup screenshot preview"
+          message: "chore(ci): update setup demo preview"

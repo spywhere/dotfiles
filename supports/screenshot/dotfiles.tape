@@ -1,11 +1,18 @@
-# Recreates the README setup screenshot from the real dotfiles configs.
+# Records the README demo (.github/demo.gif) from the real dotfiles
+# configs, driving one herdr/nvim session for the whole take.
 #
-# Assumes install.sh has already linked the configs, and ~/.explist has
-# tmux=a (disables zshrc's auto-launch race -- it starts herdr while zinit
-# is still finishing its first-run plugin bootstrap on a fresh shell, which
-# is unpredictably slow in CI, so herdr is launched explicitly below
-# instead). lua-language-server, tree-sitter and opencode must already be
-# on PATH (see .github/workflows/screenshot.yml).
+# The tape can also freeze its own last frame as a still screenshot -- see
+# the commented-out Screenshot at the bottom. The README carries just the
+# demo for now, so that stays off; keeping it here (rather than deleting
+# it) is what keeps the two in sync if the still comes back, since a
+# screenshot taken by this tape is by construction the same state the
+# recording ends on.
+#
+# Assumes install.sh has already linked the configs from this checkout,
+# and ~/.explist has tmux=a and no_wakatime=b (see
+# .github/workflows/screenshot.yml for why both matter). fzf, fd, ripgrep,
+# lua-language-server, the tree-sitter CLI and opencode must already be on
+# PATH.
 #
 # herdr's own CLI (tab create/rename --json) turned out not to support
 # --json on this install ("unknown option"), so tab setup below goes
@@ -14,11 +21,23 @@
 # ("Expected shift character, got +") -- prefix+<N> jump-to-tab-by-number
 # works fine though, so that's used to get back to tab 1 instead.
 #
+# Everything up to nvim sitting on the Alpha splash screen is bracketed by
+# Hide/Show: it still runs for real, so the final frame shows the full
+# 3-pane/2-tab layout, it just isn't part of the take. Note vhs needs at
+# least one visible frame or it exits with "no frames / recording failed",
+# so Show must stay ahead of the last Sleep.
+#
+# Typing speed: after Show, every Type is speed-tagged (Type@Nms) rather
+# than left at vhs's flat default, so it reads like a person typing rather
+# than text appearing at once -- brisk for keys typed from muscle memory,
+# slower for the search and completion beats the demo is actually about.
+# Longer strings are split across calls with a short Sleep between chunks
+# to mimic the small hesitations real typing has. Nothing before Show is
+# tagged, since none of it is on camera.
+#
 # Run from the repo root: vhs supports/screenshot/dotfiles.tape
-# (renders into .github/screenshot.png, alongside the workflow that runs
-# this -- README.md embeds it from there)
 
-Output "dotfiles-screenshot.gif"
+Output ".github/demo.gif"
 
 Set Shell "zsh"
 Set FontFamily "JetBrainsMono Nerd Font"
@@ -28,12 +47,16 @@ Set Height 1200
 Set Padding 0
 Set WindowBar "Colorful"
 Set WindowBarSize 40
+Set Framerate 24
+Set TypingSpeed 60ms
 
 # Same ANSI palette as configs/kitty/kitty.conf and configs/ghostty/config
 # (they agree exactly on background/foreground/cursor/selection) -- so
 # whatever tty-clock's -C flag resolves to should match the real setup's
 # colors, not vhs's own default theme.
 Set Theme {"name":"dotfiles","black":"#3b4252","red":"#bf616a","green":"#a3be8c","yellow":"#ebcb8b","blue":"#8aa1c1","magenta":"#b48ead","cyan":"#99c0d0","white":"#e5e9f0","brightBlack":"#4c566a","brightRed":"#bf616a","brightGreen":"#a3be8c","brightYellow":"#ebcb8b","brightBlue":"#81a1c1","brightMagenta":"#b48ead","brightCyan":"#8fbcbb","brightWhite":"#eceff4","background":"#1c1c1c","foreground":"#d8dee9","selection":"#4c566a","cursor":"#d8dee9"}
+
+Hide
 
 # Let zsh/zinit finish its first-run bootstrap before typing anything
 Sleep 10s
@@ -58,10 +81,10 @@ Type "neovim"
 Enter
 Sleep 500ms
 
-# Split off a clock pane on the right (herdr prefix is ctrl+a, per config.toml)
-# -c centers the clock in the pane. tty-clock only supports the 8 basic
-# ANSI colors via -C (no truecolor/hex), so -C 4 (blue) is resolved against
-# the Set Theme palette above.
+# Split off a clock pane on the right (herdr prefix is ctrl+a, per
+# config.toml) -c centers the clock in the pane. tty-clock only supports
+# the 8 basic ANSI colors via -C (no truecolor/hex), so -C 4 (blue) is
+# resolved against the Set Theme palette above.
 Ctrl+A
 Type "|"
 Sleep 500ms
@@ -83,20 +106,8 @@ Ctrl+A
 Type "h"
 Sleep 500ms
 
-# Open both files the same way the original screenshot shows them: lsp.lua
-# loaded first, then plugin-manager.lua opened on top of it as the active
-# buffer (so the tab bar shows both, with plugin-manager.lua focused).
-Type "nvim configs/nvim/lua/lib/lsp.lua"
-Enter
-Sleep 4s
-
-Type ":e configs/nvim/lua/lib/plugin-manager.lua"
-Enter
-Sleep 2s
-
-# Create the agent tab now (prefix+c, auto-focused) -- nvim/LSP keep
-# settling in the background on tab 1 while this happens, then prefix+1
-# jumps back to it right before the completion demo and screenshot.
+# Create the agent tab (prefix+c, auto-focused), then prefix+1 returns to
+# the nvim tab -- this is what gives the final frame its 2-tab layout.
 Ctrl+A
 Type "c"
 Sleep 1s
@@ -117,15 +128,89 @@ Ctrl+A
 Type "1"
 Sleep 500ms
 
-# Demo autocomplete: search for the M.setup local (rather than a hardcoded
-# line number, so this keeps working if the file changes), open a new line
-# below it, and type "pl" -- plug_nvim_path, plugin_home and plug_nvim_url
-# are still real globals from lib/const.lua, so this should surface the
-# same completion candidates the original screenshot showed.
-Type "/local plug = require"
+# Launch nvim with no file argument so it lands on the Alpha dashboard
+# (configs/nvim/lua/plugin/appearance/alpha.lua) -- the real splash screen
+# this setup shows, not vim's builtin :intro.
+Type "nvim"
 Enter
-Sleep 300ms
-Type "opl"
-Sleep 1500ms
 
-Screenshot ".github/screenshot.png"
+# Let the first-run work finish before the take begins. Even with parsers
+# pre-installed by the workflow, mason still settles its LSP servers here,
+# and this is off-camera anyway. It matters because the steps below expect
+# subprocesses (fzf-lua's file listing, lua_ls) to answer promptly -- when
+# nvim was still busy at this point, the picker opened to "0/0 (0)" and
+# the whole take unravelled from there.
+Sleep 15s
+
+Show
+Sleep 1s
+
+# Open the two files to work on, through the real file-finder keybinding
+# (<C-p> -> fzf-lua files, per configs/nvim/lua/plugin/navigation/fzf.lua)
+# rather than passing them on the command line.
+#
+# Typed in chunks with a small hesitation, which is what makes it read as
+# typing rather than text appearing at once. The pause after is the glance
+# at the match before accepting it.
+Ctrl+P
+Sleep 2s
+Type@130ms "lsp"
+Sleep 300ms
+Type@130ms ".lua"
+Sleep 700ms
+Enter
+
+# Straight on to the second file -- you already know both files you want
+# open, so there's nothing to stop and read here.
+#
+# This was 8s for a while, purely to absorb lua-language-server's cold
+# start: at 2s the second <C-p> raced lua_ls and opened empty. The
+# priming session now pays that cost off camera (it holds a lua buffer
+# open for two minutes, so lua_ls is installed and its workspace cache is
+# warm), so what's left is just the hand moving between keystrokes.
+Sleep 800ms
+
+# Open plugin-manager.lua the same way, so it lands on top as the active
+# buffer with both files in the tab bar. lua_ls has settled by now, so
+# this picker gets the same 2s the first one did rather than extra margin.
+Ctrl+P
+Sleep 2s
+Type@130ms "plugin"
+Sleep 300ms
+Type@130ms "-manager"
+Sleep 700ms
+Enter
+Sleep 2s
+
+# Find the line to work near. Short search string, like you would really
+# type -- "plug = req" is already unique in this file (line 75).
+Type@120ms "/plug = req"
+Sleep 350ms
+Enter
+Sleep 700ms
+
+# Add a line below it and start typing. plug_nvim_path, plugin_home and
+# plug_nvim_url are real globals from lib/const.lua, so lua_ls offers them.
+Type "o"
+Sleep 400ms
+Type@150ms "pl"
+Sleep 900ms
+
+# Walk the menu down to plugin_home with Tab (nvim-cmp's <Tab> mapping ->
+# select_next_item, see configs/nvim/lua/plugin/autocomplete/cmp.lua).
+# completeopt includes noselect, so nothing is highlighted until the first
+# Tab, and the LSP orders these plug -> plug_nvim_path -> plugin_home:
+# three presses. Paused between each so the selection moving is legible.
+Tab
+Sleep 550ms
+Tab
+Sleep 550ms
+Tab
+Sleep 1600ms
+
+# Freeze this exact frame as a still, for a README that wants one
+# alongside the demo. Off while the README carries only the gif.
+# Screenshot ".github/screenshot.png"
+
+# Hold briefly so the recording doesn't cut out on the final keystroke.
+Sleep 2s
