@@ -35,6 +35,19 @@
 # to mimic the small hesitations real typing has. Nothing before Show is
 # tagged, since none of it is on camera.
 #
+# Running length: the Sleeps below are budgeted to land the take at ~16s
+# of tape time -- ~17.4s once vhs's own per-keystroke overhead is counted,
+# rendering as ~13.9s of gif (see Set Framerate for why those three
+# numbers differ). It used to be ~21.7s of tape time that
+# rendered as anything between 14.6s and 20.4s of gif, because vhs drops
+# capture frames when it cannot keep up and writes a fixed per-frame delay
+# regardless -- so a loaded runner did not make the demo choppy, it made it
+# play fast, and the README's pace was effectively decided by how busy the
+# machine was. The dead time was cut instead, so the pace that used to
+# happen by accident now happens on purpose. Trim Sleeps here, not the
+# Type@ speeds: typing is only ~4.4s of the take, and slowing it is the
+# whole point of the speed tags.
+#
 # Run from the repo root: vhs supports/screenshot/dotfiles.tape
 
 Output ".github/demo.gif"
@@ -47,7 +60,20 @@ Set Height 1200
 Set Padding 0
 Set WindowBar "Colorful"
 Set WindowBarSize 40
-Set Framerate 24
+# Capture rate, and only that -- vhs writes the gif at a fixed 4cs per
+# frame (25fps) no matter what this says. So playback duration is
+# (Framerate / 25) x the take's real duration: at 20 the demo plays 1.25x
+# faster than the session actually ran, which the Sleep budget above
+# accounts for. Raising this to 25 would make playback 1:1 with the
+# session, at the cost of asking the runner for more frames than 24 --
+# which is the rate that was already dropping them.
+#
+# 20 rather than 24 because 24 could not keep up here. Dropped frames do
+# not degrade quality, they shorten the gif: past takes landed at 65-91%
+# of the frames the tape called for, which is why a byte-identical tape
+# rendered as anything from 14.6s to 20.4s. At 20 the first run captured
+# 347 frames over a 17.36s take -- 19.99fps, nothing dropped.
+Set Framerate 20
 Set TypingSpeed 60ms
 
 # Same ANSI palette as configs/kitty/kitty.conf and configs/ghostty/config
@@ -162,7 +188,7 @@ Escape
 Sleep 2s
 
 Show
-Sleep 1s
+Sleep 500ms
 
 # Open the two files to work on, through the real file-finder keybinding
 # (<C-p> -> fzf-lua files, per configs/nvim/lua/plugin/navigation/fzf.lua)
@@ -171,12 +197,19 @@ Sleep 1s
 # Typed in chunks with a small hesitation, which is what makes it read as
 # typing rather than text appearing at once. The pause after is the glance
 # at the match before accepting it.
+#
+# This 2s is deliberately not trimmed with the rest. It is a functional
+# wait, not a beat: the picker has to be populated before the query is
+# typed, and this is the first on-camera fzf invocation -- historically the
+# one that comes up "0/0 (0)" and takes the whole take with it. The off-
+# camera invocation above should have absorbed that, but it is the wrong
+# second to save.
 Ctrl+P
 Sleep 2s
 Type@130ms "lsp"
 Sleep 300ms
 Type@130ms ".lua"
-Sleep 700ms
+Sleep 350ms
 Enter
 
 # Straight on to the second file -- you already know both files you want
@@ -187,33 +220,37 @@ Enter
 # priming session now pays that cost off camera (it holds a lua buffer
 # open for two minutes, so lua_ls is installed and its workspace cache is
 # warm), so what's left is just the hand moving between keystrokes.
-Sleep 800ms
+Sleep 350ms
 
 # Open plugin-manager.lua the same way, so it lands on top as the active
-# buffer with both files in the tab bar. lua_ls has settled by now, so
-# this picker gets the same 2s the first one did rather than extra margin.
+# buffer with both files in the tab bar.
+#
+# 1.5s where the first picker gets 2s. This is the one the tape's own
+# history says is safe -- across every run it has been the *first*
+# invocation that came up empty, never this one -- so it is where the
+# margin gets spent rather than on the risky one above.
 Ctrl+P
-Sleep 2s
+Sleep 1500ms
 Type@130ms "plugin"
 Sleep 300ms
 Type@130ms "-manager"
-Sleep 700ms
+Sleep 350ms
 Enter
-Sleep 2s
+Sleep 900ms
 
 # Find the line to work near. Short search string, like you would really
 # type -- "plug = req" is already unique in this file (line 75).
 Type@120ms "/plug = req"
 Sleep 350ms
 Enter
-Sleep 700ms
+Sleep 350ms
 
 # Add a line below it and start typing. plug_nvim_path, plugin_home and
 # plug_nvim_url are real globals from lib/const.lua, so lua_ls offers them.
 Type "o"
-Sleep 400ms
+Sleep 300ms
 Type@150ms "pl"
-Sleep 900ms
+Sleep 750ms
 
 # Walk the menu down to plugin_home with Tab (nvim-cmp's <Tab> mapping ->
 # select_next_item, see configs/nvim/lua/plugin/autocomplete/cmp.lua).
@@ -221,15 +258,15 @@ Sleep 900ms
 # Tab, and the LSP orders these plug -> plug_nvim_path -> plugin_home:
 # three presses. Paused between each so the selection moving is legible.
 Tab
-Sleep 550ms
+Sleep 450ms
 Tab
-Sleep 550ms
+Sleep 450ms
 Tab
-Sleep 1600ms
+Sleep 1s
 
 # Freeze this exact frame as a still, for a README that wants one
 # alongside the demo. Off while the README carries only the gif.
 # Screenshot ".github/screenshot.png"
 
 # Hold briefly so the recording doesn't cut out on the final keystroke.
-Sleep 2s
+Sleep 1s
