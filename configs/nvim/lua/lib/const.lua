@@ -10,6 +10,12 @@ pack_site = fn.stdpath('data') .. '/site/pack'
 
 lua_home = config_home .. '/lua'
 plug_nvim_path = pack_site .. '/plug/opt/plug.nvim/lua/plug.lua'
+-- Unused by the current backend: plug.backend.lazy is set up with no
+-- options (lib/plugin-manager.lua), so lazy keeps its own root under
+-- stdpath('data') and nothing ever writes here. Keep it anyway -- the
+-- README demo's closing shot walks the LSP completion menu onto
+-- plugin_home, so removing it changes what gets recorded
+-- (supports/screenshot/dotfiles.tape).
 plugin_home = config_home .. '/plugged'
 
 prequire = function (...)
