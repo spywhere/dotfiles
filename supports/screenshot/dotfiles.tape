@@ -134,13 +134,32 @@ Sleep 500ms
 Type "nvim"
 Enter
 
-# Let the first-run work finish before the take begins. Even with parsers
-# pre-installed by the workflow, mason still settles its LSP servers here,
-# and this is off-camera anyway. It matters because the steps below expect
-# subprocesses (fzf-lua's file listing, lua_ls) to answer promptly -- when
-# nvim was still busy at this point, the picker opened to "0/0 (0)" and
-# the whole take unravelled from there.
+# Let nvim's own startup finish before the take begins.
 Sleep 15s
+
+# Spend fzf-lua's first invocation here, off camera.
+#
+# This is the one step that has never been reliable. Across every run of
+# this workflow the *second* picker has populated correctly and the first
+# has sometimes come up "0/0 (0)" -- empty, with the query typed into
+# nothing and Enter opening no file, which takes the rest of the take with
+# it. It is a race in the first invocation, not a slow machine: the
+# picker window itself opens fine, it just never receives the file list.
+#
+# Priming (see the workflow) does not cover this. That fixes the machine
+# -- mason's servers and the treesitter parsers are on disk before the
+# take -- but fzf-lua is lazy-loaded, so every nvim launch still pays its
+# first-invocation cost, and the run that produced the broken demo on
+# main reported a perfectly healthy "parsers=22 mason=9 reason=settled".
+#
+# So open the picker once here and throw it away. Escape aborts without
+# opening anything, leaving the Alpha dashboard exactly as it was, and
+# the take below gets a second invocation -- the kind that has always
+# worked.
+Ctrl+P
+Sleep 5s
+Escape
+Sleep 2s
 
 Show
 Sleep 1s
