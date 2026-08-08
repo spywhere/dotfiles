@@ -316,6 +316,7 @@ setup_config() {
 
   step "  - claude"
   link agents/AGENTS.md .claude/CLAUDE.md
+  link claude/settings.json .claude/settings.json
 
   step "  - code-server"
   link code-server/ .config/code-server
