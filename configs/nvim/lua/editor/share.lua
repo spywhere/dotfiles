@@ -10,6 +10,6 @@ local rtf = function ()
   })
 end
 
-if vim.fn.executable('textutil') == 1 and vim.fn.executable('pbcopy') then
+if vim.fn.executable('textutil') == 1 and vim.fn.executable('pbcopy') == 1 then
   registry.defer(rtf)
 end

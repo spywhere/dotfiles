@@ -79,7 +79,7 @@ registry.install {
 
     if registry.experiment('explorer').is_not('tree') then
       local cmd = (function()
-        if vim.fn.executable('fd') then
+        if vim.fn.executable('fd') == 1 then
           return 'fd --type d --hidden --exclude .git --exclude node_modules'
         else
           return 'find -type d -not -path "*/\\.git/*" -not -path "*/node_modules/*"'
