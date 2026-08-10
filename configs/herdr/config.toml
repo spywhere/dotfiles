@@ -9,6 +9,15 @@ sidebar_start_collapsed = true
 sidebar_collapsed_mode = "hidden"
 prompt_new_tab_name = false
 
+[ui.sidebar.spaces]
+rows = [
+  ["state_icon", "workspace"],
+  ["branch", "git_status"],
+  [{ token = "$now_playing_icon", fg = "#89b4fa", dim = true }, { token = "$now_playing_time", fg = "#89b4fa", dim = true }],
+  [{ token = "$now_playing_title", fg = "#89b4fa", dim = true }],
+  [{ token = "$now_playing_artist", fg = "#89b4fa", dim = true }],
+]
+
 [ui.toast]
 delivery = "herdr"
 
@@ -63,3 +72,27 @@ key = "prefix+down"
 type = "plugin_action"
 command = "cloudmanic.herdr-plus.quick-actions"
 description = "herdr-plus: quick actions"
+
+[[keys.command]]
+key = "prefix+;"
+type = "plugin_action"
+command = "spywhere.now-playing.previous"
+description = "now-playing: previous"
+
+[[keys.command]]
+key = "prefix+'"
+type = "plugin_action"
+command = "spywhere.now-playing.next"
+description = "now-playing: next"
+
+[[keys.command]]
+key = "prefix+comma"
+type = "plugin_action"
+command = "spywhere.now-playing.playpause"
+description = "now-playing: play/pause"
+
+[[keys.command]]
+key = "prefix+."
+type = "plugin_action"
+command = "spywhere.now-playing.stop"
+description = "now-playing: stop"
