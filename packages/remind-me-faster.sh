@@ -13,7 +13,7 @@ fi
 
 optional
 
-has_app 'Tailscale'
+has_app 'Remind Me Faster'
 
 profile -work
-use_mas 'Tailscale' 1475387142
+use_mas 'Remind Me Faster' 985555908

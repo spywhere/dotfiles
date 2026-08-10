@@ -11,9 +11,6 @@ then
   exit 1
 fi
 
-optional
+has_app 'OpenSuperWhisper'
 
-has_app 'Tailscale'
-
-profile -work
-use_mas 'Tailscale' 1475387142
+use_brew cask 'opensuperwhisper'

@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+optional
+
 has_app 'AutoRaise'
 
 use_brew cask 'dimentium/autoraise/autoraiseapp'

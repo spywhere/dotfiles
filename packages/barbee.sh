@@ -13,4 +13,5 @@ fi
 
 has_app 'Barbee'
 
+profile work
 use_mas 'barbee' '1548711022'
