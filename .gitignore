@@ -13,6 +13,8 @@ configs/herdr/plugins/**
 !configs/herdr/plugins/config/cloudmanic.herdr-plus/worktrees/global.toml
 !configs/herdr/plugins/config/herdr-lazy
 !configs/herdr/plugins/config/herdr-lazy/plugins.list
+!configs/herdr/plugins/config/spywhere.now-playing
+!configs/herdr/plugins/config/spywhere.now-playing/config.json
 configs/hunk/state.json
 configs/jj/conf.d/**
 configs/mpd/**

@@ -356,6 +356,7 @@ setup_config() {
   fi
   link herdr/plugins/config/herdr-lazy/ .config/herdr/plugins/config/herdr-lazy
   link herdr/plugins/config/cloudmanic.herdr-plus/ .config/herdr/plugins/config/cloudmanic.herdr-plus
+  link herdr/plugins/config/spywhere.now-playing/ .config/herdr/plugins/config/spywhere.now-playing
 
   step "  - htop"
   link htop/ .config/htop
