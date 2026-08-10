@@ -134,28 +134,20 @@ allow_tmux() {
 }
 
 if allow_tmux; then
-  if test -n "$(command -v herdr)" && exp_is bB herdr; then
-    command herdr
-    herdr_status="$?"
-    if test "$herdr_status" -eq 0; then
-      exit
-    fi
-    echo "herdr exited with $herdr_status code"
-    echo "Try restarting server..."
-    command herdr server stop
-    command herdr
-    herdr_status="$?"
-    if test "$herdr_status" -eq 0; then
-      exit
-    fi
-    echo "herdr exited with $herdr_status code"
+  if test -n "$(command -v tmux)" && exp_is bB tmux; then
+    zinit ice lucid wait"0"
+    zinit snippet OMZ::plugins/tmux
   elif test -n "$(command -v zellij)" && exp_is bB zellij; then
     ZELLIJ_AUTO_ATTACH=true
     ZELLIJ_AUTO_EXIT=true
     . <(zellij setup --generate-auto-start zsh)
-  elif test -n "$(command -v tmux)"; then
-    zinit ice lucid wait"0"
-    zinit snippet OMZ::plugins/tmux
+  elif test -n "$(command -v herdr)"; then
+    command herdr
+    herdr_status="$?"
+    if test "$herdr_status" -eq 0; then
+      exit
+    fi
+    echo "herdr exited with $herdr_status code"
   fi
 else
   zinit light michaelaquilina/zsh-you-should-use
