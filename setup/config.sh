@@ -399,6 +399,7 @@ setup_config() {
 
   step "  - opencode"
   link opencode/ .config/opencode
+  link agents/agents/ .config/opencode/agents
 
   step "  - pi-coding-agent"
   link pi/ .pi
