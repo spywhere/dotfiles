@@ -35,6 +35,18 @@ next_tab = "shift+right"
 goto = "prefix+shift+g"
 
 [[keys.command]]
+key = "prefix+shift+i"
+type = "popup"
+command = "$HERDR_BIN_PATH plugin install natori-hrj/herdr-lazy"
+description = "install herdr-lazy"
+
+[[keys.command]]
+key = "prefix+shift+u"
+type = "plugin_action"
+command = "herdr-lazy.manage"
+description = "herdr-lazy: manage plugins"
+
+[[keys.command]]
 key = ["cmd+r", "prefix+ctrl+r"]
 type = "plugin_action"
 command = "persiyanov.reviewr.toggle"
