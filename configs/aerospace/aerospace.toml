@@ -101,6 +101,10 @@ on-mode-changed = [
     if.app-id = 'com.aone.keka'
     run = 'layout floating'
 
+[[on-window-detected]]
+    if.app-id = 'chojubo.addReminder'
+    run = 'layout floating'
+
 [mode.main.binding]
 
     # All possible keys:
