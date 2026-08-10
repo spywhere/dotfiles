@@ -295,12 +295,6 @@ setup_config() {
   if ! test -d "$HOME/.config"; then
     cmd mkdir -p "$HOME/.config"
   fi
-  if ! test -d "$HOME/.shrimp"; then
-    cmd mkdir -p "$HOME/.shrimp"
-  fi
-  if ! test -d "$HOME/.claude"; then
-    cmd mkdir -p "$HOME/.claude"
-  fi
 
   step "  - AeroSpace"
   link aerospace/ .config/aerospace
@@ -315,6 +309,9 @@ setup_config() {
   link bat/ .config/bat
 
   step "  - claude"
+  if ! test -d "$HOME/.claude"; then
+    cmd mkdir -p "$HOME/.claude"
+  fi
   link agents/AGENTS.md .claude/CLAUDE.md
   link claude/settings.json .claude/settings.json
 
@@ -347,7 +344,18 @@ setup_config() {
   link github/ .config/github
 
   step "  - herdr"
-  link herdr/ .config/herdr
+  if ! test -d "$HOME/.config/herdr"; then
+    cmd mkdir -p "$HOME/.config/herdr"
+  fi
+  link herdr/config.toml .config/herdr/config.toml
+  if ! test -d "$HOME/.config/herdr/plugins"; then
+    cmd mkdir -p "$HOME/.config/herdr/plugins"
+  fi
+  if ! test -d "$HOME/.config/herdr/plugins/config"; then
+    cmd mkdir -p "$HOME/.config/herdr/plugins/config"
+  fi
+  link herdr/plugins/config/herdr-lazy/ .config/herdr/plugins/config/herdr-lazy
+  link herdr/plugins/config/cloudmanic.herdr-plus/ .config/herdr/plugins/config/cloudmanic.herdr-plus
 
   step "  - htop"
   link htop/ .config/htop
@@ -405,6 +413,9 @@ setup_config() {
   link qutebrowser/ .qutebrowser
 
   step "  - shrimp"
+  if ! test -d "$HOME/.shrimp"; then
+    cmd mkdir -p "$HOME/.shrimp"
+  fi
   link shrimp/ .shrimp/recipe
 
   step "  - sketchybar"
