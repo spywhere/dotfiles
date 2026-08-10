@@ -366,6 +366,9 @@ setup_config() {
     link iterm2/ "Library/Application Support/iTerm2"
   fi
 
+  step "  - hunk"
+  link hunk/ .config/hunk
+
   step "  - jetbrains"
   link jetbrains/ideavimrc .ideavimrc
 
