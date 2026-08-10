@@ -410,7 +410,13 @@ setup_config() {
   fi
 
   step "  - qutebrowser"
-  link qutebrowser/ .qutebrowser
+  if ! test -d "$HOME/.qutebrowser"; then
+    cmd mkdir -p "$HOME/.qutebrowser"
+  fi
+  link qutebrowser/config.py .qutebrowser/config.py
+  copy qutebrowser/quickmarks .qutebrowser/quickmarks
+  link qutebrowser/greasemonkey/ .qutebrowser/greasemonkey
+  link qutebrowser/userscripts/ .qutebrowser/userscripts
 
   step "  - shrimp"
   if ! test -d "$HOME/.shrimp"; then
