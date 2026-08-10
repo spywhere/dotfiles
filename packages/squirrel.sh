@@ -11,6 +11,8 @@ then
   exit 1
 fi
 
+optional
+
 has_app 'Squirrel'
 
 use_mas 'squirrel' 1669664068
