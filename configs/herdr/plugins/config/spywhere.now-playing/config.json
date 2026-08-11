@@ -1,5 +1,9 @@
 {
   "auto-interval": true,
   "playing-icon": "▶",
-  "paused-icon": "󰏤"
+  "paused-icon": "󰏤",
+  "scrollable-threshold": 20,
+  "tokens": {
+    "status": "{icon} {position}/{duration}"
+  }
 }

@@ -13,7 +13,7 @@ prompt_new_tab_name = false
 rows = [
   ["state_icon", "workspace"],
   ["branch", "git_status"],
-  [{ token = "$now_playing_icon", fg = "#89b4fa", dim = true }, { token = "$now_playing_time", fg = "#89b4fa", dim = true }],
+  [{ token = "$now_playing_status", fg = "#89b4fa", dim = true }],
   [{ token = "$now_playing_title", fg = "#89b4fa", dim = true }],
   [{ token = "$now_playing_artist", fg = "#89b4fa", dim = true }],
 ]
