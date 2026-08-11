@@ -1,3 +1,6 @@
+configs/agents/kb/**
+!configs/agents/kb
+!configs/agents/kb/knowledge-base-meta.html
 configs/github/hosts.yml
 configs/herdr/*.json
 configs/herdr/*.lock
@@ -33,8 +36,6 @@ configs/nvim/plugged
 configs/nvim/plugin/packer_compiled.lua
 configs/nvim/lazy-lock.json
 configs/opencode/agents
-configs/opencode/kb
-configs/opencode/skills
 configs/pi/**
 !configs/pi/agent
 !configs/pi/agent/settings.json
