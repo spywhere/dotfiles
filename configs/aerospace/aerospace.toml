@@ -90,6 +90,11 @@ on-mode-changed = [
     run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
+    if.app-id = 'me.spywhere.voyager'
+    if.during-aerospace-startup = true
+    run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
     if.app-id = 'com.apple.iphonesimulator'
     run = 'layout tiling'
 
@@ -156,7 +161,8 @@ on-mode-changed = [
     alt-p = 'workspace --wrap-around prev'
 
     alt-f = 'exec-and-forget open /System/Library/CoreServices/Finder.app'
-    alt-q = 'exec-and-forget open /Applications/qutebrowser.app'
+    alt-q = 'exec-and-forget open /Applications/Voyager.app'
+    alt-shift-q = 'exec-and-forget open /Applications/qutebrowser.app'
     alt-t = 'exec-and-forget open /Applications/Ghostty.app'
     alt-m = 'exec-and-forget open /System/Applications/Music.app'
     alt-o = [
