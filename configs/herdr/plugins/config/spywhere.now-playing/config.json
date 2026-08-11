@@ -1,3 +1,5 @@
 {
-  "auto-interval": true
+  "auto-interval": true,
+  "playing-icon": "▶",
+  "paused-icon": "󰏤"
 }
