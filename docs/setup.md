@@ -3,6 +3,8 @@
 Setup is simply a shell script to perform a configuration of various kinds.
 
 Setup will perform after all package installation has successfully installed.
+If you need to run something before packages get installed instead, check out
+[pre-setup](/docs/pre-setup.md).
 
 Common use cases for setup could be...
 
