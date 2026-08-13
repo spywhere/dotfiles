@@ -36,6 +36,7 @@ configs/nvim/plugged
 configs/nvim/plugin/packer_compiled.lua
 configs/nvim/lazy-lock.json
 configs/opencode/agents
+configs/opencode/plugins
 configs/pi/**
 !configs/pi/agent
 !configs/pi/agent/settings.json
