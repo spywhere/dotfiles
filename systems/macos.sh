@@ -185,6 +185,7 @@ install_packages() {
   install_packages__intel_formula_packages=""
   install_packages__intel_cask_packages=""
   install_packages__intel_flagged_packages=""
+  install_packages__service_packages=""
   install_packages__mas_packages=""
   install_packages__nativefier_packages=""
 
@@ -202,7 +203,11 @@ install_packages() {
         install_packages__flags="$(_escape_special "$install_packages__flags")"
       fi
 
-      if has_flag "apple-silicon" && test "$install_packages__manager" = "brow"; then
+      if test "$install_packages__kind" = "service"; then
+        if ! _has_item_in_list "$install_packages__service_packages" "$install_packages__name"; then
+          install_packages__service_packages="$(_add_to_list "$install_packages__service_packages" "$install_packages__name")"
+        fi
+      elif has_flag "apple-silicon" && test "$install_packages__manager" = "brow"; then
         if test "$install_packages__kind" = "cask"; then
           install_packages__intel_cask_packages="$(_add_to_list "$install_packages__intel_cask_packages" "$install_packages__name")"
         elif test "$install_packages__kind" = "formula" -a -n "$install_packages__flags"; then
@@ -344,6 +349,14 @@ install_packages() {
         fi
         cmd cp -r "$install_packages__file_path" "$install_packages__app_path"
       done
+    done
+  fi
+
+  if test -n "$install_packages__service_packages"; then
+    step "Starting Homebrew services..."
+    eval "set -- $install_packages__service_packages"
+    for install_packages__service in "$@"; do
+      _run_brew services start "$install_packages__service"
     done
   fi
 

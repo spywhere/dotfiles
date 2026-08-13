@@ -14,3 +14,4 @@ fi
 has_executable 'herdr'
 
 use_brew formula 'herdr'
+use_brew service 'herdr'

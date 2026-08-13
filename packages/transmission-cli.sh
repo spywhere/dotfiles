@@ -16,3 +16,4 @@ has_executable 'transmission-cli'
 
 use_apt 'transmission-cli'
 use_brew formula 'transmission-cli'
+use_brew service 'transmission-cli'

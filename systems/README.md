@@ -58,9 +58,11 @@ fetching latest version
 - `use_brow <kind> <name>`: Install a package using Homebrew (Intel version)
   - `name`: Package name
   - `kind`: Either `formula` or `cask`
-- `use_brew <kind> <name>`: Install a package using Homebrew (Native version)
+- `use_brew <kind> <name>`: Install a package using Homebrew (Native version),
+  or declare a service to start after package installation
   - `name`: Package name
-  - `kind`: Either `formula` or `cask`
+  - `kind`: `formula`, `cask`, or `service`; `service` only starts the named
+    service and does not install its formula
 - `use_brew_tap <name>`: Add Homebrew tap
   - `name`: Tap name
 - `use_mas <package> <appid>`: Install an app from Mac AppStore using MAS

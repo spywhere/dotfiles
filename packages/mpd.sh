@@ -15,3 +15,4 @@ has_executable 'mpd'
 
 use_apt 'mpd'
 use_brew formula 'mpd'
+use_brew service 'mpd'

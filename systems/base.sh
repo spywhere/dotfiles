@@ -211,7 +211,7 @@ use_brow() {
   return 0
 }
 
-# use_brew <package>
+# use_brew <kind> <package>
 use_brew() {
   return 0
 }
