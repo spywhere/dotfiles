@@ -282,6 +282,7 @@ _LOADED="" # keep a list of install components (scripts)
 _PACKAGES="" # keep a list of install packages
 _CUSTOM="" # keep a list of custom function for installing packages
 _SETUP="" # keep a list of custom function for setups
+_PRE_SETUP="" # keep a list of custom function for pre-setups
 _INTERNAL_STATE="" # keep a list of internal flags and states
 
 _QUIET_CMD="" # an alternative command for suppressing output
@@ -340,6 +341,9 @@ _main() {
         ;;
       -s | --setup)
         PRINT_MODE="setup"
+        ;;
+      --pre-setup)
+        PRINT_MODE="pre_setup"
         ;;
       --profile)
         if test -z "$EQUAL_SIGN" || test -z "$VALUE"; then
@@ -441,6 +445,7 @@ _usage() {
   print 25 "  -v, --verbose" "Produce command output messages when possible (use -vv for more verbosity)"
   print 25 "  -p, --packages" "Print out available packages"
   print 25 "  -s, --setup" "Print out available setup"
+  print 25 "  --pre-setup" "Print out available pre-setup"
   print 25 "  --profile=<profile>" "Specify the setup profile"
   print
   print "To skip a specific package or setup, add a 'no-' prefix to the package or setup name itself."
@@ -459,6 +464,7 @@ _usage() {
   print 25 "  no-package" "Skip package installations, including a custom one"
   print 25 "  no-custom" "Skip custom installations"
   print 25 "  no-setup" "Skip setups"
+  print 25 "  no-pre_setup" "Skip pre-setups"
   print
   print "Note:"
   print "  - Package name is indicated by the file name under 'packages' or 'setup' directory"
@@ -702,6 +708,10 @@ _try_run_install() {
   setup
   step "Gathering components..."
 
+  # running pre-setup preparation
+  _RUNNING_TYPE="pre_setup"
+  _prepare_pre_setup
+
   # run packages
   _RUNNING_TYPE="package"
   _prepare_packages
@@ -715,7 +725,7 @@ _try_run_install() {
   fi
 
   # if nothing is getting done
-  if test -z "$_PACKAGES" -a -z "$_CUSTOM" -a -z "$_SETUP" && _has_skip update; then
+  if test -z "$_PACKAGES" -a -z "$_CUSTOM" -a -z "$_SETUP" -a -z "$_PRE_SETUP" && _has_skip update; then
     info "Nothing to perform, exiting..."
     quit 0
   fi
@@ -723,6 +733,7 @@ _try_run_install() {
   _summarize_packages
   _summarize_custom
   _summarize_setup
+  _summarize_pre_setup
   _summarize_system_update
 
   if test "$CONFIRMATION" -eq 1; then
@@ -738,6 +749,9 @@ _try_run_install() {
     done
   fi
 
+  # pre-setups run first, ahead of system update, so they can adjust
+  #   system state (e.g. trackpad/mouse) before other steps interact with it
+  _run_pre_setup
   _run_system_update
   _run_packages
   _run_custom

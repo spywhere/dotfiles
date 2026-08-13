@@ -47,6 +47,9 @@ installation list
 - `add_setup <function> [display name]`: Add a setup to the setup list
   - `function`: Function name to be called
   - `display name`: Name to be displayed on summary
+- `add_pre_setup <function> [display name]`: Add a setup to the pre-setup list
+  - `function`: Function name to be called
+  - `display name`: Name to be displayed on summary
 
 ## Internal State
 

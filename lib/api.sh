@@ -306,3 +306,24 @@ add_setup() {
   _SETUP="$(_add_to_list "$_SETUP" "$(make_object)")"
   reset_object
 }
+
+# Add custom function into pre-setup list if no valid pre-setup available
+# add_pre_setup <function> [display name]
+# Fields:
+#   + fn           : function
+#   - display_name : string
+add_pre_setup() {
+  if test -n "$_FULFILLED"; then
+    reset_object
+    return
+  fi
+
+  field fn "$1"
+  if test -n "$2"; then
+    field display_name "$2"
+  else
+    field display_name "$_RUNNING"
+  fi
+  _PRE_SETUP="$(_add_to_list "$_PRE_SETUP" "$(make_object)")"
+  reset_object
+}
