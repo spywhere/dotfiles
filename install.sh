@@ -730,11 +730,11 @@ _try_run_install() {
     quit 0
   fi
 
+  _summarize_pre_setup
+  _summarize_system_update
   _summarize_packages
   _summarize_custom
   _summarize_setup
-  _summarize_pre_setup
-  _summarize_system_update
 
   if test "$CONFIRMATION" -eq 1; then
     printf "%s==>%s Perform the installation? [y/N] " "$esc_yellow" "$esc_reset"
