@@ -89,24 +89,6 @@ setup_macos() {
   config "NSGlobalDomain" "NSTextShowsControlCharacters" true
 
   ############
-  # Trackpad #
-  ############
-  config "NSGlobalDomain" "com.apple.trackpad.forceClick" 0
-  config "NSGlobalDomain" "com.apple.mouse.tapBehavior" 1
-
-  config "com.apple.AppleMultitouchTrackpad" "Clicking" true
-  config "com.apple.AppleMultitouchTrackpad" "TrackpadRightClick" true
-  config "com.apple.AppleMultitouchTrackpad" "ForceSuppressed" true
-  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "Clicking" true
-  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "TrackpadRightClick" true
-  config "com.apple.driver.AppleBluetoothMultitouch.trackpad" "ForceSuppressed" true
-
-  config "com.apple.AppleMultitouchMouse" "Clicking" true
-  config "com.apple.AppleMultitouchMouse" "MouseButtonMode" "TwoButton"
-  config "com.apple.driver.AppleBluetoothMultitouch.mouse" "Clicking" true
-  config "com.apple.driver.AppleBluetoothMultitouch.mouse" "MouseButtonMode" "TwoButton"
-
-  ############
   # Keyboard #
   ############
   config "NSGlobalDomain" "ApplePressAndHoldEnabled" false
