@@ -7,12 +7,8 @@ sketchybar --add item usage right \
            script="$CONFIG_DIR/plugins/usage_limit.sh" \
            icon.drawing=off \
            label.font="SF Pro:Semibold:14" \
-           label.y_offset=0 \
-           label.align=left \
-           label.padding_left=0 \
-           label.padding_right=6 \
            popup.topmost=on \
-            popup.height=20 \
+           popup.height=20 \
            popup.align=right \
            popup.background.drawing=on \
            popup.background.border_width=1 \
@@ -29,10 +25,6 @@ sketchybar --add item usage.primary right \
            icon.drawing=off \
            label.font.size=8 \
            label.y_offset=5 \
-           label.width=70 \
-           label.align=left \
-           label.padding_left=0 \
-           label.padding_right=0 \
            width=0 \
            --subscribe usage.primary mouse.clicked
 
@@ -44,10 +36,6 @@ sketchybar --add item usage.secondary right \
            icon.drawing=off \
            label.font.size=8 \
            label.y_offset=-5 \
-           label.width=70 \
-           label.align=left \
-           label.padding_left=0 \
-           label.padding_right=0 \
            --subscribe usage.secondary mouse.clicked
 
 sketchybar --move usage after usage.secondary

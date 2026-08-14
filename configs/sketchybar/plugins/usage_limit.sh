@@ -24,6 +24,59 @@ limit_label() {
   esac
 }
 
+readable_time() {
+  local seconds="$1"
+  local nested="$2"
+  local units=(
+    $((60 * 60 * 24)):d
+    $((60 * 60)):h
+    60:m
+  )
+  local unit factor suffix remainder
+
+  for unit in "${units[@]}"; do
+    factor="${unit%%:*}"
+    suffix="${unit#*:}"
+    if test "$seconds" -ge "$factor"; then
+      remainder="$((seconds % factor))"
+      if test -z "$nested" && test "$remainder" -gt 0; then
+        # nested="-" marks the recursive call so it can't recurse again, capping output at two units
+        printf '%s %s\n' "$((seconds / factor))$suffix" "$(readable_time "$remainder" -)"
+      else
+        printf '%s%s\n' "$((seconds / factor))" "$suffix"
+      fi
+      return
+    fi
+  done
+  printf '%ss\n' "$seconds"
+}
+
+format_reset() {
+  local seconds="$1"
+
+  if test "$seconds" = "null" || test -z "$seconds"; then
+    printf '%s\n' "reset unavailable"
+  elif test "$seconds" -le 0 2>/dev/null; then
+    printf '%s\n' "resets now"
+  else
+    case "$seconds" in
+      *[!0-9]*) printf '%s\n' "reset unavailable" ;;
+      *) return 1 ;;
+    esac
+  fi
+}
+
+compact_reset() {
+  local seconds="$1"
+  local prefix="$2"
+
+  if test "$seconds" -gt 0 2>/dev/null && [[ "$seconds" != *[!0-9]* ]]; then
+    printf '%s%s\n' "$prefix" "$(readable_time "$seconds")"
+  else
+    format_reset "$seconds"
+  fi
+}
+
 set_persistent_usage() {
   local parent="$1"
   local provider="$2"
@@ -37,21 +90,27 @@ set_persistent_usage() {
     if test "$(printf '%s' "$record" | jq -r ".${limit} != null")" = "true"; then
       used="$(printf '%s' "$record" | jq -r ".${limit}.usedPercent | floor")"
       remaining="$(( 100 - used ))"
-      reset="$(printf '%s' "$record" | jq -r ".${limit}.resetCompact")"
+      reset="$(printf '%s' "$record" | jq -r ".${limit}.resetSeconds")"
       limit_count="$((limit_count + 1))"
       if test "$limit_count" = "1"; then
         top_label="$remaining%"
-        bottom_label="$reset"
+        bottom_label="$(compact_reset "$reset")"
       else
         top_label="$top_label $bottom_label"
-        bottom_label="$remaining% $reset"
+        bottom_label="$remaining% $(compact_reset "$reset")"
       fi
     fi
   done
 
-  sketchybar --set "$parent" drawing=on icon.drawing=off label="$(provider_label "$provider")" \
-              --set "$parent.primary" drawing=on label="$top_label" \
-              --set "$parent.secondary" drawing=on label="$bottom_label"
+  if test "$limit_count" = "1"; then
+    sketchybar --set "$parent" drawing=on label="$(provider_label "$provider")" \
+               --set "$parent.primary" drawing=on label="$top_label" width=0 label.width=35 \
+               --set "$parent.secondary" drawing=on label="$bottom_label" label.width=35
+  else
+    sketchybar --set "$parent" drawing=on label="$(provider_label "$provider")" \
+               --set "$parent.primary" drawing=on label="$top_label" width=0 label.width=60 \
+               --set "$parent.secondary" drawing=on label="$bottom_label" label.width=60
+  fi
 }
 
 add_limit_item() {
@@ -59,24 +118,29 @@ add_limit_item() {
   local item_id="$2"
   local limit="$3"
   local record="$4"
-  local used remaining detail label
+  local used remaining reset label
 
   used="$(printf '%s' "$record" | jq -r ".${limit}.usedPercent | floor")"
   remaining="$(( 100 - used ))"
-  detail="$(printf '%s' "$record" | jq -r ".${limit}.reset")"
-  label="$(limit_label "$limit"): ${used}% used, ${remaining}% remaining — ${detail}"
+  reset="$(printf '%s' "$record" | jq -r ".${limit}.resetSeconds")"
+  label="${used}% used, $(compact_reset "$reset" "resets in ")"
 
   sketchybar --add slider "$item_id" "$parent" \
              --set "$item_id" \
-             padding_left=10 \
-             icon.drawing=off \
+             padding_left=20 \
+             icon="$(limit_label "$limit"):" \
+             icon.font="SF Pro:Regular:12" \
+             icon.width=60 \
+             icon.align=left \
+             icon.padding_left=0 \
+             icon.padding_right=6 \
              label="$label" \
              label.font="SF Pro:Regular:12" \
-             label.width=280 \
+             label.width=dynamic \
              label.padding_left=10 \
-             label.padding_right=6 \
+             label.padding_right=10 \
              slider.width=120 \
-             slider.percentage="$used" \
+             slider.percentage="$remaining" \
              slider.highlight_color="$(color_for_percent "$remaining")" \
              slider.background.height=6 \
              slider.knob.drawing=off
@@ -113,39 +177,37 @@ select_provider() {
 normalize_usage() {
   jq -ce '
     if type != "array" then error("usage must be an array") else . end
-    | def reset_seconds:
-        try ((.resetsAt | fromdate) - now | floor) catch null;
-      def reset_compact:
-        reset_seconds as $seconds
-          | if ($seconds | type) != "number" then "unavailable"
-            elif $seconds > 0 then
-              ($seconds / 86400 | floor) as $days
-              | (($seconds % 86400) / 3600 | floor) as $hours
-              | (($seconds % 3600) / 60 | floor) as $minutes
-              | if $days > 0 then ($days | tostring) + "d" + ($hours | tostring) + "h" + ($minutes | tostring) + "m"
-                elif $hours > 0 then ($hours | tostring) + "h" + ($minutes | tostring) + "m"
-                else ($minutes | tostring) + "m"
-                end
-            else "due"
-            end;
+    | def iso8601_epoch:
+        capture("^(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(?<fraction>\\.[0-9]+)?(?<timezone>Z|(?<offset_sign>[+-])(?<offset_hours>[0-9]{2}):(?<offset_minutes>[0-9]{2}))$") as $parts
+        | ($parts.datetime | strptime("%Y-%m-%dT%H:%M:%S") | mktime) as $epoch
+        | if ($epoch | gmtime | strftime("%Y-%m-%dT%H:%M:%S")) != $parts.datetime then
+            error("invalid calendar date")
+          else
+            ($parts.fraction // "0" | tonumber) as $fraction
+            | if $parts.timezone == "Z" then $epoch + $fraction
+              elif ($parts.offset_hours | tonumber) <= 23 and ($parts.offset_minutes | tonumber) <= 59 then
+                (($parts.offset_hours | tonumber) * 3600 + ($parts.offset_minutes | tonumber) * 60) as $offset
+                | if $parts.offset_sign == "+" then $epoch + $fraction - $offset else $epoch + $fraction + $offset end
+              else error("invalid UTC offset")
+              end
+          end;
+      def normalized_limit:
+        if type == "object"
+           and (.usedPercent | type) == "number"
+           and .usedPercent >= 0 and .usedPercent <= 100 then {
+             usedPercent: .usedPercent,
+             resetSeconds: ((try ((.resetsAt | iso8601_epoch) - now | floor) catch null) // null)
+           }
+        else null
+        end;
     map(. as $record | {
-        provider: ($record.provider // $record.id // empty),
-        primary: ($record.usage.primary? // null),
-        secondary: ($record.usage.secondary? // null)
+        provider: (if ($record.provider | type) == "string" and ($record.provider | length) > 0
+                   then $record.provider else $record.id // empty end),
+        primary: ($record.usage.primary? | normalized_limit),
+        secondary: ($record.usage.secondary? | normalized_limit)
       })
-    | map(select((.provider | (type == "string" and length > 0)))
-          | select(((.primary.usedPercent? | type) == "number" and .primary.usedPercent >= 0 and .primary.usedPercent <= 100)
-                   or ((.secondary.usedPercent? | type) == "number" and .secondary.usedPercent >= 0 and .secondary.usedPercent <= 100)))
-      | map(.primary |= if . == null or (.usedPercent | type) != "number" or .usedPercent < 0 or .usedPercent > 100 then null else {
-        usedPercent: .usedPercent,
-        reset: (if (.resetDescription | type) == "string" then .resetDescription else (reset_seconds as $seconds | if ($seconds | type) == "number" and $seconds > 0 then "resets in " + ($seconds / 3600 | floor | tostring) + "h" elif ($seconds | type) == "number" then "reset due" else "reset unavailable" end) end),
-        resetCompact: reset_compact
-      } end)
-      | map(.secondary |= if . == null or (.usedPercent | type) != "number" or .usedPercent < 0 or .usedPercent > 100 then null else {
-        usedPercent: .usedPercent,
-        reset: (if (.resetDescription | type) == "string" then .resetDescription else (reset_seconds as $seconds | if ($seconds | type) == "number" and $seconds > 0 then "resets in " + ($seconds / 3600 | floor | tostring) + "h" elif ($seconds | type) == "number" then "reset due" else "reset unavailable" end) end),
-        resetCompact: reset_compact
-      } end)
+    | map(select((.provider | (type == "string" and length > 0))
+                 and (.primary != null or .secondary != null)))
   '
 }
 
@@ -157,9 +219,9 @@ validate_cached_usage() {
         and (keys | sort) == ["primary", "provider", "secondary"]
         and (.provider | type == "string" and length > 0)
         and ([(.primary), (.secondary)] | all(.[]; . == null or (
-          type == "object" and (keys | sort) == ["reset", "resetCompact", "usedPercent"]
+          type == "object" and (keys | sort) == ["resetSeconds", "usedPercent"]
           and (.usedPercent | type == "number" and . >= 0 and . <= 100)
-          and (.reset | type == "string") and (.resetCompact | type == "string")
+          and (.resetSeconds == null or (.resetSeconds | type == "number" and floor == .))
         ))) and (.primary != null or .secondary != null)
       ) then . else error("invalid usage cache record") end
   '
@@ -191,7 +253,7 @@ render_popup() {
     record="$(printf '%s' "$records" | jq -c --arg provider "$provider" '.[] | select(.provider == $provider)')"
     sketchybar --add item "$parent.popup.$provider_index" "popup.$parent" \
                --set "$parent.popup.$provider_index" icon.drawing=off \
-               label="$(provider_label "$provider")" label.font="SF Pro:Semibold:13" label.width=396 \
+               label="$(provider_label "$provider")" label.font="SF Pro:Semibold:13" label.width=dynamic \
                label.padding_left=10 label.padding_right=10
     for limit in primary secondary; do
       if test "$(printf '%s' "$record" | jq -r ".${limit} != null")" = "true"; then
