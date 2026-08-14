@@ -152,9 +152,8 @@ select_provider() {
 
   if test "$(defaults read com.steipete.codexbar menuBarShowsHighestUsage 2>/dev/null)" = "1"; then
     highest="$(printf '%s' "$records" | jq -r '
-      map(. as $provider | [.primary.usedPercent?, .secondary.usedPercent?]
-          | map(select(. != null and . < 100)) | max? // -1
-          | $provider + {score: .})
+      map(. + {score: ([.primary.usedPercent, .secondary.usedPercent]
+                        | map(select(. != null and . < 100)) | max? // -1)})
       | map(select(.score >= 0)) | sort_by(.score) | reverse | .[0].provider // empty
     ')"
     if test -n "$highest"; then
@@ -176,54 +175,15 @@ select_provider() {
 
 normalize_usage() {
   jq -ce '
-    if type != "array" then error("usage must be an array") else . end
-    | def iso8601_epoch:
-        capture("^(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(?<fraction>\\.[0-9]+)?(?<timezone>Z|(?<offset_sign>[+-])(?<offset_hours>[0-9]{2}):(?<offset_minutes>[0-9]{2}))$") as $parts
-        | ($parts.datetime | strptime("%Y-%m-%dT%H:%M:%S") | mktime) as $epoch
-        | if ($epoch | gmtime | strftime("%Y-%m-%dT%H:%M:%S")) != $parts.datetime then
-            error("invalid calendar date")
-          else
-            ($parts.fraction // "0" | tonumber) as $fraction
-            | if $parts.timezone == "Z" then $epoch + $fraction
-              elif ($parts.offset_hours | tonumber) <= 23 and ($parts.offset_minutes | tonumber) <= 59 then
-                (($parts.offset_hours | tonumber) * 3600 + ($parts.offset_minutes | tonumber) * 60) as $offset
-                | if $parts.offset_sign == "+" then $epoch + $fraction - $offset else $epoch + $fraction + $offset end
-              else error("invalid UTC offset")
-              end
-          end;
-      def normalized_limit:
-        if type == "object"
-           and (.usedPercent | type) == "number"
-           and .usedPercent >= 0 and .usedPercent <= 100 then {
-             usedPercent: .usedPercent,
-             resetSeconds: ((try ((.resetsAt | iso8601_epoch) - now | floor) catch null) // null)
-           }
-        else null
-        end;
-    map(. as $record | {
-        provider: (if ($record.provider | type) == "string" and ($record.provider | length) > 0
-                   then $record.provider else $record.id // empty end),
-        primary: ($record.usage.primary? | normalized_limit),
-        secondary: ($record.usage.secondary? | normalized_limit)
-      })
-    | map(select((.provider | (type == "string" and length > 0))
-                 and (.primary != null or .secondary != null)))
-  '
-}
-
-validate_cached_usage() {
-  jq -ce '
-    if type != "array" or length == 0 then error("usage cache must be a non-empty array") else . end
-    | if all(.[];
-        (type == "object")
-        and (keys | sort) == ["primary", "provider", "secondary"]
-        and (.provider | type == "string" and length > 0)
-        and ([(.primary), (.secondary)] | all(.[]; . == null or (
-          type == "object" and (keys | sort) == ["resetSeconds", "usedPercent"]
-          and (.usedPercent | type == "number" and . >= 0 and . <= 100)
-          and (.resetSeconds == null or (.resetSeconds | type == "number" and floor == .))
-        ))) and (.primary != null or .secondary != null)
-      ) then . else error("invalid usage cache record") end
+    map(
+      {provider: (.provider // .id // "unknown")}
+      + (.usage | {primary, secondary} | map_values(
+          select(. != null)
+          | {usedPercent, resetSeconds: ((.resetsAt | fromdate? - now | floor) // null)}
+        ))
+      | select(.primary != null or .secondary != null)
+    )
+    | if length == 0 then error("no valid usage records") else . end
   '
 }
 
@@ -273,9 +233,7 @@ update_usage() {
     return 0
   fi
   raw="$(codexbar usage --json 2>/dev/null)" || return 0
-  records="$(printf '%s' "$raw" | normalize_usage | validate_cached_usage)" || {
-    return 0
-  }
+  records="$(printf '%s' "$raw" | normalize_usage)" || return 0
   sketchybar --set "$parent" icon="$records" icon.drawing=off
   render_usage "$parent" "$records" || return 0
   render_popup "$parent" "$records"
