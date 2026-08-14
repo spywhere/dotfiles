@@ -1,19 +1,53 @@
 #!/bin/bash
 
-sketchybar --add item usage.session right \
-           --set usage.session \
-           drawing=off \
-           label.font.size=8 \
-           label.y_offset=5 \
-           label.width=30 \
-           width=0
-
 sketchybar --add item usage right \
            --set usage \
            drawing=off \
            update_freq=300 \
            script="$CONFIG_DIR/plugins/usage_limit.sh" \
-           icon.font="SF Pro:Regular:16" \
+           icon.drawing=off \
+           label.font="SF Pro:Semibold:14" \
+           label.y_offset=0 \
+           label.align=left \
+           label.padding_left=0 \
+           label.padding_right=6 \
+           popup.topmost=on \
+            popup.height=20 \
+           popup.align=right \
+           popup.background.drawing=on \
+           popup.background.border_width=1 \
+           popup.background.corner_radius=8 \
+           popup.background.color=0xff282d33 \
+           popup.background.border_color=0x40ffffff \
+           --subscribe usage mouse.clicked
+
+sketchybar --add item usage.primary right \
+           --move usage.primary after usage \
+           --set usage.primary \
+           drawing=off \
+           script="$CONFIG_DIR/plugins/usage_limit.sh" \
+           icon.drawing=off \
+           label.font.size=8 \
+           label.y_offset=5 \
+           label.width=70 \
+           label.align=left \
+           label.padding_left=0 \
+           label.padding_right=0 \
+           width=0 \
+           --subscribe usage.primary mouse.clicked
+
+sketchybar --add item usage.secondary right \
+           --move usage.secondary after usage.primary \
+           --set usage.secondary \
+           drawing=off \
+           script="$CONFIG_DIR/plugins/usage_limit.sh" \
+           icon.drawing=off \
            label.font.size=8 \
            label.y_offset=-5 \
-           label.width=30
+           label.width=70 \
+           label.align=left \
+           label.padding_left=0 \
+           label.padding_right=0 \
+           --subscribe usage.secondary mouse.clicked
+
+sketchybar --move usage after usage.secondary
