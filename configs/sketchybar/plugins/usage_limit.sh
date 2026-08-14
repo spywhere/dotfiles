@@ -223,6 +223,11 @@ render_popup() {
   done <<EOF
 $(printf '%s' "$records" | jq -c 'to_entries[] | {index: .key, provider: .value.provider}')
 EOF
+
+  sketchybar --add item "$parent.popup.timestamp" "popup.$parent" \
+             --set "$parent.popup.timestamp" icon.drawing=off \
+             label="Last update: $(date '+%H:%M')" \
+             label.padding_left=10 label.font="SF Pro:Regular:10"
 }
 
 update_usage() {
