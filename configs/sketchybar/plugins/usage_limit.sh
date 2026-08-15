@@ -102,15 +102,17 @@ set_persistent_usage() {
     fi
   done
 
+  item_width=60
   if test "$limit_count" = "1"; then
-    sketchybar --set "$parent" drawing=on label="$(provider_label "$provider")" \
-               --set "$parent.primary" drawing=on label="$top_label" width=0 label.width=35 \
-               --set "$parent.secondary" drawing=on label="$bottom_label" label.width=35
-  else
-    sketchybar --set "$parent" drawing=on label="$(provider_label "$provider")" \
-               --set "$parent.primary" drawing=on label="$top_label" width=0 label.width=60 \
-               --set "$parent.secondary" drawing=on label="$bottom_label" label.width=60
+    item_width=35
   fi
+
+  sketchybar --set "$parent" drawing=on icon="$provider" label="$(provider_label "$provider")" \
+             --set "$parent.primary" drawing=on label="$top_label" \
+             --set "$parent.secondary" drawing=on label="$bottom_label" \
+             --animate sin 10 \
+             --set "$parent.primary" label.width="$item_width" \
+             --set "$parent.secondary" label.width="$item_width"
 }
 
 add_limit_item() {
@@ -147,30 +149,20 @@ add_limit_item() {
 }
 
 select_provider() {
-  local records="$1"
-  local stored highest
+  local parent="$1"
+  local records="$2"
+  local current_provider selected_provider
 
-  if test "$(defaults read com.steipete.codexbar menuBarShowsHighestUsage 2>/dev/null)" = "1"; then
-    highest="$(printf '%s' "$records" | jq -r '
-      map(. + {score: ([.primary.usedPercent, .secondary.usedPercent]
-                        | map(select(. != null and . < 100)) | max? // -1)})
-      | map(select(.score >= 0)) | sort_by(.score) | reverse | .[0].provider // empty
-    ')"
-    if test -n "$highest"; then
-      printf '%s\n' "$highest"
-      return
-    fi
-    printf '%s' "$records" | jq -r '.[0].provider'
-    return
-  fi
+  current_provider="$(sketchybar --query "$parent" | jq -r '.icon.value')"
+  selected_provider="$(defaults read com.steipete.codexbar selectedMenuProvider 2>/dev/null)"
 
-  stored="$(defaults read com.steipete.codexbar selectedMenuProvider 2>/dev/null)"
-  if test -n "$stored" && printf '%s' "$records" | jq -e --arg provider "$stored" \
-      '.[] | select(.provider == $provider)' >/dev/null; then
-    printf '%s\n' "$stored"
-    return
-  fi
-  printf '%s' "$records" | jq -r '.[0].provider'
+  printf '%s' "$records" | jq -r --arg provider "$current_provider" --arg selected "$selected_provider" '
+    (map(.provider) | index($provider)) as $i
+    | if $i then .[($i + 1) % length].provider
+      elif (map(.provider) | index($selected)) then $selected
+      else first.provider
+      end
+  '
 }
 
 normalize_usage() {
@@ -192,7 +184,7 @@ render_usage() {
   local records="$2"
   local selected selected_record
 
-  selected="$(select_provider "$records")"
+  selected="$(select_provider "$parent" "$records")"
   selected_record="$(printf '%s' "$records" | jq -c --arg provider "$selected" '.[] | select(.provider == $provider)')"
   if test -z "$selected_record"; then
     return 1
@@ -239,7 +231,6 @@ update_usage() {
   fi
   raw="$(codexbar usage --json 2>/dev/null)" || return 0
   records="$(printf '%s' "$raw" | normalize_usage)" || return 0
-  sketchybar --set "$parent" icon="$records" icon.drawing=off
   render_usage "$parent" "$records" || return 0
   render_popup "$parent" "$records"
 }
