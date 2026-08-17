@@ -161,7 +161,7 @@ on-mode-changed = [
     alt-p = 'workspace --wrap-around prev'
 
     alt-f = 'exec-and-forget open /System/Library/CoreServices/Finder.app'
-    alt-q = 'exec-and-forget open /Applications/Voyager.app'
+    alt-q = 'exec-and-forget open /Applications/Voyager.app || open /Applications/qutebrowser.app'
     alt-shift-q = 'exec-and-forget open /Applications/qutebrowser.app'
     alt-t = 'exec-and-forget open /Applications/Ghostty.app'
     alt-m = 'exec-and-forget open /System/Applications/Music.app'
