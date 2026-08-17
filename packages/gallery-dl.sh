@@ -13,4 +13,5 @@ fi
 
 has_executable 'gallery-dl'
 
+profile -work
 use_brew formula 'gallery-dl'

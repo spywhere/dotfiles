@@ -13,4 +13,5 @@ fi
 
 has_app 'Developer'
 
+profile -work
 use_mas 'Apple Developer' 640199958
