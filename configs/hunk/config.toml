@@ -1,3 +1,10 @@
 theme = "dark-plus"
 menu_bar = false
 transparent_background = true
+sidebar = true
+
+[keybindings]
+"hunk.review.halfPageDown" = ["d", "ctrl+d"]
+"hunk.review.halfPageUp" = ["u", "ctrl+u"]
+"hunk.review.pageDown" = ["pagedown", "space", "f", "ctrl+f"]
+"hunk.review.pageUp" = ["pageup", "shift+space", "b", "ctrl+b"]
