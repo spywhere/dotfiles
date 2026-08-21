@@ -2,7 +2,6 @@ onboarding = false
 
 [theme]
 name = "one-dark"
-auto_switch = false
 
 [ui]
 sidebar_start_collapsed = true
@@ -10,12 +9,19 @@ sidebar_collapsed_mode = "hidden"
 prompt_new_tab_name = false
 
 [ui.sidebar.spaces]
+row_gap = 1
 rows = [
   ["state_icon", "workspace"],
   ["branch", "git_status"],
   [{ token = "$now_playing_status", fg = "#89b4fa", dim = true }],
   [{ token = "$now_playing_title", fg = "#89b4fa", dim = true }],
   [{ token = "$now_playing_artist", fg = "#89b4fa", dim = true }],
+]
+
+[ui.sidebar.agents]
+rows = [
+  ["state_icon", "workspace", "tab"],
+  ["agent"],
 ]
 
 [ui.toast]
