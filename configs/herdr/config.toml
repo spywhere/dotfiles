@@ -4,9 +4,10 @@ onboarding = false
 name = "one-dark"
 
 [ui]
-sidebar_start_collapsed = true
+sidebar_start_collapsed = false
 sidebar_collapsed_mode = "hidden"
 prompt_new_tab_name = false
+status_indicators = "symbols"
 
 [ui.sidebar.spaces]
 row_gap = 1
