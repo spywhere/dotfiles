@@ -2,7 +2,7 @@
 
 sketchybar --add item caffeinate right \
            --set caffeinate \
-           drawing=on \
+           drawing=off \
            icon=􂊭 \
            label.drawing=off \
            update_freq=30 \
