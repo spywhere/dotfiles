@@ -1,12 +1,18 @@
 {
   "packages": [
-    "npm:pi-claude-auth",
     "npm:pi-web-access",
     "npm:pi-invisible-continue",
     "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:@juicesharp/rpiv-voice"
+    "npm:@juicesharp/rpiv-voice",
+    "npm:pi-multi-account"
   ],
   "theme": "dark",
   "collapseChangelog": true,
-  "enableInstallTelemetry": false
+  "enableInstallTelemetry": false,
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "tuiMode": "fullscreen",
+  "fullscreenScrollbar": "auto",
+  "hideThinkingBlock": true,
+  "quietStartup": true
 }
