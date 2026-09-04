@@ -9,6 +9,7 @@ Session.vim
 .metals
 .bloop
 .nvim
+.lavish
 buildServer.json
 project/**/metals.sbt
 mise.toml
