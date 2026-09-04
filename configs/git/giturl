@@ -2,3 +2,5 @@
   insteadOf = "gh:"
 [url "git@git.sr.ht:"]
   insteadOf = "srht:"
+[url "git@gitlab.com:"]
+  insteadOf = "gl:"
