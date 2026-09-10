@@ -1,7 +1,7 @@
 [tools]
-bun = "1.3"
+bun = "1"
 fzf = "latest"
 neovim = "latest"
-python = "3.13.7"
+python = "3"
 rust = "latest"
-tuist = "4.40.0"
+tuist = "4"
