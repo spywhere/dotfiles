@@ -18,6 +18,10 @@ if test -n "$(command -v mise)"; then
   mise plugins update
 fi
 
+if test -n "$(command -v pi)"; then
+  pi update --extensions
+fi
+
 if test -n "$(command -v nvim)"; then
   nvim -c 'autocmd User LazyVimStarted lua=require("lazy").sync()' -c 'autocmd User LazySync qa!'
 fi
