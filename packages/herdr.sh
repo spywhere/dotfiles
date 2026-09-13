@@ -15,3 +15,9 @@ has_executable 'herdr'
 
 use_brew formula 'herdr'
 use_brew service 'herdr'
+use_custom 'install_herdr'
+
+install_herdr() {
+  cmd sh -c "$(curl -fsSL https://herdr.dev/install.sh)"
+  cmd cd "$CURRENT_DIR"
+}
