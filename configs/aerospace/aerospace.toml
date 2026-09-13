@@ -114,6 +114,10 @@ on-mode-changed = [
     if.app-id = 'me.spywhere.voyager-beta'
     run = 'move-node-to-workspace 6'
 
+[[on-window-detected]]
+    if.app-id = 'me.spywhere.voyager.performance-host'
+    run = 'move-node-to-workspace 6'
+
 [mode.main.binding]
 
     # All possible keys:
