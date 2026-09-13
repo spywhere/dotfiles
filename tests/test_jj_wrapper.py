@@ -29,6 +29,9 @@ elif "git" in args and "root" in args:
     output(os.fsencode(os.environ["FAKE_GIT_DIR"]) + b"\n")
 elif "git" in args and "push" in args and "--dry-run" in args:
     output(os.environ.get("FAKE_PUSH_PLAN", "").encode())
+elif "op" in args and "log" in args:
+    output(os.environ.get("FAKE_OPERATION_ID", "operation-before-split").encode())
+    output(b"\0")
 elif "log" in args:
     template = args[args.index("-T") + 1]
     if "diff.files" in template:
@@ -38,7 +41,15 @@ elif "log" in args:
         output(os.environ.get("FAKE_CHANGE_ID", "changeid").encode())
         output(b"\0true\0")
     elif "change_id" in template:
-        output(os.environ.get("FAKE_CHANGE_ID", "changeid").encode() + b"\0")
+        revision = args[args.index("-r") + 1]
+        if revision == "all()":
+            with open(os.environ["FAKE_JJ_LOG"]) as handle:
+                split_done = any("split" in json.loads(line) for line in handle)
+            key = "FAKE_ALL_CHANGE_IDS_AFTER" if split_done else "FAKE_ALL_CHANGE_IDS"
+            for change_id in json.loads(os.environ.get(key, '["existing"]')):
+                output(change_id.encode() + b"\0")
+        else:
+            output(os.environ.get("FAKE_CHANGE_ID", "changeid").encode() + b"\0")
     elif "commit_id" in template:
         revision = args[args.index("-r") + 1]
         if revision.startswith("parents("):
@@ -50,7 +61,7 @@ elif "log" in args:
         output(os.environ.get("FAKE_DESCRIPTION", "test: message").encode())
 
 actual = None
-for candidate in ("commit", "describe", "status"):
+for candidate in ("commit", "describe", "split", "status"):
     if candidate in args:
         actual = candidate
         break
@@ -234,6 +245,71 @@ class JJWrapperTest(unittest.TestCase):
         ]
         self.assertFalse(Path(message_path).exists())
 
+    def test_split_checks_selected_change_after_successful_split(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper(
+            "split", "-r", "feature", "src", "tests"
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        calls = read_log(self.jj_log)
+        split_call = ["split", "-r", "feature", "src", "tests"]
+        self.assertIn(split_call, calls)
+        self.assertLess(
+            calls.index(split_call),
+            next(index for index, call in enumerate(calls)
+                 if "diff.files" in " ".join(call)),
+        )
+        checker_calls = read_log(self.checker_log)
+        self.assertEqual(len(checker_calls), 1)
+        self.assertIn("pre-commit", checker_calls[0])
+        self.assertEqual(
+            checker_calls[0][checker_calls[0].index("--files") + 1:],
+            ["plain", "space name", "line\nbreak"],
+        )
+
+    def test_split_onto_checks_new_selected_change(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper(
+            "split", "--onto=main", "src",
+            env={
+                "FAKE_ALL_CHANGE_IDS": json.dumps(["original", "main"]),
+                "FAKE_ALL_CHANGE_IDS_AFTER": json.dumps(
+                    ["original", "main", "selected"]
+                ),
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        file_queries = [
+            call for call in read_log(self.jj_log)
+            if "diff.files" in " ".join(call)
+        ]
+        self.assertEqual(file_queries[-1][file_queries[-1].index("-r") + 1],
+                         "selected")
+
+    def test_split_failure_does_not_run_hooks(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper(
+            "split", "src", env={"FAKE_SPLIT_EXIT": "17"}
+        )
+        self.assertEqual(result.returncode, 17)
+        self.assertEqual(read_log(self.checker_log), [])
+
+    def test_split_hook_failure_restores_original_operation(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper(
+            "split", "src", env={"FAKE_CHECKER_EXIT": "9"}
+        )
+        self.assertEqual(result.returncode, 9)
+        calls = read_log(self.jj_log)
+        self.assertIn(["split", "src"], calls)
+        self.assertIn(
+            ["op", "restore", "operation-before-split"], calls
+        )
+        self.assertLess(
+            calls.index(["split", "src"]),
+            calls.index(["op", "restore", "operation-before-split"]),
+        )
+
     def test_installed_pre_commit_hook_sees_jj_change_as_staged(self):
         self.prepare_git_range()
         self.env["FAKE_PARENT_ID"] = self.old_commit
@@ -253,6 +329,21 @@ class JJWrapperTest(unittest.TestCase):
             [value for value in hook_log.read_bytes().split(b"\0") if value],
             [b"changed file"],
         )
+
+    def test_pre_commit_managed_git_hook_uses_checker_fallback(self):
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        hook = self.root / ".git" / "hooks" / "pre-commit"
+        executable(
+            hook,
+            "#!/bin/sh\n# File generated by pre-commit: test\nexit 88\n",
+        )
+        result = self.run_wrapper("commit", "--message", "test: fallback")
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        checker_calls = read_log(self.checker_log)
+        self.assertEqual(len(checker_calls), 2)
+        self.assertIn("pre-commit", checker_calls[0])
+        self.assertIn("commit-msg", checker_calls[1])
 
     def test_installed_git_hook_takes_precedence_over_configuration(self):
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
