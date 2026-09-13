@@ -54,6 +54,18 @@ elif "log" in args:
         revision = args[args.index("-r") + 1]
         if revision.startswith("parents("):
             value = os.environ.get("FAKE_PARENT_ID", "111111111111")
+        elif (revision == "@"
+              and os.environ.get("FAKE_COMMIT_ID_AFTER_HOOK")
+              and os.path.exists(os.environ["FAKE_CHECKER_LOG"])
+              and any(
+                  call[call.index("--hook-stage") + 1]
+                  == os.environ.get("FAKE_AFTER_HOOK_STAGE", "pre-commit")
+                  for call in (
+                      json.loads(line) for line in
+                      open(os.environ["FAKE_CHECKER_LOG"])
+                  )
+              )):
+            value = os.environ["FAKE_COMMIT_ID_AFTER_HOOK"]
         else:
             value = os.environ.get("FAKE_COMMIT_ID", "222222222222")
         output(value.encode() + b"\0")
@@ -142,6 +154,37 @@ class JJWrapperTest(unittest.TestCase):
             **kwargs
         )
 
+    def install_git_diff_mock(self, *paths):
+        git_bin = self.base / "git-bin"
+        git_bin.mkdir(exist_ok=True)
+        payload = b"\0".join(os.fsencode(path) for path in paths) + b"\0"
+        executable(
+            git_bin / "git",
+            "#!/usr/bin/env python3\n"
+            "import sys\n"
+            "if 'diff' in sys.argv:\n"
+            "    sys.stdout.buffer.write({0!r})\n".format(payload),
+        )
+        return str(git_bin) + os.pathsep + self.env["PATH"]
+
+    def install_fixing_checker(self, stage, path="plain"):
+        executable(
+            self.bin / "pre-commit",
+            "#!/usr/bin/env python3\n"
+            "import json\n"
+            "import os\n"
+            "import sys\n"
+            "with open(os.environ['FAKE_CHECKER_LOG'], 'a') as handle:\n"
+            "    handle.write(json.dumps(sys.argv[1:]) + '\\n')\n"
+            "current = sys.argv[sys.argv.index('--hook-stage') + 1]\n"
+            "if current == {0!r}:\n"
+            "    with open(os.path.join(os.environ['FAKE_ROOT'], {1!r}), "
+            "'w') as handle:\n"
+            "        handle.write('fixed by hook\\n')\n"
+            "    sys.exit(9)\n"
+            "sys.exit(0)\n".format(stage, path),
+        )
+
     def test_other_commands_pass_through_with_arguments_and_status(self):
         result = self.run_wrapper(
             "status", "argument with spaces", "--color=always",
@@ -200,16 +243,25 @@ class JJWrapperTest(unittest.TestCase):
             for call in read_log(self.jj_log)
         ))
 
-    def test_commit_message_failure_leaves_successful_commit_in_place(self):
+    def test_commit_message_failure_undoes_commit_and_reapplies_fixes(self):
         (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        self.install_fixing_checker("commit-msg")
         result = self.run_wrapper(
             "commit", "--message", "test: invalid later",
-            env={"FAKE_CHECKER_COMMIT_MSG_EXIT": "11"},
+            env={
+                "PATH": self.install_git_diff_mock("plain"),
+                "FAKE_COMMIT_ID_AFTER_HOOK": "3" * 40,
+                "FAKE_AFTER_HOOK_STAGE": "commit-msg",
+            },
         )
-        self.assertEqual(result.returncode, 11)
+        self.assertEqual(result.returncode, 9)
+        calls = read_log(self.jj_log)
         self.assertIn(
-            ["commit", "--message", "test: invalid later"],
-            read_log(self.jj_log),
+            ["commit", "--message", "test: invalid later"], calls
+        )
+        self.assertIn(["op", "restore", "operation-before-split"], calls)
+        self.assertIn(
+            ["restore", "--from", "3" * 40, "--", "plain"], calls
         )
         stages = [
             call[call.index("--hook-stage") + 1]
@@ -244,6 +296,25 @@ class JJWrapperTest(unittest.TestCase):
             checker_calls[0].index("--commit-msg-filename") + 1
         ]
         self.assertFalse(Path(message_path).exists())
+
+    def test_describe_failure_undoes_description_and_reapplies_fixes(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        self.install_fixing_checker("commit-msg")
+        result = self.run_wrapper(
+            "describe", "--message", "invalid",
+            env={
+                "PATH": self.install_git_diff_mock("plain"),
+                "FAKE_COMMIT_ID_AFTER_HOOK": "3" * 40,
+                "FAKE_AFTER_HOOK_STAGE": "commit-msg",
+            },
+        )
+        self.assertEqual(result.returncode, 9)
+        calls = read_log(self.jj_log)
+        self.assertIn(["describe", "--message", "invalid"], calls)
+        self.assertIn(["op", "restore", "operation-before-split"], calls)
+        self.assertIn(
+            ["restore", "--from", "3" * 40, "--", "plain"], calls
+        )
 
     def test_split_checks_selected_change_after_successful_split(self):
         (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
@@ -308,6 +379,28 @@ class JJWrapperTest(unittest.TestCase):
         self.assertLess(
             calls.index(["split", "src"]),
             calls.index(["op", "restore", "operation-before-split"]),
+        )
+
+    def test_split_hook_fixes_are_reapplied_after_rollback(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        self.install_fixing_checker("pre-commit")
+        result = self.run_wrapper(
+            "split", "plain",
+            env={
+                "PATH": self.install_git_diff_mock("plain"),
+                "FAKE_COMMIT_ID_AFTER_HOOK": "3" * 40,
+            },
+        )
+        self.assertEqual(result.returncode, 9)
+        calls = read_log(self.jj_log)
+        self.assertIn(
+            ["op", "restore", "operation-before-split"], calls
+        )
+        self.assertIn(
+            ["restore", "--from", "3" * 40, "--", "plain"], calls
+        )
+        self.assertEqual(
+            (self.root / "plain").read_text(), "fixed by hook\n"
         )
 
     def test_installed_pre_commit_hook_sees_jj_change_as_staged(self):
@@ -431,6 +524,33 @@ class JJWrapperTest(unittest.TestCase):
         self.assertNotIn(
             ["git", "push", "--bookmark", "main"],
             read_log(self.jj_log),
+        )
+
+    def test_push_failure_restores_workspace_and_reapplies_fixes(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        self.install_fixing_checker("pre-push")
+        plan = (
+            "Changes to push to origin:\n"
+            "  bookmark: main [move forward from {0} to {1}]\n"
+            "Dry-run requested, not pushing.\n"
+        ).format("1" * 40, "2" * 40)
+        result = self.run_wrapper(
+            "git", "push", "--bookmark", "main",
+            env={
+                "PATH": self.install_git_diff_mock("plain"),
+                "FAKE_PUSH_PLAN": plan,
+                "FAKE_COMMIT_ID_AFTER_HOOK": "3" * 40,
+                "FAKE_AFTER_HOOK_STAGE": "pre-push",
+            },
+        )
+        self.assertEqual(result.returncode, 9)
+        calls = read_log(self.jj_log)
+        self.assertNotIn(
+            ["git", "push", "--bookmark", "main"], calls
+        )
+        self.assertIn(["op", "restore", "operation-before-split"], calls)
+        self.assertIn(
+            ["restore", "--from", "3" * 40, "--", "plain"], calls
         )
 
     def prepare_git_range(self):

@@ -8,23 +8,32 @@ shell setup places `binaries` before package-manager directories in `PATH`.
 
 - `jj commit` runs the pre-commit stage over the files changed in the current
   change, runs the real command with its original arguments, and then runs the
-  commit-msg stage over the committed change's finalized description.
+  commit-msg stage over the committed change's finalized description. A
+  commit-msg failure undoes the commit and reapplies working-copy fixes made by
+  the hook.
 - `jj describe` runs the real command first and then runs the commit-msg stage
-  for each described revision. It does not run source-file checks.
+  for each described revision. It does not run source-file checks. A failure
+  restores the descriptions from before the command and reapplies
+  working-copy fixes made by the hook.
 - `jj split` runs the real command and then runs the pre-commit stage over the
   files selected into the selected resulting change, including when `--onto`,
   `--insert-after`, or `--insert-before` creates it elsewhere. Since the
   selection is only known after the diff editor closes, validation runs after
   the command. If it fails, the wrapper restores the operation from before the
-  split so the repository and working copy return to their original state.
+  split, then reapplies working-copy changes made by the hook. The split is
+  undone while formatter or linter fixes remain available for review and a
+  retry.
 - `jj git push` determines the proposed bookmark updates with a real
   `jj git push --dry-run`, validates each pushed target with the pre-push stage,
-  and only performs the original push after every check passes.
+  and only performs the original push after every check passes. A failure
+  restores the original workspace and reapplies working-copy fixes made by the
+  hook.
 - All other commands are passed directly to the real JJ executable.
 
-A failed post-operation commit-msg check leaves the committed change or edited
-description intact. Hook formatter changes are also left intact. The wrapper
-returns non-zero and does not automatically undo either kind of change.
+For validation that runs after a JJ operation, a failure restores the operation
+from before the wrapped command and reapplies files changed by the hook. The
+wrapper returns the hook's non-zero status, so the attempted command remains
+unsuccessful while formatter or linter fixes remain in the working copy.
 
 ## Hook discovery
 

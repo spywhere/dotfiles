@@ -418,23 +418,6 @@ def snapshot_working_copy(real_jj, globals_, root):
     return returncode
 
 
-def snapshot_current_change(real_jj, globals_, root):
-    returncode, output = run_jj(
-        real_jj,
-        list(globals_) + ["log", "--no-graph", "-r", "@", "-T",
-                          'change_id ++ "\\0" ++ empty ++ "\\0"',
-                          "--color=never", "--no-pager"],
-        cwd=root,
-        capture=True,
-    )
-    if returncode != 0:
-        return None
-    values = [value for value in (output or b"").split(b"\0") if value]
-    if len(values) < 2:
-        return None
-    return os.fsdecode(values[0]), values[1] == b"true"
-
-
 def run_checker(real_jj, globals_, root, hook_type, extra_args,
                 checker_env=None):
     config = checker_config(root)
@@ -662,10 +645,99 @@ def handle_commit(real_jj, args, globals_, root):
     if returncode != 0:
         return returncode
 
+    operation = current_operation(real_jj, globals_, root)
+    if not operation:
+        exec_real(real_jj, args)
     returncode, unused_output = run_jj(real_jj, args, cwd=None)
     if returncode != 0:
         return returncode
-    return run_commit_message_stage(real_jj, globals_, root, revision)
+    working_commits = commit_ids(real_jj, globals_, root, "@")
+    if not working_commits:
+        error("could not snapshot the working copy before commit-msg validation")
+        return 1
+    returncode = run_commit_message_stage(
+        real_jj, globals_, root, revision
+    )
+    if returncode == 0:
+        return 0
+    rollback_failed_hook(
+        real_jj, globals_, root, operation, working_commits[0], "commit"
+    )
+    return returncode
+
+
+def snapshot_hook_changes(real_jj, globals_, root, before_commit):
+    if snapshot_working_copy(real_jj, globals_, root) != 0:
+        error("could not snapshot changes made by the failed hook")
+        return None, None
+    commits = commit_ids(real_jj, globals_, root, "@")
+    if not commits:
+        error("could not identify changes made by the failed hook")
+        return None, None
+    after_commit = commits[0]
+    if after_commit == before_commit:
+        return after_commit, []
+    git_env = git_environment(real_jj, globals_, root)
+    if git_env is None:
+        error("could not preserve changes made by the failed hook")
+        return after_commit, None
+    paths = git_paths(
+        root,
+        git_env,
+        ["diff", "--name-only", "-z", before_commit, after_commit],
+    )
+    if paths is None:
+        error("could not identify files changed by the failed hook")
+    return after_commit, paths
+
+
+def restore_hook_changes(real_jj, root, commit, paths):
+    if not commit or not paths:
+        return 0
+    returncode, unused_output = run_jj(
+        real_jj,
+        ["restore", "--from", commit, "--"]
+        + [os.fsdecode(path) for path in paths],
+        cwd=root,
+    )
+    return returncode
+
+
+def rollback_failed_hook(real_jj, globals_, root, operation, before_hook,
+                         command):
+    hook_commit, hook_paths = snapshot_hook_changes(
+        real_jj, globals_, root, before_hook
+    )
+    restore_code, unused_output = run_jj(
+        real_jj, ["op", "restore", operation], cwd=root
+    )
+    if restore_code != 0:
+        error(
+            "{0} validation failed and the original operation could not be "
+            "restored".format(command)
+        )
+        return False
+    if hook_paths is None:
+        if hook_commit:
+            error("hook changes remain available in commit {0}".format(
+                hook_commit
+            ))
+        return False
+
+    apply_code = restore_hook_changes(
+        real_jj, root, hook_commit, hook_paths
+    )
+    if apply_code != 0:
+        error(
+            "the {0} operation was undone, but hook changes could not be "
+            "reapplied".format(command)
+        )
+        if hook_commit:
+            error("hook changes remain available in commit {0}".format(
+                hook_commit
+            ))
+        return False
+    return True
 
 
 def handle_split(real_jj, args, command_index, globals_, root):
@@ -694,21 +766,28 @@ def handle_split(real_jj, args, command_index, globals_, root):
             error("could not identify the selected change after jj split")
             return 1
         revision = selected[0]
+
+    working_commits = commit_ids(real_jj, globals_, root, "@")
+    if not working_commits:
+        error("could not snapshot the working copy before split validation")
+        return 1
+    before_hook = working_commits[0]
     returncode = run_pre_commit_stage(
         real_jj, globals_, root, revision
     )
     if returncode == 0:
         return 0
 
-    restore_code, unused_output = run_jj(
-        real_jj, ["op", "restore", operation], cwd=root
+    rollback_failed_hook(
+        real_jj, globals_, root, operation, before_hook, "split"
     )
-    if restore_code != 0:
-        error("split validation failed and the original operation could not be restored")
     return returncode
 
 
 def handle_describe(real_jj, args, command_index, globals_, root):
+    operation = current_operation(real_jj, globals_, root)
+    if not operation:
+        exec_real(real_jj, args)
     revisions = []
     for revision in describe_revisions(args, command_index):
         resolved = change_ids(real_jj, globals_, root, revision)
@@ -720,11 +799,19 @@ def handle_describe(real_jj, args, command_index, globals_, root):
     returncode, unused_output = run_jj(real_jj, args, cwd=None)
     if returncode != 0:
         return returncode
+    working_commits = commit_ids(real_jj, globals_, root, "@")
+    if not working_commits:
+        error("could not snapshot the working copy before commit-msg validation")
+        return 1
     for revision in revisions:
         returncode = run_commit_message_stage(
             real_jj, globals_, root, revision
         )
         if returncode != 0:
+            rollback_failed_hook(
+                real_jj, globals_, root, operation, working_commits[0],
+                "describe"
+            )
             return returncode
     return 0
 
@@ -924,10 +1011,15 @@ def handle_push(real_jj, args, command_index, globals_, root):
         error("could not identify the current JJ change")
         return 1
     original = originals[0]
+    operation = current_operation(real_jj, globals_, root)
+    if not operation:
+        error("could not identify the operation before pre-push validation")
+        return 1
     keep = "jj-hooks-keep-{0}".format(uuid.uuid4().hex)
     created_keep = False
     failure = 0
     cleanup_failure = 0
+    before_hook = None
     try:
         returncode, unused_output = run_jj(
             real_jj,
@@ -949,47 +1041,60 @@ def handle_push(real_jj, args, command_index, globals_, root):
                 if returncode != 0:
                     failure = returncode
                     break
+            working_commits = commit_ids(real_jj, globals_, root, "@")
+            if not working_commits:
+                failure = 1
+                error("could not snapshot the working copy before pre-push validation")
+                break
+            before_hook = working_commits[0]
             returncode = run_pre_push_stage(
                 real_jj, globals_, root, update
             )
-            current = None
-            if update["type"] != "delete":
-                current = snapshot_current_change(
-                    real_jj, globals_, root
-                )
-                if current is None:
-                    returncode = returncode or 1
-                    error("could not snapshot the pre-push hook result")
-                elif not current[1] and returncode == 0:
-                    returncode = 1
-                    error("pre-push hook modified files; refusing to push")
+            unused_hook_commit, hook_paths = snapshot_hook_changes(
+                real_jj, globals_, root, before_hook
+            )
+            if hook_paths is None:
+                returncode = returncode or 1
+            elif hook_paths and returncode == 0:
+                returncode = 1
+                error("pre-push hook modified files; refusing to push")
             if returncode != 0:
                 failure = returncode
-                if current is not None and not current[1]:
-                    error("pre-push validation failed; hook changes are in {0}".format(
-                        current[0]
-                    ))
                 break
     finally:
-        returncode, unused_output = run_jj(
-            real_jj,
-            list(globals_) + ["edit", original, "--quiet"],
-            cwd=root,
-        )
-        if returncode != 0:
-            cleanup_failure = returncode
-            error("could not restore the original JJ working copy")
-        if created_keep:
+        if failure:
+            if before_hook:
+                rollback_failed_hook(
+                    real_jj, globals_, root, operation, before_hook,
+                    "pre-push validation"
+                )
+            else:
+                returncode, unused_output = run_jj(
+                    real_jj, ["op", "restore", operation], cwd=root
+                )
+                if returncode != 0:
+                    cleanup_failure = returncode
+                    error("could not restore the operation before pre-push validation")
+        else:
             returncode, unused_output = run_jj(
                 real_jj,
-                list(globals_) + ["bookmark", "forget", keep, "--quiet"],
+                list(globals_) + ["edit", original, "--quiet"],
                 cwd=root,
             )
-            if returncode != 0 and cleanup_failure == 0:
+            if returncode != 0:
                 cleanup_failure = returncode
-                error("could not remove the temporary JJ bookmark {0}".format(
-                    keep
-                ))
+                error("could not restore the original JJ working copy")
+            if created_keep:
+                returncode, unused_output = run_jj(
+                    real_jj,
+                    list(globals_) + ["bookmark", "forget", keep, "--quiet"],
+                    cwd=root,
+                )
+                if returncode != 0 and cleanup_failure == 0:
+                    cleanup_failure = returncode
+                    error("could not remove the temporary JJ bookmark {0}".format(
+                        keep
+                    ))
 
     if failure:
         return failure
