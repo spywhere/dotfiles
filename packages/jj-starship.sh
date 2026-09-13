@@ -11,9 +11,6 @@ then
   exit 1
 fi
 
-has_executable 'jj'
-# The dotfiles PATH contains the jj hook wrapper. Verify that the wrapper can
-# reach a real jj executable instead of treating the wrapper itself as jj.
-has_string '^jj ' jj --version
+has_executable 'jj-starship'
 
-use_brew formula 'jujutsu'
+use_brew formula 'dmmulroy/tap/jj-starship'

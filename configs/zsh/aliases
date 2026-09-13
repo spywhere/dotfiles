@@ -63,28 +63,71 @@ alias ga.="ga ."
 
 # jujutsu
 alias j="jj"
+alias jrt='cd "$(jj root || echo .)"'
+
+# working copy
+alias jn="jj new"
+alias je="jj edit"
 alias jc="jj commit"
 alias jcm="jj commit --message"
+alias jdesc="jj describe"
+alias jdm="jj describe --message"
+alias jst="jj status"
 alias jd="jj diff"
-alias jds="jj desc"
-alias jdm="jj desc --message"
-alias je="jj edit"
+alias jds="jj diff --stat"
+alias jsh="jj show"
+# graph
+alias jl="jj log"
+alias jla="jj log -r '::'"
+alias jlg="jj log -r '::@'"
+alias jls="jj log -r 'trunk()..@'"
+alias jlm="jj log -r 'mutable()'"
+# bookmark
+jb() {
+  if test -z "$1"; then
+    jj bookmark list
+  else
+    jj bookmark "$@"
+  fi
+}
+alias jba="jj bookmark advance"
+alias jbc="jj bookmark create"
+alias jbd="jj bookmark delete"
+alias jbm="jj bookmark move"
+alias jbs="jj bookmark set"
+alias jbf="jj bookmark forget"
+alias jbl="jj bookmark list"
+alias jbr="jj bookmark rename"
+alias jbt="jj bookmark track"
+alias jbu="jj bookmark untrack"
+# workspace
+alias jw="jj workspace"
+alias jwa="jj workspace add"
+alias jwf="jj workspace forget"
+alias jwl="jj workspace list"
+# history surgery
+alias jrb="jj rebase"
+alias jsq="jj squash"
+alias jsp="jj split"
+alias jab="jj abandon"
+alias jme="jj metaedit"
+alias jma="jj metaedit --update-author"
+alias jrs="jj restore"
+# change history
+alias jev="jj evolog"
+alias jevp="jj evolog -p"
+alias jop="jj op log"
+alias jor="jj op restore"
+alias ju="jj undo"
+alias jr="jj redo"
+# git backend
 alias jcl="jj git clone"
 alias jf="jj git fetch"
 alias jfa="jj git fetch --all-remotes"
 alias jp="jj git push"
-alias jl="jj log"
-alias jla="jj log -r '::'"
-alias jlg="jj log -r '::@'"
-alias jn="jj new"
-alias jrb="jj rebase"
-alias jrs="jj restore"
-alias jsp="jj split"
-alias jsq="jj squash"
-alias jst="jj status"
-alias jsh="jj show"
-alias ju="jj undo"
-alias jr="jj redo"
+alias jpa="jj git push --all"
+alias jpd="jj git push --deleted"
+alias jpt="jj git push --tracked"
 
 # Shortcuts
 alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"

@@ -20,6 +20,7 @@ configs/herdr/plugins/**
 !configs/herdr/plugins/config/spywhere.now-playing/config.json
 configs/hunk/state.json
 configs/jj/conf.d/**
+configs/jj/repos
 configs/mpd/**
 !configs/mpd/mpd.conf
 !configs/mpd/playlists

@@ -7,11 +7,10 @@ add_newline = false
 #   $character
 format = """
 $directory\
-$git_branch\
 $git_commit\
 $git_state\
 $git_metrics\
-$git_status\
+${custom.jj}\
 $status\
 $character
 """
@@ -21,6 +20,11 @@ $cmd_duration\
 $username\
 $hostname
 """
+
+[custom.jj]
+when = "jj-starship detect"
+shell = ["jj-starship"]
+format = "$output "
 
 [custom.at_bottom]
 command = "tput cup $LINES"
@@ -43,7 +47,11 @@ format = "[$hostname]($style)"
 format = "[$user]($style)@"
 disabled = true
 
+[git_branch]
+disabled = true
+
 [git_status]
+disabled = true
 conflicted = "[=](red)"
 ahead = "[⇡](purple)"
 behind = "[⇣](purple)"

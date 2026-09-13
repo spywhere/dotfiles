@@ -14,6 +14,7 @@ row_gap = 1
 rows = [
   ["state_icon", "workspace"],
   ["branch", "git_status"],
+  ["$jj_bookmark", "$jj_status"],
   [{ token = "$now_playing_status", fg = "#89b4fa", dim = true }],
   [{ token = "$now_playing_title", fg = "#89b4fa", dim = true }],
   [{ token = "$now_playing_artist", fg = "#89b4fa", dim = true }],

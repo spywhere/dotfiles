@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+"""Run Jujutsu through the dotfiles hook integration."""
+
+import sys
+
+from _jj_hooks import main, relay_signal
+
+
+if __name__ == "__main__":
+    sys.exit(relay_signal(main()))
