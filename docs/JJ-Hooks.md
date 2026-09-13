@@ -65,6 +65,21 @@ Non-colocated Git-backed JJ repositories are supported. The wrapper exposes the
 bare object store reported by `jj git root` to the checker, so
 `jj git colocation enable` is not required.
 
+For managed message stages (`prepare-commit-msg` and `commit-msg`), a workspace
+without `.git` also receives a temporary `.git` file pointing to an isolated
+message directory. This supports tools such as commitlint that discover the
+root by searching for `.git` rather than using `GIT_DIR`. The directory contains
+`COMMIT_EDITMSG` populated with the current JJ description, including for hooks
+whose upstream definition sets `pass_filenames: false`. Node environments,
+dependencies, hook entries, and project rules are left unchanged.
+
+The marker is removed before rollback or further JJ operations, on success,
+hook failure, or Python exception. An existing `.git` directory, file, or symlink
+is never replaced. This is not permanent colocation; Git subprocesses retain
+the original `GIT_DIR` and `GIT_WORK_TREE`. Avoid concurrent workspace operations
+during hooks. An uncatchable termination (such as SIGKILL) can leave the temporary
+marker behind; inspect its `gitdir:` target before removing it manually.
+
 ## Bypass
 
 For recovery or diagnosis, place `--` immediately after `jj`. Everything after

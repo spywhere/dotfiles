@@ -433,6 +433,43 @@ def snapshot_working_copy(real_jj, globals_, root):
     return returncode
 
 
+@contextmanager
+def message_git_marker(root, git_env, message_path):
+    """Expose a temporary .git marker for filesystem-based root discovery.
+
+    Git subprocesses retain the existing GIT_DIR/GIT_WORK_TREE environment.
+    The marker has its own COMMIT_EDITMSG for tools which ignore that
+    environment and default to reading .git/COMMIT_EDITMSG instead.
+    """
+    marker = os.path.join(root, ".git")
+    if os.path.lexists(marker):
+        yield None
+        return
+    with tempfile.TemporaryDirectory(prefix="jj-hooks-message-git-") as view:
+        with open(os.path.join(view, "commondir"), "w") as handle:
+            handle.write(canonical(git_env["GIT_DIR"]) + "\n")
+        with open(os.path.join(view, "HEAD"), "w") as handle:
+            handle.write("ref: refs/heads/jj-hooks-message\n")
+        default_message = os.path.join(view, "COMMIT_EDITMSG")
+        shutil.copyfile(message_path, default_message)
+        # Exclusive creation avoids replacing a concurrently-created .git.
+        owned = None
+        try:
+            with open(marker, "x") as handle:
+                owned = os.fstat(handle.fileno())
+                handle.write("gitdir: {0}\n".format(view))
+            yield default_message
+        finally:
+            if owned is not None:
+                try:
+                    current = os.lstat(marker)
+                    if (current.st_dev, current.st_ino) == (
+                            owned.st_dev, owned.st_ino):
+                        os.unlink(marker)
+                except FileNotFoundError:
+                    pass
+
+
 def run_checker(real_jj, globals_, root, hook_type, extra_args,
                 checker_env=None):
     config = checker_config(root)
@@ -456,6 +493,30 @@ def run_checker(real_jj, globals_, root, hook_type, extra_args,
     if os.path.basename(checker) == "pre-commit":
         command.extend(["--config", config])
     command.extend(extra_args)
+    if hook_type in ("prepare-commit-msg", "commit-msg"):
+        message_path = extra_args[extra_args.index("--commit-msg-filename") + 1]
+        try:
+            with open(message_path, "rb") as handle:
+                original = handle.read()
+            with message_git_marker(root, git_env, message_path) as default_message:
+                returncode, unused_output = run_process(
+                    command, real_jj, cwd=root, env_extra=git_env
+                )
+                if default_message:
+                    with open(default_message, "rb") as handle:
+                        prepared = handle.read()
+                    if prepared != original:
+                        with open(message_path, "rb") as handle:
+                            explicit = handle.read()
+                        if explicit not in (original, prepared):
+                            error("hooks made conflicting edits to the message files")
+                            return returncode or 1
+                        with open(message_path, "wb") as handle:
+                            handle.write(prepared)
+                return returncode
+        except OSError as exc:
+            error("could not provide Git message context: {0}".format(exc))
+            return 1
     returncode, unused_output = run_process(
         command, real_jj, cwd=root, env_extra=git_env
     )

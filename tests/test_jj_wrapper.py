@@ -1,3 +1,4 @@
+import importlib.util
 import json
 import os
 import stat
@@ -9,6 +10,11 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WRAPPER = PROJECT_ROOT / "binaries" / "jj"
+SPEC = importlib.util.spec_from_file_location(
+    "jj_hooks_test_module", PROJECT_ROOT / "binaries" / "_jj_hooks.py"
+)
+HOOKS = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(HOOKS)
 
 
 FAKE_JJ = r'''#!/usr/bin/env python3
@@ -114,6 +120,56 @@ def read_log(path):
     return [json.loads(line) for line in path.read_text().splitlines()]
 
 
+class MessageGitMarkerTest(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.root = Path(temp.name)
+        self.message = self.root / "message"
+        self.message.write_text("test: message\n")
+        self.env = {"GIT_DIR": str(self.root / "store")}
+
+    def test_marker_and_default_message_are_removed_after_exception(self):
+        marker = self.root / ".git"
+        with self.assertRaises(RuntimeError):
+            with HOOKS.message_git_marker(
+                    str(self.root), self.env, str(self.message)) as default:
+                self.assertEqual(Path(default).read_bytes(), self.message.read_bytes())
+                self.assertEqual(marker.read_text(),
+                                 "gitdir: {0}\n".format(Path(default).parent))
+                raise RuntimeError("hook interrupted")
+        self.assertFalse(marker.exists())
+        self.assertFalse(Path(default).exists())
+
+    def test_existing_git_directory_file_and_symlink_are_untouched(self):
+        marker = self.root / ".git"
+        for kind in ("directory", "file", "symlink"):
+            with self.subTest(kind=kind):
+                if kind == "directory":
+                    marker.mkdir()
+                elif kind == "file":
+                    marker.write_text("gitdir: original\n")
+                else:
+                    marker.symlink_to(self.root / "missing-store")
+                before = marker.lstat()
+                with HOOKS.message_git_marker(
+                        str(self.root), self.env, str(self.message)) as default:
+                    self.assertIsNone(default)
+                self.assertEqual(marker.lstat().st_ino, before.st_ino)
+                if kind == "directory":
+                    marker.rmdir()
+                else:
+                    marker.unlink()
+
+    def test_replaced_marker_is_not_deleted(self):
+        marker = self.root / ".git"
+        with HOOKS.message_git_marker(
+                str(self.root), self.env, str(self.message)):
+            marker.rename(self.root / "old-marker")
+            marker.write_text("gitdir: replacement\n")
+        self.assertEqual(marker.read_text(), "gitdir: replacement\n")
+
+
 class JJWrapperTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -210,6 +266,63 @@ class JJWrapperTest(unittest.TestCase):
             [["commit", "--message", "nested"]],
         )
         self.assertEqual(read_log(self.checker_log), [])
+
+    def test_message_checker_can_discover_git_and_read_default_message(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        executable(
+            self.bin / "pre-commit",
+            r'''#!/usr/bin/env python3
+import json
+import os
+import sys
+from pathlib import Path
+stage = sys.argv[sys.argv.index("--hook-stage") + 1]
+marker = Path(".git").read_text()
+assert marker.startswith("gitdir: ")
+view = Path(marker[len("gitdir: "):].strip())
+message = (view / "COMMIT_EDITMSG").read_text()
+assert message == os.environ["FAKE_DESCRIPTION"] + "\n"
+assert os.environ["GIT_DIR"] == os.environ["FAKE_GIT_DIR"]
+with open(os.environ["FAKE_CHECKER_LOG"], "a") as handle:
+    handle.write(json.dumps([stage, str(view), message]) + "\n")
+sys.exit(int(os.environ.get("FAKE_CHECKER_EXIT", "0")))
+''',
+        )
+        for code in (0, 9):
+            with self.subTest(code=code):
+                result = self.run_wrapper(
+                    "describe", "--message", "test: message",
+                    env={"FAKE_CHECKER_EXIT": str(code)},
+                )
+                self.assertEqual(result.returncode, code, result.stderr.decode())
+                self.assertFalse(os.path.lexists(self.root / ".git"))
+                for stage, view, message in read_log(self.checker_log):
+                    self.assertFalse(Path(view).exists())
+        self.assertIn(
+            ["op", "restore", "operation-before-split"], read_log(self.jj_log)
+        )
+
+    def test_prepare_checker_default_message_edits_are_applied(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        executable(
+            self.bin / "pre-commit",
+            r'''#!/usr/bin/env python3
+import sys
+from pathlib import Path
+stage = sys.argv[sys.argv.index("--hook-stage") + 1]
+if stage == "prepare-commit-msg":
+    view = Path(Path(".git").read_text()[len("gitdir: "):].strip())
+    (view / "COMMIT_EDITMSG").write_text("test: prepared default message\n")
+''',
+        )
+        result = self.run_wrapper("describe", "-m", "test: original")
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertIn(
+            ["describe", "--ignore-working-copy", "-r",
+             self.env["FAKE_CHANGE_ID"], "--message", "test: prepared default message\n"],
+            read_log(self.jj_log),
+        )
+        self.assertFalse((self.root / ".git").exists())
 
     def test_dynamic_completion_preserves_protocol_separator(self):
         result = self.run_wrapper(
