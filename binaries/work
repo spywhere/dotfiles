@@ -35,11 +35,11 @@ if test -n "$(command -v fd)"; then
   }
 else
   search() {
-    find "$WORKSPACE" -mindepth 1 -maxdepth 3 \( \( -type d -name '.git' \) -or \( -type f -name '.gitignore' \) \) | rev | cut -d'/' -f2-
+    find "$WORKSPACE" -mindepth 1 -maxdepth 3 \( \( -type d \( -name '.jj' -or -name '.git' \) \) -or \( -type f -name '.gitignore' \) \) | rev | cut -d'/' -f2-
   }
 fi
 
-output="$(search | rev | fzf --height=20 --ghost 'Loading...' --print-query '--preview=git -C {} branch' '--bind=load:change-ghost(),ctrl-/:toggle-preview,ctrl-s:become(tmux split-window -h -c {}),ctrl-v:become(tmux split-window -v -c {})' "$query")"
+output="$(search | rev | fzf --height=20 --ghost 'Loading...' --print-query '--preview=jj -R {} bookmark list 2>/dev/null || git -C {} branch' '--bind=load:change-ghost(),ctrl-/:toggle-preview,ctrl-s:become(tmux split-window -h -c {}),ctrl-v:become(tmux split-window -v -c {})' "$query")"
 query="$(echo "$output" | sed -n 1p)"
 selection="$(echo "$output" | sed -n 2p)"
 if test -n "$selection"; then

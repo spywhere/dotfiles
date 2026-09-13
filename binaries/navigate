@@ -15,11 +15,11 @@ if ! test -t 1; then
 fi
 
 if test "$1" = "-"; then
-  root="$(git rev-parse --show-toplevel 2>/dev/null)"
+  root="$(jj root 2>/dev/null || git rev-parse --show-toplevel 2>/dev/null)"
   if test -n "$root"; then
     "$command" "$root" || exit
   else
-    echo "ERROR: Cannot infer root directory as working directory is not in a git project"
+    echo "ERROR: Cannot infer root directory as working directory is not in a jj or git project"
   fi
   return
 elif test -n "$@"; then
@@ -28,18 +28,18 @@ fi
 
 if test -n "$(command -v fd)"; then
   bfs() {
-    fd --type d --exclude .git --exclude node_modules .
+    fd --type d --exclude .jj --exclude .git --exclude node_modules .
   }
 elif test -n "$(command -v rg)"; then
   bfs() {
-    rg --files --iglob '!.git/**' --iglob '!node_modules/**' --null . | xargs -0 dirname | sort -u | cut -d'/' -f2-
+    rg --files --iglob '!.jj/**' --iglob '!.git/**' --iglob '!node_modules/**' --null . | xargs -0 dirname | sort -u | cut -d'/' -f2-
   }
 else
   bfs() {
     for i in $(seq 1 5); do
-      find . -type d -mindepth "$i" -maxdepth "$i" -not -path '*/.*' -not -path '*/.git/*' -not -path '*/node_modules/*' | cut -d'/' -f2-
+      find . -type d -mindepth "$i" -maxdepth "$i" -not -path '*/.*' -not -path '*/.jj/*' -not -path '*/.git/*' -not -path '*/node_modules/*' | cut -d'/' -f2-
     done
-    find . -type d -mindepth 5 -not -path '*/.*' -not -path '*/.git/*' -not -path '*/node_modules/*' | cut -d'/' -f2-
+    find . -type d -mindepth 5 -not -path '*/.*' -not -path '*/.jj/*' -not -path '*/.git/*' -not -path '*/node_modules/*' | cut -d'/' -f2-
   }
 fi
 
