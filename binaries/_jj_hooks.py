@@ -573,6 +573,71 @@ def run_pre_commit_stage(real_jj, globals_, root, revision, files=None):
     )
 
 
+def run_prepare_commit_message_stage(real_jj, globals_, root, revision,
+                                     source=None):
+    description = revision_description(real_jj, globals_, root, revision)
+    if description is None:
+        error("could not read the finalized description for {0}".format(
+            revision
+        ))
+        return 1
+
+    hook = installed_hook(root, "prepare-commit-msg")
+    config = checker_config(root)
+    use_checker = (
+        pre_commit_managed_hook(hook)
+        and config
+        and checker_executable()
+    )
+    if not hook and not config:
+        return 0
+
+    message_path = None
+    try:
+        descriptor, message_path = tempfile.mkstemp(prefix="jj-description-")
+        with os.fdopen(descriptor, "wb") as message_file:
+            message_file.write(description)
+            if description and not description.endswith(b"\n"):
+                message_file.write(b"\n")
+        if hook and not use_checker:
+            env_extra = git_environment(real_jj, globals_, root) or {}
+            command = [hook, message_path]
+            if source:
+                command.append(source)
+            returncode, unused_output = run_process(
+                command, real_jj, cwd=root, env_extra=env_extra
+            )
+        else:
+            returncode = run_checker(
+                real_jj,
+                globals_,
+                root,
+                "prepare-commit-msg",
+                ["--commit-msg-filename", message_path],
+            )
+        if returncode != 0:
+            return returncode
+
+        with open(message_path, "rb") as message_file:
+            prepared = message_file.read()
+        if prepared == description or prepared == description + b"\n":
+            return 0
+        returncode, unused_output = run_jj(
+            real_jj,
+            list(globals_)
+            + ["describe", "--ignore-working-copy", "-r", revision,
+               "--message", os.fsdecode(prepared)],
+            cwd=root,
+        )
+        return returncode
+    finally:
+        if message_path:
+            try:
+                os.unlink(message_path)
+            except FileNotFoundError:
+                pass
+
+
 def run_commit_message_stage(real_jj, globals_, root, revision):
     description = revision_description(real_jj, globals_, root, revision)
     if description is None:
@@ -617,6 +682,16 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
                 os.unlink(message_path)
             except FileNotFoundError:
                 pass
+
+
+def explicit_message(args, command_index):
+    for arg in args[command_index + 1:]:
+        if arg in ("-m", "--message"):
+            return True
+        if arg.startswith("--message=") or (
+                arg.startswith("-m") and arg != "-m"):
+            return True
+    return False
 
 
 def commit_selection(args, command_index):
@@ -786,9 +861,14 @@ def handle_commit(real_jj, args, command_index, globals_, root):
                 "commit"
             )
             return returncode
-    returncode = run_commit_message_stage(
-        real_jj, globals_, root, revision
+    source = "message" if explicit_message(args, command_index) else None
+    returncode = run_prepare_commit_message_stage(
+        real_jj, globals_, root, revision, source=source
     )
+    if returncode == 0:
+        returncode = run_commit_message_stage(
+            real_jj, globals_, root, revision
+        )
     if returncode == 0:
         return 0
     rollback_failed_hook(
@@ -934,10 +1014,15 @@ def handle_describe(real_jj, args, command_index, globals_, root):
     if not working_commits:
         error("could not snapshot the working copy before commit-msg validation")
         return 1
+    source = "message" if explicit_message(args, command_index) else None
     for revision in revisions:
-        returncode = run_commit_message_stage(
-            real_jj, globals_, root, revision
+        returncode = run_prepare_commit_message_stage(
+            real_jj, globals_, root, revision, source=source
         )
+        if returncode == 0:
+            returncode = run_commit_message_stage(
+                real_jj, globals_, root, revision
+            )
         if returncode != 0:
             rollback_failed_hook(
                 real_jj, globals_, root, operation, working_commits[0],
