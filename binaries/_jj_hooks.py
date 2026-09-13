@@ -277,9 +277,24 @@ def commit_ids(real_jj, globals_, root, revision):
     return [os.fsdecode(value) for value in values]
 
 
-def changed_files(real_jj, globals_, root, revision):
-    # jj diff --name-only has no NUL mode. The template below returns the same
-    # paths with an unambiguous separator, including paths containing newlines.
+def changed_files(real_jj, globals_, root, revision, filesets=None):
+    # JJ's templated diff output provides an unambiguous separator, including
+    # for paths containing newlines. Use the diff command when filesets need to
+    # be resolved with JJ's own fileset parser.
+    if filesets is not None:
+        returncode, output = run_jj(
+            real_jj,
+            list(globals_)
+            + ["diff", "--ignore-working-copy", "-r", revision,
+               "-T", 'path ++ "\\0"', "--color=never", "--no-pager",
+               "--"]
+            + list(filesets),
+            cwd=root,
+            capture=True,
+        )
+        if returncode != 0:
+            return None
+        return [path for path in (output or b"").split(b"\0") if path]
     return template_values(
         real_jj,
         globals_,
@@ -447,8 +462,51 @@ def run_checker(real_jj, globals_, root, hook_type, extra_args,
     return returncode
 
 
-def run_pre_commit_stage(real_jj, globals_, root, revision):
-    files = changed_files(real_jj, globals_, root, revision)
+def prepare_selected_index(real_jj, root, hook_env, parent, commit, files):
+    if parent == ZERO_COMMIT:
+        read_args = ["git", "read-tree", "--empty"]
+    else:
+        read_args = ["git", "read-tree", parent]
+    returncode, unused_output = run_process(
+        read_args, real_jj, cwd=root, env_extra=hook_env
+    )
+    if returncode != 0:
+        return returncode
+
+    for path in files:
+        try:
+            output = subprocess.check_output(
+                ["git", "ls-tree", "-z", commit, "--", os.fsdecode(path)],
+                cwd=root,
+                env=dict(os.environ, **hook_env),
+                stderr=subprocess.DEVNULL,
+            )
+        except (OSError, subprocess.CalledProcessError):
+            return 1
+        entries = [entry for entry in output.split(b"\0") if entry]
+        if entries:
+            metadata, unused_name = entries[0].split(b"\t", 1)
+            mode, unused_type, object_id = metadata.split(b" ", 2)
+            update_args = [
+                "git", "update-index", "--add", "--cacheinfo",
+                os.fsdecode(mode), os.fsdecode(object_id), os.fsdecode(path),
+            ]
+        else:
+            update_args = [
+                "git", "update-index", "--force-remove", "--",
+                os.fsdecode(path),
+            ]
+        returncode, unused_output = run_process(
+            update_args, real_jj, cwd=root, env_extra=hook_env
+        )
+        if returncode != 0:
+            return returncode
+    return 0
+
+
+def run_pre_commit_stage(real_jj, globals_, root, revision, files=None):
+    if files is None:
+        files = changed_files(real_jj, globals_, root, revision)
     if files is None:
         error("could not determine files changed in {0}".format(revision))
         return 1
@@ -495,11 +553,8 @@ def run_pre_commit_stage(real_jj, globals_, root, revision):
                 "GIT_WORK_TREE": root,
                 "GIT_INDEX_FILE": index,
             }
-            returncode, unused_output = run_process(
-                ["git", "read-tree", commits[0]],
-                real_jj,
-                cwd=root,
-                env_extra=hook_env,
+            returncode = prepare_selected_index(
+                real_jj, root, hook_env, parents[0], commits[0], files
             )
             if returncode != 0:
                 return returncode
@@ -557,6 +612,55 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
                 os.unlink(message_path)
             except FileNotFoundError:
                 pass
+
+
+def commit_selection(args, command_index):
+    filesets = []
+    interactive = False
+    index = command_index + 1
+    positional = False
+    while index < len(args):
+        arg = args[index]
+        if positional:
+            filesets.append(arg)
+            index += 1
+            continue
+        if arg == "--":
+            positional = True
+            index += 1
+            continue
+        if arg in ("-i", "--interactive"):
+            interactive = True
+            index += 1
+            continue
+        if arg == "--tool":
+            interactive = True
+            index += 2
+            continue
+        if arg.startswith("--tool="):
+            interactive = True
+            index += 1
+            continue
+        if arg in ("-m", "--message") or option_takes_value(arg):
+            index += 2
+            continue
+        if arg.startswith("--message=") or (
+                arg.startswith("-m") and arg != "-m"):
+            index += 1
+            continue
+        if any(arg.startswith(option + "=") for option in GLOBAL_VALUE_OPTIONS
+               if option.startswith("--")):
+            index += 1
+            continue
+        if arg.startswith("-R") and arg != "-R":
+            index += 1
+            continue
+        if arg.startswith("-"):
+            index += 1
+            continue
+        filesets.append(arg)
+        index += 1
+    return filesets, interactive
 
 
 def split_details(args, command_index):
@@ -634,16 +738,28 @@ def describe_revisions(args, command_index):
     return revisions or ["@"]
 
 
-def handle_commit(real_jj, args, globals_, root):
+def handle_commit(real_jj, args, command_index, globals_, root):
     if snapshot_working_copy(real_jj, globals_, root) != 0:
         exec_real(real_jj, args)
     revisions = change_ids(real_jj, globals_, root, "@")
     if not revisions:
         exec_real(real_jj, args)
     revision = revisions[0]
-    returncode = run_pre_commit_stage(real_jj, globals_, root, revision)
-    if returncode != 0:
-        return returncode
+    filesets, interactive = commit_selection(args, command_index)
+    selected_files = None
+    if filesets and not interactive:
+        selected_files = changed_files(
+            real_jj, globals_, root, revision, filesets=filesets
+        )
+        if selected_files is None:
+            error("could not determine files selected by jj commit")
+            return 1
+    if not interactive:
+        returncode = run_pre_commit_stage(
+            real_jj, globals_, root, revision, files=selected_files
+        )
+        if returncode != 0:
+            return returncode
 
     operation = current_operation(real_jj, globals_, root)
     if not operation:
@@ -653,8 +769,18 @@ def handle_commit(real_jj, args, globals_, root):
         return returncode
     working_commits = commit_ids(real_jj, globals_, root, "@")
     if not working_commits:
-        error("could not snapshot the working copy before commit-msg validation")
+        error("could not snapshot the working copy before commit validation")
         return 1
+    if interactive:
+        returncode = run_pre_commit_stage(
+            real_jj, globals_, root, revision
+        )
+        if returncode != 0:
+            rollback_failed_hook(
+                real_jj, globals_, root, operation, working_commits[0],
+                "commit"
+            )
+            return returncode
     returncode = run_commit_message_stage(
         real_jj, globals_, root, revision
     )
@@ -1124,7 +1250,9 @@ def main():
         exec_real(real_jj, args)
 
     if command == "commit":
-        return handle_commit(real_jj, args, globals_, root)
+        return handle_commit(
+            real_jj, args, command_index, globals_, root
+        )
     if command == "describe":
         return handle_describe(
             real_jj, args, command_index, globals_, root

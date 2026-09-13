@@ -6,11 +6,14 @@ shell setup places `binaries` before package-manager directories in `PATH`.
 
 ## Hooked commands
 
-- `jj commit` runs the pre-commit stage over the files changed in the current
-  change, runs the real command with its original arguments, and then runs the
-  commit-msg stage over the committed change's finalized description. A
-  commit-msg failure undoes the commit and reapplies working-copy fixes made by
-  the hook.
+- `jj commit` runs the pre-commit stage over the files selected by the command,
+  runs the real command with its original arguments, and then runs the
+  commit-msg stage over the committed change's finalized description. JJ
+  filesets are resolved before non-interactive commits, so unrelated working-
+  copy changes are neither passed to managed hooks nor staged for custom Git
+  hooks. Interactive selections are validated after the diff editor closes; a
+  failure undoes the commit. A post-operation failure reapplies working-copy
+  fixes made by the hook.
 - `jj describe` runs the real command first and then runs the commit-msg stage
   for each described revision. It does not run source-file checks. A failure
   restores the descriptions from before the command and reapplies

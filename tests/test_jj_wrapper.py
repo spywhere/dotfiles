@@ -32,6 +32,9 @@ elif "git" in args and "push" in args and "--dry-run" in args:
 elif "op" in args and "log" in args:
     output(os.environ.get("FAKE_OPERATION_ID", "operation-before-split").encode())
     output(b"\0")
+elif "diff" in args:
+    for name in json.loads(os.environ.get("FAKE_SELECTED_FILES", "[]")):
+        output(os.fsencode(name) + b"\0")
 elif "log" in args:
     template = args[args.index("-T") + 1]
     if "diff.files" in template:
@@ -253,6 +256,54 @@ class JJWrapperTest(unittest.TestCase):
             for call in read_log(self.jj_log)
         ))
 
+    def test_commit_filesets_check_only_selected_changed_files(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper(
+            "commit", "src", "glob:tests/**", "--message", "selected",
+            env={"FAKE_SELECTED_FILES": json.dumps([
+                "src/main.py", "tests/space name.py"
+            ])},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        checker_calls = read_log(self.checker_log)
+        self.assertEqual(
+            checker_calls[0][checker_calls[0].index("--files") + 1:],
+            ["src/main.py", "tests/space name.py"],
+        )
+        diff_calls = [call for call in read_log(self.jj_log)
+                      if "diff" in call]
+        separator = diff_calls[0].index("--")
+        self.assertEqual(
+            diff_calls[0][separator:], ["--", "src", "glob:tests/**"]
+        )
+
+    def test_commit_fileset_hook_failure_blocks_commit(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper(
+            "commit", "selected", "--message", "blocked",
+            env={
+                "FAKE_SELECTED_FILES": json.dumps(["selected"]),
+                "FAKE_CHECKER_EXIT": "9",
+            },
+        )
+        self.assertEqual(result.returncode, 9)
+        self.assertNotIn(
+            ["commit", "selected", "--message", "blocked"],
+            read_log(self.jj_log),
+        )
+
+    def test_interactive_commit_checks_after_selection(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        result = self.run_wrapper("commit", "--interactive", "--message", "selected")
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        calls = read_log(self.jj_log)
+        commit_call = ["commit", "--interactive", "--message", "selected"]
+        self.assertLess(
+            calls.index(commit_call),
+            next(index for index, call in enumerate(calls)
+                 if "diff.files" in " ".join(call)),
+        )
+
     def test_commit_message_failure_undoes_commit_and_reapplies_fixes(self):
         (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
         self.install_fixing_checker("commit-msg")
@@ -425,7 +476,10 @@ class JJWrapperTest(unittest.TestCase):
         )
         result = self.run_wrapper(
             "commit", "--message", "test: installed hook",
-            env={"HOOK_LOG": str(hook_log)},
+            env={
+                "HOOK_LOG": str(hook_log),
+                "FAKE_FILES": json.dumps(["changed file"]),
+            },
         )
         self.assertEqual(result.returncode, 0, result.stderr.decode())
         self.assertEqual(
