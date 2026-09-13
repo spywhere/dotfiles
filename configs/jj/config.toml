@@ -16,8 +16,12 @@ identity = ["util", "exec", "--", "bash", "-c", """
     exit 0
   fi
 
-  jj config set --repo user.name "$(jj config get user.$1.name)"
-  jj config set --repo user.email "$(jj config get user.$1.email)"
+  name="$(jj config get user.$1.name)" || exit
+  email="$(jj config get user.$1.email)" || exit
+
+  JJ_USER="$name" JJ_EMAIL="$email" jj metaedit --update-author || exit
+  jj config set --repo user.name "$name"
+  jj config set --repo user.email "$email"
 """, ""]
 
 [ui]
