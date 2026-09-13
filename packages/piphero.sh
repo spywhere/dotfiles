@@ -11,7 +11,7 @@ then
   exit 1
 fi
 
-has_app 'Pip'
+has_app 'PiPHero'
 
-optional
-use_brew cask 'amitv87-pip'
+profile work
+use_brew cask 'piphero'
