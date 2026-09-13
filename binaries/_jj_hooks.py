@@ -583,6 +583,11 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
 
     hook = installed_hook(root, "commit-msg")
     config = checker_config(root)
+    use_checker = (
+        pre_commit_managed_hook(hook)
+        and config
+        and checker_executable()
+    )
     if not hook and not config:
         return 0
 
@@ -593,7 +598,7 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
             message_file.write(description)
             if description and not description.endswith(b"\n"):
                 message_file.write(b"\n")
-        if hook:
+        if hook and not use_checker:
             env_extra = git_environment(real_jj, globals_, root) or {}
             returncode, unused_output = run_process(
                 [hook, message_path], real_jj, cwd=root, env_extra=env_extra
@@ -1031,6 +1036,11 @@ def new_bookmark_base(root, git_env, remote, new_commit):
 
 def run_pre_push_stage(real_jj, globals_, root, update):
     hook = installed_hook(root, "pre-push")
+    use_checker = (
+        pre_commit_managed_hook(hook)
+        and checker_config(root)
+        and checker_executable()
+    )
     git_env = git_environment(real_jj, globals_, root)
     if git_env is None:
         error("cannot expose this JJ repository to the pre-push hook")
@@ -1040,7 +1050,7 @@ def run_pre_push_stage(real_jj, globals_, root, update):
         error("could not determine the push remote from jj --dry-run output")
         return 1
 
-    if hook:
+    if hook and not use_checker:
         url = remote_url(root, git_env, remote)
         head_commit = update.get("new") or update.get("old")
         with temporary_git_view(
