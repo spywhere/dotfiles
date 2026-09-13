@@ -5,6 +5,7 @@ name = "Sirisak Lueangsaksri"
 email = "1087399+spywhere@users.noreply.github.com"
 
 [aliases]
+d = ["diff"]
 clone = ["git", "clone"]
 identity = ["util", "exec", "--", "bash", "-c", """
   if test -z "$1"; then

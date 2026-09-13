@@ -73,7 +73,7 @@ alias jcm="jj commit --message"
 alias jdesc="jj describe"
 alias jdm="jj describe --message"
 alias jst="jj status"
-alias jd="jj diff"
+alias jd="hunk diff"
 alias jds="jj diff --stat"
 alias jsh="jj show"
 # graph
