@@ -73,6 +73,8 @@ wrapper and is not forwarded.
 
 The wrapper separately sets an internal recursion guard. Any `jj` process
 started by a hook or checker goes directly to the retained real JJ executable.
+JJ's dynamic shell-completion protocol is also passed through unchanged; its
+leading `--` is not treated as the wrapper's manual bypass separator.
 
 ## Scope
 

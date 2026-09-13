@@ -208,6 +208,16 @@ class JJWrapperTest(unittest.TestCase):
         )
         self.assertEqual(read_log(self.checker_log), [])
 
+    def test_dynamic_completion_preserves_protocol_separator(self):
+        result = self.run_wrapper(
+            "--", "jj", "com",
+            env={"COMPLETE": "zsh", "_CLAP_COMPLETE_INDEX": "1"},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(
+            read_log(self.jj_log), [["--", "jj", "com"]]
+        )
+
     def test_double_dash_bypasses_hooks_and_is_not_forwarded(self):
         (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
         result = self.run_wrapper(

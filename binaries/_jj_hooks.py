@@ -1109,7 +1109,7 @@ def main():
     if not real_jj:
         return 127
     args = sys.argv[1:]
-    if os.environ.get(ACTIVE_ENV):
+    if os.environ.get(ACTIVE_ENV) or os.environ.get("COMPLETE"):
         exec_real(real_jj, args)
     if args and args[0] == "--":
         exec_real(real_jj, args[1:])
