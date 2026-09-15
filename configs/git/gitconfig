@@ -57,6 +57,8 @@
   path = ~/.dots/configs/git/gitidentity
   path = ~/.gitidentity
   path = ~/.dots/configs/git/gitalias
+  # `insteadOf` selects the first equal-length matching prefix.
+  path = ~/.giturl
   path = ~/.dots/configs/git/giturl
   path = ~/.dots/configs/git/gitlfs
   path = ~/.gitpersonal
