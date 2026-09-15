@@ -210,6 +210,11 @@ if test -n "$(command -v lazygit)"; then
   alias lg="lazygit"
 fi
 
+# pi
+if test -n "$(command -v pi)"; then
+  alias pir="pi -r"
+fi
+
 # opencode
 if test -n "$(command -v opencode)"; then
   alias oc="opencode"
