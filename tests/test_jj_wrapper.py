@@ -244,6 +244,40 @@ class JJWrapperTest(unittest.TestCase):
             "sys.exit(0)\n".format(stage, path),
         )
 
+    def test_non_mutating_modes_bypass_hooks_and_repository_queries(self):
+        cases = (
+            ("commit", "--help"),
+            ("describe", "-h"),
+            ("split", "--version"),
+            ("git", "push", "--help"),
+            ("git", "push", "--dry-run", "--bookmark", "main"),
+            ("--version", "commit"),
+        )
+        for case in cases:
+            with self.subTest(args=case):
+                self.jj_log.unlink(missing_ok=True)
+                self.checker_log.unlink(missing_ok=True)
+                result = self.run_wrapper(*case)
+                self.assertEqual(result.returncode, 0, result.stderr.decode())
+                self.assertEqual(read_log(self.jj_log), [list(case)])
+                self.assertEqual(read_log(self.checker_log), [])
+
+    def test_help_like_option_values_and_filesets_do_not_bypass_hooks(self):
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        cases = (
+            ("commit", "--message", "--help"),
+            ("commit", "--", "--help"),
+            ("commit", "--config", "--help"),
+        )
+        for case in cases:
+            with self.subTest(args=case):
+                self.jj_log.unlink(missing_ok=True)
+                self.checker_log.unlink(missing_ok=True)
+                result = self.run_wrapper(*case)
+                self.assertEqual(result.returncode, 0, result.stderr.decode())
+                self.assertGreater(len(read_log(self.jj_log)), 1)
+                self.assertTrue(read_log(self.checker_log))
+
     def test_other_commands_pass_through_with_arguments_and_status(self):
         result = self.run_wrapper(
             "status", "argument with spaces", "--color=always",

@@ -82,6 +82,11 @@ marker behind; inspect its `gitdir:` target before removing it manually.
 
 ## Bypass
 
+Informational invocations are passed directly to JJ without repository queries
+or hooks. This includes `-h`/`--help`, `-V`/`--version`, and `jj git push
+--dry-run`. The wrapper recognizes these only as options, not when they are an
+option value or appear after `--` as a fileset.
+
 For recovery or diagnosis, place `--` immediately after `jj`. Everything after
 it is passed directly to the real executable without wrapper hooks:
 

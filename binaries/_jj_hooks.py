@@ -60,6 +60,20 @@ UPDATE_PATTERNS = (
 )
 REMOTE_PATTERN = re.compile(r"^Changes to push to (.+?):")
 
+COMMAND_VALUE_OPTIONS = {
+    "commit": ("-m", "--message", "--tool"),
+    "describe": ("-m", "--message"),
+    "split": (
+        "--tool", "-r", "--revision", "-o", "--onto", "-d",
+        "--destination", "-A", "--insert-after", "--after", "-B",
+        "--insert-before", "--before", "-m", "--message",
+    ),
+    "push": (
+        "--remote", "-b", "--bookmark", "-t", "--tag", "-r",
+        "--revision", "-c", "--change", "--named", "-o", "--option",
+    ),
+}
+
 
 def error(message):
     sys.stderr.write("jj hooks: {0}\n".format(message))
@@ -173,6 +187,43 @@ def split_command(args):
             continue
         return index, arg
     return None, None
+
+
+def skip_hooks_invocation(args, command_index, command):
+    value_options = set(GLOBAL_VALUE_OPTIONS)
+    value_options.update(COMMAND_VALUE_OPTIONS.get(command, ()))
+    if command == "git" and command_index + 1 < len(args):
+        if args[command_index + 1] == "push":
+            value_options.update(COMMAND_VALUE_OPTIONS["push"])
+
+    short_value_options = tuple(
+        option for option in value_options
+        if option.startswith("-") and not option.startswith("--")
+    )
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg == "--":
+            break
+        if arg in value_options:
+            index += 2
+            continue
+        if any(arg.startswith(option + "=") for option in value_options
+               if option.startswith("--")):
+            index += 1
+            continue
+        if any(arg.startswith(option) and arg != option
+               for option in short_value_options):
+            index += 1
+            continue
+        if arg in ("-h", "--help", "-V", "--version"):
+            return True
+        if command == "git" and arg == "--dry-run":
+            if command_index + 1 < len(args):
+                if args[command_index + 1] == "push":
+                    return True
+        index += 1
+    return False
 
 
 def global_args(args, command_index):
@@ -1398,6 +1449,8 @@ def main():
 
     command_index, command = split_command(args)
     if command not in ("commit", "describe", "split", "git"):
+        exec_real(real_jj, args)
+    if skip_hooks_invocation(args, command_index, command):
         exec_real(real_jj, args)
 
     globals_ = global_args(args, command_index)
