@@ -4,7 +4,10 @@
     "npm:pi-invisible-continue",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-multi-account",
-    "npm:pi-zentui"
+    "npm:pi-zentui",
+    "npm:pi-hashline-edit-pro",
+    "npm:pi-image-view",
+    "npm:@pi-vault/pi-dcp"
   ],
   "theme": "dark",
   "collapseChangelog": true,
