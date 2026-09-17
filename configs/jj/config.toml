@@ -1,5 +1,13 @@
 #:schema https://jj-vcs.github.io/jj/latest/config-schema.json
 
+[revsets]
+bookmark-advance-to = "closest_pushable(@)"
+
+[revset-aliases]
+'closest_pushable(to)' = '''
+  heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))
+'''
+
 [user.me]
 name = "Sirisak Lueangsaksri"
 email = "1087399+spywhere@users.noreply.github.com"
