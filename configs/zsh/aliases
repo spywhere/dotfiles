@@ -121,6 +121,8 @@ alias jor="jj op restore"
 alias ju="jj undo"
 alias jr="jj redo"
 # git backend
+alias jg="jj git"
+alias jge="jj git export"
 alias jcl="jj git clone"
 alias jf="jj git fetch"
 alias jfa="jj git fetch --all-remotes"
