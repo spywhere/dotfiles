@@ -165,16 +165,16 @@ on-mode-changed = [
     alt-p = 'workspace --wrap-around prev'
 
     alt-f = 'exec-and-forget open /System/Library/CoreServices/Finder.app'
-    alt-q = 'exec-and-forget open /Applications/Voyager.app || open /Applications/qutebrowser.app'
-    alt-shift-q = 'exec-and-forget open /Applications/qutebrowser.app'
+    alt-q = 'exec-and-forget bash -c "if [ -d \"/Applications/Voyager.app\" ]; then open /Applications/Voyager.app; elif [ -d \"/Applications/qutebrowser.app\" ]; then open /Applications/qutebrowser.app; fi"'
+    alt-shift-q = 'exec-and-forget bash -c "if [ -d \"/Applications/qutebrowser.app\" ]; then open /Applications/qutebrowser.app; fi"'
     alt-t = 'exec-and-forget open /Applications/Ghostty.app'
     alt-m = 'exec-and-forget open /System/Applications/Music.app'
     alt-o = [
-      'exec-and-forget bash -c "osascript -e \"tell application \\\"Microsoft Outlook\\\" to activate\" || open \"/Applications/Microsoft Outlook.app\""',
-      'exec-and-forget bash -c "osascript -e \"tell application \\\"Proton Mail\\\" to activate\" || open \"/Applications/Proton Mail.app\""',
+      'exec-and-forget bash -c "if [ -d \"/Applications/Microsoft Outlook.app\" ]; then osascript -e \"tell application \\\"Microsoft Outlook\\\" to activate\" || open \"/Applications/Microsoft Outlook.app\"; fi"',
+      'exec-and-forget bash -c "if [ -d \"/Applications/Proton Mail.app\" ]; then osascript -e \"tell application \\\"Proton Mail\\\" to activate\" || open \"/Applications/Proton Mail.app\"; fi"',
     ]
-    alt-c = 'exec-and-forget bash -c "osascript -e \"tell application \\\"Microsoft Teams\\\" to activate\" || open \"/Applications/Microsoft Teams.app\""'
-    alt-s = 'exec-and-forget bash -c "osascript -e \"tell application \\\"Slack\\\" to activate\" || open \"/Applications/Slack.app\""'
+    alt-c = 'exec-and-forget bash -c "if [ -d \"/Applications/Microsoft Teams.app\" ]; then osascript -e \"tell application \\\"Microsoft Teams\\\" to activate\" || open \"/Applications/Microsoft Teams.app\"; fi"'
+    alt-s = 'exec-and-forget bash -c "if [ -d \"/Applications/Slack.app\" ]; then osascript -e \"tell application \\\"Slack\\\" to activate\" || open \"/Applications/Slack.app\"; fi"'
 
     alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
     alt-shift-2 = 'move-node-to-workspace 2 --focus-follows-window'
