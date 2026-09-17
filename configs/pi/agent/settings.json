@@ -3,9 +3,8 @@
     "npm:pi-web-access",
     "npm:pi-invisible-continue",
     "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:@juicesharp/rpiv-voice",
     "npm:pi-multi-account",
-    "npm:@davideasden/pi-undo"
+    "npm:pi-zentui"
   ],
   "theme": "dark",
   "collapseChangelog": true,
@@ -15,5 +14,6 @@
   "tuiMode": "fullscreen",
   "fullscreenScrollbar": "auto",
   "hideThinkingBlock": false,
-  "quietStartup": true
+  "quietStartup": true,
+  "showCacheMissNotices": true
 }
