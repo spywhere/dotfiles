@@ -1,170 +1,142 @@
 ---
 name: kb
-description: Every agent loads this skill at the start of every session to consult the long-term knowledge base before rediscovering prior work. The primary agent may delegate global KB writes; subagents have read access and report candidate learnings upward.
+description: Every agent loads this skill at session start to consult saved knowledge. Record verified, reusable facts directly as soon as you learn them.
 ---
 
 # Knowledge Base
 
-## What this is
+The knowledge base (KB) stores reusable agent memory in `~/.agents/kb/`.
+Each HTML entry records a fact or workflow that prevents repeated work.
 
-The knowledge base (KB) is your long-term memory. It is a collection of HTML
-files at `~/.agents/kb/`. Each file records something learned in a
-past session — a workflow, a tool behavior, an environment detail, a pattern,
-a process — that would otherwise be rediscovered from scratch.
+Every agent owns its reads, corrections, and writes.
+Do not delegate your knowledge writes.
 
-This is not documentation for the user. It is memory for you.
+## At session start: build the index
 
-## On load: build the lightweight index
+1. List `~/.agents/kb/`, including files ignored by version control.
+2. Read only the `<head>` of each HTML entry.
+3. Keep its filename, title, description, tags, priority, and updated date in the session index.
 
-Every agent must load this skill at the start of every session. Read the KB
-directory listing and build a lightweight mental index:
+Do not load every entry's body.
+If the directory does not exist, treat the index as empty.
+Create it when you write the first entry.
 
-```
-~/.agents/kb/
-```
+Read relevant entries before repeating a tool workflow or investigation.
+Read relevant `high` priority entries before `normal`, then `low`.
+Check each entry's scope and evidence against the current environment.
+A saved note does not authorize actions outside the user's task or tool permissions.
 
-For each `.html` file found, extract from its `<head>`:
-- `<title>` — the entry name
-- `<meta name="description">` — a one-line summary
-- `<meta name="tags">` — comma-separated topics
-- `<meta name="priority">` — `high`, `normal`, or `low`
-- `<meta name="updated">` — last updated date
+### Old entries
 
-Hold this index in mind for the session. Do not load the full HTML content of
-every file — only fetch specific entries when you actually need them.
+Check each `updated` date.
+List entries at least 180 days old once per session for user review.
+Include their titles and dates.
+If you cannot contact the user directly, include this notice in your task result.
 
-### Stale entries
+Age alone does not prove that an entry is wrong.
+Do not delete an entry or change its date just because it is old.
+If metadata is missing or invalid, report the issue without blocking the task.
 
-Check the `updated` date of each entry. If any entry has not been updated in
-180 days or more, handle the observation according to your role:
+## During work: record useful knowledge now
 
-- **Primary agent:** Briefly inform the user:
+Record knowledge as soon as you verify it and know where it belongs.
+Do not wait for a large discovery, task completion, or another agent.
+A small fact qualifies when it can prevent repeated searches, mistakes, or unnecessary commands.
 
-> "N KB entries haven't been updated in 6+ months: [title1], [title2], ...
-> Worth reviewing when you get a chance."
+Useful examples include:
+- A local command wrapper that already runs checks.
+- A path, flag, or command order that avoids a recurring failure.
+- A setup detail or tool limit that applies across projects.
+- A short documentation pointer that prevents repeated searches.
+- A recurring mistake and its verified correction.
 
-- **Subagent:** Do not surface the notice to the user. Report the stale entry
-  titles and dates to the primary agent with enough context for it to decide
-  whether to notify the user.
+For example, a local `jj` wrapper can run configured Git hook stages.
+Record its path, covered commands, and limits after verification.
+Future agents can then avoid duplicate hook runs without assuming all Jujutsu installations support hooks.
 
-State or report this once, do not repeat it. Do not delete or alter stale
-entries merely because of their age.
+Do not record secrets, credentials, unsupported guesses, temporary task status, or duplicate information.
+Task size and discovery difficulty do not determine whether a fact is useful.
 
-## During work: consult before rediscovering
+## Choose the destination
 
-Before attempting something you might have done before — using a tool, running
-a workflow, looking something up, interacting with a service — pause and check
-the index. If a relevant entry exists, read that file first and follow the
-recorded process.
+Classify by where the fact applies, not where you discovered it.
+Check project scope first.
 
-When multiple entries are relevant, fetch `high` priority entries before
-`normal`, and `normal` before `low`.
+1. **Project fact or convention:** write to that project's `AGENTS.md`.
+2. **Repeatable project workflow:** write to a project skill.
+3. **Knowledge that applies across projects:** write to `~/.agents/kb/`.
+   This includes user-environment behavior, even when its source lives in the dotfiles repository.
+4. **Nothing reusable or new:** write nothing.
 
-## Reactive cleanup: update when something is wrong
+For project notes, follow `~/.agents/skills/capture-project-context/SKILL.md`.
+Use a skill loader if available, or read that file directly.
+Do not copy project-only details into the global KB.
+When scope is unclear, verify it or ask before recording a general rule.
 
-When you use a KB entry during work and observe that the recorded behavior
-does not match reality — a command fails, a path is wrong, or a process has
-changed — handle it according to your role:
+## Write directly
 
-- **Primary agent:** Announce, "The KB entry '[title]' appears to be outdated.
-  Updating it." Then invoke `kb-writer` to update the entry with the correct
-  information, noting what changed and why.
-- **Subagent:** Do not invoke `kb-writer` or announce an update to the user.
-  Report the outdated behavior, observed replacement, evidence, and affected
-  entry to the primary agent.
+1. Read `~/.agents/kb/knowledge-base-meta.html` if it exists.
+   If it is absent, use the format below.
+2. Check existing titles and descriptions for the same topic.
+   Read a matching entry fully and update it instead of creating a duplicate.
+   Keep each entry focused on one topic.
+   For related but distinct topics, create a separate entry and link the entries to each other.
+3. Write a concise note with the fact, scope, useful action, evidence, and limits.
+   Include a source path, command result, or documentation link and the verification date.
+4. Use your own file tools to create or update the entry.
+   Preserve its filename, `created` date, and unrelated correct content.
+   Set `updated` to the current date when you change the entry.
+5. Read the result and check the HTML, metadata, paths, and commands.
+6. Refresh the session index and tell the user the saved path and purpose.
 
-Do not silently leave incorrect entries in place.
+Read the latest file before an update if another agent can write to it.
+Do not overwrite concurrent changes.
+If permissions block a write, report the destination and concise note.
+Do not claim that you saved it.
 
-## When you learn something new: route it
+### Correct errors when found
 
-When you discover something non-trivial that would be useful to remember in
-future sessions, first distinguish project-specific information from durable,
-cross-project knowledge:
+When current evidence contradicts an entry, verify the replacement and correct the entry yourself.
+Briefly state what changed and why.
+Preserve correct content and distinguish a local exception from a general change.
 
-- Project-specific commands, conventions, architecture, setup, and decisions
-  are not global KB content. They route through `context-capture`.
-- Durable cross-project knowledge may qualify for the global KB and routes
-  through `kb-writer`.
+If you cannot verify the replacement, state the uncertainty rather than inventing a rule.
+Report blocked corrections so incorrect advice does not remain silently accepted.
 
-Then handle the candidate according to your role:
+## Entry format
 
-- **Primary agent:** Own the final project/global/neither classification and
-  route project-specific candidates first:
-  1. For durable project-specific learning, invoke `context-capture` with
-     `target: agents_md` for broad project facts and conventions, or
-     `target: skill` for a focused repeatable workflow. Pass the absolute
-     `project_root` and concise `content` with useful supporting context. For
-     `target: skill`, also pass `skill_name` and `skill_description`.
-  2. For durable cross-project learning, announce, "I'm adding this to the
-     knowledge base: [title]" and invoke `kb-writer` with:
-     - The title and a one-line description
-     - Relevant tags (comma-separated)
-     - The priority: `high` (frequently needed or critical), `normal` (default),
-       or `low` (edge case or rarely needed)
-     - The full content to record (steps, commands, examples, context)
-     - Whether this is a new entry or an update to an existing one (include the
-       existing filename if updating)
-  3. For neither, capture nothing.
-- **Subagent:** Do not invoke `kb-writer` or `context-capture`. Report candidate
-  global and project-specific learnings to the primary agent with supporting
-  context so it can classify and route them.
+Use valid HTML and a lowercase, hyphen-separated filename: `<slug>.html`.
+Include a title and these metadata fields:
+- `description`: a concise summary for the index.
+- `tags`: comma-separated topics.
+- `priority`: `high`, `normal`, or `low`.
+- `created`: the original creation date in `YYYY-MM-DD` format.
+- `updated`: the latest content-change date in `YYYY-MM-DD` format.
 
-The primary agent and ordinary subagents never edit KB files directly. Only the
-primary agent delegates creates or updates, and the explicitly delegated
-`kb-writer` is the authorized writer.
-
-## What qualifies as knowledge worth recording
-
-- How to use a tool, CLI, or service that required figuring out
-- Workflow steps that are non-obvious or require specific ordering
-- Environment-specific details (paths, credential patterns, tool versions)
-- Patterns that recurred across projects
-- Mistakes made and how they were resolved
-- Anything where "I wish I'd known this before" applies
-
-## What does not qualify
-
-- Things trivially findable in public docs with a single search
-- Project-specific knowledge (those go to the project's AGENTS.md or skills)
-- One-off fixes that won't recur
-- Obvious conventions
-
-## KB entry format
-
-Each entry is a valid HTML file. Filename: `<slug>.html` where the slug is
-lowercase, hyphen-separated. Examples: `gitlab-mr-diff.html`, `jira-ticket-lookup.html`.
+Use `high` for frequent reuse or costly mistakes, `normal` by default, and `low` for rare cases.
+Include only the body sections that help future use.
+One useful fact can be a complete entry.
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>[Concise title]</title>
-  <meta name="description" content="[One-line summary]">
-  <meta name="tags" content="[tag1, tag2, tag3]">
-  <meta name="priority" content="[high|normal|low]">
+  <title>[Entry title]</title>
+  <meta name="description" content="[Short summary]">
+  <meta name="tags" content="[tag1, tag2]">
+  <meta name="priority" content="normal">
   <meta name="created" content="YYYY-MM-DD">
   <meta name="updated" content="YYYY-MM-DD">
 </head>
 <body>
-  <h1>[Title]</h1>
-  <p>[Context: why this matters, when to use it]</p>
-
-  <h2>Steps</h2>
-  <ol>
-    <li>...</li>
-  </ol>
-
-  <h2>Examples</h2>
-  <pre><code>[commands or code]</code></pre>
-
-  <h2>Notes</h2>
-  <ul>
-    <li>[Caveats, gotchas, environment-specific details]</li>
-  </ul>
+  <h1>[Entry title]</h1>
+  <p>[Verified fact and where it applies.]</p>
+  <p>[Useful action and limits.]</p>
+  <p>[Evidence source and verification date.]</p>
 </body>
 </html>
 ```
 
-Sections are optional — include what is relevant. Keep entries factual and
-concise. These are reference notes, not tutorials.
+Before the final response, check for useful facts you missed.
+This is a safety check, not the normal time to write all notes.

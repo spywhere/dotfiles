@@ -1,97 +1,95 @@
 ---
 name: capture-project-context
-description: Use after completing non-trivial work in a project to assess whether anything learned should be persisted as project-level context. Captures project-specific conventions, workflows, architecture patterns, and tooling quirks to AGENTS.md or project skills — so future sessions don't rediscover them.
+description: Record verified project facts and workflows directly when they can help future work. Small, repeatedly useful details qualify.
 ---
 
 # Capture Project Context
 
 ## Purpose
 
-After completing a non-trivial task, reflect on what was learned or discovered
-during the work. If any of it is specific to this project and would be useful
-to a future agent session working here, persist it.
+Save project knowledge that can help a future agent avoid repeated work.
+Write it yourself as soon as you verify it.
+Do not wait for task completion or delegate the write.
 
-This is not about documenting what you just did. It is about extracting durable
-knowledge — things that will still be true and still be useful the next time
-someone works in this project.
+A small fact can qualify, even during a one-line fix or a short investigation.
+Record reusable knowledge, not a transcript of the task.
 
-## Delegation ownership
+## When to record
 
-Only the primary agent may use this skill to delegate capture. If a
-subagent encounters project-specific or global learning, it must report the
-candidate and supporting findings, decisions, commands, conventions, and
-destination project to the primary agent. Subagents must not invoke
-`context-capture` or `kb-writer`.
+Consider a note when you learn:
+- A project-specific build, test, lint, or run command.
+- A convention or constraint absent from current instructions.
+- A setup detail, dependency, or command order that prevents a recurring failure.
+- An architecture decision that affects future changes.
+- A repeatable workflow for this project.
 
-## When to apply this skill
+Ask whether a future agent can use the note to avoid a search, mistake, or unnecessary command.
+If the answer is yes, task size does not matter.
 
-Apply this at natural completion points:
-- After finishing a feature, bug fix, or refactor
-- After resolving a non-trivial investigation (build failure, test issue, etc.)
-- After setting up or configuring something in the project
-- After learning something surprising or non-obvious about the project
+Do not record duplicate facts, unsupported guesses, secrets, or temporary task status.
+If the knowledge applies across projects, follow `~/.agents/skills/kb/SKILL.md` and write to the global KB directly.
 
-Do not apply it for:
-- Trivial one-line fixes
-- Changes to content (copy, data) with no structural implication
-- Work where nothing was learned about the project itself
+## Choose the destination
 
-## Reflection questions
+### Project `AGENTS.md`
 
-Ask yourself:
-1. Did I discover how this project is structured in a way that is not obvious from filenames?
-2. Did I learn a command, script, or process specific to this project?
-3. Did I encounter a convention, pattern, or constraint that is not in the existing AGENTS.md?
-4. Did I hit a non-obvious gotcha — a dependency, a quirk, an ordering requirement?
-5. If a fresh agent started this project tomorrow, what would they waste time figuring out?
+Use the project's instructions for broadly useful facts:
+- Project structure and architecture.
+- Exact build, test, lint, and run commands.
+- Coding conventions and interface constraints.
+- Setup details and tool limits.
 
-If any answer is yes, that knowledge is worth capturing.
+### Project skill
 
-## What goes where
+Use a skill for a focused workflow with repeatable steps.
+Follow the project's existing skill layout.
+Otherwise, use `<project_root>/.agents/skills/<slug>/SKILL.md`.
 
-### Project `AGENTS.md` (at project root)
-Durable, broadly applicable project knowledge:
-- Project structure and architecture that is not obvious from filenames
-- Build, test, lint, and run commands
-- Coding conventions and patterns specific to this codebase
-- Key constraints or requirements
-- Non-obvious setup steps
+Keep facts in `AGENTS.md` and detailed workflows in skills.
+Link to existing guidance instead of duplicating it.
 
-### `.agents/skills/<slug>/SKILL.md` (project-local skill)
-Workflow-specific knowledge that is reusable but focused:
-- A specific deployment or release process
-- A debugging or investigation workflow for a known class of problems
-- Integration patterns with a specific service or API this project uses
-- Anything that warrants step-by-step guidance for a specific recurring task
+## Direct-write process
 
-Use a skill when the knowledge is a workflow with steps. Use AGENTS.md when it
-is context, convention, or a fact.
+1. Confirm the absolute project root and the fact's scope.
+2. Read the existing `AGENTS.md` and relevant project skills.
+3. Choose the existing section or skill that best matches the topic.
+   Create a section or file only when needed.
+4. Use your own file tools to merge the note into that destination.
+   Preserve unrelated instructions and correct content.
+   Remove duplicate guidance that your edit introduces.
+5. Include exact commands, paths, conditions, and evidence when they help future use.
+   Explain the reason when it prevents a mistake.
+6. Read the result and check its accuracy, scope, and brevity.
+7. Tell the user what you saved and where.
 
-## What does NOT belong here
+Read the latest content before an update if another agent can write to the same file.
+Do not overwrite concurrent changes.
+Respect read-only task limits and tool permissions.
+If permissions block a write, report the destination and note instead of claiming success.
 
-- Knowledge that applies globally across all projects → goes to the KB instead
-  (the primary agent invokes `kb-writer` via the `kb` skill)
-- Knowledge that is already in the existing AGENTS.md or an existing skill
-- Ephemeral state: current ticket status, who is working on what, etc.
+## New skill format
 
-## How the primary agent acts
+```markdown
+---
+name: <slug>
+description: <When to use this workflow.>
+---
 
-1. Announce to the user what you intend to capture and why:
-   > "I'm capturing [what] to [AGENTS.md / a new skill: slug] — [one sentence why]"
+# [Workflow title]
 
-2. Invoke the `context-capture` sub-agent with:
-   - **target**: `agents_md` or `skill`
-   - **content**: the knowledge to record
-   - **skill_name** (if target is `skill`): a short slug for the skill name
-   - **skill_description** (if target is `skill`): one sentence describing the skill
-   - **project_root**: the absolute path to the project root
+## When to use
 
-3. The sub-agent handles reading existing content, merging cleanly, and writing.
-   You do not write these files directly.
+[Conditions and scope.]
 
-## Tone and style for captured content
+## Steps
 
-- Write for a future agent, not a human reader
-- Be precise: exact commands, paths, flags, filenames
-- Be concise: no padding, no obvious things, no repetition
-- Include the "why" where it prevents mistakes, not just the "what"
+1. [Action with exact commands or paths.]
+2. [Next action and verification.]
+
+## Notes
+
+[Limits, evidence, and recurring mistakes.]
+```
+
+Before the final response, check for missed project knowledge.
+Do not use this final check to delay notes that were useful earlier.

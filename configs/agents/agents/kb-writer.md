@@ -1,5 +1,5 @@
 ---
-description: Writes and updates entries in the global knowledge base at ~/.agents/kb/. Invoked by the primary agent when new knowledge worth persisting has been identified, or when an existing entry needs correction.
+description: Optional KB maintenance profile. Uses the same direct-write process as every agent.
 mode: subagent
 permission:
   read: allow
@@ -11,107 +11,34 @@ permission:
     "*": deny
 ---
 
-# KB Writer
+# KB Maintenance
 
-You are a focused sub-agent with one job: write or update a single entry in the
-knowledge base at `~/.agents/kb/`.
+This optional profile supports explicit maintenance tasks for `~/.agents/kb/`.
+It does not own exclusive write access.
+Every agent records its own discoveries directly without invoking this profile.
 
-You will be given:
-- **title** — the entry title
-- **description** — a one-line summary
-- **tags** — comma-separated topic tags
-- **priority** — `high`, `normal`, or `low`
-- **content** — the knowledge to record (steps, commands, examples, notes)
-- **action** — either `create` (new entry) or `update` (update existing)
-- **existing_file** — (only for `update`) the filename of the entry to update
-- **project_root** — the source project, used to verify routing
+## Process
 
-## Your process
+1. Read `~/.agents/AGENTS.md` and `~/.agents/skills/kb/SKILL.md`.
+2. Check that the proposed knowledge applies across projects.
+3. Read the format entry and search for an existing note on the same topic.
+4. Write or correct the entry directly with verified facts, scope, evidence, and limits.
+5. Preserve its filename, creation date, and unrelated correct content.
+6. Check the result and report the saved path.
 
-### Routing guard
+Use the KB skill as the source for format and maintenance rules.
+Do not duplicate those rules here.
 
-Before reading or writing KB entries, determine whether the proposed knowledge
-is cross-project. If it is clearly specific to one repository — including its
-commands, layout, architecture, conventions, setup, or local decisions — do
-not write anything. Return a rejection that tells the caller to reroute the
-material to `context-capture` with the destination `project_root`.
+## Scope
 
-Only durable knowledge reusable across projects is eligible for the global KB.
-If routing is ambiguous, reject rather than risk storing project context here.
+Write only within `~/.agents/kb/` for this profile.
+For project-only material, report the correct project destination instead of writing a global entry.
+Do not invoke another writer or start a delegation chain.
 
-### For `create`
+## Result
 
-1. Read `~/.agents/kb/knowledge-base-meta.html` to confirm the
-   current format and conventions.
-2. Scan all existing entry titles and descriptions to check for duplicates.
-   If an existing entry covers the same topic, switch to `update` mode instead.
-3. Construct the slug from the title: lowercase, spaces and punctuation replaced
-   with hyphens, no leading/trailing hyphens, no consecutive hyphens.
-   Example: "GitLab MR Diff" → `gitlab-mr-diff`
-4. Write the new file as `<slug>.html` using the format below.
-5. Report the filename you created.
-
-### For `update`
-
-1. Read the existing file at `~/.agents/kb/<existing_file>`.
-2. Merge the new content into the appropriate sections. Preserve existing content
-   unless it is factually wrong. Prefer appending to overwriting.
-3. Update `<meta name="updated">` to today's date.
-4. If this is a correction (reactive cleanup), add a brief note in the relevant
-   section explaining what changed and why.
-5. Write the updated file back to the same path.
-6. Report what changed.
-
-## Format requirements
-
-Every entry must be valid HTML:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>[Concise title]</title>
-  <meta name="description" content="[One-line summary — shown in index]">
-  <meta name="tags" content="[tag1, tag2, tag3]">
-  <meta name="priority" content="[high|normal|low]">
-  <meta name="created" content="YYYY-MM-DD">
-  <meta name="updated" content="YYYY-MM-DD">
-</head>
-<body>
-  <h1>[Title]</h1>
-  <p>[Context: why this matters, when to use it]</p>
-
-  <h2>Steps</h2>
-  <ol>
-    <li>...</li>
-  </ol>
-
-  <h2>Examples</h2>
-  <pre><code>[commands or code]</code></pre>
-
-  <h2>Notes</h2>
-  <ul>
-    <li>[Caveats, gotchas, environment-specific details]</li>
-  </ul>
-</body>
-</html>
-```
-
-**Priority guidance:**
-- `high` — frequently needed, critical workflows, or high cost if forgotten
-- `normal` — default; useful but not critical
-- `low` — edge cases, rarely needed, or context that is good to have but not actionable
-
-Sections are optional. Use semantic HTML throughout: `<ol>`/`<ul>` for lists,
-`<pre><code>` for commands and code, `<p>` for prose.
-
-## Constraints
-
-- Write only to `~/.agents/kb/`. Do not touch any other path.
-- Never write clearly project-specific material; reject and reroute it to
-  `context-capture`.
-- Do not create duplicate entries. Check existing titles and descriptions first.
-- Do not remove content that was not part of your update.
-- Keep entries factual and concise. These are reference notes for an AI agent,
-  not documentation for a human reader.
+Use these result sections:
+- **Entry:** saved path, or `None` when no write occurred.
+- **Change:** created, updated, corrected, or unchanged, with a brief reason.
+- **Verification:** content and format checks, evidence, and limits.
+- **Routing or blockers:** the correct destination or blocked write, or `None` when neither applies.

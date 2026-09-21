@@ -3,137 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <title>Knowledge Base: Format and Conventions</title>
-  <meta name="description" content="The format, naming conventions, priority system, and maintenance rules for KB entries.">
+  <meta name="description" content="Format, indexing, direct writes, and maintenance rules for reusable agent knowledge.">
   <meta name="tags" content="kb, meta, format, conventions, knowledge-base">
   <meta name="priority" content="high">
   <meta name="created" content="2026-07-06">
-  <meta name="updated" content="2026-07-06">
+  <meta name="updated" content="2026-11-03">
 </head>
 <body>
   <h1>Knowledge Base: Format and Conventions</h1>
-
   <p>
-    This is the meta-entry for the knowledge base itself. It describes how entries
-    are structured, named, prioritized, and maintained. The <code>kb-writer</code>
-    sub-agent must consult this entry before writing or updating any KB file.
+    Every agent reads and writes its own reusable knowledge directly.
+    The <code>kb</code> skill describes the full process.
+    This entry defines the storage format and maintenance rules.
   </p>
 
-  <h2>Location</h2>
-  <p>All KB entries live at <code>~/.config/opencode/kb/</code>.</p>
+  <h2>Location and index</h2>
   <p>
-    This directory is part of the global opencode config, symlinked from
-    <code>~/.dots/configs/opencode/</code> in the user's dotfiles repository.
-    Changes here are tracked in git.
+    KB entries live at <code>~/.agents/kb/</code>.
+    In these dotfiles, that path uses <code>~/.dots/configs/agents/kb/</code>.
+    Version control tracks this format entry but ignores other local KB entries by default.
+  </p>
+  <p>
+    List the directory, including ignored HTML files, at session start.
+    Read each entry's head metadata for the index.
+    Read full entries only when they are relevant.
   </p>
 
-  <h2>File Naming</h2>
-  <p>Pattern: <code>&lt;slug&gt;.html</code></p>
+  <h2>When to record</h2>
+  <p>
+    Write verified, reusable knowledge as soon as you learn it.
+    Do not wait for task completion or a writer agent.
+    A small fact qualifies when it prevents repeated work.
+  </p>
+  <p>
+    Keep project-only facts in the project's instructions or skills.
+    Use the global KB for knowledge that applies across projects, including local environment behavior.
+    Classify facts by where they apply, not by their source repository.
+  </p>
+  <p>
+    For example, a local <code>jj</code> wrapper can run Git hooks.
+    Record its verified scope and command limits so future agents do not repeat those checks unnecessarily.
+  </p>
+
+  <h2>Filename</h2>
+  <p>
+    Use <code>&lt;slug&gt;.html</code> with lowercase words separated by single hyphens.
+    Do not use numeric prefixes or leading or trailing hyphens.
+    Keep the filename when you update an entry.
+  </p>
+
+  <h2>Metadata</h2>
   <ul>
-    <li>Slug is lowercase, hyphen-separated, derived from the entry title</li>
-    <li>No numeric prefix — entries are not ordered by filename</li>
-    <li>No consecutive hyphens, no leading or trailing hyphens</li>
+    <li><code>title</code>: a concise entry name.</li>
+    <li><code>description</code>: a short summary for the index.</li>
+    <li><code>tags</code>: comma-separated topics.</li>
+    <li><code>priority</code>: <code>high</code>, <code>normal</code>, or <code>low</code>.</li>
+    <li><code>created</code>: the original creation date in <code>YYYY-MM-DD</code> format.</li>
+    <li><code>updated</code>: the latest content-change date in <code>YYYY-MM-DD</code> format.</li>
   </ul>
-  <p>Examples: <code>knowledge-base-meta.html</code>, <code>gitlab-mr-diff.html</code>, <code>jira-ticket-lookup.html</code></p>
   <p>
-    Slug derivation: lowercase the title, replace spaces and punctuation with
-    hyphens, collapse consecutive hyphens, strip leading/trailing hyphens.
+    Use high priority for frequent reuse or costly mistakes.
+    Use normal priority by default and low priority for rare cases.
+    Change priority when evidence supports the change.
   </p>
 
-  <h2>Entry Structure</h2>
+  <h2>Entry structure</h2>
   <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
-  &lt;title&gt;[Concise title]&lt;/title&gt;
-  &lt;meta name="description" content="[One-line summary — used in the index]"&gt;
-  &lt;meta name="tags" content="[tag1, tag2, tag3]"&gt;
-  &lt;meta name="priority" content="[high|normal|low]"&gt;
+  &lt;title&gt;[Entry title]&lt;/title&gt;
+  &lt;meta name="description" content="[Short summary]"&gt;
+  &lt;meta name="tags" content="[tag1, tag2]"&gt;
+  &lt;meta name="priority" content="normal"&gt;
   &lt;meta name="created" content="YYYY-MM-DD"&gt;
   &lt;meta name="updated" content="YYYY-MM-DD"&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  &lt;h1&gt;[Title]&lt;/h1&gt;
-  &lt;p&gt;[Context: why this matters, when to use it]&lt;/p&gt;
-
-  &lt;h2&gt;Steps&lt;/h2&gt;
-  &lt;ol&gt;
-    &lt;li&gt;...&lt;/li&gt;
-  &lt;/ol&gt;
-
-  &lt;h2&gt;Examples&lt;/h2&gt;
-  &lt;pre&gt;&lt;code&gt;[commands or code]&lt;/code&gt;&lt;/pre&gt;
-
-  &lt;h2&gt;Notes&lt;/h2&gt;
-  &lt;ul&gt;
-    &lt;li&gt;[Caveats, gotchas, environment-specific details]&lt;/li&gt;
-  &lt;/ul&gt;
+  &lt;h1&gt;[Entry title]&lt;/h1&gt;
+  &lt;p&gt;[Verified fact and where it applies.]&lt;/p&gt;
+  &lt;p&gt;[Useful action and limits.]&lt;/p&gt;
+  &lt;p&gt;[Evidence source and verification date.]&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-
-  <h2>Required Fields</h2>
-  <ul>
-    <li><code>&lt;title&gt;</code> — used in the index; concise and descriptive</li>
-    <li><code>description</code> — one sentence; what the agent reads when scanning the index</li>
-    <li><code>tags</code> — comma-separated; used for topic-based lookup</li>
-    <li><code>priority</code> — see Priority section below</li>
-    <li><code>created</code> — ISO 8601 date of first creation; never change this</li>
-    <li><code>updated</code> — ISO 8601 date of last modification; update on every write</li>
-  </ul>
-
-  <h2>Priority</h2>
   <p>
-    Priority controls which entries the agent fetches first when multiple are
-    relevant. Set it honestly — not everything is high priority.
-  </p>
-  <ul>
-    <li><strong>high</strong> — frequently needed, critical workflows, or high cost if forgotten</li>
-    <li><strong>normal</strong> — default; useful but not critical</li>
-    <li><strong>low</strong> — edge cases, rarely needed, or context that is good to have but not actionable</li>
-  </ul>
-  <p>
-    Priority can be updated at any time by the <code>kb-writer</code> sub-agent
-    if experience shows an entry is more or less valuable than originally assessed.
+    Include only useful sections.
+    One fact can be a complete entry.
+    Use lists for steps and <code>pre</code> and <code>code</code> elements for commands.
   </p>
 
-  <h2>Optional Sections</h2>
+  <h2>Topic boundaries</h2>
   <p>
-    Include only sections that are relevant. Not every entry needs Steps, Examples,
-    and Notes. Other useful sections: <strong>Prerequisites</strong>,
-    <strong>Troubleshooting</strong>, <strong>Related</strong>, <strong>Warning</strong>.
-    Add or remove <code>&lt;h2&gt;</code> sections as appropriate.
+    Keep each entry focused on one topic.
+    Merge new knowledge into an existing entry only when both cover the same topic.
+    If topics are related but distinct, use separate entries and link them through a <code>Related</code> section.
   </p>
 
-  <h2>Updating an Existing Entry</h2>
+  <h2>Direct updates</h2>
   <ol>
-    <li>Keep the original filename — do not rename entries</li>
-    <li>Update <code>updated</code> to today's date; preserve <code>created</code></li>
-    <li>Preserve existing content unless it is incorrect; prefer appending or amending</li>
-    <li>If correcting a mistake (reactive cleanup), add a brief inline note explaining what changed and why</li>
+    <li>Check existing titles and descriptions before creating an entry.</li>
+    <li>Update an existing entry when it covers the same topic.</li>
+    <li>Read the latest content before writing, especially when another agent can change it.</li>
+    <li>Preserve the filename, creation date, and unrelated correct content.</li>
+    <li>Set the updated date to the current date when you change content.</li>
+    <li>Record the evidence, environment scope, and limits of the fact.</li>
+    <li>For corrections, explain what changed and why.</li>
+    <li>Check the saved HTML and refresh the session index.</li>
   </ol>
-
-  <h2>Deduplication</h2>
   <p>
-    Before creating a new entry, scan all existing titles and descriptions.
-    If an existing entry covers the same topic, update it instead of creating
-    a duplicate. If topics are related but distinct, create a new entry and
-    add a <strong>Related</strong> section pointing to the existing one.
+    Do not store secrets, credentials, unsupported guesses, duplicate notes, or temporary task status.
+    If permissions block a write, report the destination and note.
+    Do not claim that you saved it.
   </p>
 
-  <h2>Staleness</h2>
+  <h2>Age and incorrect advice</h2>
   <p>
-    At session start, the agent flags entries not updated in 180+ days for
-    human review. Stale entries are never deleted automatically — the user
-    decides. When the agent uses an entry and finds it incorrect, it updates
-    the entry reactively and records what changed.
+    List entries at least 180 days old once per session for user review.
+    Age alone does not prove that an entry is incorrect.
+    Do not delete entries or change their dates merely because they are old.
+  </p>
+  <p>
+    Correct an entry directly when current evidence proves it wrong.
+    If the replacement is uncertain, report that uncertainty.
+    Do not silently leave known incorrect advice without a correction or warning.
   </p>
 
-  <h2>Content Guidelines</h2>
-  <ul>
-    <li>Write for yourself (the agent), not for a human audience</li>
-    <li>Be precise — include exact commands, paths, flags, options</li>
-    <li>Include context for <em>why</em> something works a certain way, not just <em>what</em> to do</li>
-    <li>Note environment-specific details (OS, tool versions, network context) where relevant</li>
-    <li>Keep entries focused — one topic per entry; broad topics can be split</li>
-  </ul>
+  <h2>Correction history</h2>
+  <p>
+    Corrected on 2026-11-03: the KB uses <code>~/.agents/kb/</code>, not the former harness-specific path.
+    The rules now use direct agent writes instead of mandatory writer handoffs.
+    The index includes ignored entries because most local KB notes are not tracked.
+  </p>
 </body>
 </html>
