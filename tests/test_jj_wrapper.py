@@ -1,6 +1,8 @@
 import importlib.util
 import json
 import os
+import signal
+import sys
 import stat
 import subprocess
 import tempfile
@@ -168,6 +170,36 @@ class MessageGitMarkerTest(unittest.TestCase):
             marker.rename(self.root / "old-marker")
             marker.write_text("gitdir: replacement\n")
         self.assertEqual(marker.read_text(), "gitdir: replacement\n")
+
+    def test_marker_is_removed_on_termination_signal(self):
+        marker = self.root / ".git"
+        child = self.root / "marker-child.py"
+        child.write_text(
+            "import importlib.util\n"
+            "import signal\n"
+            "import sys\n"
+            "spec = importlib.util.spec_from_file_location('hooks', sys.argv[1])\n"
+            "hooks = importlib.util.module_from_spec(spec)\n"
+            "spec.loader.exec_module(hooks)\n"
+            "with hooks.message_git_marker(sys.argv[2], "
+            "{'GIT_DIR': sys.argv[3]}, sys.argv[4]) as default:\n"
+            "    print(default, flush=True)\n"
+            "    signal.pause()\n"
+        )
+        process = subprocess.Popen(
+            [sys.executable, str(child), str(PROJECT_ROOT / "binaries" / "_jj_hooks.py"),
+             str(self.root), str(self.root / "store"), str(self.message)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        default = Path(process.stdout.readline().decode().strip())
+        self.assertTrue(marker.exists())
+        self.assertTrue(default.exists())
+        process.terminate()
+        unused_stdout, stderr = process.communicate(timeout=5)
+        self.assertEqual(process.returncode, -signal.SIGTERM, stderr.decode())
+        self.assertFalse(os.path.lexists(marker))
+        self.assertFalse(default.exists())
 
 
 class JJWrapperTest(unittest.TestCase):

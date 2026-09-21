@@ -484,6 +484,41 @@ def snapshot_working_copy(real_jj, globals_, root):
     return returncode
 
 
+def unlink_owned_marker(marker, owned):
+    """Remove marker only while it is still the file created by this process."""
+    try:
+        current = os.lstat(marker)
+        if (current.st_dev, current.st_ino) == (owned.st_dev, owned.st_ino):
+            os.unlink(marker)
+    except FileNotFoundError:
+        pass
+
+
+@contextmanager
+def cleanup_marker_on_termination(marker, owned, view):
+    """Remove a temporary marker before default termination signals exit."""
+    previous = {}
+
+    def terminate(signum, unused_frame):
+        unlink_owned_marker(marker, owned)
+        shutil.rmtree(view, ignore_errors=True)
+        signal.signal(signum, signal.SIG_DFL)
+        os.kill(os.getpid(), signum)
+
+    for signum in (signal.SIGHUP, signal.SIGQUIT, signal.SIGTERM):
+        handler = signal.getsignal(signum)
+        if handler == signal.SIG_DFL:
+            signal.signal(signum, terminate)
+            previous[signum] = handler
+    try:
+        yield
+    finally:
+        unlink_owned_marker(marker, owned)
+        for signum, handler in previous.items():
+            if signal.getsignal(signum) is terminate:
+                signal.signal(signum, handler)
+
+
 @contextmanager
 def message_git_marker(root, git_env, message_path):
     """Expose a temporary .git marker for filesystem-based root discovery.
@@ -509,16 +544,11 @@ def message_git_marker(root, git_env, message_path):
             with open(marker, "x") as handle:
                 owned = os.fstat(handle.fileno())
                 handle.write("gitdir: {0}\n".format(view))
-            yield default_message
+            with cleanup_marker_on_termination(marker, owned, view):
+                yield default_message
         finally:
             if owned is not None:
-                try:
-                    current = os.lstat(marker)
-                    if (current.st_dev, current.st_ino) == (
-                            owned.st_dev, owned.st_ino):
-                        os.unlink(marker)
-                except FileNotFoundError:
-                    pass
+                unlink_owned_marker(marker, owned)
 
 
 def run_checker(real_jj, globals_, root, hook_type, extra_args,

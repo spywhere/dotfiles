@@ -74,11 +74,13 @@ whose upstream definition sets `pass_filenames: false`. Node environments,
 dependencies, hook entries, and project rules are left unchanged.
 
 The marker is removed before rollback or further JJ operations, on success,
-hook failure, or Python exception. An existing `.git` directory, file, or symlink
-is never replaced. This is not permanent colocation; Git subprocesses retain
-the original `GIT_DIR` and `GIT_WORK_TREE`. Avoid concurrent workspace operations
-during hooks. An uncatchable termination (such as SIGKILL) can leave the temporary
-marker behind; inspect its `gitdir:` target before removing it manually.
+hook failure, Python exception, or a catchable termination signal such as SIGTERM.
+The temporary backing directory is also removed when handling such a signal. An
+existing `.git` directory, file, or symlink is never replaced. This is not
+permanent colocation; Git subprocesses retain the original `GIT_DIR` and
+`GIT_WORK_TREE`. Avoid concurrent workspace operations during hooks. An
+uncatchable termination (such as SIGKILL) can still leave the temporary marker
+behind; inspect its `gitdir:` target before removing it manually.
 
 ## Bypass
 
