@@ -107,6 +107,11 @@ allow_terminal() {
 }
 
 allow_tmux() {
+  # Do not start another multiplexer inside Rex.
+  if test "$TERM_PROGRAM" = "rex"; then
+    return 1
+  fi
+
   # running inside vim terminal
   if test -n "$VIM"; then
     return 1
