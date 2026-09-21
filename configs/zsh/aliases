@@ -227,6 +227,7 @@ fi
 
 # pi
 if test -n "$(command -v pi)"; then
+  alias pic="pi -c"
   alias pir="pi -r"
 fi
 
