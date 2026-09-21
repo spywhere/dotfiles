@@ -92,3 +92,4 @@ identity = ["util", "exec", "--", "bash", "-c", """
 [ui]
 default-command = "status"
 diff-formatter = "delta"
+diff-editor = ":builtin"
