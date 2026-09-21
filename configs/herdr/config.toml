@@ -66,8 +66,8 @@ description = "herdr-lazy: manage plugins"
 [[keys.command]]
 key = ["cmd+r", "prefix+ctrl+r"]
 type = "plugin_action"
-command = "persiyanov.reviewr.toggle"
-description = "herdr-reviewr: toggle reviewer"
+command = "spywhere.herdr-hunk.toggle"
+description = "herdr-hunk: toggle reviewer"
 
 [[keys.command]]
 key = "prefix+up"
