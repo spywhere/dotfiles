@@ -87,7 +87,8 @@ alias jsh="jj show"
 alias jl="jj log"
 alias jla="jj log -r '::'"
 alias jlg="jj log -r '::@'"
-alias jls="jj log -r 'trunk()..@'"
+alias jls="jj log --stat"
+alias jlt="jj log -r 'trunk()..@'"
 alias jlm="jj log -r 'mutable()'"
 # bookmark
 jb() {
@@ -121,6 +122,7 @@ alias jab="jj abandon"
 alias jme="jj metaedit"
 alias jma="jj metaedit --update-author"
 alias jrs="jj restore"
+alias jrsi="jj restore -i"
 # change history
 alias jev="jj evolog"
 alias jevp="jj evolog -p"
