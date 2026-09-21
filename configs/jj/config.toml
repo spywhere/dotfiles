@@ -69,6 +69,7 @@ name = "Sirisak Lueangsaksri"
 email = "1087399+spywhere@users.noreply.github.com"
 
 [aliases]
+init = ["git", "init"]
 d = ["diff"]
 clone = ["git", "clone"]
 identity = ["util", "exec", "--", "bash", "-c", """
