@@ -1,7 +1,7 @@
 [core]
   editor = nvim
   excludesfile = ~/.dots/configs/git/gitignore
-  pager = delta
+  pager = hunk pager
   compression = 9
   preloadIndex = true
   untrackedCache = true
@@ -32,8 +32,6 @@
 [rebase]
   autoStash = true
   updateRefs = true
-[pager]
-  diff = diffnav
 [interactive]
   diffFilter = delta --color-only
 [color]
