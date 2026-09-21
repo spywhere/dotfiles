@@ -44,7 +44,7 @@ tidy_log = """
   )
 """
 "is_conventional_commit(desc)" = """
-  desc.match(regex:"[a-z0-9_-]+!?([(][a-z0-9_-]+[)])?:")
+  desc.match(regex:"[a-z0-9_-]+([(][a-z0-9_-]+[)])?!?:")
 """
 "format_conventional_commit(desc)" = """
   concat(
