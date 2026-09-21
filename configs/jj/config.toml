@@ -1,5 +1,42 @@
 #:schema https://jj-vcs.github.io/jj/latest/config-schema.json
 
+[templates]
+log = "basic_log"
+
+# Check jcf list --include-defaults
+[template-aliases]
+basic_log = """
+  if(self.root(),
+    format_root_commit(self),
+    separate(" ",
+      pad_end(
+        4,
+        separate("/",
+          self.change_id().shortest(4),
+          if(self.divergent() || self.hidden(), self.change_offset()),
+        )
+      ),
+      separate("",
+        if(self.conflict(), "!", " "),
+        if(self.immutable(), "i", " "),
+        if(self.empty(), "e", " "),
+      ),
+      self.bookmarks(),
+      self.tags(),
+      self.working_copies(),
+      if(self.description(),
+        self.description().first_line().substr(0, 80),
+        label(if(self.empty(), "empty"), description_placeholder),
+      ),
+      commit_timestamp(self).local().format("%y%m%d%H%M%S"),
+      self.author().email().local(),
+    ),
+  )
+"""
+
+[remotes.origin]
+auto-track-created-bookmarks = "*"
+
 [revsets]
 bookmark-advance-to = "closest_pushable(@)"
 

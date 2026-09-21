@@ -64,6 +64,13 @@ alias ga.="ga ."
 # jujutsu
 alias j="jj"
 alias jrt='cd "$(jj root || echo .)"'
+jcf() {
+  if test -z "$1"; then
+    jj config list
+  else
+    jj config "$@"
+  fi
+}
 
 # working copy
 alias jn="jj new"
