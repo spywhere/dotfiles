@@ -900,6 +900,157 @@ if stage == "prepare-commit-msg":
             ["restore", "--from", "3" * 40, "--", "plain"], calls
         )
 
+    def install_husky_hook(self, stage, content):
+        directory = self.root / ".husky"
+        directory.mkdir(exist_ok=True)
+        hook = directory / stage
+        hook.write_text(content)
+        return hook
+
+    def prepare_non_colocated_git_range(self):
+        self.prepare_git_range()
+        self.git_dir.rmdir()
+        (self.root / ".git").rename(self.git_dir)
+        self.env["FAKE_GIT_DIR"] = str(self.git_dir)
+        self.env["FAKE_PARENT_ID"] = self.old_commit
+        self.env["FAKE_COMMIT_ID"] = self.new_commit
+        self.env["FAKE_FILES"] = json.dumps(["changed file"])
+
+    def test_husky_pre_commit_without_installation_sees_selected_index(self):
+        self.prepare_non_colocated_git_range()
+        local_bin = self.root / "node_modules" / ".bin"
+        local_bin.mkdir(parents=True)
+        log = self.base / "husky.log"
+        executable(local_bin / "check-staged", (
+            '#!/bin/sh\ngit diff --cached --name-only -z > "$HOOK_LOG"\n'
+        ))
+        hook = self.install_husky_hook("pre-commit", "check-staged\n")
+        before_index = (self.git_dir / "index").read_bytes()
+        result = self.run_wrapper("commit", "-m", "test: husky", env={
+            "HOOK_LOG": str(log),
+        })
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(log.read_bytes(), b"changed file\0")
+        self.assertEqual((self.git_dir / "index").read_bytes(), before_index)
+        self.assertFalse((self.root / ".git").exists())
+        self.assertFalse(os.access(hook, os.X_OK))
+        log.unlink()
+        result = self.run_wrapper("commit", "unselected", "-m", "test: selection",
+                                  env={"HOOK_LOG": str(log)})
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(log.read_bytes(), b"")
+
+    def test_husky_legacy_bootstrap_and_init_without_generated_runtime(self):
+        config_home = self.base / "config"
+        (config_home / "husky").mkdir(parents=True)
+        (config_home / "husky" / "init.sh").write_text("export INIT_LOADED=yes\n")
+        hook = self.install_husky_hook("commit-msg", (
+            '#!/usr/bin/env sh\n'
+            '. "$(dirname -- "$0")/_/husky.sh"\n'
+            '[ "$INIT_LOADED" = yes ]\n'
+            'printf "%s\\n" "$0" > "$HOOK_LOG"\n'
+            'cat "$1" >> "$HOOK_LOG"\n'
+        ))
+        log = self.base / "husky.log"
+        result = self.run_wrapper("describe", "-m", "test: legacy", env={
+            "HOOK_LOG": str(log), "XDG_CONFIG_HOME": str(config_home),
+        })
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(log.read_text(), str(hook) + "\n" +
+                         self.env["FAKE_DESCRIPTION"] + "\n")
+        self.assertFalse((self.root / ".husky" / "_").exists())
+        self.assertFalse((self.root / ".git").exists())
+
+    def test_husky_skip_and_bypass_do_not_run_hook(self):
+        self.install_husky_hook("commit-msg", "exit 19\n")
+        for args, env in (
+                (("describe", "-m", "skipped"), {"HUSKY": "0"}),
+                (("--", "describe", "-m", "bypassed"), {})):
+            with self.subTest(args=args):
+                result = self.run_wrapper(*args, env=env)
+                self.assertEqual(result.returncode, 0, result.stderr.decode())
+
+    def test_husky_shell_failure_rolls_back_message_change(self):
+        self.install_husky_hook("commit-msg", "false\nexit 0\n")
+        result = self.run_wrapper("describe", "-m", "invalid")
+        self.assertEqual(result.returncode, 1, result.stderr.decode())
+        self.assertIn(["op", "restore", "operation-before-split"],
+                      read_log(self.jj_log))
+
+    def test_husky_prepare_message_edits_description(self):
+        log = self.base / "prepare.log"
+        self.install_husky_hook("prepare-commit-msg", (
+            'printf "%s" "$2" > "$HOOK_LOG"\n'
+            'printf "test: prepared\\n" > "$1"\n'
+        ))
+        result = self.run_wrapper("describe", "-m", "original",
+                                  env={"HOOK_LOG": str(log)})
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(log.read_text(), "message")
+        self.assertIn([
+            "describe", "--ignore-working-copy", "-r",
+            self.env["FAKE_CHANGE_ID"], "--message", "test: prepared\n",
+        ], read_log(self.jj_log))
+
+    def test_husky_pre_commit_failure_blocks_commit_and_split_rolls_back(self):
+        self.prepare_non_colocated_git_range()
+        self.install_husky_hook("pre-commit", "exit 17\n")
+        for command in ("commit", "split"):
+            with self.subTest(command=command):
+                self.jj_log.unlink(missing_ok=True)
+                result = self.run_wrapper(command, "-m", "blocked")
+                self.assertEqual(result.returncode, 17, result.stderr.decode())
+                calls = read_log(self.jj_log)
+                if command == "commit":
+                    self.assertNotIn([command, "-m", "blocked"], calls)
+                else:
+                    self.assertIn(["op", "restore", "operation-before-split"], calls)
+
+    def test_installed_hook_precedes_husky_and_husky_precedes_checker(self):
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        (self.root / ".pre-commit-config.yaml").write_text("repos: []\n")
+        self.install_husky_hook("commit-msg", "exit 17\n")
+        installed = self.root / ".git" / "hooks" / "commit-msg"
+        executable(installed, "#!/bin/sh\nexit 0\n")
+        result = self.run_wrapper("describe", "-m", "installed")
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(len(read_log(self.checker_log)), 1)
+        self.checker_log.unlink()
+        installed.unlink()
+        result = self.run_wrapper("describe", "-m", "husky")
+        self.assertEqual(result.returncode, 17, result.stderr.decode())
+        self.assertEqual(len(read_log(self.checker_log)), 1)
+        self.assertIn("prepare-commit-msg", read_log(self.checker_log)[0])
+
+    def test_husky_pre_push_without_git_marker_receives_protocol(self):
+        self.prepare_non_colocated_git_range()
+        log = self.base / "push.log"
+        self.install_husky_hook("pre-push", (
+            'printf "%s\\n%s\\n" "$1" "$2" > "$HOOK_LOG"\n'
+            'git rev-parse HEAD >> "$HOOK_LOG"\n'
+            'cat >> "$HOOK_LOG"\n'
+            'exit "${HOOK_EXIT:-0}"\n'
+        ))
+        plan = ("Changes to push to origin:\n"
+                "  bookmark: main [move forward from {0} to {1}]\n").format(
+                    self.old_commit, self.new_commit)
+        for code in (0, 7):
+            with self.subTest(code=code):
+                self.jj_log.unlink(missing_ok=True)
+                result = self.run_wrapper("git", "push", "-b", "main", env={
+                    "FAKE_PUSH_PLAN": plan, "HOOK_LOG": str(log),
+                    "HOOK_EXIT": str(code),
+                })
+                self.assertEqual(result.returncode, code, result.stderr.decode())
+                self.assertEqual(log.read_text().splitlines(), [
+                    "origin", "origin", self.new_commit,
+                    "refs/heads/main {0} refs/heads/main {1}".format(
+                        self.new_commit, self.old_commit),
+                ])
+                calls = read_log(self.jj_log)
+                self.assertEqual(["git", "push", "-b", "main"] in calls, code == 0)
+                self.assertFalse((self.root / ".git").exists())
+
     def prepare_git_range(self):
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
         subprocess.run(

@@ -411,6 +411,39 @@ def installed_hook(root, hook_type):
     return None
 
 
+def husky_hook(root, hook_type):
+    path = os.path.join(root, ".husky", hook_type)
+    return path if os.path.isfile(path) else None
+
+
+def repository_hook(root, hook_type):
+    return installed_hook(root, hook_type) or husky_hook(root, hook_type)
+
+
+def hook_command(root, hook):
+    """Run conventional Husky scripts without its Git-installed launcher."""
+    if canonical(hook) != canonical(os.path.join(
+            root, ".husky", os.path.basename(hook))):
+        return [hook]
+    with open(hook, "r") as handle:
+        script = handle.read()
+    # Husky 5-8 generated this bootstrap line. Its runtime is normally created
+    # by installation; replace only this conventional line, not custom sources.
+    script = re.sub(
+        r'^\s*\.\s+"\$\(dirname -- "\$0"\)/_/husky\.sh"\s*$',
+        "", script, flags=re.MULTILINE,
+    )
+    bootstrap = (
+        '[ "${HUSKY-}" = "2" ] && set -x\n'
+        'i="${XDG_CONFIG_HOME:-$HOME/.config}/husky/init.sh"\n'
+        'if [ -f "$i" ]; then . "$i"; fi\n'
+        '[ "${HUSKY-}" = "0" ] && exit 0\n'
+        'export PATH="node_modules/.bin:$PATH"\n'
+    )
+    # $0 remains the original path, so hook-relative paths and arguments work.
+    return ["sh", "-e", "-c", bootstrap + script, hook]
+
+
 def pre_commit_managed_hook(path):
     if not path:
         return False
@@ -653,7 +686,7 @@ def run_pre_commit_stage(real_jj, globals_, root, revision, files=None):
         error("could not determine files changed in {0}".format(revision))
         return 1
 
-    hook = installed_hook(root, "pre-commit")
+    hook = repository_hook(root, "pre-commit")
     use_checker = (
         pre_commit_managed_hook(hook)
         and checker_config(root)
@@ -671,10 +704,15 @@ def run_pre_commit_stage(real_jj, globals_, root, revision, files=None):
         if not commits or not parents:
             error("could not prepare the Git view for the pre-commit hook")
             return 1
+        git_env = git_environment(real_jj, globals_, root)
+        if git_env is None:
+            error("could not expose this JJ repository to the pre-commit hook")
+            return 1
         try:
             common_dir = subprocess.check_output(
                 ["git", "-C", root, "rev-parse", "--path-format=absolute",
                  "--git-common-dir"],
+                env=dict(os.environ, **git_env),
                 stderr=subprocess.DEVNULL,
             ).decode().strip()
         except (OSError, subprocess.CalledProcessError):
@@ -701,7 +739,7 @@ def run_pre_commit_stage(real_jj, globals_, root, revision, files=None):
             if returncode != 0:
                 return returncode
             returncode, unused_output = run_process(
-                [hook], real_jj, cwd=root, env_extra=hook_env
+                hook_command(root, hook), real_jj, cwd=root, env_extra=hook_env
             )
             return returncode
 
@@ -724,7 +762,7 @@ def run_prepare_commit_message_stage(real_jj, globals_, root, revision,
         ))
         return 1
 
-    hook = installed_hook(root, "prepare-commit-msg")
+    hook = repository_hook(root, "prepare-commit-msg")
     config = checker_config(root)
     use_checker = (
         pre_commit_managed_hook(hook)
@@ -743,7 +781,7 @@ def run_prepare_commit_message_stage(real_jj, globals_, root, revision,
                 message_file.write(b"\n")
         if hook and not use_checker:
             env_extra = git_environment(real_jj, globals_, root) or {}
-            command = [hook, message_path]
+            command = hook_command(root, hook) + [message_path]
             if source:
                 command.append(source)
             returncode, unused_output = run_process(
@@ -788,7 +826,7 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
         ))
         return 1
 
-    hook = installed_hook(root, "commit-msg")
+    hook = repository_hook(root, "commit-msg")
     config = checker_config(root)
     use_checker = (
         pre_commit_managed_hook(hook)
@@ -808,7 +846,8 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
         if hook and not use_checker:
             env_extra = git_environment(real_jj, globals_, root) or {}
             returncode, unused_output = run_process(
-                [hook, message_path], real_jj, cwd=root, env_extra=env_extra
+                hook_command(root, hook) + [message_path], real_jj,
+                cwd=root, env_extra=env_extra
             )
             return returncode
         return run_checker(
@@ -1262,7 +1301,7 @@ def new_bookmark_base(root, git_env, remote, new_commit):
 
 
 def run_pre_push_stage(real_jj, globals_, root, update):
-    hook = installed_hook(root, "pre-push")
+    hook = repository_hook(root, "pre-push")
     use_checker = (
         pre_commit_managed_hook(hook)
         and checker_config(root)
@@ -1286,7 +1325,7 @@ def run_pre_push_stage(real_jj, globals_, root, update):
                 error("could not prepare the Git view for the pre-push hook")
                 return 1
             returncode, unused_output = run_process(
-                [hook, remote, url],
+                hook_command(root, hook) + [remote, url],
                 real_jj,
                 cwd=root,
                 env_extra=view_env,
@@ -1348,7 +1387,7 @@ def run_pre_push_stage(real_jj, globals_, root, update):
 
 
 def handle_push(real_jj, args, command_index, globals_, root):
-    if not installed_hook(root, "pre-push") and not checker_config(root):
+    if not repository_hook(root, "pre-push") and not checker_config(root):
         exec_real(real_jj, args)
     push_args = args[command_index + 2:]
     returncode, output = run_jj(

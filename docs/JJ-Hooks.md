@@ -56,10 +56,37 @@ environment. This avoids failures
 from launchers that expect a normal Git repository while preserving direct
 execution for custom hooks.
 
-When no installed hook exists, the wrapper looks for
-`.pre-commit-config.yaml` at the JJ workspace root and invokes `pre-commit`, or
-`prek` when it is available instead. A repository with neither an applicable
-hook nor that configuration file is passed through without validation.
+When no installed hook exists for a stage, the wrapper first looks for the
+corresponding `.husky/<stage>` script at the JJ workspace root. If that script
+is absent, it looks for `.pre-commit-config.yaml` and invokes `pre-commit`, or
+`prek` when it is available instead. Only one runner is used per stage; a Husky
+script can invoke pre-commit itself if both are needed. A repository with
+neither an applicable hook nor that configuration file is passed through
+without validation.
+
+### Husky without installation
+
+Conventional Husky 5-9 `.husky/pre-commit`, `.husky/prepare-commit-msg`,
+`.husky/commit-msg`, and `.husky/pre-push` scripts run directly, including in
+non-colocated workspaces. No `husky install`, generated `.husky/_` directory,
+executable bit, or installed Husky package is required. Hook commands still
+require their usual project dependencies.
+
+Scripts run from the workspace root through `sh -e`, with `node_modules/.bin`
+prepended to `PATH`, original hook arguments, and Git context supplied by the
+wrapper. Pre-commit scripts see selected files in an isolated index; message
+scripts receive the temporary description filename as `$1`; pre-push scripts
+receive the remote name/URL and Git's ref-update protocol on stdin (once per
+bookmark update, as for other wrapper hooks).
+
+The runner sources `${XDG_CONFIG_HOME:-$HOME/.config}/husky/init.sh`, honors
+`HUSKY=0` to skip Husky scripts and `HUSKY=2` for tracing, and bypasses the
+standard older `. "$(dirname -- "$0")/_/husky.sh"` bootstrap line in memory.
+It does not modify hook files or generate Husky's installation artifacts.
+Custom source statements remain untouched. Legacy Husky 4 JSON/JS
+configuration (`package.json`'s `husky.hooks`, `.huskyrc*`, `husky.config.js`)
+and custom uninstalled hook directories are not auto-discovered. Installed
+custom directories still work through Git's `core.hooksPath` resolution.
 
 Non-colocated Git-backed JJ repositories are supported. The wrapper exposes the
 bare object store reported by `jj git root` to the checker, so
