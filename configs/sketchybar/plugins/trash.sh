@@ -6,7 +6,7 @@ CANCEL_BUTTON="Cancel"
 DEFAULT_BUTTON="Empty Trash"
 
 TRASH_ITEMS="$(osascript -l JavaScript -e 'Application("Finder").trash.items.length')"
-if test "$TRASH_ITEMS" -le 0; then
+if test -z "$TRASH_ITEMS" -o "$TRASH_ITEMS" -le 0; then
   sketchybar --set "$NAME" drawing=off
   exit
 fi
