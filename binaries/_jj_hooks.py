@@ -472,17 +472,26 @@ def temporary_git_view(real_jj, globals_, root, head_commit):
         yield None
         return
     try:
-        output = subprocess.check_output(
+        environment = dict(os.environ, **git_env)
+        common_output = subprocess.check_output(
             ["git", "rev-parse", "--path-format=absolute",
              "--git-common-dir"],
             cwd=root,
-            env=dict(os.environ, **git_env),
+            env=environment,
+            stderr=subprocess.DEVNULL,
+        )
+        commit_output = subprocess.check_output(
+            ["git", "rev-parse", "--verify",
+             "{0}^{{commit}}".format(head_commit)],
+            cwd=root,
+            env=environment,
             stderr=subprocess.DEVNULL,
         )
     except (OSError, subprocess.CalledProcessError):
         yield None
         return
-    common_dir = os.fsdecode(output).strip()
+    common_dir = os.fsdecode(common_output).strip()
+    head_commit = os.fsdecode(commit_output).strip()
     with tempfile.TemporaryDirectory(prefix="jj-hooks-git-") as temp_git:
         with open(os.path.join(temp_git, "commondir"), "w") as handle:
             handle.write(common_dir + "\n")
@@ -585,7 +594,7 @@ def message_git_marker(root, git_env, message_path):
 
 
 def run_checker(real_jj, globals_, root, hook_type, extra_args,
-                checker_env=None):
+                checker_env=None, head_commit=None):
     config = checker_config(root)
     if not config:
         return 0
@@ -595,46 +604,66 @@ def run_checker(real_jj, globals_, root, hook_type, extra_args,
             config
         ))
         return 1
+
+    command = [checker, "run", "--hook-stage", hook_type]
+    if os.path.basename(checker) == "pre-commit":
+        command.extend(["--config", config])
+    command.extend(extra_args)
+
+    def invoke(git_env):
+        if checker_env:
+            git_env.update(checker_env)
+        if hook_type in ("prepare-commit-msg", "commit-msg"):
+            message_path = extra_args[
+                extra_args.index("--commit-msg-filename") + 1
+            ]
+            try:
+                with open(message_path, "rb") as handle:
+                    original = handle.read()
+                with message_git_marker(
+                        root, git_env, message_path) as default_message:
+                    returncode, unused_output = run_process(
+                        command, real_jj, cwd=root, env_extra=git_env
+                    )
+                    if default_message:
+                        with open(default_message, "rb") as handle:
+                            prepared = handle.read()
+                        if prepared != original:
+                            with open(message_path, "rb") as handle:
+                                explicit = handle.read()
+                            if explicit not in (original, prepared):
+                                error(
+                                    "hooks made conflicting edits to the message files"
+                                )
+                                return returncode or 1
+                            with open(message_path, "wb") as handle:
+                                handle.write(prepared)
+                    return returncode
+            except OSError as exc:
+                error("could not provide Git message context: {0}".format(exc))
+                return 1
+        returncode, unused_output = run_process(
+            command, real_jj, cwd=root, env_extra=git_env
+        )
+        return returncode
+
+    if head_commit:
+        with temporary_git_view(
+                real_jj, globals_, root, head_commit) as git_env:
+            if git_env is None:
+                error("could not prepare the Git view for {0}".format(
+                    os.path.basename(checker)
+                ))
+                return 1
+            return invoke(git_env)
+
     git_env = git_environment(real_jj, globals_, root)
     if git_env is None:
         error("cannot expose this JJ repository to {0}".format(
             os.path.basename(checker)
         ))
         return 1
-    if checker_env:
-        git_env.update(checker_env)
-    command = [checker, "run", "--hook-stage", hook_type]
-    if os.path.basename(checker) == "pre-commit":
-        command.extend(["--config", config])
-    command.extend(extra_args)
-    if hook_type in ("prepare-commit-msg", "commit-msg"):
-        message_path = extra_args[extra_args.index("--commit-msg-filename") + 1]
-        try:
-            with open(message_path, "rb") as handle:
-                original = handle.read()
-            with message_git_marker(root, git_env, message_path) as default_message:
-                returncode, unused_output = run_process(
-                    command, real_jj, cwd=root, env_extra=git_env
-                )
-                if default_message:
-                    with open(default_message, "rb") as handle:
-                        prepared = handle.read()
-                    if prepared != original:
-                        with open(message_path, "rb") as handle:
-                            explicit = handle.read()
-                        if explicit not in (original, prepared):
-                            error("hooks made conflicting edits to the message files")
-                            return returncode or 1
-                        with open(message_path, "wb") as handle:
-                            handle.write(prepared)
-                return returncode
-        except OSError as exc:
-            error("could not provide Git message context: {0}".format(exc))
-            return 1
-    returncode, unused_output = run_process(
-        command, real_jj, cwd=root, env_extra=git_env
-    )
-    return returncode
+    return invoke(git_env)
 
 
 def prepare_selected_index(real_jj, root, hook_env, parent, commit, files):
@@ -745,11 +774,20 @@ def run_pre_commit_stage(real_jj, globals_, root, revision, files=None):
 
     if not checker_config(root):
         return 0
+    commits = commit_ids(real_jj, globals_, root, revision)
+    if not commits:
+        error("could not prepare the Git view for the pre-commit hook")
+        return 1
     file_args = [os.fsdecode(path) for path in files]
     if not file_args:
         file_args = [NO_FILES_SENTINEL]
     return run_checker(
-        real_jj, globals_, root, "pre-commit", ["--files"] + file_args
+        real_jj,
+        globals_,
+        root,
+        "pre-commit",
+        ["--files"] + file_args,
+        head_commit=commits[0],
     )
 
 
@@ -788,12 +826,17 @@ def run_prepare_commit_message_stage(real_jj, globals_, root, revision,
                 command, real_jj, cwd=root, env_extra=env_extra
             )
         else:
+            commits = commit_ids(real_jj, globals_, root, revision)
+            if not commits:
+                error("could not prepare the Git view for the prepare-commit-msg hook")
+                return 1
             returncode = run_checker(
                 real_jj,
                 globals_,
                 root,
                 "prepare-commit-msg",
                 ["--commit-msg-filename", message_path],
+                head_commit=commits[0],
             )
         if returncode != 0:
             return returncode
@@ -850,12 +893,17 @@ def run_commit_message_stage(real_jj, globals_, root, revision):
                 cwd=root, env_extra=env_extra
             )
             return returncode
+        commits = commit_ids(real_jj, globals_, root, revision)
+        if not commits:
+            error("could not prepare the Git view for the commit-msg hook")
+            return 1
         return run_checker(
             real_jj,
             globals_,
             root,
             "commit-msg",
             ["--commit-msg-filename", message_path],
+            head_commit=commits[0],
         )
     finally:
         if message_path:
@@ -1383,6 +1431,7 @@ def run_pre_push_stage(real_jj, globals_, root, update):
         "pre-push",
         ["--files"] + [os.fsdecode(path) for path in files],
         checker_env=checker_env,
+        head_commit=update["new"],
     )
 
 
