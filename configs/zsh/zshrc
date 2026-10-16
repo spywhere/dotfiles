@@ -121,6 +121,9 @@ allow_tmux() {
   if test -n "$OKCA_APP_VESRION"; then
     return 1
   fi
+  if test "$__CFBundleIdentifier" = "dev.herdr.app"; then
+    return 1
+  fi
 
   if ! allow_terminal; then
     return 1
