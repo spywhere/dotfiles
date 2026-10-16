@@ -10,6 +10,7 @@
     "npm:@pi-vault/pi-dcp",
     "npm:agent-ste"
   ],
+  "defaultTools": ["+codemode"],
   "theme": "dark",
   "collapseChangelog": true,
   "enableInstallTelemetry": false,
